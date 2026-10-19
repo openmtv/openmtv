@@ -1,0 +1,42 @@
+# option: --credit-line=original
+# The original's credit system: the original's line, $300 000 -- no staircase.  Steps as
+# tests/fixes/credit_line.txt (day 4, then "more money"); the expectations are its "classic" ones:
+# 4350 credit 300 000; 5850 (the second visit) still 300 000, refused.
+# expect option  4350 word 39D4:7ADE == 37856
+# expect option  4350 word 39D4:7AE0 == 4
+# expect option  5850 word 39D4:7ADE == 37856
+# expect option  5850 word 39D4:7AE0 == 4
+400 key esc
+1000 click 64 100
+1300 click 172 185
+2100 click 230 60
+2500 click 230 60
+2600 poke16 39D4:71E4 4
+2700 click 188 70
+3300 click 230 92
+3550 click 163 99
+3650 click 230 92
+3950 click 163 99
+4050 click 230 92
+4400 click 230 92
+4800 click 188 70
+5400 click 230 92
+5650 click 163 99
+5750 click 230 92
+6050 click 163 99
+6150 click 230 92
+6500 click 230 92
+6900 click 188 70
+7500 click 230 92
+7750 click 163 99
+7850 click 230 92
+8150 click 163 99
+8250 click 230 92
+8600 click 230 92
+9000 click 188 70
+9600 click 230 92
+9850 click 163 99
+9950 click 230 92
+10250 click 163 99
+10350 click 230 92
+10700 click 230 92

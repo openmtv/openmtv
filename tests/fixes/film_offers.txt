@@ -1,0 +1,72 @@
+# option: --film-offers=17
+# args: --logical-time
+# Not a fix: the player's choice "film offers" (settings [game] film_offers, --film-offers=N, 10..17).
+# The film agency (room 8) as in tests/scenarios/room_dealer_buy (on the logical clock, where the
+# human is in the agency at 3900): new game, the human walks there (test pokes 7B48/7B54/7B4A/7B46),
+# the scenario's dealer pokes at 3700.  With 17 offers the row of tapes on the counter grows to the
+# left: slots 11..17 at x 71, 62, 54, 43, 32, 20, 11 (their rectangles: segment EE20 = EC70, the
+# slots: EE10 = EC60 relative to the load segment, 8 bytes each: +0 programme, +2 price, +7 shelf).
+# The new game's first refill (new_day) filled them; at 3700 with the scenario's pokes slot 15 =
+# film 8 "American Gigolo", $109 000, shelf 4.  Classic nothing stands left of slot 1 (x 81).
+#  3880 the pointer over slot 15's tape (47 90; slot 14's rectangle reaches there too, slot 15
+#       stands in front): its tip g_tip_id DS:0E82 = 8, on the right (g_tip_shown_col DS:0E84 =
+#       21; the original's slots 9 and 10 have it on the left)
+#  4000 buy it: carried (g_room_mode DS:8BA4 = 1), cash DS:8BFB 200 000 -> 91 000, its shelf byte
+#       EC60:0027 = 4 - 100
+#  4200 give it back at 60 100 -- left of the dealer's hotspot 0x18 of the original (81..): refunded,
+#       mode 0, shelf 4 again
+#  4400 buy it again, 4600 into the case, 4800 Esc: the agency left, the case into the library (film
+#       8's owner, 4DA5:00C5, is 1), the dealer's refill puts another film into slot 15 (EC60:0020)
+# expect option  3990 word EC60:0020 == 8
+# expect option  3990 word 39D4:0E82 == 8
+# expect classic 3990 word 39D4:0E82 != 8
+# expect option  3990 word 39D4:0E84 == 21
+# expect option  4100 word 39D4:8BA4 == 1
+# expect option  4100 word 39D4:8BFB == 25464
+# expect option  4100 word 39D4:8BFD == 1
+# expect option  4100 byte EC60:0027 == 160
+# expect classic 4100 word 39D4:8BA4 == 0
+# expect option  4300 word 39D4:8BA4 == 0
+# expect option  4300 word 39D4:8BFB == 3392
+# expect option  4300 word 39D4:8BFD == 3
+# expect option  4300 byte EC60:0027 == 4
+# expect option  5000 byte 4DA5:00C5 == 1
+# expect option  5000 word EC60:0020 != 8
+# expect option  5000 word EC60:0020 != 0
+# expect option  5000 word 39D4:8BFB == 25464
+# expect classic 5000 byte 4DA5:00C5 == 0
+# expect classic 5000 word 39D4:8BFB == 3392
+400 key esc
+1000 click 64 100
+1300 click 172 185
+2100 click 230 60
+2500 click 230 60
+2600 poke16 39D4:7B48 7
+2600 poke16 39D4:7B54 0
+2600 poke16 39D4:7B4A 0
+2600 poke16 39D4:7B46 153
+3700 poke16 39D4:1A3D 94
+3700 poke16 39D4:1A3F 25000
+3700 poke16 39D4:1A41 0
+3700 poke16 39D4:1A43 2304
+3700 poke16 39D4:1A25 92
+3700 poke16 39D4:1A27 40000
+3700 poke16 39D4:1A29 0
+3700 poke16 39D4:1A2B 2048
+3700 poke16 39D4:1A0D 12
+3700 poke16 39D4:1A0F 12928
+3700 poke16 39D4:1A11 2
+3700 poke16 39D4:1A13 1024
+3700 poke16 4DA5:087F 512
+3700 poke16 4DA5:0851 1024
+3700 poke16 4DA5:0121 6144
+3700 poke16 EC60:0020 8
+3700 poke16 EC60:0022 43464
+3700 poke16 EC60:0024 1
+3700 poke16 EC60:0026 1024
+3880 goto 47 90
+4000 click 47 90
+4200 click 60 100
+4400 click 47 90
+4600 click 251 63
+4800 key esc

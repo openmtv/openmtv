@@ -1,0 +1,32 @@
+# Every human's first evening (multiplayer, tools/seattest.py): a new game with two humans
+# (--new-game --seed 1234).  The new game fills the human's first evening (slots 1..7 of its
+# schedule, DS:4417 + station * 0x5A, a word each from +2) with random programmes it owns -- in
+# the original for g_player only, the computer players plan their own.  With several humans the
+# others' stations stayed empty (no audience, no ad income on the first evening, the boss
+# complaining); now every human station is filled (found by the review of 2026-10-11).
+# humans 1,2
+# options --new-game --seed 1234
+1000 peek16 39D4:4473
+1000 peek16 39D4:4475
+1000 peek16 39D4:4477
+1000 peek16 39D4:4479
+1000 peek16 39D4:447B
+1000 peek16 39D4:447D
+1000 peek16 39D4:447F
+1000 peek16 39D4:44CD
+1000 peek16 39D4:44CF
+1000 peek16 39D4:44D1
+1000 peek16 39D4:44D3
+1000 peek16 39D4:44D5
+1000 peek16 39D4:44D7
+1000 peek16 39D4:44D9
+1000 peek16 39D4:4527
+1000 peek16 39D4:4529
+1000 peek16 39D4:452B
+1000 peek16 39D4:452D
+1000 peek16 39D4:452F
+1000 peek16 39D4:4531
+1000 peek16 39D4:4533
+1000 hash
+1001 seat 1 hash
+1100 quit

@@ -1,0 +1,10 @@
+# fix: random0 (0D5E:0229)
+# random_n(n) = rand() % n + 1: with n = 0 the original stops with "Divide
+# error" (a random door on a floor without doors would do it).  Called
+# directly: classic halts, fixed returns 1.
+# expect classic 3000 call 0D5E:0229,0,1 halted
+# expect fixed   3000 call 0D5E:0229,0,1 == 1
+# expect fixed   3000 call 0D5E:0229,10,1 <= 10
+400 key esc
+1000 click 64 100
+1300 click 172 185

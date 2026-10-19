@@ -1,0 +1,22 @@
+# option: --seats 2 --humans 1,2 --fixes --credit-line=original
+# The original's credit system in a network game: fix credit-repay is off there too, although a network game
+# otherwise always has it (fixes.h FIX_MP_ALWAYS).  Steps and values as tests/fixes/credit_repay.txt; the
+# expectations are its "classic" ones.
+# expect option 4700 word 39D4:8BFB == 35536
+# expect option 4700 word 39D4:8BFD == 65535
+# expect option 4700 word 39D4:7ADE == 6784
+# expect option 4700 word 39D4:7AE0 == 6
+400 key esc
+1000 click 64 100
+1300 click 172 185
+2100 click 230 60
+2500 click 230 60
+2600 poke16 39D4:8BFB 32144
+2600 poke16 39D4:8BFD 65532
+2700 click 188 70
+3200 click 230 92
+3550 click 163 83
+3800 click 230 92
+4150 click 163 83
+4350 click 230 92
+4750 click 230 92

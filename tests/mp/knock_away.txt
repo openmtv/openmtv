@@ -1,0 +1,49 @@
+# Knocking, the knocker goes elsewhere (multiplayer, --knock, tools/seattest.py): tests/mp/knock
+# until seat 0 has knocked at the occupied ad agency (floor 10, door 0) and stands at its door.
+# Then seat 0 walks into the room behind door 2 on the same floor (room 0x11, test pokes of
+# figure 0, at 6000) instead of waiting: the knock is taken back -- seat 1 stays in the agency
+# past the 5 game minutes (still in at 6600 and 7300), and seat 0, out of its room again (6700),
+# stays in the building at that door (x 220) instead of being sent into the agency.
+# (Before: seat 1 was thrown out at 6500 although seat 0 was in another room, and seat 0, on
+# coming out, was walked into the agency by itself, in at 7000.)
+# humans 1,2
+# options --new-game --seed 29 --knock 5
+# play tests/mp/knock.txt until 5901
+6000 poke16 39D4:7B48 10
+6000 poke16 39D4:7B54 2
+6000 poke16 39D4:7B4A 0
+6000 poke16 39D4:7B46 220
+6700 key esc
+6000 peek16 39D4:838C
+6000 seat 1 peek16 39D4:838C
+6000 peek16 39D4:7B42
+6000 peek16 39D4:7B54
+6000 peek16 39D4:0D0C
+6400 peek16 39D4:838C
+6400 seat 1 peek16 39D4:838C
+6400 peek16 39D4:7B42
+6400 peek16 39D4:7B54
+6400 peek16 39D4:0D0C
+6600 peek16 39D4:838C
+6600 seat 1 peek16 39D4:838C
+6600 peek16 39D4:7B42
+6600 peek16 39D4:7B54
+6600 peek16 39D4:0D0C
+6800 peek16 39D4:838C
+6800 seat 1 peek16 39D4:838C
+6800 peek16 39D4:7B42
+6800 peek16 39D4:7B54
+6800 peek16 39D4:0D0C
+7000 peek16 39D4:838C
+7000 seat 1 peek16 39D4:838C
+7000 peek16 39D4:7B42
+7000 peek16 39D4:7B54
+7000 peek16 39D4:0D0C
+7300 peek16 39D4:838C
+7300 seat 1 peek16 39D4:838C
+7300 peek16 39D4:7B42
+7300 peek16 39D4:7B54
+7300 peek16 39D4:0D0C
+7300 hash
+7301 seat 1 hash
+7400 quit

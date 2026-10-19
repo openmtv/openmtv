@@ -1,0 +1,75 @@
+# A guest signs an ad (multiplayer, tools/seattest.py): two humans, a new game (--seed 29); seat 1
+# (station 2) is walked to the ad agency (test pokes of figure 1: floor 10, door 0), takes an ad
+# (5000), and clicks the agent (5400) to sign: the agency fills the empty place with another
+# ad -- drawn at random until a free one comes up.  In another seat's turn the world's time
+# stands, the timer too, and random_n drew the same number every time: the refill never ended
+# and the game hung on every machine (found by the review of 2026-10-11).  Now the calls are
+# counted into the seed there.  The ads' "taken" bytes (the ad table, +0x0F) show station 2's.
+# humans 1,2
+# options --new-game --seed 29
+3300 key esc
+3350 seat 1 key esc
+3600 seat 1 click 30 60
+3800 seat 1 click 30 60
+3900 poke16 39D4:7B66 10
+3900 poke16 39D4:7B72 0
+3900 poke16 39D4:7B68 0
+3900 poke16 39D4:7B64 153
+4900 seat 1 peek16 39D4:838C
+5000 seat 1 click 116 92
+5200 seat 1 click 251 63
+5400 seat 1 click 116 37
+6000 seat 1 peek16 39D4:838C
+6000 hash
+6001 seat 1 hash
+6100 peek8 39D4:3F76
+6100 peek8 39D4:3F8E
+6100 peek8 39D4:3FA6
+6100 peek8 39D4:3FBE
+6100 peek8 39D4:3FD6
+6100 peek8 39D4:3FEE
+6100 peek8 39D4:4006
+6100 peek8 39D4:401E
+6100 peek8 39D4:4036
+6100 peek8 39D4:404E
+6100 peek8 39D4:4066
+6100 peek8 39D4:407E
+6100 peek8 39D4:4096
+6100 peek8 39D4:40AE
+6100 peek8 39D4:40C6
+6100 peek8 39D4:40DE
+6100 peek8 39D4:40F6
+6100 peek8 39D4:410E
+6100 peek8 39D4:4126
+6100 peek8 39D4:413E
+6100 peek8 39D4:4156
+6100 peek8 39D4:416E
+6100 peek8 39D4:4186
+6100 peek8 39D4:419E
+6100 peek8 39D4:41B6
+6100 peek8 39D4:41CE
+6100 peek8 39D4:41E6
+6100 peek8 39D4:41FE
+6100 peek8 39D4:4216
+6100 peek8 39D4:422E
+6100 peek8 39D4:4246
+6100 peek8 39D4:425E
+6100 peek8 39D4:4276
+6100 peek8 39D4:428E
+6100 peek8 39D4:42A6
+6100 peek8 39D4:42BE
+6100 peek8 39D4:42D6
+6100 peek8 39D4:42EE
+6100 peek8 39D4:4306
+6100 peek8 39D4:431E
+6100 peek8 39D4:4336
+6100 peek8 39D4:434E
+6100 peek8 39D4:4366
+6100 peek8 39D4:437E
+6100 peek8 39D4:4396
+6100 peek8 39D4:43AE
+6100 peek8 39D4:43C6
+6100 peek8 39D4:43DE
+6100 peek8 39D4:43F6
+6100 peek8 39D4:440E
+6200 quit

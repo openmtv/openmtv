@@ -1,0 +1,14 @@
+# option: --start-money=1234000
+# Not a fix: the player's choice "start money" (settings [game] start_money, --start-money).
+# New game as player 1 (Esc past the title, the setup's start).  Player 1's cash: u32 at
+# 39D4:8BDC + 0x17 + 8 = 8BFB.  Classic the original's $200 000 (0x00030D40), with the
+# option $1 234 000 (0x0012D450).  The credit g_credit (39D4:7ADE) stays $200 000.
+# expect classic 3000 word 39D4:8BFB == 3392
+# expect classic 3000 word 39D4:8BFD == 3
+# expect option  3000 word 39D4:8BFB == 54352
+# expect option  3000 word 39D4:8BFD == 18
+# expect option  3000 word 39D4:7ADE == 3392
+# expect option  3000 word 39D4:7AE0 == 3
+400 key esc
+1000 click 64 100
+1300 click 172 185

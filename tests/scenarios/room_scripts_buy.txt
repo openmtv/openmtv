@@ -1,0 +1,51 @@
+# room_scripts_buy: screenplay agency (room 9, floor 6 door 1).  New game (human = player 1,
+# $200 000).  Test pokes: figures(0) walk target = floor 6 door 1 (7B48 target floor, 7B54 target
+# door, 7B4A final x, 7B46 target x 0x99 = elevator).  The shelf offers screenplays
+# 24 ($20 000), 5, 1 ($15 000), 36, 11 (binders at x 106..140, y 35..61).
+#   3200 click the agent (0x23, "You look for your junk yourself") -> 3600 close
+#   4000 buy offer 3 (screenplay 1, $15 000) -> 4400 drop it into the case (hotspot 0x21)
+#   4800 buy offer 1 (screenplay 24, $20 000) -> 5200 into the case
+#   5600 take screenplay 24 out of the case -> 6000 drop it on the shelf (0x26): refund
+#        (a dragged item is hit-tested at its top-left corner, so the click is offset by the
+#        drag hot spot: (4,15))
+#   6400 click the door (0x44): sold slots cleared, shelf refilled (script_agency_finalize)
+#   7000 test poke: walk back in (7B54 door 1, 7B46 target x 184)
+#   7800 take screenplay 1 out of the case: no longer on the shelf -> "Warning: No returns."
+#   8200 close the warning, 8600 leave
+# Observable (end): g_scripts_owned_count(1) 39D4:7674 = 1, owned_scripts(1,0).script
+#   39D4:1A77 = 1, players(1).money 39D4:8BFB (u32) = 185000, offer 3 screenplay
+#   39D4:1985 = 21 (refilled).
+# end 9000
+400 key esc
+1000 click 64 100
+1300 click 172 185
+2000 hash
+2100 click 230 60
+2500 click 230 60
+2600 poke16 39D4:7B48 6
+2600 poke16 39D4:7B54 1
+2600 poke16 39D4:7B4A 0
+2600 poke16 39D4:7B46 153
+3200 click 220 60
+3600 rclick 220 60
+4000 click 123 45
+4000 hash
+4400 click 45 80
+4800 click 109 45
+5200 click 45 80
+5600 click 39 80
+6000 click 113 60
+6000 hash
+6400 click 30 30
+7000 poke16 39D4:7B54 1
+7000 poke16 39D4:7B46 184
+7800 click 30 80
+8000 hash
+8200 rclick 100 100
+8600 rclick 100 100
+8999 peek16 39D4:7674
+8999 peek16 39D4:1A77
+8999 peek32 39D4:8BFB
+8999 peek16 39D4:1985
+9000 hash
+9001 quit

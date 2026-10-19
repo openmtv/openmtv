@@ -1,0 +1,67 @@
+# Record tables rendered as C structs by tools/decomp.py.
+#
+#   table NAME BASE SIZE [outer=OUTER] STRUCT   description
+#
+# BASE is a DGROUP offset, or far:OFF for a table behind the far pointer
+# stored at DGROUP OFF.  outer=OUTER (optional) is the stride of a second index
+# for per-player tables: element (i, j) lives at BASE + i*OUTER + j*SIZE.
+# Fields come from the `rec BASE SIZE ...` entries in symbols.txt.
+# Accessors are macros that keep the original 16-bit offset arithmetic:
+#   players(i).money      tx(p, slot).fee      films(i).price
+
+table players      8BDC      17           player       player records 1..3 (0 unused)
+table films        far:24A9  17           film         movies 1..200
+table series       far:2646  39           series       series 1..50
+table screenplays  far:715C  1B3          screenplay   screenplays / productions 1..50
+table ads          3F4F      18           ad           advertisers 1..50
+table contracts    1B70      7     outer=46 contract     signed ad contracts [player][1..10]
+table tx           1D09      E     outer=1CE transmitter  transmitters [player][slot]; slot 0 = totals
+table dealer       19ED      8            offer        film dealer shelf 1..10
+table auction      1B0D      9            lot          auction lots 1..10
+table ad_offers    19A0      7            ad_offer     ad agency offers 1..10
+table script_offers 196A     9            script_offer screenplay agency offers 1..5
+table owned_scripts 1A45     5     outer=32 owned_script screenplays owned [player][0..9]
+table news_pool    36DB      1E           news_item    today's news items
+table inbox        457F      1E    outer=258 inbox_item   news inbox [player][0..19]
+table studios      6165      10           studio       studios 1..12
+table ai           6E29      3C           ai_budget    computer player budget [player]
+table ai_buy_plan  2512      B     outer=4D ai_buy       computer player purchase plan [player][slot]
+table ai_ad_plan   4EDF      7     outer=4D ai_ad        computer player booking counters [player][contract]
+table gifts        724A      8            gift         Betty gifts 1..10
+table shoplists    734C      F     outer=4B shoplist     studio shopping lists [player][0..4]
+table figures      7B42      1E           figure       walking figures
+table ratings      24AD      A            rating       audience share per player
+table hotspots     0638      C            hotspot      screen hotspots
+table actors       5013      C     outer=C0 actor        actor pool [group][actor]
+table messages     60BF      1A           message      office messages
+table schedule     4417      5A           schedule     programme schedule per player: slots 1..14 = today and tomorrow 18:00-24:00
+table library      6F19      6C           library      film and series library per player
+table floors       7C82      7A           floor        building floors 0..13, up to 10 doors each
+table stories      70C9      15           story        running news stories 0..6
+
+# Array fields (override rec entries in their range):
+#   field TABLE OFFSET WIDTH[dim][dim] NAME   description
+field schedule  0   16[15]     program      film id, series id + 1000, 9999 = continuation of the previous slot
+field schedule  1E  16[15]     episode      series episode aired in the slot
+field schedule  3C  16[15]     ad           ad contract booked after the programme (+2000 aired, +3000 planned)
+field library   0   16[12][4]  items        programme ids per genre 1..11 (11 = series), 4 slots each
+field library   60  8[12]      count        number of programmes per genre
+field floors    0   8[10]      door_x       door x position / 8
+field floors    A   8[10]      door_y_ofs
+field floors    14  8[10]      door_kind    1..3 rooms, 6 information board, 10 porter
+field floors    1E  8[10]      door_room    room type
+field floors    28  8[10]      door_name    sign text id
+field floors    32  8[10]      door_name_alt
+field floors    3C  8[10]      door_open
+field floors    46  8[10]      door_owner   owning player
+field floors    50  8[10]      door_tip_w
+field floors    5A  8[10]      door_tip_h
+field floors    64  8[10]      door_icon
+field floors    6E  8[10]      door_studio  studio number
+field floors    78  16         wall_style
+field stories   0   16         template     news template
+field stories   2   16         last_template
+field stories   4   16         node         current chain node
+field stories   6   16[5]      variant      phrase variant per template part
+field stories   12  16         countdown    hours until the next node
+field stories   14  8          category

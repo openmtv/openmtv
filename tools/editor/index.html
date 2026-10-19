@@ -1,0 +1,70 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>OpenMTV Editor</title>
+<link rel="icon" href="/api/sprite/16/0.png">
+<link rel="stylesheet" href="/editor.css">
+</head>
+<body>
+<div id="app">
+  <header id="top">
+    <div id="brand"><span id="logo" class="wordmark" aria-label="OpenMTV">Open<b>MTV</b></span><span id="subtitle" data-i18n>Editor</span></div>
+    <button id="reset" class="dirtyflag" data-i18n="attrs" data-tip="Discard the unsaved changes: the pack as last saved"></button>
+    <div id="gsearchbox">
+      <span class="sicon"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="M20 20l-4-4"/></svg></span>
+      <input id="gsearch" type="text" data-i18n placeholder="Search films, series, ads, news ..." aria-label="Search all content" autocomplete="off">
+      <span class="kbd" data-i18n>Ctrl K</span>
+      <div id="gresults"></div>
+    </div>
+    <div class="group">
+      <button class="btn ghost icon" id="undo" data-i18n aria-label="Undo" data-tip="Undo (Ctrl+Z)"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M9 14L4 9l5-5"/><path d="M4 9h11a5 5 0 0 1 0 10h-3"/></svg></button>
+      <button class="btn ghost icon" id="redo" data-i18n aria-label="Redo" data-tip="Redo (Ctrl+Shift+Z)"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M15 14l5-5-5-5"/><path d="M20 9H9a5 5 0 0 0 0 10h3"/></svg></button>
+    </div>
+    <div class="group" id="textlang" data-i18n="attrs" data-tip="Game texts: the language of the texts being edited and previewed -- the titles in the lists, genres and countries, the cards. The editor's own words follow the interface language.">
+      <span class="label" data-i18n>Game texts</span>
+      <div class="seg" data-i18n="attrs" role="group" aria-label="Game texts"><button class="lang mono" data-lang="de">DE</button><button class="lang mono" data-lang="en">EN</button></div>
+    </div>
+    <button class="btn" id="save" data-i18n="attrs" data-tip="Save (Ctrl+S)"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" aria-hidden="true"><path d="M5 3h11l5 5v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2z"/><path d="M7 3v6h8M7 21v-7h10v7"/></svg><span data-i18n>Save</span></button>
+    <div class="menuwrap">
+      <button class="btn ghost icon" id="menu" data-i18n aria-label="Settings: the interface language, the keys" data-tip="Settings: the interface language, the keys" aria-expanded="false"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linejoin="round" aria-hidden="true"><path d="M19.22 9.33 L22.05 10.23 L22.05 13.77 L19.22 14.67 L18.99 15.22 L20.36 17.85 L17.85 20.36 L15.22 18.99 L14.67 19.22 L13.77 22.05 L10.23 22.05 L9.33 19.22 L8.78 18.99 L6.15 20.36 L3.64 17.85 L5.01 15.22 L4.78 14.67 L1.95 13.77 L1.95 10.23 L4.78 9.33 L5.01 8.78 L3.64 6.15 L6.15 3.64 L8.78 5.01 L9.33 4.78 L10.23 1.95 L13.77 1.95 L14.67 4.78 L15.22 5.01 L17.85 3.64 L20.36 6.15 L18.99 8.78Z"/><circle cx="12" cy="12" r="3.2"/></svg></button>
+      <div id="menupop" role="dialog" data-i18n="attrs" aria-label="Settings: the interface language, the keys">
+        <div class="menurow" id="uilang">
+          <span class="label" data-i18n>Interface</span>
+          <div class="seg" role="group" aria-label="Interface / Oberfläche"><button class="uilang mono" data-ui="en" lang="en">EN</button><button class="uilang mono" data-ui="de" lang="de">DE</button></div>
+        </div>
+        <div class="menukeys" data-i18n>Up/Down entry, Ctrl+S save, Ctrl+Z undo, Ctrl+K search</div>
+      </div>
+    </div>
+  </header>
+  <div id="body" data-layout="entry">
+    <nav id="rail" data-i18n="attrs" aria-label="Sections"></nav>
+    <section id="shelf" data-i18n="attrs" aria-label="Entries"></section>
+    <main id="main">
+      <div id="workhead"></div>
+      <div id="workbody">
+        <div id="work"></div>
+        <aside id="inspector" data-i18n="attrs" aria-label="Preview and checks"></aside>
+      </div>
+    </main>
+  </div>
+</div>
+<div id="toast"><div id="status" role="status" aria-live="polite"></div></div>
+<div id="tip"></div>
+<div id="overlay"></div>
+<script src="/i18n.js"></script>
+<script src="/game.js"></script>
+<script src="/schema.js"></script>
+<script src="/editor.js"></script>
+<script src="/monitor.js"></script>
+<script src="/overview.js"></script>
+<script src="/table.js"></script>
+<script src="/stage.js"></script>
+<script src="/tree.js"></script>
+<script src="/launcher.js"></script>
+<script src="/multiplayer.js"></script>
+<script src="/selftest.js"></script>
+<script>start();</script>
+</body>
+</html>

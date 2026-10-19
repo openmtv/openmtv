@@ -1,0 +1,119 @@
+# save_roundtrip: save in the office safe (room 58), play on, load the slot again: the state at save
+# time comes back.  English.
+# The safe: office hotspot 0x1E (the picture left of the door, 62..90 x 8..62) -> room 58; the overlay
+# (text 285, a developer placeholder "This is Load/Save-Select-Overlay...") has save 0x39 (123..146 x
+# 64..87, mode 3) and load 0x3A (181..204, mode 4); slots: column di 0/1, row si 1..5 at x 64+118*di,
+# y 25+17*(si-1) (78 x 7) = resource 0xD1+5*di+si in SOURCE1.RSC (names in 0xD1, 10 x 40 bytes).
+# Steps: new game; dismiss the boss's two messages; 2600 test poke: human figure 0 walks to the film
+#   agency (7B48 target_floor 7, 7B54 target_door 0, 7B4A final_x 0, 7B46 target_x 0x99); 4100 buy
+#   shelf tape 10 (film 94, epic, $25 000), 4300 into the case, 4500 Esc (case -> library);
+#   4600 test poke: walk to the own office (floor 5 door 0); 5200 the picture -> safe, overlay;
+#   5400 save button; 5600 slot 2 (res 0xD3, not in the file yet) -> name entry (ui_input_text, clock
+#   stopped), 5700 "Day1", 5850 Enter -> savegame_names_store, game_save(0xD3): res_create appends
+#   37605 bytes to SOURCE1.RSC, res_write fills them; room_escape -> office.
+#   6000 right click leaves the office; 6100 walk to the film agency; 7100 buy tape 7 (film 98,
+#   whodunit, $30 000), 7300 into the case, 7500 Esc; 7600 walk back to the office; the clock runs on.
+#   10100 the picture -> safe; 10300 load button; 10500 slot 2 -> game_load(0xD3).
+#   10800 right click: overlay again, 11000 right click: leave the safe -> office (room 1, mode 0).
+# Observable (PEEK lines) at 5800 (save time, inside the name entry) / 9900 (later) / 10600 (loaded):
+#   money players(1).money DS:8BFB (u32) 175000 / 145000 / 175000; g_clock_acc DS:6143 (u32, seconds
+#   since 17:00 x 50) 68880 (17:22:57) / 115050 (17:38:21) / 68880; day DS:71E4 = 1;
+#   library of player 1: genre 3 count DS:6FE8 = 1, id DS:6F9D = 94 (all three); genre 5 count DS:6FEA
+#   0 / 1 / 0, id DS:6FAD 0 / 98 / 0; film 94 owner (4DA5:087F) = 1; film 98 owner (4DA5:08DB) 0 / 1 / 0;
+#   computer player 3: money DS:8C29 10500 / -153500 (4294813796) / 10500, film 58 owner (4DA5:0543)
+#   3 / 0 / 3 (sold in between); AI goal states g_ai_state DS:24E5 (2 bytes) 0x0202 / 0x0607 / 0x0202.
+#   Not restored: the elevator cabin floor g_elevator_floor DS:8BDA 8 / 5 / 7 (not in the savegame).
+#   11200: room 1, g_room_mode 0.
+# end 11400
+400 key esc
+1000 click 64 100
+1300 click 172 185
+2000 hash
+2100 click 230 60
+2500 click 230 60
+2600 poke16 39D4:7B48 7
+2600 poke16 39D4:7B54 0
+2600 poke16 39D4:7B4A 0
+2600 poke16 39D4:7B46 153
+4000 hash
+4100 click 168 75
+4300 click 240 60
+4500 key esc
+4600 poke16 39D4:7B48 5
+4600 poke16 39D4:7B54 0
+4600 poke16 39D4:7B4A 0
+4600 poke16 39D4:7B46 153
+5200 click 76 35
+5400 click 134 75
+5600 click 100 45
+5700 key D
+5710 key a
+5720 key y
+5730 key 1
+5800 peek16 39D4:838C
+5800 peek32 39D4:8BFB
+5800 peek32 39D4:6143
+5800 peek16 39D4:71E4
+5800 peek8 39D4:6FE8
+5800 peek16 39D4:6F9D
+5800 peek8 39D4:6FEA
+5800 peek16 39D4:6FAD
+5800 peek8 4DA5:087F
+5800 peek8 4DA5:08DB
+5800 peek32 39D4:8C29
+5800 peek8 4DA5:0543
+5800 peek16 39D4:24E5
+5800 peek8 39D4:8BDA
+5850 key enter
+6000 rclick 200 60
+6000 hash
+6100 poke16 39D4:7B48 7
+6100 poke16 39D4:7B54 0
+6100 poke16 39D4:7B4A 0
+6100 poke16 39D4:7B46 153
+7100 click 146 80
+7300 click 240 60
+7500 key esc
+7600 poke16 39D4:7B48 5
+7600 poke16 39D4:7B54 0
+7600 poke16 39D4:7B4A 0
+7600 poke16 39D4:7B46 153
+8000 hash
+9900 peek16 39D4:838C
+9900 peek32 39D4:8BFB
+9900 peek32 39D4:6143
+9900 peek16 39D4:71E4
+9900 peek8 39D4:6FE8
+9900 peek16 39D4:6F9D
+9900 peek8 39D4:6FEA
+9900 peek16 39D4:6FAD
+9900 peek8 4DA5:087F
+9900 peek8 4DA5:08DB
+9900 peek32 39D4:8C29
+9900 peek8 4DA5:0543
+9900 peek16 39D4:24E5
+9900 peek8 39D4:8BDA
+10000 hash
+10100 click 76 35
+10300 click 192 75
+10500 click 100 45
+10600 peek16 39D4:838C
+10600 peek32 39D4:8BFB
+10600 peek32 39D4:6143
+10600 peek16 39D4:71E4
+10600 peek8 39D4:6FE8
+10600 peek16 39D4:6F9D
+10600 peek8 39D4:6FEA
+10600 peek16 39D4:6FAD
+10600 peek8 4DA5:087F
+10600 peek8 4DA5:08DB
+10600 peek32 39D4:8C29
+10600 peek8 4DA5:0543
+10600 peek16 39D4:24E5
+10600 peek8 39D4:8BDA
+10800 rclick 200 60
+11000 rclick 200 60
+11200 peek16 39D4:838C
+11200 peek16 39D4:8BA4
+11400 hash
+11401 quit

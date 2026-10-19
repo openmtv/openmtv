@@ -1,0 +1,273 @@
+fn 0ED7:0004 game_frame  one frame of the main loop: input_poll -> g_click; ease cursor toward pending mouse motion (instant while dragging), clamp to g_mouse_min/max, redraw cursor or drag image flicker-free on VGA; every 50/g_game_speed timer ticks: building (193D:0C1C + present + tvfam_tick) or room (room_anim_update, Madris in office screen 2, tvfam_tick) then tooltip_update; returns room id of the door the idle player figure stands at (building only), else 0
+fn 0ED7:0A8C panel_show_wipe  copy bottom panel bitmap (320x80) to VGA y=120 with box-wipe transition (0054:34BD), compositing the mouse cursor when it is over the panel
+fn 0ED7:0BBE mouse_bounds_full  mouse limits = x 0..303, y 0..189
+fn 0ED7:0BD7 ui_input_text  text entry field (x, y, width_cols, buf): letters (first upper case, rest lower), digits, space, backspace; redraws with cursor glyph (0xD35); returns 0 on Enter, -1 on Esc
+fn 0ED7:0DE2 cursor_shape_push  shape != 0: push g_cursor_shape and switch to shape (3 = busy, used while loading texts); 0: pop previous shape; ignored while dragging
+fn 0ED7:0E2E madris_step  "Madris" Tetris clone on the office computer (res 0xB5 sprite 10): spawn next of 7 pieces (random_n(7)), apply input (1/2 rotate, 3/4 move, 5 drop) with collision tests on the 10x20 board, fall by arg rows; on landing score += piece_points[O10 S8 Z8 T6 J6 L6 I4] * (9 - delay), score >= 9999 or blocks in top row = game over, full lines removed, every 10 lines delay-- (min 1); keeps hiscore
+fn 0ED7:1752 ui_band  ui_band_to into the screen buffer
+fn 0ED7:1775 ui_band_to  draw a horizontal band (col, y, width_cols, height_px, style, dst): end caps from res 2 atlas (sprite style*3+0x13..) and filler tiles from res 7, repeated in 8px rows; used for info-card row backgrounds
+fn 105E:000E cursor_show  ++g_cursor_shown; when it becomes 1 save the VGA background (24x11) under the mouse and draw the arrow g_cursor_shape directly on VGA; at 0 with a drag image: draw g_drag_image at mouse-hotspot (clamped to 320x120) instead
+fn 105E:01AE cursor_hide  --g_cursor_shown; when the cursor (or drag image) disappears restore the saved VGA background at its last position
+fn 105E:0203 mouse_ease_step  move = *pending/5 (at least +-1); *pos += move; *pending -= move (smooth cursor movement)
+fn 105E:0266 text_draw  draw a 0-terminated string at pixel x,y into a bitmap with the 8px glyph font g_font (char->glyph map 0x12E, advance widths 0x22E, space = 3px, unmapped chars -> '.'); flag 1 = digits right-aligned in fixed cells; uses the small font of room slot 0x108 when g_font_alt
+fn 105E:0386 ui_frame  draw window frame + filled interior on a bitmap, rect in 8px cells (x0,y0,x1,y1,bmp,style)
+fn 105E:03DA ui_frame_px  window frame in pixels: interior tile 0, edges top 0x30 bottom 0x28 left 0x40 right 0x38, corners 8/0x10/0x18/0x20 from tileset 0x7B0A (style 1) or 0x7B0E
+fn 105E:04DB ui_frame_tile  draw one 8px frame tile (atlas offset) at pixel x,y into g_frame_target via the glyph blitter 377A
+fn 105E:0526 ui_text_box  style 1: draw framed box (cells x0..x1,y0..y1) into the screen buffer and print word-wrapped text inside (0DDD:0239)
+fn 105E:058C popup_open  get popup slot (mode 1/3: first free slot >= 1, mode 2: slot 0), allocate and save the screen-buffer background under the cell rect; mode 1 also draws ui_text_box and presents; returns slot
+fn 105E:069A ui_message_window  window_create + print text + window_show (drawn directly on VGA)
+fn 105E:06EA popup_close  put the saved background of popup slot back into the screen buffer, present, free the save buffer
+fn 105E:0778 popup_restore  ? redraw saved background of a popup slot into the screen buffer without freeing (unused)
+fn 105E:07D9 room_draw_border  draw the frame around the 320x120 room view from room-frame tiles (res 4) into the screen buffer
+fn 105E:08F1 room_draw_border_alt  clear the 320x120 view and draw its frame from the current room atlas (slot 0x104)
+fn 105E:0A44 figure_sprite_ofs  atlas offset of a figure sprite: (figure.look(+0xA) * 10 + frame) * 8 - 6
+fn 105E:0A72 drag_image_draw  draw a sprite into g_drag_image at 0,0 (icon of the item carried by the mouse)
+fn 105E:0AE4 blit_opaque_to  opaque copy of a whole sprite into bitmap dst at x,y (clipped)
+fn 105E:0B1C blit_opaque  opaque copy of a whole sprite into the screen buffer at x,y
+fn 105E:0B56 grab_screen  copy the screen-buffer area at x,y (size of dst) into bitmap dst (save background under an animation)
+fn 105E:0B90 tile_draw_opaque  opaque draw of tile (atlas offset) of g_tile_atlas into g_tile_target at x,y
+fn 105E:0C22 sprite_draw_target  transparent draw of a sprite into g_tile_target at x,y
+fn 105E:0C5C tile_draw_at_x  transparent atlas tile into g_tile_target at x, y = g_tile_fixed_y
+fn 105E:0CA6 tile_draw_at_y  transparent atlas tile at x = g_tile_fixed_x, y (unused)
+fn 105E:0CF0 tile_draw_fixed  transparent tile g_tile_fixed_n at x,y (unused)
+fn 105E:0D75 bitmap_put_screen  opaque copy of a whole bitmap into the screen buffer at x (multiple of 8), y
+fn 105E:0DB1 blit_transparent  blit (src,dst,x,y,sx,sy,w,h), colour 0 transparent, w rounded to 8; clips only vertically (g_clip_y1..y2 when g_clip_on) and sy<0; byte-aligned or shifted asm path (3786/37A2)
+fn 105E:0ED3 bitmap_put  opaque copy of a whole bitmap into another at x (multiple of 8), y (375B)
+fn 105E:0F0E bitmap_copy  bitmap_put(src, dst, 0, 0) taking split far pointers
+fn 105E:0F2B blit_opaque_rect  opaque blit (src,dst,x,y,sx,sy,w,h), vertical clipping only; asm 3762/376D
+fn 105E:1041 elevator_queue_add  append figure to the elevator call list (g_elevator_queue) unless already present
+fn 105E:1078 elevator_queue_remove  remove figure from the elevator call list, shifting the rest
+fn 105E:10CA floor_pick_door  step *door downward (wrapping 3..0) until it is a real door (type 1..3) on that floor and != exclude (-1 = none)
+fn 105E:114D floor_door_count  number of consecutive doors of type 1..3 on a floor (from door 0)
+fn 105E:1196 clip_cursor_cell  clip rect 0,0,24,11 (cursor save area)
+fn 105E:11D4 clip_panel  clip rect 0,0,320,80 (bottom panel bitmap)
+fn 105E:1247 figure_unqueue_elevator  if figure +0x16 (queued) is set clear it and remove it from the elevator list (unused)
+fn 105E:1287 building_draw_sides  draw the strips left/right of the 208px building (x 0..56, 264..320, y 4..112) in variant g_daylight (1 day tiles 0xA/0xD/0xC, 2 night 0xB/0xF/0xE of res 13)
+fn 105E:1366 door_draw  draw door (floor, door) open (1) or closed (2) into g_building_buf; sprite pair by door type 1..3 (res 6); x = door.x-56, y = 150-(floor-g_bld_top_floor+4)*30-26; building view only
+fn 105E:14CA panel_build  compose the bottom panel bitmap (320x80): res 9 halves at x 0 and 120, res 15 sprite, res 10 parts at 201/305
+fn 105E:15B6 figure_draw  draw a figure (person, 16x19) into the screen buffer if its floor is one of the 5 visible floors; y from floor and g_bld_scroll, 1px walking bob
+fn 105E:16EE input_poll  mouse_poll, then keyboard: Enter = left click (1), Esc = right click (2), arrow keys move the pending cursor motion with acceleration 2..16 (+2 per repeat), other keys -> key handler 0054:085E; returns g_mouse_click
+fn 105E:17AB mouse_poll  read mouse buttons and relative motion (int 33h, 373B), add motion to g_mouse_pending_dx/dy, latch a new button state into g_mouse_click
+fn 105E:17D1 room_anim_update  per-frame ambient animations of the current room (rooms 1,2,4,5,8,9,10,12 and -3): draws animated parts into room buffers (frame counter 0xD3C) and pushes them with room_anim_blit; sets 0x7A38
+fn 105E:2DD2 anim_div_tick  every n-th call increment *counter (divider 0xD9C)
+fn 105E:2DEF room_anim_blit  copy animated room area n (1,3..9: fixed rects from room buffers 0x10C..0x118) to VGA, hiding the cursor while it overlaps
+fn 105E:3002 window_create  build window bitmap for cell rect in g_popup_bmp[0] (or preallocated g_window_buf): grab VGA background of the border rows/columns, draw ui_frame over it
+fn 105E:3247 window_show  put the window bitmap on VGA at col, row*8; free it unless preallocated
+fn 105E:3280 tvfam_update  render the "TV family" view (tvfam_render) and put it on VGA at 208,127 unless g_tvfam_frozen; hides the cursor while it is over the view
+fn 105E:32ED tvfam_render  build the 104x58 TV-family picture: copy g_tvfam_bg, animate up to 5 viewers (blinks, eating/drinking, mood reactions), then TV switch-on/off shutter bars by g_tvfam_state/g_tvfam_shutter; returns new bitmap
+fn 105E:3B14 tvfam_draw_room  draw the living-room/sofa background tiles into g_tvfam_bg
+fn 105E:3BAC tvfam_draw_viewer0  draw TV-family viewer 0 (rec 0x832E): base pose, mood face, stage +0xA (1..7) overlays
+fn 105E:3CE8 tvfam_draw_viewer1  draw TV-family viewer 1 (rec 0x833E)
+fn 105E:3D79 tvfam_draw_viewer2  draw TV-family viewer 2 (rec 0x834E)
+fn 105E:3E3B tvfam_draw_viewer3  draw TV-family viewer 3 (rec 0x835E)
+fn 105E:3EB5 tvfam_draw_viewer4  draw TV-family viewer 4 (rec 0x836E; ? the child: dropped after clock_hour 6)
+fn 105E:3F58 tvfam_tick  tvfam_update when the view is not off (g_tvfam_state != 0)
+fn 105E:3F64 scriptagency_draw_scripts  screenplay agency (room 9): draw up to 5 script sprites (res 0xB9 #17..21) at x = word 0x7A1A[i] (if > 0), y 100
+fn 105E:3FB7 office_draw_paper_pile  office (room 1, own office): draw the pile g_office_papers (max 36): first item at 122,69, up to 6 single sheets from table 0xE2B, beyond that stacks at table 0xDAF
+fn 105E:40B0 office_draw_letter  office: draw a letter on the desk if g_player_letter[owner] != 0; text 0x29 (Betty's love letter) also draws the red seal
+fn 105E:4107 dealer_draw_pose  film agency (room 8): draw Mr. Jabble at his terminal in the pose res g_dealer_pose (0xBC..0xBF, changes every 2 game hours)
+fn 105E:415C estate_draw_wealth  estate agent (room 10): portrait by g_estate_wealth (0-2,3-4,5-7,8-10 -> 4 ever richer outfits, res 0xC2..) plus 4 banknote stacks (wealth*5/10 bundles) and 8 coin stacks (wealth*6/10 - i/2) with random jitter
+fn 105E:434D cursor_over_rect  -1 if the cursor box (24x10, or the drag image size) overlaps rect x0,y0,x1,y1 else 0
+fn 105E:43D8 tvfam_idle_anim  for a viewer whose mood == m: 1/50 chance per frame to start a 10-frame overlay (blink/mouth) drawn at viewer.x+dx, y
+fn 105E:4447 mouse_in_rect  1 if (cursor_x, cursor_y) lies inside the inclusive rect x0,y0,x1,y1
+fn 105E:447B ending_play  game won: free room data, show the "Just Married" screen (res 0x7D/0xEF/0x4B + car animation res 0xF0, 105 frames of 3 ticks from table 0xE69), wait for key/click, wipe out and exit
+fn 105E:47DF panel_restore_strip  copy a 120x12 strip of panel sprite (res 9, from row 64) to VGA at 0,186 (clears the panel's lower-left line)
+fn 14E1:000E tooltip_update  hover info: by g_room/g_room_state/g_hotspot find the object under the mouse (panel money/rating/day/TV, film and script shelves, ads, contracts, schedule slots, studios on the estate board, actors/props, transmitters...), build info id (kind*1000 + index) and window rect/size, call tooltip_show
+fn 14E1:16BB tooltip_show  draw info card for id unless already shown; kind = id/1000: 0 film, 1 series, 2 transmitter (new viewers/price), 3 ad offer, 4 ad contract (bonus/penalty/min viewers, spots done/left until deadline), 5 plain text, 6 screenplay, 7 channel status, 8-9 production, 10 episode, 11 actor (humor/appearance/skill, price), 12 prop/scene, 13 role, 14/15 schedule film/series slot (block x of y, viewers, share), 16 price entry, 17 money/credit, 18 rating overview (max viewers, rating, next advert)
+fn 14E1:3406 status_window_draw  building view: when g_redraw rebuild the 136x56 channel status window (titles via tvinfo_fetch_titles if stale, frame, channel_status_draw) and draw it at 64,48
+fn 14E1:348B money_box_show  text box "Money / Credit" (string 0x18E) for the visited room's owner at cells 17,9-25,13
+fn 14E1:34CF day_box_show  text box "#d. day" (string 0x51, g_day) at cells 16,12-22,13
+fn 14E1:3502 channel_status_draw  draw status of channel g_tv_channel into a bitmap: channel name; minute 0-4 "News", 5-54 program (genre, title, block n, X-rated, or "Program cancelled"), 55-59 advert name with result of the hour's ad slot (1000+ad "#d/#d blown", 2000 "Done!", 3000+ad "#d/#d OK"); '>>'/'<<' from per-hour flags 0x5553; viewers "**** #s **** (share%) ****"
+fn 14E1:3B5B tvinfo_fetch_titles  find the program running now on g_tv_channel (walk back over 9999 continuation hours) and copy its title to 0x777C (series: series title + episode title to 0x7812), loading the text block with busy cursor if needed; clears 0x7A60
+fn 14E1:3D66 ad_audience_text  tooltip text for ad target genres: "#s, please." (positive codes) / "No #s, please." (negative) or empty
+fn 14E1:3E49 ad_genre_list  build "A, B or C" list from the ad's 3 genre codes (+0xC..0xE), sign selects required/forbidden; codes > 10 use the series genre names
+fn 14E1:4013 tooltip_text_window  ui_message_window at the tooltip rect with given text
+fn 14E1:403D tooltip_band  draw a style 1..3 band (y, height) across the tooltip window bitmap
+fn 14E1:4061 tooltip_render  window_create at tooltip rect, then render a layout string of 4 chars per row: band style digit, text slot digit (0x8F6C[i]), align/colour digit; row heights 9 (first/last) or 8
+fn 14E1:4161 tooltip_present  window_show at the tooltip position
+fn 14E1:4172 tooltip_film  film info card: genre, title, country/year with critics/box-office bars (cultural: Betty/critics, shows: Betty/critics; live: part x of y, "in N days" or "today/tomorrow, HH:00" with hour = +0x11 + 17), topicality % = +3*40/+1, length in blocks (+4), price; "(Full)" in the film agency when the player already holds 4 films of that genre; "X rated!!" flag
+fn 365D:0000 timer_init  ? timer/sound-driver init stub; returns -1
+fn 365D:0006 timer_reset  g_timer_ticks = 0
+fn 365D:000D timer_stop  no-op stub
+fn 365D:000E timer_read  return g_timer_ticks (~50 Hz; used for frame pacing, random seeds, play-time clock)
+fn 365D:0014 timer_start  g_timer_ticks = n and hand the tick block 0x902C to the sound driver (371E entry 3) so its timer interrupt counts ticks
+fn 365F:000B res_load_lzw  load resource id: read 2-byte unpacked size from its header, alloc output and 8 KB dictionary, LZW-decode (36F4:0009, 9-bit codes growing, 0x100 reset, 0x101 widen); used for intro animations
+fn 365F:00A5 intro_scene_load  free previous intro scene, load background bank (scene table 0x161E: bg + up to 3 LZW delta clips per scene) into the 208x144 frame bitmap and put it on screen at 32,g_intro_row
+fn 365F:0229 intro_decode_frame  wait for vertical retrace, then apply the next delta frame from g_intro_anim_ptr to the frame bitmap (4456:0000; opcodes 'b' end, 'c' run/skip-run, 'd' skip pixel, else literal)
+fn 365F:0244 intro_scene_step  one intro tick: at clip start pick next clip slot (restoring background on slot 1) and count passes (scenes 3 and 9 play 3 passes, scene 5 two, others one -> g_intro_scene_done); else decode next frame (scene 2 holds 5 ticks at frame 35); put frame on VGA
+fn 37B4:0002 huff_read_byte  next byte of the compressed stream
+fn 37B4:0019 huff_put_pixel  store one decoded byte into the sprite bank: on a new sprite write its header {wcols=ceil(w/8), h, far ptr data} from the (w,h) table, then fill rows of stride wcols*8 left to right
+fn 37B4:013D huff_read_bit  next bit, LSB first
+fn 37B4:0166 huff_read_tree  read a prefix tree recursively: bit 1 = leaf (first leaf of each tree = escape symbol 0x100, else 8-bit literal), bit 0 = new internal node (ids from 0x101) with child-0 and child-1 subtrees
+fn 37B4:01FE huff_decode  read order-0 tree + 256 context trees (one per previous byte), then decode g_huff_remaining bytes: symbol from tree of previous byte; escape -> order-0 tree; escape there -> raw 8-bit literal
+fn 37B4:04AC huff_unpack_bank  decompress a sprite bank (src: u8 count, count x (w,h) bytes, stream: BE u16 node count, BE u32 output size, LSB-first bitstream) into dst (u16 count, 8-byte headers, pixels); 3rd arg unused
+fn 37B4:05DD huff_unpack_bank_alloc  like huff_unpack_bank but computes the bank size, allocates it and frees src (unused)
+g 0386 16 g_clip_on  clipping enabled
+g 0388 16 g_clip_x1  clip rect left (stored but the blitters clip only vertically)
+g 038A 16 g_clip_y1  clip rect top (used by blit_transparent/blit_opaque_rect)
+g 038C 16 g_clip_x2  clip rect right (not used by the blitters)
+g 038E 16 g_clip_y2  clip rect bottom (exclusive)
+g 0390 32 g_drag_image  drag cursor bitmap (non-null while something is carried)
+g 0394 16 g_drag_w  width of g_drag_image in px
+g 0396 16 g_drag_h  height of g_drag_image
+g 0398 16 g_drag_hot_x  hotspot x: drag image drawn at mouse_x - hot_x
+g 039A 16 g_drag_hot_y  hotspot y
+g 0124 32 g_window_buf  preallocated window bitmap used by window_create instead of allocating (null = allocate)
+g 012E 8 g_font_map  256-byte table char -> glyph index (0 = not in font)
+g 022E 8 g_font_width  256-byte table of glyph advance widths
+g 8386 32 g_font  main font glyph bank (res 3)
+g 8BA6 16 g_font_alt  text_draw uses the small font in room slot 0x108 (drag-image labels)
+g 8ACC 16 g_cursor_shown  cursor show counter: cursor_show ++, cursor_hide --; arrow drawn when 1 (with drag image at 0)
+g 79D2 16 g_cursor_shape  cursor shape index (2 = carrying an item, 3 = busy)
+g 8E94 32 g_cursor_sprites  far ptrs to the cursor shape sprites (by g_cursor_shape)
+g 8F22 16 g_cursor_shape_stack  stack of saved cursor shapes
+g 0D2A 16 g_cursor_shape_sp  depth of g_cursor_shape_stack
+g 7B26 16 g_cursor_drawn_x  x of the cursor currently on VGA (-1 = none)
+g 7B36 16 g_cursor_drawn_y  y of the cursor currently on VGA
+g 8EDE 32 g_cursor_bg  saved VGA background under the cursor
+g 8E90 32 g_cursor_comp  background + cursor composite put on VGA
+g 8ED6 32 g_cursor_tmp  scratch background copy for cursor moves
+g 8F1E 16 g_drag_draw_x  top-left x where the drag image is drawn
+g 8F20 16 g_drag_draw_y  top-left y where the drag image is drawn
+g 7A48 16 g_mouse_pending_dx  accumulated mouse/keyboard motion not yet applied
+g 7A4A 16 g_mouse_pending_dy  accumulated vertical motion not yet applied
+g 7A4C 16 g_mouse_click  latched button state (1 left, 2 right), consumed by game_frame
+g 7B14 16 g_click  click of the current frame (result of input_poll)
+g 79EC 16 g_mouse_min_x  mouse limits
+g 79EE 16 g_mouse_min_y  mouse limits
+g 79F0 16 g_mouse_max_x  mouse limits
+g 79F2 16 g_mouse_max_y  mouse limits
+g 16A4 16 g_mouse_rel_x  mouse motion since last poll (int 33h position - 200, recentred)
+g 16A6 16 g_mouse_rel_y  mouse motion since last poll
+g 16A8 16 g_vga_seg  video segment (0xA000) used by the screen blit asm
+g 0D38 16 g_key_dir  last arrow key direction (1 up 2 down 3 left 4 right)
+g 0D3A 16 g_key_speed  keyboard cursor speed 2..16
+g 8ED2 32 g_panel_bmp  bottom panel bitmap 320x80
+g 8E8A 32 g_status_win_bmp  136x56 channel status window bitmap (status_window_draw)
+g 8EE2 32 g_popup_bmp  popup save buffers, 4 bytes per slot; slot 0 = current window/tooltip bitmap
+g 7B28 16 g_popup_col  popup slot column (array)
+g 7B38 16 g_popup_row  popup slot row (array)
+g 8C3A 16 g_popup_w  popup slot width in cells (array)
+g 8C44 16 g_popup_h  popup slot height in cells (array)
+g 8C60 16 g_popup_used  popup slot in use (array)
+g 8F4A 32 g_tile_target  destination bitmap of the atlas tile helpers
+g 8F44 16 g_tile_fixed_x  x for tile_draw_at_y
+g 8F46 16 g_tile_fixed_y  y for tile_draw_at_x
+g 8F48 16 g_tile_fixed_n  tile for tile_draw_fixed
+g 8F52 32 g_frame_target  bitmap ui_frame draws into
+g 8F56 32 g_frame_tileset  tileset used by ui_frame
+g 8F36 32 g_glyph_blit  14-byte param block for the 377A glyph blitter {tile, xoff, dst, col, row}
+g 7B0A 32 g_frame_tiles1  window frame tileset (style 1)
+g 7B0E 32 g_frame_tiles2  window frame tileset (other styles)
+g 8B9C 32 g_roomframe_tiles  room view frame tiles (res 4)
+g 8C5C 32 g_ui_atlas  res 2: cursor shapes, band end caps
+g 8BA0 32 g_band_tiles  res 7: band filler tiles
+g 8C56 32 g_bld_tiles  res 6: building tiles (doors of 3 types open/closed)
+g 8382 32 g_bld_side_tiles  res 13: building side strips
+g 8C78 32 g_panel_sprites  res 9: the two halves of the bottom panel
+g 79BE 32 g_panel_atlas  res 10: bottom panel parts
+g 79C2 32 g_tvfam_atlas  res 15: TV-family sofa / shutter tiles
+g 7BFC 32 g_tvfam_bg  TV-family background bitmap (sofa + seated viewers)
+g 79F6 16 g_tvfam_state  TV-family view: 0 off, 1 switching off, 2 switching on, 3 on
+g 79F4 16 g_tvfam_shutter  number of shutter bars covering the view (0..6)
+g 7A6C 16 g_tvfam_frozen  skip TV-family redraw
+g 832E 32 g_tvfam_viewers  5 viewer records x 16 bytes {atlas, x, mood, state, counter, counter2, idle timer}
+g 7A14 16 g_tvfam_rating  ? rating/share level that sets the viewers' moods (thresholds 10/20/30)
+g 00F8 32 g_figure_sprites  figure (people) sprite bank
+g 8C6C 16 g_elevator_queue  list of figures waiting for the elevator (length g_elevator_calls)
+g 8C54 16 g_elevator_calls  number of entries in g_elevator_queue
+g 117E 16 g_daylight  building scenery variant: 1 = day (clock_hour < 4, skyline res 5), 2 = night (res 14)
+g 7A38 16 g_room_anim_dirty  set by room_anim_update when something was redrawn
+g 0D3C 16 g_room_anim_frame  room animation frame counter
+g 0D9C 16 g_anim_div  counter of anim_div_tick
+g 0100 32 g_room_res  8 far ptrs (0x100..0x11C) to the current room's loaded sprite banks / buffers
+g 7A24 16 g_office_papers  papers piling up in the player's office (+1 per day, cleared by an event in 1DA8:2D3B)
+g 7A26 16 g_dealer_pose  res id 0xBC..0xBF of the film dealer's pose by hour
+g 7A52 16 g_estate_portrait  estate agent portrait index 0..3 from g_estate_wealth (also res id while loading)
+g 7A50 16 g_game_speed  game speed: one frame every 50/speed timer ticks
+g 6141 16 g_frame_tick  timer value of the last game frame
+g 9034 16 g_timer_ticks  timer tick counter (~50 Hz)
+g 902C 16 g_timer_block  ? tick block handed to the sound driver (counter at +8 = 0x9034)
+g 7A74 16 g_madris_state  Madris: < 42 start countdown, 42 playing, 43 game over
+g 7A76 16 g_madris_score  Madris score (max 9999)
+g 7A78 16 g_madris_piece  falling piece 1..7 (0 = spawn next)
+g 7A7A 16 g_madris_next  next piece
+g 7A7C 16 g_madris_rot  rotation 0..3
+g 7A7E 16 g_madris_delay  frames per fall step (level = 9 - delay; -1 every 10 lines, min 1)
+g 7A80 16 g_madris_lines  cleared lines
+g 7A82 16 g_madris_input  pending input: 1/2 rotate, 3 left, 4 right, 5 drop
+g 7A84 16 g_madris_hiscore  Madris high score
+g 0D26 16 g_madris_tick  frames since last fall step
+g 8AD4 8 g_madris_board  10 x 20 board (row * 10 + col), nonzero = block colour
+g 8F2C 16 g_madris_x  piece column
+g 8F2E 16 g_madris_y  piece row
+g 0D33 16 g_madris_drawn_x  column of the piece stamped last frame (999 = none)
+g 8F30 16 g_madris_drawn_y  row of the piece stamped last frame
+g 8F32 16 g_madris_drawn_piece  piece stamped last frame
+g 8F34 16 g_madris_drawn_rot  rotation stamped last frame
+g 039C 8 g_madris_shapes  7 pieces x 4 rotations x 4x4 cells
+g 0D2B 8 g_madris_points  points per piece (index 1..7: 10,8,8,6,6,6,4)
+g 8F68 16 g_tip_col  tooltip window column
+g 8F6A 16 g_tip_row  tooltip window row
+g 8FAA 16 g_tip_w  tooltip width in cells
+g 8FA6 16 g_tip_h  tooltip height in rows
+g 8F6C 32 g_tip_text  tooltip text slots (far ptrs, 4 bytes each, referenced by layout digits)
+g 8F88 32 g_tip_plain  template/text for kind 5 tooltips
+g 0E82 16 g_tip_id  id of the tooltip currently shown (0 = none)
+g 0E84 16 g_tip_shown_col  column of the shown tooltip
+g 0E86 16 g_tip_shown_row  row of the shown tooltip
+g 0E88 16 g_tip_room  room in which the tooltip state was reset
+g 0E8A 16 g_tip_room_state  room state in which the tooltip state was reset
+g 7A18 16 g_tip_visible  a tooltip is on screen
+g 8F9A 16 g_tip_cursor_hidden  tooltip_show hid the cursor
+g 8F9C 16 g_tip_replace  force present before showing a new tooltip
+g 8FA8 16 g_tip_contract  contract slot index for ad tooltips (-1 none)
+g 777C 8 g_now_title  title of the program now on g_tv_channel
+g 7812 8 g_now_episode  episode title of the series now on g_tv_channel
+g 7A60 16 g_now_title_stale  tvinfo_fetch_titles must reload the titles
+g 0E69 8 g_ending_anim  ending animation script: 6 x {frame, sprite, x, y}
+g 160C 32 g_intro_bg  intro scene background sprite bank
+g 1610 32 g_intro_clip1  LZW-decoded delta animation clip 1 of the scene
+g 1614 32 g_intro_clip2  clip 2
+g 1618 32 g_intro_clip3  clip 3
+g 161E 16 g_intro_scenes  14 x {bg res, clip1 res, clip2 res, clip3 res}
+g 168E 16 g_intro_clip_slot  next clip slot 1..3
+g 904C 16 g_intro_passes  passes over all clips of the scene
+g 904E 16 g_intro_row  screen y of the intro frame
+g 9050 16 g_intro_scene_done  current scene finished
+g 9052 16 g_intro_scene  current intro scene 1..14
+g 9054 16 g_intro_frame  frame index in the current clip (0 = start next clip)
+g 9056 32 g_intro_frame_bmp  208x144 intro frame bitmap
+g 905A 32 g_intro_clip  current clip (byte 0 = frame count)
+g 905E 16 g_intro_hold  hold counter (1005 -> 1000 = 5 frame pause)
+g 9060 16 g_intro_frame_ticks  timer ticks per intro frame
+g 9062 32 g_intro_anim_ptr  read pointer into the current delta stream
+g 9066 16 g_intro_clip_count  number of clips in the scene (1..3)
+g A664 32 g_huff_src  compressed bitstream (after the w,h table)
+g A656 16 g_huff_src_pos  read position in g_huff_src
+g A66E 32 g_huff_hdr  start of compressed bank (u8 count, (w,h) pairs)
+g A662 16 g_huff_count  number of sprites in the bank
+g A658 16 g_huff_nodes  node table size (BE u16 from stream)
+g A652 32 g_huff_remaining  bytes still to decode (BE u32 from stream)
+g A444 16 g_huff_size_lo  low word of the output size
+g A65A 16 g_huff_bitbuf  current bit buffer
+g A448 16 g_huff_bitcnt  bits left in g_huff_bitbuf
+g A678 16 g_huff_next_node  next internal node id (from 0x101)
+g A650 16 g_huff_escape_done  escape leaf of the current tree already assigned
+g A682 16 g_huff_root  root of the order-0 tree
+g A44A 16 g_huff_ctx_root  256 roots of the order-1 context trees (by previous byte)
+g A43E 32 g_huff_child0  child-0 table, biased by -0x202 so it is indexed by node id
+g A67E 32 g_huff_child1  child-1 table, biased by -0x202
+g A668 32 g_huff_child0_mem  unbiased child-0 allocation (freed)
+g A674 32 g_huff_child1_mem  unbiased child-1 allocation (freed)
+g A65C 32 g_huff_out  output sprite bank
+g A66C 16 g_huff_out_ofs  offset of the next sprite's pixel data in the bank
+g A684 16 g_huff_sprite  index of the sprite being written
+g A43C 16 g_huff_new_sprite  next byte starts a new sprite
+g A64A 16 g_huff_w  current sprite width in px
+g A660 16 g_huff_wcols  current sprite width in 8px columns
+g A446 16 g_huff_h  current sprite height
+g A672 16 g_huff_x  x in the current row
+g A64C 16 g_huff_y  current row
+g A438 32 g_huff_dst  current pixel write pointer
+g A442 16 g_huff_pixels  pixels written (sum of w*h)

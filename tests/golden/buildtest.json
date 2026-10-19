@@ -1,0 +1,1443 @@
+{
+ "ads-64k, run 1: viele": {
+  "files": {
+   "mods/test-filme/films.json": "d94aa781e8381b0e728afb0564ad588aaac10173",
+   "mods/test-filme/mod.json": "280626fd61cc17d77e222a676e1fe80b2590ea45",
+   "mods/test-serien/mod.json": "1a7eea5498c5c8bfb81b8dd4f5625786c74b3f82",
+   "mods/test-serien/series.json": "1a16b8495b28aafb09228cb832b78e2f283771c7",
+   "mods/test-werbung/ads.json": "187452bbf942a5cbf725ddc2de7356030648b5c4",
+   "mods/test-werbung/mod.json": "58f969d53acd387ee7739bc94fdcbb1ee62a454f",
+   "mods/viele/ads.json": "4bb5e596691e511b1d3bf9a1e9d3bcac52afa564",
+   "mods/viele/mod.json": "0002cc38f8451af24eda3ca07eaa9bbedc98afe4"
+  },
+  "result": [
+   "error",
+   ""
+  ]
+ },
+ "ads60, run 1: a60": {
+  "files": {
+   "build/mods/a60/SOURCE1.RSC": "c240edd6fb5315a645abb5efec0f946c1d9a7e6e",
+   "build/mods/a60/SOURCE2.RSC": "a0c0a0819c86c5fa6b537b391cb87f32657dc042",
+   "mods/a60/ads.json": "e8b736ba2a18c5e3113c9b1aacc3b5a9469e737e",
+   "mods/a60/mod.json": "0002cc38f8451af24eda3ca07eaa9bbedc98afe4",
+   "mods/test-filme/films.json": "d94aa781e8381b0e728afb0564ad588aaac10173",
+   "mods/test-filme/mod.json": "280626fd61cc17d77e222a676e1fe80b2590ea45",
+   "mods/test-serien/mod.json": "1a7eea5498c5c8bfb81b8dd4f5625786c74b3f82",
+   "mods/test-serien/series.json": "1a16b8495b28aafb09228cb832b78e2f283771c7",
+   "mods/test-werbung/ads.json": "187452bbf942a5cbf725ddc2de7356030648b5c4",
+   "mods/test-werbung/mod.json": "58f969d53acd387ee7739bc94fdcbb1ee62a454f"
+  },
+  "result": [
+   0,
+   "ROOT/build/mods/a60\n"
+  ]
+ },
+ "ads60, run 2: test-werbung+a60": {
+  "files": {
+   "build/mods/a60/SOURCE1.RSC": "c240edd6fb5315a645abb5efec0f946c1d9a7e6e",
+   "build/mods/a60/SOURCE2.RSC": "a0c0a0819c86c5fa6b537b391cb87f32657dc042",
+   "build/mods/test-werbung+a60/SOURCE1.RSC": "ae40520f22f145b7c67e2171e6051c903c62b13d",
+   "build/mods/test-werbung+a60/SOURCE2.RSC": "a0c0a0819c86c5fa6b537b391cb87f32657dc042",
+   "mods/a60/ads.json": "e8b736ba2a18c5e3113c9b1aacc3b5a9469e737e",
+   "mods/a60/mod.json": "0002cc38f8451af24eda3ca07eaa9bbedc98afe4",
+   "mods/test-filme/films.json": "d94aa781e8381b0e728afb0564ad588aaac10173",
+   "mods/test-filme/mod.json": "280626fd61cc17d77e222a676e1fe80b2590ea45",
+   "mods/test-serien/mod.json": "1a7eea5498c5c8bfb81b8dd4f5625786c74b3f82",
+   "mods/test-serien/series.json": "1a16b8495b28aafb09228cb832b78e2f283771c7",
+   "mods/test-werbung/ads.json": "187452bbf942a5cbf725ddc2de7356030648b5c4",
+   "mods/test-werbung/mod.json": "58f969d53acd387ee7739bc94fdcbb1ee62a454f"
+  },
+  "result": [
+   0,
+   "ROOT/build/mods/test-werbung+a60\n"
+  ]
+ },
+ "changed-rebuild, run 1: test-filme-kopie": {
+  "files": {
+   "build/mods/test-filme-kopie/SOURCE1.RSC": "2184511c1ad0b0f359d81e73e65ca528b64a796e",
+   "build/mods/test-filme-kopie/SOURCE2.RSC": "a0c0a0819c86c5fa6b537b391cb87f32657dc042",
+   "mods/test-filme-kopie/films.json": "d94aa781e8381b0e728afb0564ad588aaac10173",
+   "mods/test-filme-kopie/mod.json": "0002cc38f8451af24eda3ca07eaa9bbedc98afe4",
+   "mods/test-filme/films.json": "d94aa781e8381b0e728afb0564ad588aaac10173",
+   "mods/test-filme/mod.json": "280626fd61cc17d77e222a676e1fe80b2590ea45",
+   "mods/test-serien/mod.json": "1a7eea5498c5c8bfb81b8dd4f5625786c74b3f82",
+   "mods/test-serien/series.json": "1a16b8495b28aafb09228cb832b78e2f283771c7",
+   "mods/test-werbung/ads.json": "187452bbf942a5cbf725ddc2de7356030648b5c4",
+   "mods/test-werbung/mod.json": "58f969d53acd387ee7739bc94fdcbb1ee62a454f"
+  },
+  "result": [
+   0,
+   "ROOT/build/mods/test-filme-kopie\n"
+  ]
+ },
+ "changed-rebuild, run 3: test-filme-kopie": {
+  "files": {
+   "build/mods/test-filme-kopie/SOURCE1.RSC": "ce2059fbe13d61106747dc73e5ad1da1f00623aa",
+   "build/mods/test-filme-kopie/SOURCE2.RSC": "a0c0a0819c86c5fa6b537b391cb87f32657dc042",
+   "mods/test-filme-kopie/films.json": "cc50a63f8212b5fc25f1b771128063e72a837827",
+   "mods/test-filme-kopie/mod.json": "0002cc38f8451af24eda3ca07eaa9bbedc98afe4",
+   "mods/test-filme/films.json": "d94aa781e8381b0e728afb0564ad588aaac10173",
+   "mods/test-filme/mod.json": "280626fd61cc17d77e222a676e1fe80b2590ea45",
+   "mods/test-serien/mod.json": "1a7eea5498c5c8bfb81b8dd4f5625786c74b3f82",
+   "mods/test-serien/series.json": "1a16b8495b28aafb09228cb832b78e2f283771c7",
+   "mods/test-werbung/ads.json": "187452bbf942a5cbf725ddc2de7356030648b5c4",
+   "mods/test-werbung/mod.json": "58f969d53acd387ee7739bc94fdcbb1ee62a454f"
+  },
+  "result": [
+   0,
+   "ROOT/build/mods/test-filme-kopie\n"
+  ]
+ },
+ "complete, run 1: voll": {
+  "files": {
+   "build/mods/voll/SOURCE1.RSC": "2184511c1ad0b0f359d81e73e65ca528b64a796e",
+   "build/mods/voll/SOURCE2.RSC": "a0c0a0819c86c5fa6b537b391cb87f32657dc042",
+   "mods/test-filme/films.json": "d94aa781e8381b0e728afb0564ad588aaac10173",
+   "mods/test-filme/mod.json": "280626fd61cc17d77e222a676e1fe80b2590ea45",
+   "mods/test-serien/mod.json": "1a7eea5498c5c8bfb81b8dd4f5625786c74b3f82",
+   "mods/test-serien/series.json": "1a16b8495b28aafb09228cb832b78e2f283771c7",
+   "mods/test-werbung/ads.json": "187452bbf942a5cbf725ddc2de7356030648b5c4",
+   "mods/test-werbung/mod.json": "58f969d53acd387ee7739bc94fdcbb1ee62a454f",
+   "mods/voll/ads.json": "cc53e1898007ccae57fa7c035adc4912e4f9ef40",
+   "mods/voll/films.json": "740551b15708a30821ce58d04884f43a8373dbee",
+   "mods/voll/mod.json": "aa6d8e94b8fbb7fcf525234fa1369f83baa7267a",
+   "mods/voll/news_nodes.json": "726467441d19c6a5ea9da0e5717400c593f57e7d",
+   "mods/voll/news_templates.json": "66681c7eb4f864b5a9f366e127bf266520352b6d",
+   "mods/voll/news_topics.json": "b4e12e9cd0fae8f588cf17741f2e70e909ebaf11",
+   "mods/voll/screenplays.json": "12b2ac62bd92ddeda8533fc4c40aaf3bcf9a2199",
+   "mods/voll/series.json": "a2e2511a05d06e659007f9d6b17fc30bf8e03876"
+  },
+  "result": [
+   0,
+   "ROOT/build/mods/voll\n"
+  ]
+ },
+ "complete, run 2: voll+test-filme": {
+  "files": {
+   "build/mods/voll/SOURCE1.RSC": "2184511c1ad0b0f359d81e73e65ca528b64a796e",
+   "build/mods/voll/SOURCE2.RSC": "a0c0a0819c86c5fa6b537b391cb87f32657dc042",
+   "mods/test-filme/films.json": "d94aa781e8381b0e728afb0564ad588aaac10173",
+   "mods/test-filme/mod.json": "280626fd61cc17d77e222a676e1fe80b2590ea45",
+   "mods/test-serien/mod.json": "1a7eea5498c5c8bfb81b8dd4f5625786c74b3f82",
+   "mods/test-serien/series.json": "1a16b8495b28aafb09228cb832b78e2f283771c7",
+   "mods/test-werbung/ads.json": "187452bbf942a5cbf725ddc2de7356030648b5c4",
+   "mods/test-werbung/mod.json": "58f969d53acd387ee7739bc94fdcbb1ee62a454f",
+   "mods/voll/ads.json": "cc53e1898007ccae57fa7c035adc4912e4f9ef40",
+   "mods/voll/films.json": "740551b15708a30821ce58d04884f43a8373dbee",
+   "mods/voll/mod.json": "aa6d8e94b8fbb7fcf525234fa1369f83baa7267a",
+   "mods/voll/news_nodes.json": "726467441d19c6a5ea9da0e5717400c593f57e7d",
+   "mods/voll/news_templates.json": "66681c7eb4f864b5a9f366e127bf266520352b6d",
+   "mods/voll/news_topics.json": "b4e12e9cd0fae8f588cf17741f2e70e909ebaf11",
+   "mods/voll/screenplays.json": "12b2ac62bd92ddeda8533fc4c40aaf3bcf9a2199",
+   "mods/voll/series.json": "a2e2511a05d06e659007f9d6b17fc30bf8e03876"
+  },
+  "result": [
+   "error",
+   ""
+  ]
+ },
+ "complete, run 3: test-filme+voll": {
+  "files": {
+   "build/mods/voll/SOURCE1.RSC": "2184511c1ad0b0f359d81e73e65ca528b64a796e",
+   "build/mods/voll/SOURCE2.RSC": "a0c0a0819c86c5fa6b537b391cb87f32657dc042",
+   "mods/test-filme/films.json": "d94aa781e8381b0e728afb0564ad588aaac10173",
+   "mods/test-filme/mod.json": "280626fd61cc17d77e222a676e1fe80b2590ea45",
+   "mods/test-serien/mod.json": "1a7eea5498c5c8bfb81b8dd4f5625786c74b3f82",
+   "mods/test-serien/series.json": "1a16b8495b28aafb09228cb832b78e2f283771c7",
+   "mods/test-werbung/ads.json": "187452bbf942a5cbf725ddc2de7356030648b5c4",
+   "mods/test-werbung/mod.json": "58f969d53acd387ee7739bc94fdcbb1ee62a454f",
+   "mods/voll/ads.json": "cc53e1898007ccae57fa7c035adc4912e4f9ef40",
+   "mods/voll/films.json": "740551b15708a30821ce58d04884f43a8373dbee",
+   "mods/voll/mod.json": "aa6d8e94b8fbb7fcf525234fa1369f83baa7267a",
+   "mods/voll/news_nodes.json": "726467441d19c6a5ea9da0e5717400c593f57e7d",
+   "mods/voll/news_templates.json": "66681c7eb4f864b5a9f366e127bf266520352b6d",
+   "mods/voll/news_topics.json": "b4e12e9cd0fae8f588cf17741f2e70e909ebaf11",
+   "mods/voll/screenplays.json": "12b2ac62bd92ddeda8533fc4c40aaf3bcf9a2199",
+   "mods/voll/series.json": "a2e2511a05d06e659007f9d6b17fc30bf8e03876"
+  },
+  "result": [
+   "error",
+   ""
+  ]
+ },
+ "complete, run 4: voll+test-serien": {
+  "files": {
+   "build/mods/voll+test-serien/SOURCE1.RSC": "669765649559b68bdfa6b2799fadab191a8f4aa5",
+   "build/mods/voll+test-serien/SOURCE2.RSC": "a0c0a0819c86c5fa6b537b391cb87f32657dc042",
+   "build/mods/voll/SOURCE1.RSC": "2184511c1ad0b0f359d81e73e65ca528b64a796e",
+   "build/mods/voll/SOURCE2.RSC": "a0c0a0819c86c5fa6b537b391cb87f32657dc042",
+   "mods/test-filme/films.json": "d94aa781e8381b0e728afb0564ad588aaac10173",
+   "mods/test-filme/mod.json": "280626fd61cc17d77e222a676e1fe80b2590ea45",
+   "mods/test-serien/mod.json": "1a7eea5498c5c8bfb81b8dd4f5625786c74b3f82",
+   "mods/test-serien/series.json": "1a16b8495b28aafb09228cb832b78e2f283771c7",
+   "mods/test-werbung/ads.json": "187452bbf942a5cbf725ddc2de7356030648b5c4",
+   "mods/test-werbung/mod.json": "58f969d53acd387ee7739bc94fdcbb1ee62a454f",
+   "mods/voll/ads.json": "cc53e1898007ccae57fa7c035adc4912e4f9ef40",
+   "mods/voll/films.json": "740551b15708a30821ce58d04884f43a8373dbee",
+   "mods/voll/mod.json": "aa6d8e94b8fbb7fcf525234fa1369f83baa7267a",
+   "mods/voll/news_nodes.json": "726467441d19c6a5ea9da0e5717400c593f57e7d",
+   "mods/voll/news_templates.json": "66681c7eb4f864b5a9f366e127bf266520352b6d",
+   "mods/voll/news_topics.json": "b4e12e9cd0fae8f588cf17741f2e70e909ebaf11",
+   "mods/voll/screenplays.json": "12b2ac62bd92ddeda8533fc4c40aaf3bcf9a2199",
+   "mods/voll/series.json": "a2e2511a05d06e659007f9d6b17fc30bf8e03876"
+  },
+  "result": [
+   0,
+   "ROOT/build/mods/voll+test-serien\n"
+  ]
+ },
+ "cp437, run 1: kaputt": {
+  "files": {
+   "mods/kaputt/ads.json": "b006d77e13f5d87e17b49ee8d16c1e993dd60091",
+   "mods/kaputt/mod.json": "0002cc38f8451af24eda3ca07eaa9bbedc98afe4",
+   "mods/test-filme/films.json": "d94aa781e8381b0e728afb0564ad588aaac10173",
+   "mods/test-filme/mod.json": "280626fd61cc17d77e222a676e1fe80b2590ea45",
+   "mods/test-serien/mod.json": "1a7eea5498c5c8bfb81b8dd4f5625786c74b3f82",
+   "mods/test-serien/series.json": "1a16b8495b28aafb09228cb832b78e2f283771c7",
+   "mods/test-werbung/ads.json": "187452bbf942a5cbf725ddc2de7356030648b5c4",
+   "mods/test-werbung/mod.json": "58f969d53acd387ee7739bc94fdcbb1ee62a454f"
+  },
+  "result": [
+   "error",
+   ""
+  ]
+ },
+ "cp437-raw, run 1: kaputt": {
+  "files": {
+   "mods/kaputt/films.json": "f73c5749a084d1cce8feb0211576b69623fa18fa",
+   "mods/kaputt/mod.json": "0002cc38f8451af24eda3ca07eaa9bbedc98afe4",
+   "mods/test-filme/films.json": "d94aa781e8381b0e728afb0564ad588aaac10173",
+   "mods/test-filme/mod.json": "280626fd61cc17d77e222a676e1fe80b2590ea45",
+   "mods/test-serien/mod.json": "1a7eea5498c5c8bfb81b8dd4f5625786c74b3f82",
+   "mods/test-serien/series.json": "1a16b8495b28aafb09228cb832b78e2f283771c7",
+   "mods/test-werbung/ads.json": "187452bbf942a5cbf725ddc2de7356030648b5c4",
+   "mods/test-werbung/mod.json": "58f969d53acd387ee7739bc94fdcbb1ee62a454f"
+  },
+  "result": [
+   "error",
+   ""
+  ]
+ },
+ "empty, run 1: leer": {
+  "files": {
+   "build/mods/leer/SOURCE1.RSC": "69f42258415c6e0401b38eef611dba9ac6fe379c",
+   "build/mods/leer/SOURCE2.RSC": "a0c0a0819c86c5fa6b537b391cb87f32657dc042",
+   "mods/leer/mod.json": "0002cc38f8451af24eda3ca07eaa9bbedc98afe4",
+   "mods/test-filme/films.json": "d94aa781e8381b0e728afb0564ad588aaac10173",
+   "mods/test-filme/mod.json": "280626fd61cc17d77e222a676e1fe80b2590ea45",
+   "mods/test-serien/mod.json": "1a7eea5498c5c8bfb81b8dd4f5625786c74b3f82",
+   "mods/test-serien/series.json": "1a16b8495b28aafb09228cb832b78e2f283771c7",
+   "mods/test-werbung/ads.json": "187452bbf942a5cbf725ddc2de7356030648b5c4",
+   "mods/test-werbung/mod.json": "58f969d53acd387ee7739bc94fdcbb1ee62a454f"
+  },
+  "result": [
+   0,
+   "ROOT/build/mods/leer\n"
+  ]
+ },
+ "empty, run 2: leer+test-serien": {
+  "files": {
+   "build/mods/leer+test-serien/SOURCE1.RSC": "a004ae9ed1e11f3ca876cba804aa9aa1f0860eea",
+   "build/mods/leer+test-serien/SOURCE2.RSC": "a0c0a0819c86c5fa6b537b391cb87f32657dc042",
+   "build/mods/leer/SOURCE1.RSC": "69f42258415c6e0401b38eef611dba9ac6fe379c",
+   "build/mods/leer/SOURCE2.RSC": "a0c0a0819c86c5fa6b537b391cb87f32657dc042",
+   "mods/leer/mod.json": "0002cc38f8451af24eda3ca07eaa9bbedc98afe4",
+   "mods/test-filme/films.json": "d94aa781e8381b0e728afb0564ad588aaac10173",
+   "mods/test-filme/mod.json": "280626fd61cc17d77e222a676e1fe80b2590ea45",
+   "mods/test-serien/mod.json": "1a7eea5498c5c8bfb81b8dd4f5625786c74b3f82",
+   "mods/test-serien/series.json": "1a16b8495b28aafb09228cb832b78e2f283771c7",
+   "mods/test-werbung/ads.json": "187452bbf942a5cbf725ddc2de7356030648b5c4",
+   "mods/test-werbung/mod.json": "58f969d53acd387ee7739bc94fdcbb1ee62a454f"
+  },
+  "result": [
+   0,
+   "ROOT/build/mods/leer+test-serien\n"
+  ]
+ },
+ "films300, run 1: f300": {
+  "files": {
+   "build/mods/f300/SOURCE1.RSC": "2c31ab0fd40c1e1fb2a396ac1fcc223c7a5906b8",
+   "build/mods/f300/SOURCE2.RSC": "a0c0a0819c86c5fa6b537b391cb87f32657dc042",
+   "mods/f300/films.json": "5b1fd5b54f9b2904fac848d429541e8ccdda030e",
+   "mods/f300/mod.json": "0002cc38f8451af24eda3ca07eaa9bbedc98afe4",
+   "mods/test-filme/films.json": "d94aa781e8381b0e728afb0564ad588aaac10173",
+   "mods/test-filme/mod.json": "280626fd61cc17d77e222a676e1fe80b2590ea45",
+   "mods/test-serien/mod.json": "1a7eea5498c5c8bfb81b8dd4f5625786c74b3f82",
+   "mods/test-serien/series.json": "1a16b8495b28aafb09228cb832b78e2f283771c7",
+   "mods/test-werbung/ads.json": "187452bbf942a5cbf725ddc2de7356030648b5c4",
+   "mods/test-werbung/mod.json": "58f969d53acd387ee7739bc94fdcbb1ee62a454f"
+  },
+  "result": [
+   0,
+   "ROOT/build/mods/f300\n"
+  ]
+ },
+ "films300, run 2: test-filme+f300": {
+  "files": {
+   "build/mods/f300/SOURCE1.RSC": "2c31ab0fd40c1e1fb2a396ac1fcc223c7a5906b8",
+   "build/mods/f300/SOURCE2.RSC": "a0c0a0819c86c5fa6b537b391cb87f32657dc042",
+   "build/mods/test-filme+f300/SOURCE1.RSC": "1958d0dd0e5b7cc82fcc27495260902842214520",
+   "build/mods/test-filme+f300/SOURCE2.RSC": "a0c0a0819c86c5fa6b537b391cb87f32657dc042",
+   "mods/f300/films.json": "5b1fd5b54f9b2904fac848d429541e8ccdda030e",
+   "mods/f300/mod.json": "0002cc38f8451af24eda3ca07eaa9bbedc98afe4",
+   "mods/test-filme/films.json": "d94aa781e8381b0e728afb0564ad588aaac10173",
+   "mods/test-filme/mod.json": "280626fd61cc17d77e222a676e1fe80b2590ea45",
+   "mods/test-serien/mod.json": "1a7eea5498c5c8bfb81b8dd4f5625786c74b3f82",
+   "mods/test-serien/series.json": "1a16b8495b28aafb09228cb832b78e2f283771c7",
+   "mods/test-werbung/ads.json": "187452bbf942a5cbf725ddc2de7356030648b5c4",
+   "mods/test-werbung/mod.json": "58f969d53acd387ee7739bc94fdcbb1ee62a454f"
+  },
+  "result": [
+   0,
+   "ROOT/build/mods/test-filme+f300\n"
+  ]
+ },
+ "films300, run 3: f300+test-filme": {
+  "files": {
+   "build/mods/f300+test-filme/SOURCE1.RSC": "0797cd6661bca1da7bf92397eeb8a0c110e102cd",
+   "build/mods/f300+test-filme/SOURCE2.RSC": "a0c0a0819c86c5fa6b537b391cb87f32657dc042",
+   "build/mods/f300/SOURCE1.RSC": "2c31ab0fd40c1e1fb2a396ac1fcc223c7a5906b8",
+   "build/mods/f300/SOURCE2.RSC": "a0c0a0819c86c5fa6b537b391cb87f32657dc042",
+   "build/mods/test-filme+f300/SOURCE1.RSC": "1958d0dd0e5b7cc82fcc27495260902842214520",
+   "build/mods/test-filme+f300/SOURCE2.RSC": "a0c0a0819c86c5fa6b537b391cb87f32657dc042",
+   "mods/f300/films.json": "5b1fd5b54f9b2904fac848d429541e8ccdda030e",
+   "mods/f300/mod.json": "0002cc38f8451af24eda3ca07eaa9bbedc98afe4",
+   "mods/test-filme/films.json": "d94aa781e8381b0e728afb0564ad588aaac10173",
+   "mods/test-filme/mod.json": "280626fd61cc17d77e222a676e1fe80b2590ea45",
+   "mods/test-serien/mod.json": "1a7eea5498c5c8bfb81b8dd4f5625786c74b3f82",
+   "mods/test-serien/series.json": "1a16b8495b28aafb09228cb832b78e2f283771c7",
+   "mods/test-werbung/ads.json": "187452bbf942a5cbf725ddc2de7356030648b5c4",
+   "mods/test-werbung/mod.json": "58f969d53acd387ee7739bc94fdcbb1ee62a454f"
+  },
+  "result": [
+   0,
+   "ROOT/build/mods/f300+test-filme\n"
+  ]
+ },
+ "id-range, run 1: s1000": {
+  "files": {
+   "mods/s1000/mod.json": "0002cc38f8451af24eda3ca07eaa9bbedc98afe4",
+   "mods/s1000/series.json": "82be44689c010784960a11af9d80579335f1ed1b",
+   "mods/sp60/mod.json": "0002cc38f8451af24eda3ca07eaa9bbedc98afe4",
+   "mods/sp60/screenplays.json": "427875391e72009f56c7530160f89634a6e147d7",
+   "mods/test-filme/films.json": "d94aa781e8381b0e728afb0564ad588aaac10173",
+   "mods/test-filme/mod.json": "280626fd61cc17d77e222a676e1fe80b2590ea45",
+   "mods/test-serien/mod.json": "1a7eea5498c5c8bfb81b8dd4f5625786c74b3f82",
+   "mods/test-serien/series.json": "1a16b8495b28aafb09228cb832b78e2f283771c7",
+   "mods/test-werbung/ads.json": "187452bbf942a5cbf725ddc2de7356030648b5c4",
+   "mods/test-werbung/mod.json": "58f969d53acd387ee7739bc94fdcbb1ee62a454f"
+  },
+  "result": [
+   "error",
+   ""
+  ]
+ },
+ "id-range, run 2: sp60": {
+  "files": {
+   "mods/s1000/mod.json": "0002cc38f8451af24eda3ca07eaa9bbedc98afe4",
+   "mods/s1000/series.json": "82be44689c010784960a11af9d80579335f1ed1b",
+   "mods/sp60/mod.json": "0002cc38f8451af24eda3ca07eaa9bbedc98afe4",
+   "mods/sp60/screenplays.json": "427875391e72009f56c7530160f89634a6e147d7",
+   "mods/test-filme/films.json": "d94aa781e8381b0e728afb0564ad588aaac10173",
+   "mods/test-filme/mod.json": "280626fd61cc17d77e222a676e1fe80b2590ea45",
+   "mods/test-serien/mod.json": "1a7eea5498c5c8bfb81b8dd4f5625786c74b3f82",
+   "mods/test-serien/series.json": "1a16b8495b28aafb09228cb832b78e2f283771c7",
+   "mods/test-werbung/ads.json": "187452bbf942a5cbf725ddc2de7356030648b5c4",
+   "mods/test-werbung/mod.json": "58f969d53acd387ee7739bc94fdcbb1ee62a454f"
+  },
+  "result": [
+   "error",
+   ""
+  ]
+ },
+ "id-range, run 3: sp60+test-filme": {
+  "files": {
+   "build/mods/sp60+test-filme/SOURCE1.RSC": "2184511c1ad0b0f359d81e73e65ca528b64a796e",
+   "build/mods/sp60+test-filme/SOURCE2.RSC": "a0c0a0819c86c5fa6b537b391cb87f32657dc042",
+   "mods/s1000/mod.json": "0002cc38f8451af24eda3ca07eaa9bbedc98afe4",
+   "mods/s1000/series.json": "82be44689c010784960a11af9d80579335f1ed1b",
+   "mods/sp60/mod.json": "0002cc38f8451af24eda3ca07eaa9bbedc98afe4",
+   "mods/sp60/screenplays.json": "427875391e72009f56c7530160f89634a6e147d7",
+   "mods/test-filme/films.json": "d94aa781e8381b0e728afb0564ad588aaac10173",
+   "mods/test-filme/mod.json": "280626fd61cc17d77e222a676e1fe80b2590ea45",
+   "mods/test-serien/mod.json": "1a7eea5498c5c8bfb81b8dd4f5625786c74b3f82",
+   "mods/test-serien/series.json": "1a16b8495b28aafb09228cb832b78e2f283771c7",
+   "mods/test-werbung/ads.json": "187452bbf942a5cbf725ddc2de7356030648b5c4",
+   "mods/test-werbung/mod.json": "58f969d53acd387ee7739bc94fdcbb1ee62a454f"
+  },
+  "result": [
+   0,
+   "ROOT/build/mods/sp60+test-filme\n"
+  ]
+ },
+ "incomplete-ad, run 1: kaputt": {
+  "files": {
+   "mods/kaputt/ads.json": "7924840e353ccf694647914976c33da1cea3165f",
+   "mods/kaputt/mod.json": "0002cc38f8451af24eda3ca07eaa9bbedc98afe4",
+   "mods/test-filme/films.json": "d94aa781e8381b0e728afb0564ad588aaac10173",
+   "mods/test-filme/mod.json": "280626fd61cc17d77e222a676e1fe80b2590ea45",
+   "mods/test-serien/mod.json": "1a7eea5498c5c8bfb81b8dd4f5625786c74b3f82",
+   "mods/test-serien/series.json": "1a16b8495b28aafb09228cb832b78e2f283771c7",
+   "mods/test-werbung/ads.json": "187452bbf942a5cbf725ddc2de7356030648b5c4",
+   "mods/test-werbung/mod.json": "58f969d53acd387ee7739bc94fdcbb1ee62a454f"
+  },
+  "result": [
+   "error",
+   ""
+  ]
+ },
+ "incomplete-film, run 1: kaputt": {
+  "files": {
+   "mods/kaputt/films.json": "360649f7f34f3ed5e1e48f2298bc22e52c96e13a",
+   "mods/kaputt/mod.json": "0002cc38f8451af24eda3ca07eaa9bbedc98afe4",
+   "mods/test-filme/films.json": "d94aa781e8381b0e728afb0564ad588aaac10173",
+   "mods/test-filme/mod.json": "280626fd61cc17d77e222a676e1fe80b2590ea45",
+   "mods/test-serien/mod.json": "1a7eea5498c5c8bfb81b8dd4f5625786c74b3f82",
+   "mods/test-serien/series.json": "1a16b8495b28aafb09228cb832b78e2f283771c7",
+   "mods/test-werbung/ads.json": "187452bbf942a5cbf725ddc2de7356030648b5c4",
+   "mods/test-werbung/mod.json": "58f969d53acd387ee7739bc94fdcbb1ee62a454f"
+  },
+  "result": [
+   "error",
+   ""
+  ]
+ },
+ "incomplete-new, run 1: halb": {
+  "files": {
+   "mods/halb/films.json": "56d77628d1e691e21cc777044a20d52435a193ad",
+   "mods/halb/mod.json": "0002cc38f8451af24eda3ca07eaa9bbedc98afe4",
+   "mods/test-filme/films.json": "d94aa781e8381b0e728afb0564ad588aaac10173",
+   "mods/test-filme/mod.json": "280626fd61cc17d77e222a676e1fe80b2590ea45",
+   "mods/test-serien/mod.json": "1a7eea5498c5c8bfb81b8dd4f5625786c74b3f82",
+   "mods/test-serien/series.json": "1a16b8495b28aafb09228cb832b78e2f283771c7",
+   "mods/test-werbung/ads.json": "187452bbf942a5cbf725ddc2de7356030648b5c4",
+   "mods/test-werbung/mod.json": "58f969d53acd387ee7739bc94fdcbb1ee62a454f"
+  },
+  "result": [
+   "error",
+   ""
+  ]
+ },
+ "incomplete-new, run 2: test-filme+halb": {
+  "files": {
+   "mods/halb/films.json": "56d77628d1e691e21cc777044a20d52435a193ad",
+   "mods/halb/mod.json": "0002cc38f8451af24eda3ca07eaa9bbedc98afe4",
+   "mods/test-filme/films.json": "d94aa781e8381b0e728afb0564ad588aaac10173",
+   "mods/test-filme/mod.json": "280626fd61cc17d77e222a676e1fe80b2590ea45",
+   "mods/test-serien/mod.json": "1a7eea5498c5c8bfb81b8dd4f5625786c74b3f82",
+   "mods/test-serien/series.json": "1a16b8495b28aafb09228cb832b78e2f283771c7",
+   "mods/test-werbung/ads.json": "187452bbf942a5cbf725ddc2de7356030648b5c4",
+   "mods/test-werbung/mod.json": "58f969d53acd387ee7739bc94fdcbb1ee62a454f"
+  },
+  "result": [
+   "error",
+   ""
+  ]
+ },
+ "incomplete-series, run 1: kaputt": {
+  "files": {
+   "mods/kaputt/mod.json": "0002cc38f8451af24eda3ca07eaa9bbedc98afe4",
+   "mods/kaputt/series.json": "fc094b05bef2e5ffc34cb057311b47543bf74603",
+   "mods/test-filme/films.json": "d94aa781e8381b0e728afb0564ad588aaac10173",
+   "mods/test-filme/mod.json": "280626fd61cc17d77e222a676e1fe80b2590ea45",
+   "mods/test-serien/mod.json": "1a7eea5498c5c8bfb81b8dd4f5625786c74b3f82",
+   "mods/test-serien/series.json": "1a16b8495b28aafb09228cb832b78e2f283771c7",
+   "mods/test-werbung/ads.json": "187452bbf942a5cbf725ddc2de7356030648b5c4",
+   "mods/test-werbung/mod.json": "58f969d53acd387ee7739bc94fdcbb1ee62a454f"
+  },
+  "result": [
+   "error",
+   ""
+  ]
+ },
+ "json-syntax, run 1: kaputt": {
+  "files": {
+   "mods/kaputt/films.json": "31c242a18d474266205672a5b12d6284fe42be48",
+   "mods/kaputt/mod.json": "bf21a9e8fbc5a3846fb05b4fa0859e0917b2202f",
+   "mods/test-filme/films.json": "d94aa781e8381b0e728afb0564ad588aaac10173",
+   "mods/test-filme/mod.json": "280626fd61cc17d77e222a676e1fe80b2590ea45",
+   "mods/test-serien/mod.json": "1a7eea5498c5c8bfb81b8dd4f5625786c74b3f82",
+   "mods/test-serien/series.json": "1a16b8495b28aafb09228cb832b78e2f283771c7",
+   "mods/test-werbung/ads.json": "187452bbf942a5cbf725ddc2de7356030648b5c4",
+   "mods/test-werbung/mod.json": "58f969d53acd387ee7739bc94fdcbb1ee62a454f"
+  },
+  "result": [
+   "error",
+   ""
+  ]
+ },
+ "list-length, run 1: kaputt": {
+  "files": {
+   "mods/kaputt/mod.json": "0002cc38f8451af24eda3ca07eaa9bbedc98afe4",
+   "mods/kaputt/series.json": "76717390645dd6494b0a2475281586449b2535b1",
+   "mods/test-filme/films.json": "d94aa781e8381b0e728afb0564ad588aaac10173",
+   "mods/test-filme/mod.json": "280626fd61cc17d77e222a676e1fe80b2590ea45",
+   "mods/test-serien/mod.json": "1a7eea5498c5c8bfb81b8dd4f5625786c74b3f82",
+   "mods/test-serien/series.json": "1a16b8495b28aafb09228cb832b78e2f283771c7",
+   "mods/test-werbung/ads.json": "187452bbf942a5cbf725ddc2de7356030648b5c4",
+   "mods/test-werbung/mod.json": "58f969d53acd387ee7739bc94fdcbb1ee62a454f"
+  },
+  "result": [
+   "error",
+   ""
+  ]
+ },
+ "missing-game-file, run 1: test-filme": {
+  "files": {
+   "mods/test-filme/films.json": "d94aa781e8381b0e728afb0564ad588aaac10173",
+   "mods/test-filme/mod.json": "280626fd61cc17d77e222a676e1fe80b2590ea45",
+   "mods/test-serien/mod.json": "1a7eea5498c5c8bfb81b8dd4f5625786c74b3f82",
+   "mods/test-serien/series.json": "1a16b8495b28aafb09228cb832b78e2f283771c7",
+   "mods/test-werbung/ads.json": "187452bbf942a5cbf725ddc2de7356030648b5c4",
+   "mods/test-werbung/mod.json": "58f969d53acd387ee7739bc94fdcbb1ee62a454f"
+  },
+  "result": [
+   "error",
+   ""
+  ]
+ },
+ "names, run 1: bad name!": {
+  "files": {
+   "mods/test-filme/films.json": "d94aa781e8381b0e728afb0564ad588aaac10173",
+   "mods/test-filme/mod.json": "280626fd61cc17d77e222a676e1fe80b2590ea45",
+   "mods/test-serien/mod.json": "1a7eea5498c5c8bfb81b8dd4f5625786c74b3f82",
+   "mods/test-serien/series.json": "1a16b8495b28aafb09228cb832b78e2f283771c7",
+   "mods/test-werbung/ads.json": "187452bbf942a5cbf725ddc2de7356030648b5c4",
+   "mods/test-werbung/mod.json": "58f969d53acd387ee7739bc94fdcbb1ee62a454f"
+  },
+  "result": [
+   "error",
+   ""
+  ]
+ },
+ "names, run 2: gibtsnicht": {
+  "files": {
+   "mods/test-filme/films.json": "d94aa781e8381b0e728afb0564ad588aaac10173",
+   "mods/test-filme/mod.json": "280626fd61cc17d77e222a676e1fe80b2590ea45",
+   "mods/test-serien/mod.json": "1a7eea5498c5c8bfb81b8dd4f5625786c74b3f82",
+   "mods/test-serien/series.json": "1a16b8495b28aafb09228cb832b78e2f283771c7",
+   "mods/test-werbung/ads.json": "187452bbf942a5cbf725ddc2de7356030648b5c4",
+   "mods/test-werbung/mod.json": "58f969d53acd387ee7739bc94fdcbb1ee62a454f"
+  },
+  "result": [
+   "error",
+   ""
+  ]
+ },
+ "names, run 3: test-filme+test-filme": {
+  "files": {
+   "mods/test-filme/films.json": "d94aa781e8381b0e728afb0564ad588aaac10173",
+   "mods/test-filme/mod.json": "280626fd61cc17d77e222a676e1fe80b2590ea45",
+   "mods/test-serien/mod.json": "1a7eea5498c5c8bfb81b8dd4f5625786c74b3f82",
+   "mods/test-serien/series.json": "1a16b8495b28aafb09228cb832b78e2f283771c7",
+   "mods/test-werbung/ads.json": "187452bbf942a5cbf725ddc2de7356030648b5c4",
+   "mods/test-werbung/mod.json": "58f969d53acd387ee7739bc94fdcbb1ee62a454f"
+  },
+  "result": [
+   "error",
+   ""
+  ]
+ },
+ "names, run 4: ": {
+  "files": {
+   "mods/test-filme/films.json": "d94aa781e8381b0e728afb0564ad588aaac10173",
+   "mods/test-filme/mod.json": "280626fd61cc17d77e222a676e1fe80b2590ea45",
+   "mods/test-serien/mod.json": "1a7eea5498c5c8bfb81b8dd4f5625786c74b3f82",
+   "mods/test-serien/series.json": "1a16b8495b28aafb09228cb832b78e2f283771c7",
+   "mods/test-werbung/ads.json": "187452bbf942a5cbf725ddc2de7356030648b5c4",
+   "mods/test-werbung/mod.json": "58f969d53acd387ee7739bc94fdcbb1ee62a454f"
+  },
+  "result": [
+   "error",
+   ""
+  ]
+ },
+ "names, run 5: test-filme+": {
+  "files": {
+   "mods/test-filme/films.json": "d94aa781e8381b0e728afb0564ad588aaac10173",
+   "mods/test-filme/mod.json": "280626fd61cc17d77e222a676e1fe80b2590ea45",
+   "mods/test-serien/mod.json": "1a7eea5498c5c8bfb81b8dd4f5625786c74b3f82",
+   "mods/test-serien/series.json": "1a16b8495b28aafb09228cb832b78e2f283771c7",
+   "mods/test-werbung/ads.json": "187452bbf942a5cbf725ddc2de7356030648b5c4",
+   "mods/test-werbung/mod.json": "58f969d53acd387ee7739bc94fdcbb1ee62a454f"
+  },
+  "result": [
+   "error",
+   ""
+  ]
+ },
+ "names, run 6: xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx": {
+  "files": {
+   "mods/test-filme/films.json": "d94aa781e8381b0e728afb0564ad588aaac10173",
+   "mods/test-filme/mod.json": "280626fd61cc17d77e222a676e1fe80b2590ea45",
+   "mods/test-serien/mod.json": "1a7eea5498c5c8bfb81b8dd4f5625786c74b3f82",
+   "mods/test-serien/series.json": "1a16b8495b28aafb09228cb832b78e2f283771c7",
+   "mods/test-werbung/ads.json": "187452bbf942a5cbf725ddc2de7356030648b5c4",
+   "mods/test-werbung/mod.json": "58f969d53acd387ee7739bc94fdcbb1ee62a454f"
+  },
+  "result": [
+   "error",
+   ""
+  ]
+ },
+ "no-start-films, run 1: leer": {
+  "files": {
+   "mods/leer/films.json": "39ef84df925a03a79f23986f63e60363b13b41ed",
+   "mods/leer/mod.json": "0002cc38f8451af24eda3ca07eaa9bbedc98afe4",
+   "mods/test-filme/films.json": "d94aa781e8381b0e728afb0564ad588aaac10173",
+   "mods/test-filme/mod.json": "280626fd61cc17d77e222a676e1fe80b2590ea45",
+   "mods/test-serien/mod.json": "1a7eea5498c5c8bfb81b8dd4f5625786c74b3f82",
+   "mods/test-serien/series.json": "1a16b8495b28aafb09228cb832b78e2f283771c7",
+   "mods/test-werbung/ads.json": "187452bbf942a5cbf725ddc2de7356030648b5c4",
+   "mods/test-werbung/mod.json": "58f969d53acd387ee7739bc94fdcbb1ee62a454f"
+  },
+  "result": [
+   "error",
+   ""
+  ]
+ },
+ "over-999, run 1: f999": {
+  "files": {
+   "build/mods/f999/SOURCE1.RSC": "ba390fc8129c3fc5fe05495b338463847fe4e725",
+   "build/mods/f999/SOURCE2.RSC": "a0c0a0819c86c5fa6b537b391cb87f32657dc042",
+   "mods/f201/films.json": "89322709c6bcd0e16beab45c5d542f2ef34e0ded",
+   "mods/f201/mod.json": "0002cc38f8451af24eda3ca07eaa9bbedc98afe4",
+   "mods/f999/films.json": "1501e997de7982d7fb688f3f8d57fbb668f61299",
+   "mods/f999/mod.json": "0002cc38f8451af24eda3ca07eaa9bbedc98afe4",
+   "mods/test-filme/films.json": "d94aa781e8381b0e728afb0564ad588aaac10173",
+   "mods/test-filme/mod.json": "280626fd61cc17d77e222a676e1fe80b2590ea45",
+   "mods/test-serien/mod.json": "1a7eea5498c5c8bfb81b8dd4f5625786c74b3f82",
+   "mods/test-serien/series.json": "1a16b8495b28aafb09228cb832b78e2f283771c7",
+   "mods/test-werbung/ads.json": "187452bbf942a5cbf725ddc2de7356030648b5c4",
+   "mods/test-werbung/mod.json": "58f969d53acd387ee7739bc94fdcbb1ee62a454f"
+  },
+  "result": [
+   0,
+   "ROOT/build/mods/f999\n"
+  ]
+ },
+ "over-999, run 2: f999+f201": {
+  "files": {
+   "build/mods/f999/SOURCE1.RSC": "ba390fc8129c3fc5fe05495b338463847fe4e725",
+   "build/mods/f999/SOURCE2.RSC": "a0c0a0819c86c5fa6b537b391cb87f32657dc042",
+   "mods/f201/films.json": "89322709c6bcd0e16beab45c5d542f2ef34e0ded",
+   "mods/f201/mod.json": "0002cc38f8451af24eda3ca07eaa9bbedc98afe4",
+   "mods/f999/films.json": "1501e997de7982d7fb688f3f8d57fbb668f61299",
+   "mods/f999/mod.json": "0002cc38f8451af24eda3ca07eaa9bbedc98afe4",
+   "mods/test-filme/films.json": "d94aa781e8381b0e728afb0564ad588aaac10173",
+   "mods/test-filme/mod.json": "280626fd61cc17d77e222a676e1fe80b2590ea45",
+   "mods/test-serien/mod.json": "1a7eea5498c5c8bfb81b8dd4f5625786c74b3f82",
+   "mods/test-serien/series.json": "1a16b8495b28aafb09228cb832b78e2f283771c7",
+   "mods/test-werbung/ads.json": "187452bbf942a5cbf725ddc2de7356030648b5c4",
+   "mods/test-werbung/mod.json": "58f969d53acd387ee7739bc94fdcbb1ee62a454f"
+  },
+  "result": [
+   "error",
+   ""
+  ]
+ },
+ "over-999, run 3: f201+f999": {
+  "files": {
+   "build/mods/f201+f999/SOURCE1.RSC": "10f426d517e7338243b47b9ae91c6ce810379e3e",
+   "build/mods/f201+f999/SOURCE2.RSC": "a0c0a0819c86c5fa6b537b391cb87f32657dc042",
+   "build/mods/f999/SOURCE1.RSC": "ba390fc8129c3fc5fe05495b338463847fe4e725",
+   "build/mods/f999/SOURCE2.RSC": "a0c0a0819c86c5fa6b537b391cb87f32657dc042",
+   "mods/f201/films.json": "89322709c6bcd0e16beab45c5d542f2ef34e0ded",
+   "mods/f201/mod.json": "0002cc38f8451af24eda3ca07eaa9bbedc98afe4",
+   "mods/f999/films.json": "1501e997de7982d7fb688f3f8d57fbb668f61299",
+   "mods/f999/mod.json": "0002cc38f8451af24eda3ca07eaa9bbedc98afe4",
+   "mods/test-filme/films.json": "d94aa781e8381b0e728afb0564ad588aaac10173",
+   "mods/test-filme/mod.json": "280626fd61cc17d77e222a676e1fe80b2590ea45",
+   "mods/test-serien/mod.json": "1a7eea5498c5c8bfb81b8dd4f5625786c74b3f82",
+   "mods/test-serien/series.json": "1a16b8495b28aafb09228cb832b78e2f283771c7",
+   "mods/test-werbung/ads.json": "187452bbf942a5cbf725ddc2de7356030648b5c4",
+   "mods/test-werbung/mod.json": "58f969d53acd387ee7739bc94fdcbb1ee62a454f"
+  },
+  "result": [
+   0,
+   "ROOT/build/mods/f201+f999\n"
+  ]
+ },
+ "phrases, run 1: kaputt": {
+  "files": {
+   "mods/kaputt/mod.json": "0002cc38f8451af24eda3ca07eaa9bbedc98afe4",
+   "mods/kaputt/news_topics.json": "ed3c90b5f5c70cd1db377c3aa7148504322c62cc",
+   "mods/test-filme/films.json": "d94aa781e8381b0e728afb0564ad588aaac10173",
+   "mods/test-filme/mod.json": "280626fd61cc17d77e222a676e1fe80b2590ea45",
+   "mods/test-serien/mod.json": "1a7eea5498c5c8bfb81b8dd4f5625786c74b3f82",
+   "mods/test-serien/series.json": "1a16b8495b28aafb09228cb832b78e2f283771c7",
+   "mods/test-werbung/ads.json": "187452bbf942a5cbf725ddc2de7356030648b5c4",
+   "mods/test-werbung/mod.json": "58f969d53acd387ee7739bc94fdcbb1ee62a454f"
+  },
+  "result": [
+   "error",
+   ""
+  ]
+ },
+ "pools, run 1: pools": {
+  "files": {
+   "build/mods/pools/SOURCE1.RSC": "69daedd925fbd728a41a93a74373884fa10e549d",
+   "build/mods/pools/SOURCE2.RSC": "a0c0a0819c86c5fa6b537b391cb87f32657dc042",
+   "mods/pools/films.json": "043462594deea4e1b0f1ccccddb5ee6ed2268be9",
+   "mods/pools/mod.json": "0002cc38f8451af24eda3ca07eaa9bbedc98afe4",
+   "mods/pools/series.json": "d987c596956783cd42a93ac5192deb805a2444a1",
+   "mods/test-filme/films.json": "d94aa781e8381b0e728afb0564ad588aaac10173",
+   "mods/test-filme/mod.json": "280626fd61cc17d77e222a676e1fe80b2590ea45",
+   "mods/test-serien/mod.json": "1a7eea5498c5c8bfb81b8dd4f5625786c74b3f82",
+   "mods/test-serien/series.json": "1a16b8495b28aafb09228cb832b78e2f283771c7",
+   "mods/test-werbung/ads.json": "187452bbf942a5cbf725ddc2de7356030648b5c4",
+   "mods/test-werbung/mod.json": "58f969d53acd387ee7739bc94fdcbb1ee62a454f"
+  },
+  "result": [
+   0,
+   "ROOT/build/mods/pools\n"
+  ]
+ },
+ "raw-text, run 1: kaputt": {
+  "files": {
+   "mods/kaputt/films.json": "a56ec516bb46c29fd3870c825f95b437cc5ab979",
+   "mods/kaputt/mod.json": "0002cc38f8451af24eda3ca07eaa9bbedc98afe4",
+   "mods/test-filme/films.json": "d94aa781e8381b0e728afb0564ad588aaac10173",
+   "mods/test-filme/mod.json": "280626fd61cc17d77e222a676e1fe80b2590ea45",
+   "mods/test-serien/mod.json": "1a7eea5498c5c8bfb81b8dd4f5625786c74b3f82",
+   "mods/test-serien/series.json": "1a16b8495b28aafb09228cb832b78e2f283771c7",
+   "mods/test-werbung/ads.json": "187452bbf942a5cbf725ddc2de7356030648b5c4",
+   "mods/test-werbung/mod.json": "58f969d53acd387ee7739bc94fdcbb1ee62a454f"
+  },
+  "result": [
+   "error",
+   ""
+  ]
+ },
+ "rebuild, run 1: test-filme": {
+  "files": {
+   "build/mods/test-filme/SOURCE1.RSC": "2184511c1ad0b0f359d81e73e65ca528b64a796e",
+   "build/mods/test-filme/SOURCE2.RSC": "a0c0a0819c86c5fa6b537b391cb87f32657dc042",
+   "mods/test-filme/films.json": "d94aa781e8381b0e728afb0564ad588aaac10173",
+   "mods/test-filme/mod.json": "280626fd61cc17d77e222a676e1fe80b2590ea45",
+   "mods/test-serien/mod.json": "1a7eea5498c5c8bfb81b8dd4f5625786c74b3f82",
+   "mods/test-serien/series.json": "1a16b8495b28aafb09228cb832b78e2f283771c7",
+   "mods/test-werbung/ads.json": "187452bbf942a5cbf725ddc2de7356030648b5c4",
+   "mods/test-werbung/mod.json": "58f969d53acd387ee7739bc94fdcbb1ee62a454f"
+  },
+  "result": [
+   0,
+   "ROOT/build/mods/test-filme\n"
+  ]
+ },
+ "rebuild, run 2: test-filme": {
+  "files": {
+   "build/mods/test-filme/SOURCE1.RSC": "2184511c1ad0b0f359d81e73e65ca528b64a796e",
+   "build/mods/test-filme/SOURCE2.RSC": "a0c0a0819c86c5fa6b537b391cb87f32657dc042",
+   "mods/test-filme/films.json": "d94aa781e8381b0e728afb0564ad588aaac10173",
+   "mods/test-filme/mod.json": "280626fd61cc17d77e222a676e1fe80b2590ea45",
+   "mods/test-serien/mod.json": "1a7eea5498c5c8bfb81b8dd4f5625786c74b3f82",
+   "mods/test-serien/series.json": "1a16b8495b28aafb09228cb832b78e2f283771c7",
+   "mods/test-werbung/ads.json": "187452bbf942a5cbf725ddc2de7356030648b5c4",
+   "mods/test-werbung/mod.json": "58f969d53acd387ee7739bc94fdcbb1ee62a454f"
+  },
+  "result": [
+   0,
+   "ROOT/build/mods/test-filme\n"
+  ]
+ },
+ "rebuild, run 3: test-filme+test-werbung": {
+  "files": {
+   "build/mods/test-filme+test-werbung/SOURCE1.RSC": "f30f6b3f9699ab6d6f81c8b4a4dabbbb8daf65bd",
+   "build/mods/test-filme+test-werbung/SOURCE2.RSC": "a0c0a0819c86c5fa6b537b391cb87f32657dc042",
+   "build/mods/test-filme/SOURCE1.RSC": "2184511c1ad0b0f359d81e73e65ca528b64a796e",
+   "build/mods/test-filme/SOURCE2.RSC": "a0c0a0819c86c5fa6b537b391cb87f32657dc042",
+   "mods/test-filme/films.json": "d94aa781e8381b0e728afb0564ad588aaac10173",
+   "mods/test-filme/mod.json": "280626fd61cc17d77e222a676e1fe80b2590ea45",
+   "mods/test-serien/mod.json": "1a7eea5498c5c8bfb81b8dd4f5625786c74b3f82",
+   "mods/test-serien/series.json": "1a16b8495b28aafb09228cb832b78e2f283771c7",
+   "mods/test-werbung/ads.json": "187452bbf942a5cbf725ddc2de7356030648b5c4",
+   "mods/test-werbung/mod.json": "58f969d53acd387ee7739bc94fdcbb1ee62a454f"
+  },
+  "result": [
+   0,
+   "ROOT/build/mods/test-filme+test-werbung\n"
+  ]
+ },
+ "rebuild, run 4: test-filme+test-werbung": {
+  "files": {
+   "build/mods/test-filme+test-werbung/SOURCE1.RSC": "f30f6b3f9699ab6d6f81c8b4a4dabbbb8daf65bd",
+   "build/mods/test-filme+test-werbung/SOURCE2.RSC": "a0c0a0819c86c5fa6b537b391cb87f32657dc042",
+   "build/mods/test-filme/SOURCE1.RSC": "2184511c1ad0b0f359d81e73e65ca528b64a796e",
+   "build/mods/test-filme/SOURCE2.RSC": "a0c0a0819c86c5fa6b537b391cb87f32657dc042",
+   "mods/test-filme/films.json": "d94aa781e8381b0e728afb0564ad588aaac10173",
+   "mods/test-filme/mod.json": "280626fd61cc17d77e222a676e1fe80b2590ea45",
+   "mods/test-serien/mod.json": "1a7eea5498c5c8bfb81b8dd4f5625786c74b3f82",
+   "mods/test-serien/series.json": "1a16b8495b28aafb09228cb832b78e2f283771c7",
+   "mods/test-werbung/ads.json": "187452bbf942a5cbf725ddc2de7356030648b5c4",
+   "mods/test-werbung/mod.json": "58f969d53acd387ee7739bc94fdcbb1ee62a454f"
+  },
+  "result": [
+   0,
+   "ROOT/build/mods/test-filme+test-werbung\n"
+  ]
+ },
+ "series60, run 1: s60": {
+  "files": {
+   "build/mods/s60/SOURCE1.RSC": "6fa8ca49ca015bfb7cde438ff2d96164dbdb8d95",
+   "build/mods/s60/SOURCE2.RSC": "a0c0a0819c86c5fa6b537b391cb87f32657dc042",
+   "mods/s60/mod.json": "0002cc38f8451af24eda3ca07eaa9bbedc98afe4",
+   "mods/s60/series.json": "345dfd8f4e808115a221887557a5a98954986fbe",
+   "mods/s60m/mod.json": "0002cc38f8451af24eda3ca07eaa9bbedc98afe4",
+   "mods/s60m/series.json": "1b9234f09810df55e7596c1a75707e941a3f61fd",
+   "mods/test-filme/films.json": "d94aa781e8381b0e728afb0564ad588aaac10173",
+   "mods/test-filme/mod.json": "280626fd61cc17d77e222a676e1fe80b2590ea45",
+   "mods/test-serien/mod.json": "1a7eea5498c5c8bfb81b8dd4f5625786c74b3f82",
+   "mods/test-serien/series.json": "1a16b8495b28aafb09228cb832b78e2f283771c7",
+   "mods/test-werbung/ads.json": "187452bbf942a5cbf725ddc2de7356030648b5c4",
+   "mods/test-werbung/mod.json": "58f969d53acd387ee7739bc94fdcbb1ee62a454f"
+  },
+  "result": [
+   0,
+   "ROOT/build/mods/s60\n"
+  ]
+ },
+ "series60, run 2: s60+test-serien": {
+  "files": {
+   "build/mods/s60+test-serien/SOURCE1.RSC": "6c54d0d21fe03ac9e621de605084d3314bba9642",
+   "build/mods/s60+test-serien/SOURCE2.RSC": "a0c0a0819c86c5fa6b537b391cb87f32657dc042",
+   "build/mods/s60/SOURCE1.RSC": "6fa8ca49ca015bfb7cde438ff2d96164dbdb8d95",
+   "build/mods/s60/SOURCE2.RSC": "a0c0a0819c86c5fa6b537b391cb87f32657dc042",
+   "mods/s60/mod.json": "0002cc38f8451af24eda3ca07eaa9bbedc98afe4",
+   "mods/s60/series.json": "345dfd8f4e808115a221887557a5a98954986fbe",
+   "mods/s60m/mod.json": "0002cc38f8451af24eda3ca07eaa9bbedc98afe4",
+   "mods/s60m/series.json": "1b9234f09810df55e7596c1a75707e941a3f61fd",
+   "mods/test-filme/films.json": "d94aa781e8381b0e728afb0564ad588aaac10173",
+   "mods/test-filme/mod.json": "280626fd61cc17d77e222a676e1fe80b2590ea45",
+   "mods/test-serien/mod.json": "1a7eea5498c5c8bfb81b8dd4f5625786c74b3f82",
+   "mods/test-serien/series.json": "1a16b8495b28aafb09228cb832b78e2f283771c7",
+   "mods/test-werbung/ads.json": "187452bbf942a5cbf725ddc2de7356030648b5c4",
+   "mods/test-werbung/mod.json": "58f969d53acd387ee7739bc94fdcbb1ee62a454f"
+  },
+  "result": [
+   0,
+   "ROOT/build/mods/s60+test-serien\n"
+  ]
+ },
+ "series60, run 3: test-serien+s60": {
+  "files": {
+   "build/mods/s60+test-serien/SOURCE1.RSC": "6c54d0d21fe03ac9e621de605084d3314bba9642",
+   "build/mods/s60+test-serien/SOURCE2.RSC": "a0c0a0819c86c5fa6b537b391cb87f32657dc042",
+   "build/mods/s60/SOURCE1.RSC": "6fa8ca49ca015bfb7cde438ff2d96164dbdb8d95",
+   "build/mods/s60/SOURCE2.RSC": "a0c0a0819c86c5fa6b537b391cb87f32657dc042",
+   "build/mods/test-serien+s60/SOURCE1.RSC": "fe26c9e0196966825cc60d2bf7ec4d9026d67b02",
+   "build/mods/test-serien+s60/SOURCE2.RSC": "a0c0a0819c86c5fa6b537b391cb87f32657dc042",
+   "mods/s60/mod.json": "0002cc38f8451af24eda3ca07eaa9bbedc98afe4",
+   "mods/s60/series.json": "345dfd8f4e808115a221887557a5a98954986fbe",
+   "mods/s60m/mod.json": "0002cc38f8451af24eda3ca07eaa9bbedc98afe4",
+   "mods/s60m/series.json": "1b9234f09810df55e7596c1a75707e941a3f61fd",
+   "mods/test-filme/films.json": "d94aa781e8381b0e728afb0564ad588aaac10173",
+   "mods/test-filme/mod.json": "280626fd61cc17d77e222a676e1fe80b2590ea45",
+   "mods/test-serien/mod.json": "1a7eea5498c5c8bfb81b8dd4f5625786c74b3f82",
+   "mods/test-serien/series.json": "1a16b8495b28aafb09228cb832b78e2f283771c7",
+   "mods/test-werbung/ads.json": "187452bbf942a5cbf725ddc2de7356030648b5c4",
+   "mods/test-werbung/mod.json": "58f969d53acd387ee7739bc94fdcbb1ee62a454f"
+  },
+  "result": [
+   0,
+   "ROOT/build/mods/test-serien+s60\n"
+  ]
+ },
+ "series60, run 4: s60m": {
+  "files": {
+   "build/mods/s60+test-serien/SOURCE1.RSC": "6c54d0d21fe03ac9e621de605084d3314bba9642",
+   "build/mods/s60+test-serien/SOURCE2.RSC": "a0c0a0819c86c5fa6b537b391cb87f32657dc042",
+   "build/mods/s60/SOURCE1.RSC": "6fa8ca49ca015bfb7cde438ff2d96164dbdb8d95",
+   "build/mods/s60/SOURCE2.RSC": "a0c0a0819c86c5fa6b537b391cb87f32657dc042",
+   "build/mods/test-serien+s60/SOURCE1.RSC": "fe26c9e0196966825cc60d2bf7ec4d9026d67b02",
+   "build/mods/test-serien+s60/SOURCE2.RSC": "a0c0a0819c86c5fa6b537b391cb87f32657dc042",
+   "mods/s60/mod.json": "0002cc38f8451af24eda3ca07eaa9bbedc98afe4",
+   "mods/s60/series.json": "345dfd8f4e808115a221887557a5a98954986fbe",
+   "mods/s60m/mod.json": "0002cc38f8451af24eda3ca07eaa9bbedc98afe4",
+   "mods/s60m/series.json": "1b9234f09810df55e7596c1a75707e941a3f61fd",
+   "mods/test-filme/films.json": "d94aa781e8381b0e728afb0564ad588aaac10173",
+   "mods/test-filme/mod.json": "280626fd61cc17d77e222a676e1fe80b2590ea45",
+   "mods/test-serien/mod.json": "1a7eea5498c5c8bfb81b8dd4f5625786c74b3f82",
+   "mods/test-serien/series.json": "1a16b8495b28aafb09228cb832b78e2f283771c7",
+   "mods/test-werbung/ads.json": "187452bbf942a5cbf725ddc2de7356030648b5c4",
+   "mods/test-werbung/mod.json": "58f969d53acd387ee7739bc94fdcbb1ee62a454f"
+  },
+  "result": [
+   "error",
+   ""
+  ]
+ },
+ "shipped, run 1: test-filme": {
+  "files": {
+   "build/mods/test-filme/SOURCE1.RSC": "2184511c1ad0b0f359d81e73e65ca528b64a796e",
+   "build/mods/test-filme/SOURCE2.RSC": "a0c0a0819c86c5fa6b537b391cb87f32657dc042",
+   "mods/test-filme/films.json": "d94aa781e8381b0e728afb0564ad588aaac10173",
+   "mods/test-filme/mod.json": "280626fd61cc17d77e222a676e1fe80b2590ea45",
+   "mods/test-serien/mod.json": "1a7eea5498c5c8bfb81b8dd4f5625786c74b3f82",
+   "mods/test-serien/series.json": "1a16b8495b28aafb09228cb832b78e2f283771c7",
+   "mods/test-werbung/ads.json": "187452bbf942a5cbf725ddc2de7356030648b5c4",
+   "mods/test-werbung/mod.json": "58f969d53acd387ee7739bc94fdcbb1ee62a454f"
+  },
+  "result": [
+   0,
+   "ROOT/build/mods/test-filme\n"
+  ]
+ },
+ "shipped, run 2: test-serien": {
+  "files": {
+   "build/mods/test-filme/SOURCE1.RSC": "2184511c1ad0b0f359d81e73e65ca528b64a796e",
+   "build/mods/test-filme/SOURCE2.RSC": "a0c0a0819c86c5fa6b537b391cb87f32657dc042",
+   "build/mods/test-serien/SOURCE1.RSC": "a004ae9ed1e11f3ca876cba804aa9aa1f0860eea",
+   "build/mods/test-serien/SOURCE2.RSC": "a0c0a0819c86c5fa6b537b391cb87f32657dc042",
+   "mods/test-filme/films.json": "d94aa781e8381b0e728afb0564ad588aaac10173",
+   "mods/test-filme/mod.json": "280626fd61cc17d77e222a676e1fe80b2590ea45",
+   "mods/test-serien/mod.json": "1a7eea5498c5c8bfb81b8dd4f5625786c74b3f82",
+   "mods/test-serien/series.json": "1a16b8495b28aafb09228cb832b78e2f283771c7",
+   "mods/test-werbung/ads.json": "187452bbf942a5cbf725ddc2de7356030648b5c4",
+   "mods/test-werbung/mod.json": "58f969d53acd387ee7739bc94fdcbb1ee62a454f"
+  },
+  "result": [
+   0,
+   "ROOT/build/mods/test-serien\n"
+  ]
+ },
+ "shipped, run 3: test-werbung": {
+  "files": {
+   "build/mods/test-filme/SOURCE1.RSC": "2184511c1ad0b0f359d81e73e65ca528b64a796e",
+   "build/mods/test-filme/SOURCE2.RSC": "a0c0a0819c86c5fa6b537b391cb87f32657dc042",
+   "build/mods/test-serien/SOURCE1.RSC": "a004ae9ed1e11f3ca876cba804aa9aa1f0860eea",
+   "build/mods/test-serien/SOURCE2.RSC": "a0c0a0819c86c5fa6b537b391cb87f32657dc042",
+   "build/mods/test-werbung/SOURCE1.RSC": "b43a2a2d20f9e4fdf41d702bf44de67fdbdea1ef",
+   "build/mods/test-werbung/SOURCE2.RSC": "a0c0a0819c86c5fa6b537b391cb87f32657dc042",
+   "mods/test-filme/films.json": "d94aa781e8381b0e728afb0564ad588aaac10173",
+   "mods/test-filme/mod.json": "280626fd61cc17d77e222a676e1fe80b2590ea45",
+   "mods/test-serien/mod.json": "1a7eea5498c5c8bfb81b8dd4f5625786c74b3f82",
+   "mods/test-serien/series.json": "1a16b8495b28aafb09228cb832b78e2f283771c7",
+   "mods/test-werbung/ads.json": "187452bbf942a5cbf725ddc2de7356030648b5c4",
+   "mods/test-werbung/mod.json": "58f969d53acd387ee7739bc94fdcbb1ee62a454f"
+  },
+  "result": [
+   0,
+   "ROOT/build/mods/test-werbung\n"
+  ]
+ },
+ "shipped-orders, run 10: test-serien+test-werbung+test-filme": {
+  "files": {
+   "build/mods/test-filme+test-serien+test-werbung/SOURCE1.RSC": "b17cf310daf9d020724c9e7c0c4fb51526a9f216",
+   "build/mods/test-filme+test-serien+test-werbung/SOURCE2.RSC": "a0c0a0819c86c5fa6b537b391cb87f32657dc042",
+   "build/mods/test-filme+test-serien/SOURCE1.RSC": "669765649559b68bdfa6b2799fadab191a8f4aa5",
+   "build/mods/test-filme+test-serien/SOURCE2.RSC": "a0c0a0819c86c5fa6b537b391cb87f32657dc042",
+   "build/mods/test-filme+test-werbung+test-serien/SOURCE1.RSC": "b17cf310daf9d020724c9e7c0c4fb51526a9f216",
+   "build/mods/test-filme+test-werbung+test-serien/SOURCE2.RSC": "a0c0a0819c86c5fa6b537b391cb87f32657dc042",
+   "build/mods/test-filme+test-werbung/SOURCE1.RSC": "f30f6b3f9699ab6d6f81c8b4a4dabbbb8daf65bd",
+   "build/mods/test-filme+test-werbung/SOURCE2.RSC": "a0c0a0819c86c5fa6b537b391cb87f32657dc042",
+   "build/mods/test-serien+test-filme+test-werbung/SOURCE1.RSC": "b17cf310daf9d020724c9e7c0c4fb51526a9f216",
+   "build/mods/test-serien+test-filme+test-werbung/SOURCE2.RSC": "a0c0a0819c86c5fa6b537b391cb87f32657dc042",
+   "build/mods/test-serien+test-filme/SOURCE1.RSC": "669765649559b68bdfa6b2799fadab191a8f4aa5",
+   "build/mods/test-serien+test-filme/SOURCE2.RSC": "a0c0a0819c86c5fa6b537b391cb87f32657dc042",
+   "build/mods/test-serien+test-werbung+test-filme/SOURCE1.RSC": "b17cf310daf9d020724c9e7c0c4fb51526a9f216",
+   "build/mods/test-serien+test-werbung+test-filme/SOURCE2.RSC": "a0c0a0819c86c5fa6b537b391cb87f32657dc042",
+   "build/mods/test-serien+test-werbung/SOURCE1.RSC": "7d0e272143ea1abbdb25622f67fca72ee92176f2",
+   "build/mods/test-serien+test-werbung/SOURCE2.RSC": "a0c0a0819c86c5fa6b537b391cb87f32657dc042",
+   "build/mods/test-werbung+test-filme/SOURCE1.RSC": "f30f6b3f9699ab6d6f81c8b4a4dabbbb8daf65bd",
+   "build/mods/test-werbung+test-filme/SOURCE2.RSC": "a0c0a0819c86c5fa6b537b391cb87f32657dc042",
+   "build/mods/test-werbung+test-serien/SOURCE1.RSC": "7d0e272143ea1abbdb25622f67fca72ee92176f2",
+   "build/mods/test-werbung+test-serien/SOURCE2.RSC": "a0c0a0819c86c5fa6b537b391cb87f32657dc042",
+   "mods/test-filme/films.json": "d94aa781e8381b0e728afb0564ad588aaac10173",
+   "mods/test-filme/mod.json": "280626fd61cc17d77e222a676e1fe80b2590ea45",
+   "mods/test-serien/mod.json": "1a7eea5498c5c8bfb81b8dd4f5625786c74b3f82",
+   "mods/test-serien/series.json": "1a16b8495b28aafb09228cb832b78e2f283771c7",
+   "mods/test-werbung/ads.json": "187452bbf942a5cbf725ddc2de7356030648b5c4",
+   "mods/test-werbung/mod.json": "58f969d53acd387ee7739bc94fdcbb1ee62a454f"
+  },
+  "result": [
+   0,
+   "ROOT/build/mods/test-serien+test-werbung+test-filme\n"
+  ]
+ },
+ "shipped-orders, run 11: test-werbung+test-filme+test-serien": {
+  "files": {
+   "build/mods/test-filme+test-serien+test-werbung/SOURCE1.RSC": "b17cf310daf9d020724c9e7c0c4fb51526a9f216",
+   "build/mods/test-filme+test-serien+test-werbung/SOURCE2.RSC": "a0c0a0819c86c5fa6b537b391cb87f32657dc042",
+   "build/mods/test-filme+test-serien/SOURCE1.RSC": "669765649559b68bdfa6b2799fadab191a8f4aa5",
+   "build/mods/test-filme+test-serien/SOURCE2.RSC": "a0c0a0819c86c5fa6b537b391cb87f32657dc042",
+   "build/mods/test-filme+test-werbung+test-serien/SOURCE1.RSC": "b17cf310daf9d020724c9e7c0c4fb51526a9f216",
+   "build/mods/test-filme+test-werbung+test-serien/SOURCE2.RSC": "a0c0a0819c86c5fa6b537b391cb87f32657dc042",
+   "build/mods/test-filme+test-werbung/SOURCE1.RSC": "f30f6b3f9699ab6d6f81c8b4a4dabbbb8daf65bd",
+   "build/mods/test-filme+test-werbung/SOURCE2.RSC": "a0c0a0819c86c5fa6b537b391cb87f32657dc042",
+   "build/mods/test-serien+test-filme+test-werbung/SOURCE1.RSC": "b17cf310daf9d020724c9e7c0c4fb51526a9f216",
+   "build/mods/test-serien+test-filme+test-werbung/SOURCE2.RSC": "a0c0a0819c86c5fa6b537b391cb87f32657dc042",
+   "build/mods/test-serien+test-filme/SOURCE1.RSC": "669765649559b68bdfa6b2799fadab191a8f4aa5",
+   "build/mods/test-serien+test-filme/SOURCE2.RSC": "a0c0a0819c86c5fa6b537b391cb87f32657dc042",
+   "build/mods/test-serien+test-werbung+test-filme/SOURCE1.RSC": "b17cf310daf9d020724c9e7c0c4fb51526a9f216",
+   "build/mods/test-serien+test-werbung+test-filme/SOURCE2.RSC": "a0c0a0819c86c5fa6b537b391cb87f32657dc042",
+   "build/mods/test-serien+test-werbung/SOURCE1.RSC": "7d0e272143ea1abbdb25622f67fca72ee92176f2",
+   "build/mods/test-serien+test-werbung/SOURCE2.RSC": "a0c0a0819c86c5fa6b537b391cb87f32657dc042",
+   "build/mods/test-werbung+test-filme+test-serien/SOURCE1.RSC": "b17cf310daf9d020724c9e7c0c4fb51526a9f216",
+   "build/mods/test-werbung+test-filme+test-serien/SOURCE2.RSC": "a0c0a0819c86c5fa6b537b391cb87f32657dc042",
+   "build/mods/test-werbung+test-filme/SOURCE1.RSC": "f30f6b3f9699ab6d6f81c8b4a4dabbbb8daf65bd",
+   "build/mods/test-werbung+test-filme/SOURCE2.RSC": "a0c0a0819c86c5fa6b537b391cb87f32657dc042",
+   "build/mods/test-werbung+test-serien/SOURCE1.RSC": "7d0e272143ea1abbdb25622f67fca72ee92176f2",
+   "build/mods/test-werbung+test-serien/SOURCE2.RSC": "a0c0a0819c86c5fa6b537b391cb87f32657dc042",
+   "mods/test-filme/films.json": "d94aa781e8381b0e728afb0564ad588aaac10173",
+   "mods/test-filme/mod.json": "280626fd61cc17d77e222a676e1fe80b2590ea45",
+   "mods/test-serien/mod.json": "1a7eea5498c5c8bfb81b8dd4f5625786c74b3f82",
+   "mods/test-serien/series.json": "1a16b8495b28aafb09228cb832b78e2f283771c7",
+   "mods/test-werbung/ads.json": "187452bbf942a5cbf725ddc2de7356030648b5c4",
+   "mods/test-werbung/mod.json": "58f969d53acd387ee7739bc94fdcbb1ee62a454f"
+  },
+  "result": [
+   0,
+   "ROOT/build/mods/test-werbung+test-filme+test-serien\n"
+  ]
+ },
+ "shipped-orders, run 12: test-werbung+test-serien+test-filme": {
+  "files": {
+   "build/mods/test-filme+test-serien+test-werbung/SOURCE1.RSC": "b17cf310daf9d020724c9e7c0c4fb51526a9f216",
+   "build/mods/test-filme+test-serien+test-werbung/SOURCE2.RSC": "a0c0a0819c86c5fa6b537b391cb87f32657dc042",
+   "build/mods/test-filme+test-serien/SOURCE1.RSC": "669765649559b68bdfa6b2799fadab191a8f4aa5",
+   "build/mods/test-filme+test-serien/SOURCE2.RSC": "a0c0a0819c86c5fa6b537b391cb87f32657dc042",
+   "build/mods/test-filme+test-werbung+test-serien/SOURCE1.RSC": "b17cf310daf9d020724c9e7c0c4fb51526a9f216",
+   "build/mods/test-filme+test-werbung+test-serien/SOURCE2.RSC": "a0c0a0819c86c5fa6b537b391cb87f32657dc042",
+   "build/mods/test-filme+test-werbung/SOURCE1.RSC": "f30f6b3f9699ab6d6f81c8b4a4dabbbb8daf65bd",
+   "build/mods/test-filme+test-werbung/SOURCE2.RSC": "a0c0a0819c86c5fa6b537b391cb87f32657dc042",
+   "build/mods/test-serien+test-filme+test-werbung/SOURCE1.RSC": "b17cf310daf9d020724c9e7c0c4fb51526a9f216",
+   "build/mods/test-serien+test-filme+test-werbung/SOURCE2.RSC": "a0c0a0819c86c5fa6b537b391cb87f32657dc042",
+   "build/mods/test-serien+test-filme/SOURCE1.RSC": "669765649559b68bdfa6b2799fadab191a8f4aa5",
+   "build/mods/test-serien+test-filme/SOURCE2.RSC": "a0c0a0819c86c5fa6b537b391cb87f32657dc042",
+   "build/mods/test-serien+test-werbung+test-filme/SOURCE1.RSC": "b17cf310daf9d020724c9e7c0c4fb51526a9f216",
+   "build/mods/test-serien+test-werbung+test-filme/SOURCE2.RSC": "a0c0a0819c86c5fa6b537b391cb87f32657dc042",
+   "build/mods/test-serien+test-werbung/SOURCE1.RSC": "7d0e272143ea1abbdb25622f67fca72ee92176f2",
+   "build/mods/test-serien+test-werbung/SOURCE2.RSC": "a0c0a0819c86c5fa6b537b391cb87f32657dc042",
+   "build/mods/test-werbung+test-filme+test-serien/SOURCE1.RSC": "b17cf310daf9d020724c9e7c0c4fb51526a9f216",
+   "build/mods/test-werbung+test-filme+test-serien/SOURCE2.RSC": "a0c0a0819c86c5fa6b537b391cb87f32657dc042",
+   "build/mods/test-werbung+test-filme/SOURCE1.RSC": "f30f6b3f9699ab6d6f81c8b4a4dabbbb8daf65bd",
+   "build/mods/test-werbung+test-filme/SOURCE2.RSC": "a0c0a0819c86c5fa6b537b391cb87f32657dc042",
+   "build/mods/test-werbung+test-serien+test-filme/SOURCE1.RSC": "b17cf310daf9d020724c9e7c0c4fb51526a9f216",
+   "build/mods/test-werbung+test-serien+test-filme/SOURCE2.RSC": "a0c0a0819c86c5fa6b537b391cb87f32657dc042",
+   "build/mods/test-werbung+test-serien/SOURCE1.RSC": "7d0e272143ea1abbdb25622f67fca72ee92176f2",
+   "build/mods/test-werbung+test-serien/SOURCE2.RSC": "a0c0a0819c86c5fa6b537b391cb87f32657dc042",
+   "mods/test-filme/films.json": "d94aa781e8381b0e728afb0564ad588aaac10173",
+   "mods/test-filme/mod.json": "280626fd61cc17d77e222a676e1fe80b2590ea45",
+   "mods/test-serien/mod.json": "1a7eea5498c5c8bfb81b8dd4f5625786c74b3f82",
+   "mods/test-serien/series.json": "1a16b8495b28aafb09228cb832b78e2f283771c7",
+   "mods/test-werbung/ads.json": "187452bbf942a5cbf725ddc2de7356030648b5c4",
+   "mods/test-werbung/mod.json": "58f969d53acd387ee7739bc94fdcbb1ee62a454f"
+  },
+  "result": [
+   0,
+   "ROOT/build/mods/test-werbung+test-serien+test-filme\n"
+  ]
+ },
+ "shipped-orders, run 1: test-filme+test-serien": {
+  "files": {
+   "build/mods/test-filme+test-serien/SOURCE1.RSC": "669765649559b68bdfa6b2799fadab191a8f4aa5",
+   "build/mods/test-filme+test-serien/SOURCE2.RSC": "a0c0a0819c86c5fa6b537b391cb87f32657dc042",
+   "mods/test-filme/films.json": "d94aa781e8381b0e728afb0564ad588aaac10173",
+   "mods/test-filme/mod.json": "280626fd61cc17d77e222a676e1fe80b2590ea45",
+   "mods/test-serien/mod.json": "1a7eea5498c5c8bfb81b8dd4f5625786c74b3f82",
+   "mods/test-serien/series.json": "1a16b8495b28aafb09228cb832b78e2f283771c7",
+   "mods/test-werbung/ads.json": "187452bbf942a5cbf725ddc2de7356030648b5c4",
+   "mods/test-werbung/mod.json": "58f969d53acd387ee7739bc94fdcbb1ee62a454f"
+  },
+  "result": [
+   0,
+   "ROOT/build/mods/test-filme+test-serien\n"
+  ]
+ },
+ "shipped-orders, run 2: test-filme+test-werbung": {
+  "files": {
+   "build/mods/test-filme+test-serien/SOURCE1.RSC": "669765649559b68bdfa6b2799fadab191a8f4aa5",
+   "build/mods/test-filme+test-serien/SOURCE2.RSC": "a0c0a0819c86c5fa6b537b391cb87f32657dc042",
+   "build/mods/test-filme+test-werbung/SOURCE1.RSC": "f30f6b3f9699ab6d6f81c8b4a4dabbbb8daf65bd",
+   "build/mods/test-filme+test-werbung/SOURCE2.RSC": "a0c0a0819c86c5fa6b537b391cb87f32657dc042",
+   "mods/test-filme/films.json": "d94aa781e8381b0e728afb0564ad588aaac10173",
+   "mods/test-filme/mod.json": "280626fd61cc17d77e222a676e1fe80b2590ea45",
+   "mods/test-serien/mod.json": "1a7eea5498c5c8bfb81b8dd4f5625786c74b3f82",
+   "mods/test-serien/series.json": "1a16b8495b28aafb09228cb832b78e2f283771c7",
+   "mods/test-werbung/ads.json": "187452bbf942a5cbf725ddc2de7356030648b5c4",
+   "mods/test-werbung/mod.json": "58f969d53acd387ee7739bc94fdcbb1ee62a454f"
+  },
+  "result": [
+   0,
+   "ROOT/build/mods/test-filme+test-werbung\n"
+  ]
+ },
+ "shipped-orders, run 3: test-serien+test-filme": {
+  "files": {
+   "build/mods/test-filme+test-serien/SOURCE1.RSC": "669765649559b68bdfa6b2799fadab191a8f4aa5",
+   "build/mods/test-filme+test-serien/SOURCE2.RSC": "a0c0a0819c86c5fa6b537b391cb87f32657dc042",
+   "build/mods/test-filme+test-werbung/SOURCE1.RSC": "f30f6b3f9699ab6d6f81c8b4a4dabbbb8daf65bd",
+   "build/mods/test-filme+test-werbung/SOURCE2.RSC": "a0c0a0819c86c5fa6b537b391cb87f32657dc042",
+   "build/mods/test-serien+test-filme/SOURCE1.RSC": "669765649559b68bdfa6b2799fadab191a8f4aa5",
+   "build/mods/test-serien+test-filme/SOURCE2.RSC": "a0c0a0819c86c5fa6b537b391cb87f32657dc042",
+   "mods/test-filme/films.json": "d94aa781e8381b0e728afb0564ad588aaac10173",
+   "mods/test-filme/mod.json": "280626fd61cc17d77e222a676e1fe80b2590ea45",
+   "mods/test-serien/mod.json": "1a7eea5498c5c8bfb81b8dd4f5625786c74b3f82",
+   "mods/test-serien/series.json": "1a16b8495b28aafb09228cb832b78e2f283771c7",
+   "mods/test-werbung/ads.json": "187452bbf942a5cbf725ddc2de7356030648b5c4",
+   "mods/test-werbung/mod.json": "58f969d53acd387ee7739bc94fdcbb1ee62a454f"
+  },
+  "result": [
+   0,
+   "ROOT/build/mods/test-serien+test-filme\n"
+  ]
+ },
+ "shipped-orders, run 4: test-serien+test-werbung": {
+  "files": {
+   "build/mods/test-filme+test-serien/SOURCE1.RSC": "669765649559b68bdfa6b2799fadab191a8f4aa5",
+   "build/mods/test-filme+test-serien/SOURCE2.RSC": "a0c0a0819c86c5fa6b537b391cb87f32657dc042",
+   "build/mods/test-filme+test-werbung/SOURCE1.RSC": "f30f6b3f9699ab6d6f81c8b4a4dabbbb8daf65bd",
+   "build/mods/test-filme+test-werbung/SOURCE2.RSC": "a0c0a0819c86c5fa6b537b391cb87f32657dc042",
+   "build/mods/test-serien+test-filme/SOURCE1.RSC": "669765649559b68bdfa6b2799fadab191a8f4aa5",
+   "build/mods/test-serien+test-filme/SOURCE2.RSC": "a0c0a0819c86c5fa6b537b391cb87f32657dc042",
+   "build/mods/test-serien+test-werbung/SOURCE1.RSC": "7d0e272143ea1abbdb25622f67fca72ee92176f2",
+   "build/mods/test-serien+test-werbung/SOURCE2.RSC": "a0c0a0819c86c5fa6b537b391cb87f32657dc042",
+   "mods/test-filme/films.json": "d94aa781e8381b0e728afb0564ad588aaac10173",
+   "mods/test-filme/mod.json": "280626fd61cc17d77e222a676e1fe80b2590ea45",
+   "mods/test-serien/mod.json": "1a7eea5498c5c8bfb81b8dd4f5625786c74b3f82",
+   "mods/test-serien/series.json": "1a16b8495b28aafb09228cb832b78e2f283771c7",
+   "mods/test-werbung/ads.json": "187452bbf942a5cbf725ddc2de7356030648b5c4",
+   "mods/test-werbung/mod.json": "58f969d53acd387ee7739bc94fdcbb1ee62a454f"
+  },
+  "result": [
+   0,
+   "ROOT/build/mods/test-serien+test-werbung\n"
+  ]
+ },
+ "shipped-orders, run 5: test-werbung+test-filme": {
+  "files": {
+   "build/mods/test-filme+test-serien/SOURCE1.RSC": "669765649559b68bdfa6b2799fadab191a8f4aa5",
+   "build/mods/test-filme+test-serien/SOURCE2.RSC": "a0c0a0819c86c5fa6b537b391cb87f32657dc042",
+   "build/mods/test-filme+test-werbung/SOURCE1.RSC": "f30f6b3f9699ab6d6f81c8b4a4dabbbb8daf65bd",
+   "build/mods/test-filme+test-werbung/SOURCE2.RSC": "a0c0a0819c86c5fa6b537b391cb87f32657dc042",
+   "build/mods/test-serien+test-filme/SOURCE1.RSC": "669765649559b68bdfa6b2799fadab191a8f4aa5",
+   "build/mods/test-serien+test-filme/SOURCE2.RSC": "a0c0a0819c86c5fa6b537b391cb87f32657dc042",
+   "build/mods/test-serien+test-werbung/SOURCE1.RSC": "7d0e272143ea1abbdb25622f67fca72ee92176f2",
+   "build/mods/test-serien+test-werbung/SOURCE2.RSC": "a0c0a0819c86c5fa6b537b391cb87f32657dc042",
+   "build/mods/test-werbung+test-filme/SOURCE1.RSC": "f30f6b3f9699ab6d6f81c8b4a4dabbbb8daf65bd",
+   "build/mods/test-werbung+test-filme/SOURCE2.RSC": "a0c0a0819c86c5fa6b537b391cb87f32657dc042",
+   "mods/test-filme/films.json": "d94aa781e8381b0e728afb0564ad588aaac10173",
+   "mods/test-filme/mod.json": "280626fd61cc17d77e222a676e1fe80b2590ea45",
+   "mods/test-serien/mod.json": "1a7eea5498c5c8bfb81b8dd4f5625786c74b3f82",
+   "mods/test-serien/series.json": "1a16b8495b28aafb09228cb832b78e2f283771c7",
+   "mods/test-werbung/ads.json": "187452bbf942a5cbf725ddc2de7356030648b5c4",
+   "mods/test-werbung/mod.json": "58f969d53acd387ee7739bc94fdcbb1ee62a454f"
+  },
+  "result": [
+   0,
+   "ROOT/build/mods/test-werbung+test-filme\n"
+  ]
+ },
+ "shipped-orders, run 6: test-werbung+test-serien": {
+  "files": {
+   "build/mods/test-filme+test-serien/SOURCE1.RSC": "669765649559b68bdfa6b2799fadab191a8f4aa5",
+   "build/mods/test-filme+test-serien/SOURCE2.RSC": "a0c0a0819c86c5fa6b537b391cb87f32657dc042",
+   "build/mods/test-filme+test-werbung/SOURCE1.RSC": "f30f6b3f9699ab6d6f81c8b4a4dabbbb8daf65bd",
+   "build/mods/test-filme+test-werbung/SOURCE2.RSC": "a0c0a0819c86c5fa6b537b391cb87f32657dc042",
+   "build/mods/test-serien+test-filme/SOURCE1.RSC": "669765649559b68bdfa6b2799fadab191a8f4aa5",
+   "build/mods/test-serien+test-filme/SOURCE2.RSC": "a0c0a0819c86c5fa6b537b391cb87f32657dc042",
+   "build/mods/test-serien+test-werbung/SOURCE1.RSC": "7d0e272143ea1abbdb25622f67fca72ee92176f2",
+   "build/mods/test-serien+test-werbung/SOURCE2.RSC": "a0c0a0819c86c5fa6b537b391cb87f32657dc042",
+   "build/mods/test-werbung+test-filme/SOURCE1.RSC": "f30f6b3f9699ab6d6f81c8b4a4dabbbb8daf65bd",
+   "build/mods/test-werbung+test-filme/SOURCE2.RSC": "a0c0a0819c86c5fa6b537b391cb87f32657dc042",
+   "build/mods/test-werbung+test-serien/SOURCE1.RSC": "7d0e272143ea1abbdb25622f67fca72ee92176f2",
+   "build/mods/test-werbung+test-serien/SOURCE2.RSC": "a0c0a0819c86c5fa6b537b391cb87f32657dc042",
+   "mods/test-filme/films.json": "d94aa781e8381b0e728afb0564ad588aaac10173",
+   "mods/test-filme/mod.json": "280626fd61cc17d77e222a676e1fe80b2590ea45",
+   "mods/test-serien/mod.json": "1a7eea5498c5c8bfb81b8dd4f5625786c74b3f82",
+   "mods/test-serien/series.json": "1a16b8495b28aafb09228cb832b78e2f283771c7",
+   "mods/test-werbung/ads.json": "187452bbf942a5cbf725ddc2de7356030648b5c4",
+   "mods/test-werbung/mod.json": "58f969d53acd387ee7739bc94fdcbb1ee62a454f"
+  },
+  "result": [
+   0,
+   "ROOT/build/mods/test-werbung+test-serien\n"
+  ]
+ },
+ "shipped-orders, run 7: test-filme+test-serien+test-werbung": {
+  "files": {
+   "build/mods/test-filme+test-serien+test-werbung/SOURCE1.RSC": "b17cf310daf9d020724c9e7c0c4fb51526a9f216",
+   "build/mods/test-filme+test-serien+test-werbung/SOURCE2.RSC": "a0c0a0819c86c5fa6b537b391cb87f32657dc042",
+   "build/mods/test-filme+test-serien/SOURCE1.RSC": "669765649559b68bdfa6b2799fadab191a8f4aa5",
+   "build/mods/test-filme+test-serien/SOURCE2.RSC": "a0c0a0819c86c5fa6b537b391cb87f32657dc042",
+   "build/mods/test-filme+test-werbung/SOURCE1.RSC": "f30f6b3f9699ab6d6f81c8b4a4dabbbb8daf65bd",
+   "build/mods/test-filme+test-werbung/SOURCE2.RSC": "a0c0a0819c86c5fa6b537b391cb87f32657dc042",
+   "build/mods/test-serien+test-filme/SOURCE1.RSC": "669765649559b68bdfa6b2799fadab191a8f4aa5",
+   "build/mods/test-serien+test-filme/SOURCE2.RSC": "a0c0a0819c86c5fa6b537b391cb87f32657dc042",
+   "build/mods/test-serien+test-werbung/SOURCE1.RSC": "7d0e272143ea1abbdb25622f67fca72ee92176f2",
+   "build/mods/test-serien+test-werbung/SOURCE2.RSC": "a0c0a0819c86c5fa6b537b391cb87f32657dc042",
+   "build/mods/test-werbung+test-filme/SOURCE1.RSC": "f30f6b3f9699ab6d6f81c8b4a4dabbbb8daf65bd",
+   "build/mods/test-werbung+test-filme/SOURCE2.RSC": "a0c0a0819c86c5fa6b537b391cb87f32657dc042",
+   "build/mods/test-werbung+test-serien/SOURCE1.RSC": "7d0e272143ea1abbdb25622f67fca72ee92176f2",
+   "build/mods/test-werbung+test-serien/SOURCE2.RSC": "a0c0a0819c86c5fa6b537b391cb87f32657dc042",
+   "mods/test-filme/films.json": "d94aa781e8381b0e728afb0564ad588aaac10173",
+   "mods/test-filme/mod.json": "280626fd61cc17d77e222a676e1fe80b2590ea45",
+   "mods/test-serien/mod.json": "1a7eea5498c5c8bfb81b8dd4f5625786c74b3f82",
+   "mods/test-serien/series.json": "1a16b8495b28aafb09228cb832b78e2f283771c7",
+   "mods/test-werbung/ads.json": "187452bbf942a5cbf725ddc2de7356030648b5c4",
+   "mods/test-werbung/mod.json": "58f969d53acd387ee7739bc94fdcbb1ee62a454f"
+  },
+  "result": [
+   0,
+   "ROOT/build/mods/test-filme+test-serien+test-werbung\n"
+  ]
+ },
+ "shipped-orders, run 8: test-filme+test-werbung+test-serien": {
+  "files": {
+   "build/mods/test-filme+test-serien+test-werbung/SOURCE1.RSC": "b17cf310daf9d020724c9e7c0c4fb51526a9f216",
+   "build/mods/test-filme+test-serien+test-werbung/SOURCE2.RSC": "a0c0a0819c86c5fa6b537b391cb87f32657dc042",
+   "build/mods/test-filme+test-serien/SOURCE1.RSC": "669765649559b68bdfa6b2799fadab191a8f4aa5",
+   "build/mods/test-filme+test-serien/SOURCE2.RSC": "a0c0a0819c86c5fa6b537b391cb87f32657dc042",
+   "build/mods/test-filme+test-werbung+test-serien/SOURCE1.RSC": "b17cf310daf9d020724c9e7c0c4fb51526a9f216",
+   "build/mods/test-filme+test-werbung+test-serien/SOURCE2.RSC": "a0c0a0819c86c5fa6b537b391cb87f32657dc042",
+   "build/mods/test-filme+test-werbung/SOURCE1.RSC": "f30f6b3f9699ab6d6f81c8b4a4dabbbb8daf65bd",
+   "build/mods/test-filme+test-werbung/SOURCE2.RSC": "a0c0a0819c86c5fa6b537b391cb87f32657dc042",
+   "build/mods/test-serien+test-filme/SOURCE1.RSC": "669765649559b68bdfa6b2799fadab191a8f4aa5",
+   "build/mods/test-serien+test-filme/SOURCE2.RSC": "a0c0a0819c86c5fa6b537b391cb87f32657dc042",
+   "build/mods/test-serien+test-werbung/SOURCE1.RSC": "7d0e272143ea1abbdb25622f67fca72ee92176f2",
+   "build/mods/test-serien+test-werbung/SOURCE2.RSC": "a0c0a0819c86c5fa6b537b391cb87f32657dc042",
+   "build/mods/test-werbung+test-filme/SOURCE1.RSC": "f30f6b3f9699ab6d6f81c8b4a4dabbbb8daf65bd",
+   "build/mods/test-werbung+test-filme/SOURCE2.RSC": "a0c0a0819c86c5fa6b537b391cb87f32657dc042",
+   "build/mods/test-werbung+test-serien/SOURCE1.RSC": "7d0e272143ea1abbdb25622f67fca72ee92176f2",
+   "build/mods/test-werbung+test-serien/SOURCE2.RSC": "a0c0a0819c86c5fa6b537b391cb87f32657dc042",
+   "mods/test-filme/films.json": "d94aa781e8381b0e728afb0564ad588aaac10173",
+   "mods/test-filme/mod.json": "280626fd61cc17d77e222a676e1fe80b2590ea45",
+   "mods/test-serien/mod.json": "1a7eea5498c5c8bfb81b8dd4f5625786c74b3f82",
+   "mods/test-serien/series.json": "1a16b8495b28aafb09228cb832b78e2f283771c7",
+   "mods/test-werbung/ads.json": "187452bbf942a5cbf725ddc2de7356030648b5c4",
+   "mods/test-werbung/mod.json": "58f969d53acd387ee7739bc94fdcbb1ee62a454f"
+  },
+  "result": [
+   0,
+   "ROOT/build/mods/test-filme+test-werbung+test-serien\n"
+  ]
+ },
+ "shipped-orders, run 9: test-serien+test-filme+test-werbung": {
+  "files": {
+   "build/mods/test-filme+test-serien+test-werbung/SOURCE1.RSC": "b17cf310daf9d020724c9e7c0c4fb51526a9f216",
+   "build/mods/test-filme+test-serien+test-werbung/SOURCE2.RSC": "a0c0a0819c86c5fa6b537b391cb87f32657dc042",
+   "build/mods/test-filme+test-serien/SOURCE1.RSC": "669765649559b68bdfa6b2799fadab191a8f4aa5",
+   "build/mods/test-filme+test-serien/SOURCE2.RSC": "a0c0a0819c86c5fa6b537b391cb87f32657dc042",
+   "build/mods/test-filme+test-werbung+test-serien/SOURCE1.RSC": "b17cf310daf9d020724c9e7c0c4fb51526a9f216",
+   "build/mods/test-filme+test-werbung+test-serien/SOURCE2.RSC": "a0c0a0819c86c5fa6b537b391cb87f32657dc042",
+   "build/mods/test-filme+test-werbung/SOURCE1.RSC": "f30f6b3f9699ab6d6f81c8b4a4dabbbb8daf65bd",
+   "build/mods/test-filme+test-werbung/SOURCE2.RSC": "a0c0a0819c86c5fa6b537b391cb87f32657dc042",
+   "build/mods/test-serien+test-filme+test-werbung/SOURCE1.RSC": "b17cf310daf9d020724c9e7c0c4fb51526a9f216",
+   "build/mods/test-serien+test-filme+test-werbung/SOURCE2.RSC": "a0c0a0819c86c5fa6b537b391cb87f32657dc042",
+   "build/mods/test-serien+test-filme/SOURCE1.RSC": "669765649559b68bdfa6b2799fadab191a8f4aa5",
+   "build/mods/test-serien+test-filme/SOURCE2.RSC": "a0c0a0819c86c5fa6b537b391cb87f32657dc042",
+   "build/mods/test-serien+test-werbung/SOURCE1.RSC": "7d0e272143ea1abbdb25622f67fca72ee92176f2",
+   "build/mods/test-serien+test-werbung/SOURCE2.RSC": "a0c0a0819c86c5fa6b537b391cb87f32657dc042",
+   "build/mods/test-werbung+test-filme/SOURCE1.RSC": "f30f6b3f9699ab6d6f81c8b4a4dabbbb8daf65bd",
+   "build/mods/test-werbung+test-filme/SOURCE2.RSC": "a0c0a0819c86c5fa6b537b391cb87f32657dc042",
+   "build/mods/test-werbung+test-serien/SOURCE1.RSC": "7d0e272143ea1abbdb25622f67fca72ee92176f2",
+   "build/mods/test-werbung+test-serien/SOURCE2.RSC": "a0c0a0819c86c5fa6b537b391cb87f32657dc042",
+   "mods/test-filme/films.json": "d94aa781e8381b0e728afb0564ad588aaac10173",
+   "mods/test-filme/mod.json": "280626fd61cc17d77e222a676e1fe80b2590ea45",
+   "mods/test-serien/mod.json": "1a7eea5498c5c8bfb81b8dd4f5625786c74b3f82",
+   "mods/test-serien/series.json": "1a16b8495b28aafb09228cb832b78e2f283771c7",
+   "mods/test-werbung/ads.json": "187452bbf942a5cbf725ddc2de7356030648b5c4",
+   "mods/test-werbung/mod.json": "58f969d53acd387ee7739bc94fdcbb1ee62a454f"
+  },
+  "result": [
+   0,
+   "ROOT/build/mods/test-serien+test-filme+test-werbung\n"
+  ]
+ },
+ "text-255, run 1: kaputt": {
+  "files": {
+   "mods/kaputt/films.json": "d68842cf8d7ea23c91afec5e6d402cc98d8a9057",
+   "mods/kaputt/mod.json": "0002cc38f8451af24eda3ca07eaa9bbedc98afe4",
+   "mods/test-filme/films.json": "d94aa781e8381b0e728afb0564ad588aaac10173",
+   "mods/test-filme/mod.json": "280626fd61cc17d77e222a676e1fe80b2590ea45",
+   "mods/test-serien/mod.json": "1a7eea5498c5c8bfb81b8dd4f5625786c74b3f82",
+   "mods/test-serien/series.json": "1a16b8495b28aafb09228cb832b78e2f283771c7",
+   "mods/test-werbung/ads.json": "187452bbf942a5cbf725ddc2de7356030648b5c4",
+   "mods/test-werbung/mod.json": "58f969d53acd387ee7739bc94fdcbb1ee62a454f"
+  },
+  "result": [
+   "error",
+   ""
+  ]
+ },
+ "texts-64k, run 1: lang": {
+  "files": {
+   "mods/lang/films.json": "69501d6cbbccc87e618d84d0de6dfe66869a0b29",
+   "mods/lang/mod.json": "0002cc38f8451af24eda3ca07eaa9bbedc98afe4",
+   "mods/test-filme/films.json": "d94aa781e8381b0e728afb0564ad588aaac10173",
+   "mods/test-filme/mod.json": "280626fd61cc17d77e222a676e1fe80b2590ea45",
+   "mods/test-serien/mod.json": "1a7eea5498c5c8bfb81b8dd4f5625786c74b3f82",
+   "mods/test-serien/series.json": "1a16b8495b28aafb09228cb832b78e2f283771c7",
+   "mods/test-werbung/ads.json": "187452bbf942a5cbf725ddc2de7356030648b5c4",
+   "mods/test-werbung/mod.json": "58f969d53acd387ee7739bc94fdcbb1ee62a454f"
+  },
+  "result": [
+   "error",
+   ""
+  ]
+ },
+ "twice-in-pack, run 1: doppelt": {
+  "files": {
+   "mods/doppelt/films.json": "139d5707dd631fd03aab7c8494e296422934572b",
+   "mods/doppelt/mod.json": "0002cc38f8451af24eda3ca07eaa9bbedc98afe4",
+   "mods/test-filme/films.json": "d94aa781e8381b0e728afb0564ad588aaac10173",
+   "mods/test-filme/mod.json": "280626fd61cc17d77e222a676e1fe80b2590ea45",
+   "mods/test-serien/mod.json": "1a7eea5498c5c8bfb81b8dd4f5625786c74b3f82",
+   "mods/test-serien/series.json": "1a16b8495b28aafb09228cb832b78e2f283771c7",
+   "mods/test-werbung/ads.json": "187452bbf942a5cbf725ddc2de7356030648b5c4",
+   "mods/test-werbung/mod.json": "58f969d53acd387ee7739bc94fdcbb1ee62a454f"
+  },
+  "result": [
+   "error",
+   ""
+  ]
+ },
+ "twice-in-pack, run 2: test-filme+doppelt": {
+  "files": {
+   "build/mods/test-filme+doppelt/SOURCE1.RSC": "79d13b9ab325ae0ff0315c2f62509aa988bd6951",
+   "build/mods/test-filme+doppelt/SOURCE2.RSC": "a0c0a0819c86c5fa6b537b391cb87f32657dc042",
+   "mods/doppelt/films.json": "139d5707dd631fd03aab7c8494e296422934572b",
+   "mods/doppelt/mod.json": "0002cc38f8451af24eda3ca07eaa9bbedc98afe4",
+   "mods/test-filme/films.json": "d94aa781e8381b0e728afb0564ad588aaac10173",
+   "mods/test-filme/mod.json": "280626fd61cc17d77e222a676e1fe80b2590ea45",
+   "mods/test-serien/mod.json": "1a7eea5498c5c8bfb81b8dd4f5625786c74b3f82",
+   "mods/test-serien/series.json": "1a16b8495b28aafb09228cb832b78e2f283771c7",
+   "mods/test-werbung/ads.json": "187452bbf942a5cbf725ddc2de7356030648b5c4",
+   "mods/test-werbung/mod.json": "58f969d53acd387ee7739bc94fdcbb1ee62a454f"
+  },
+  "result": [
+   0,
+   "ROOT/build/mods/test-filme+doppelt\n"
+  ]
+ },
+ "two-packs, run 1: pack-a+pack-b": {
+  "files": {
+   "build/mods/pack-a+pack-b/SOURCE1.RSC": "5e5f9181363fa3d2938a10135b77b634905479e2",
+   "build/mods/pack-a+pack-b/SOURCE2.RSC": "a0c0a0819c86c5fa6b537b391cb87f32657dc042",
+   "mods/pack-a/films.json": "e2b246813d16e0d55bdf92fad28ba7e57161136f",
+   "mods/pack-a/mod.json": "0002cc38f8451af24eda3ca07eaa9bbedc98afe4",
+   "mods/pack-b/films.json": "9d81802bff7d0862de7e9039d8d1c9eae39514c7",
+   "mods/pack-b/mod.json": "0002cc38f8451af24eda3ca07eaa9bbedc98afe4",
+   "mods/pack-b/screenplays.json": "cdac38e75830fe430fdae88f29a2d5d05d658e5b",
+   "mods/test-filme/films.json": "d94aa781e8381b0e728afb0564ad588aaac10173",
+   "mods/test-filme/mod.json": "280626fd61cc17d77e222a676e1fe80b2590ea45",
+   "mods/test-serien/mod.json": "1a7eea5498c5c8bfb81b8dd4f5625786c74b3f82",
+   "mods/test-serien/series.json": "1a16b8495b28aafb09228cb832b78e2f283771c7",
+   "mods/test-werbung/ads.json": "187452bbf942a5cbf725ddc2de7356030648b5c4",
+   "mods/test-werbung/mod.json": "58f969d53acd387ee7739bc94fdcbb1ee62a454f"
+  },
+  "result": [
+   0,
+   "ROOT/build/mods/pack-a+pack-b\n"
+  ]
+ },
+ "two-packs, run 2: pack-b+pack-a": {
+  "files": {
+   "build/mods/pack-a+pack-b/SOURCE1.RSC": "5e5f9181363fa3d2938a10135b77b634905479e2",
+   "build/mods/pack-a+pack-b/SOURCE2.RSC": "a0c0a0819c86c5fa6b537b391cb87f32657dc042",
+   "build/mods/pack-b+pack-a/SOURCE1.RSC": "17da7690baaea43054d228356b21baade2ea21f1",
+   "build/mods/pack-b+pack-a/SOURCE2.RSC": "a0c0a0819c86c5fa6b537b391cb87f32657dc042",
+   "mods/pack-a/films.json": "e2b246813d16e0d55bdf92fad28ba7e57161136f",
+   "mods/pack-a/mod.json": "0002cc38f8451af24eda3ca07eaa9bbedc98afe4",
+   "mods/pack-b/films.json": "9d81802bff7d0862de7e9039d8d1c9eae39514c7",
+   "mods/pack-b/mod.json": "0002cc38f8451af24eda3ca07eaa9bbedc98afe4",
+   "mods/pack-b/screenplays.json": "cdac38e75830fe430fdae88f29a2d5d05d658e5b",
+   "mods/test-filme/films.json": "d94aa781e8381b0e728afb0564ad588aaac10173",
+   "mods/test-filme/mod.json": "280626fd61cc17d77e222a676e1fe80b2590ea45",
+   "mods/test-serien/mod.json": "1a7eea5498c5c8bfb81b8dd4f5625786c74b3f82",
+   "mods/test-serien/series.json": "1a16b8495b28aafb09228cb832b78e2f283771c7",
+   "mods/test-werbung/ads.json": "187452bbf942a5cbf725ddc2de7356030648b5c4",
+   "mods/test-werbung/mod.json": "58f969d53acd387ee7739bc94fdcbb1ee62a454f"
+  },
+  "result": [
+   0,
+   "ROOT/build/mods/pack-b+pack-a\n"
+  ]
+ },
+ "two-packs, run 3: pack-a": {
+  "files": {
+   "build/mods/pack-a+pack-b/SOURCE1.RSC": "5e5f9181363fa3d2938a10135b77b634905479e2",
+   "build/mods/pack-a+pack-b/SOURCE2.RSC": "a0c0a0819c86c5fa6b537b391cb87f32657dc042",
+   "build/mods/pack-a/SOURCE1.RSC": "b0590f6f8ce0d1ebb4c63957bf7c32fe4cd58d4c",
+   "build/mods/pack-a/SOURCE2.RSC": "a0c0a0819c86c5fa6b537b391cb87f32657dc042",
+   "build/mods/pack-b+pack-a/SOURCE1.RSC": "17da7690baaea43054d228356b21baade2ea21f1",
+   "build/mods/pack-b+pack-a/SOURCE2.RSC": "a0c0a0819c86c5fa6b537b391cb87f32657dc042",
+   "mods/pack-a/films.json": "e2b246813d16e0d55bdf92fad28ba7e57161136f",
+   "mods/pack-a/mod.json": "0002cc38f8451af24eda3ca07eaa9bbedc98afe4",
+   "mods/pack-b/films.json": "9d81802bff7d0862de7e9039d8d1c9eae39514c7",
+   "mods/pack-b/mod.json": "0002cc38f8451af24eda3ca07eaa9bbedc98afe4",
+   "mods/pack-b/screenplays.json": "cdac38e75830fe430fdae88f29a2d5d05d658e5b",
+   "mods/test-filme/films.json": "d94aa781e8381b0e728afb0564ad588aaac10173",
+   "mods/test-filme/mod.json": "280626fd61cc17d77e222a676e1fe80b2590ea45",
+   "mods/test-serien/mod.json": "1a7eea5498c5c8bfb81b8dd4f5625786c74b3f82",
+   "mods/test-serien/series.json": "1a16b8495b28aafb09228cb832b78e2f283771c7",
+   "mods/test-werbung/ads.json": "187452bbf942a5cbf725ddc2de7356030648b5c4",
+   "mods/test-werbung/mod.json": "58f969d53acd387ee7739bc94fdcbb1ee62a454f"
+  },
+  "result": [
+   0,
+   "ROOT/build/mods/pack-a\n"
+  ]
+ },
+ "two-packs, run 4: pack-b": {
+  "files": {
+   "build/mods/pack-a+pack-b/SOURCE1.RSC": "5e5f9181363fa3d2938a10135b77b634905479e2",
+   "build/mods/pack-a+pack-b/SOURCE2.RSC": "a0c0a0819c86c5fa6b537b391cb87f32657dc042",
+   "build/mods/pack-a/SOURCE1.RSC": "b0590f6f8ce0d1ebb4c63957bf7c32fe4cd58d4c",
+   "build/mods/pack-a/SOURCE2.RSC": "a0c0a0819c86c5fa6b537b391cb87f32657dc042",
+   "build/mods/pack-b+pack-a/SOURCE1.RSC": "17da7690baaea43054d228356b21baade2ea21f1",
+   "build/mods/pack-b+pack-a/SOURCE2.RSC": "a0c0a0819c86c5fa6b537b391cb87f32657dc042",
+   "build/mods/pack-b/SOURCE1.RSC": "b5a0a545bb08299d7edf69ef841e5ab38b8c49dc",
+   "build/mods/pack-b/SOURCE2.RSC": "a0c0a0819c86c5fa6b537b391cb87f32657dc042",
+   "mods/pack-a/films.json": "e2b246813d16e0d55bdf92fad28ba7e57161136f",
+   "mods/pack-a/mod.json": "0002cc38f8451af24eda3ca07eaa9bbedc98afe4",
+   "mods/pack-b/films.json": "9d81802bff7d0862de7e9039d8d1c9eae39514c7",
+   "mods/pack-b/mod.json": "0002cc38f8451af24eda3ca07eaa9bbedc98afe4",
+   "mods/pack-b/screenplays.json": "cdac38e75830fe430fdae88f29a2d5d05d658e5b",
+   "mods/test-filme/films.json": "d94aa781e8381b0e728afb0564ad588aaac10173",
+   "mods/test-filme/mod.json": "280626fd61cc17d77e222a676e1fe80b2590ea45",
+   "mods/test-serien/mod.json": "1a7eea5498c5c8bfb81b8dd4f5625786c74b3f82",
+   "mods/test-serien/series.json": "1a16b8495b28aafb09228cb832b78e2f283771c7",
+   "mods/test-werbung/ads.json": "187452bbf942a5cbf725ddc2de7356030648b5c4",
+   "mods/test-werbung/mod.json": "58f969d53acd387ee7739bc94fdcbb1ee62a454f"
+  },
+  "result": [
+   0,
+   "ROOT/build/mods/pack-b\n"
+  ]
+ },
+ "value-range, run 1: kaputt": {
+  "files": {
+   "mods/kaputt/films.json": "1fc6df750980bdc8c1d383e829fb14bad1e60d46",
+   "mods/kaputt/mod.json": "0002cc38f8451af24eda3ca07eaa9bbedc98afe4",
+   "mods/test-filme/films.json": "d94aa781e8381b0e728afb0564ad588aaac10173",
+   "mods/test-filme/mod.json": "280626fd61cc17d77e222a676e1fe80b2590ea45",
+   "mods/test-serien/mod.json": "1a7eea5498c5c8bfb81b8dd4f5625786c74b3f82",
+   "mods/test-serien/series.json": "1a16b8495b28aafb09228cb832b78e2f283771c7",
+   "mods/test-werbung/ads.json": "187452bbf942a5cbf725ddc2de7356030648b5c4",
+   "mods/test-werbung/mod.json": "58f969d53acd387ee7739bc94fdcbb1ee62a454f"
+  },
+  "result": [
+   "error",
+   ""
+  ]
+ },
+ "value-type, run 1: kaputt": {
+  "files": {
+   "mods/kaputt/films.json": "88250c5be6681bf37d546c063780b1f69abbb185",
+   "mods/kaputt/mod.json": "0002cc38f8451af24eda3ca07eaa9bbedc98afe4",
+   "mods/test-filme/films.json": "d94aa781e8381b0e728afb0564ad588aaac10173",
+   "mods/test-filme/mod.json": "280626fd61cc17d77e222a676e1fe80b2590ea45",
+   "mods/test-serien/mod.json": "1a7eea5498c5c8bfb81b8dd4f5625786c74b3f82",
+   "mods/test-serien/series.json": "1a16b8495b28aafb09228cb832b78e2f283771c7",
+   "mods/test-werbung/ads.json": "187452bbf942a5cbf725ddc2de7356030648b5c4",
+   "mods/test-werbung/mod.json": "58f969d53acd387ee7739bc94fdcbb1ee62a454f"
+  },
+  "result": [
+   "error",
+   ""
+  ]
+ }
+}

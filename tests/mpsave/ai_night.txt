@@ -1,0 +1,296 @@
+# The AI improvement's state in a network game's savegame (src/ai_improve.c, src/mpsave.c;
+# tools/mpsavetest.py): two humans, the computer player on station 3, --ai-improve=normal,
+# the game speed 60 (a poke on every machine).  Station 1 buys two transmitters at frame 3600
+# (the harness's txbuy: 5.0 -> 13.0 M); the computer player notices it and waits 8-20 played
+# hours -- the first night comes first: the savegame (tag-002.mtvmp) holds the waiting state
+# (the fourth part of its "MTVX" extension).  Against ai_night.seats.
+# humans 1,2
+# options --new-game --names Anna,Ben --seed 1234 --ai-improve=normal
+600 poke16 39D4:72A2 60
+900 key esc
+950 seat 1 key esc
+1200 key esc
+1250 seat 1 key esc
+1500 key esc
+1550 seat 1 key esc
+1800 key esc
+1850 seat 1 key esc
+2100 key esc
+2150 seat 1 key esc
+2400 key esc
+2450 seat 1 key esc
+2700 key esc
+2750 seat 1 key esc
+3000 key esc
+3050 seat 1 key esc
+3300 key esc
+3350 seat 1 key esc
+3600 txbuy 1 100000
+3600 key esc
+3601 txbuy 1 100000
+3650 seat 1 key esc
+3900 key esc
+3950 seat 1 key esc
+4000 peek32 39D4:1EDB
+4000 peek32 39D4:2277
+4000 peek32 39D4:8C29
+4000 peek32 39D4:6EF1
+4000 hash
+4001 seat 1 hash
+4200 key esc
+4250 seat 1 key esc
+4500 key esc
+4550 seat 1 key esc
+4800 key esc
+4850 seat 1 key esc
+5100 key esc
+5150 seat 1 key esc
+5400 key esc
+5450 seat 1 key esc
+5700 key esc
+5750 seat 1 key esc
+6000 key esc
+6050 seat 1 key esc
+6300 key esc
+6350 seat 1 key esc
+6600 key esc
+6650 seat 1 key esc
+6900 key esc
+6950 seat 1 key esc
+7200 key esc
+7250 seat 1 key esc
+7500 key esc
+7550 seat 1 key esc
+7800 key esc
+7850 seat 1 key esc
+8100 key esc
+8150 seat 1 key esc
+8400 key esc
+8450 seat 1 key esc
+8700 key esc
+8750 seat 1 key esc
+9000 key esc
+9050 seat 1 key esc
+9300 key esc
+9350 seat 1 key esc
+9600 key esc
+9650 seat 1 key esc
+9900 key esc
+9950 seat 1 key esc
+10200 key esc
+10250 seat 1 key esc
+10500 key esc
+10550 seat 1 key esc
+10800 key esc
+10850 seat 1 key esc
+11100 key esc
+11150 seat 1 key esc
+11400 key esc
+11450 seat 1 key esc
+11700 key esc
+11750 seat 1 key esc
+12000 key esc
+12050 seat 1 key esc
+12300 key esc
+12350 seat 1 key esc
+12600 key esc
+12650 seat 1 key esc
+12900 key esc
+12950 seat 1 key esc
+13200 key esc
+13250 seat 1 key esc
+13500 key esc
+13550 seat 1 key esc
+13800 key esc
+13850 seat 1 key esc
+14100 key esc
+14150 seat 1 key esc
+14400 key esc
+14450 seat 1 key esc
+14700 key esc
+14750 seat 1 key esc
+15000 key esc
+15050 seat 1 key esc
+15300 key esc
+15350 seat 1 key esc
+15600 key esc
+15650 seat 1 key esc
+15900 key esc
+15950 seat 1 key esc
+16200 key esc
+16250 seat 1 key esc
+16500 key esc
+16550 seat 1 key esc
+16800 key esc
+16850 seat 1 key esc
+17100 key esc
+17150 seat 1 key esc
+17400 key esc
+17450 seat 1 key esc
+17700 key esc
+17750 seat 1 key esc
+18000 key esc
+18050 seat 1 key esc
+18300 key esc
+18350 seat 1 key esc
+18600 key esc
+18650 seat 1 key esc
+18900 key esc
+18950 seat 1 key esc
+19200 key esc
+19250 seat 1 key esc
+19500 key esc
+19550 seat 1 key esc
+19800 key esc
+19850 seat 1 key esc
+20000 peek32 39D4:1EDB
+20000 peek32 39D4:2277
+20000 peek32 39D4:8C29
+20000 peek32 39D4:6EF1
+20000 hash
+20001 seat 1 hash
+20100 key esc
+20150 seat 1 key esc
+20400 key esc
+20450 seat 1 key esc
+20700 key esc
+20750 seat 1 key esc
+21000 key esc
+21050 seat 1 key esc
+21300 key esc
+21350 seat 1 key esc
+21600 key esc
+21650 seat 1 key esc
+21900 key esc
+21950 seat 1 key esc
+22200 key esc
+22250 seat 1 key esc
+22500 key esc
+22550 seat 1 key esc
+22800 key esc
+22850 seat 1 key esc
+23100 key esc
+23150 seat 1 key esc
+23400 key esc
+23450 seat 1 key esc
+23700 key esc
+23750 seat 1 key esc
+24000 key esc
+24050 seat 1 key esc
+24300 key esc
+24350 seat 1 key esc
+24600 key esc
+24650 seat 1 key esc
+24900 key esc
+24950 seat 1 key esc
+25200 key esc
+25250 seat 1 key esc
+25500 key esc
+25550 seat 1 key esc
+25800 key esc
+25850 seat 1 key esc
+26100 key esc
+26150 seat 1 key esc
+26400 key esc
+26450 seat 1 key esc
+26700 key esc
+26750 seat 1 key esc
+27000 key esc
+27050 seat 1 key esc
+27300 key esc
+27350 seat 1 key esc
+27600 key esc
+27650 seat 1 key esc
+27900 key esc
+27950 seat 1 key esc
+28200 key esc
+28250 seat 1 key esc
+28500 key esc
+28550 seat 1 key esc
+28800 key esc
+28850 seat 1 key esc
+29100 key esc
+29150 seat 1 key esc
+29400 key esc
+29450 seat 1 key esc
+29700 key esc
+29750 seat 1 key esc
+30000 key esc
+30050 seat 1 key esc
+30300 key esc
+30350 seat 1 key esc
+30600 key esc
+30650 seat 1 key esc
+30900 key esc
+30950 seat 1 key esc
+31200 key esc
+31250 seat 1 key esc
+31500 key esc
+31550 seat 1 key esc
+31800 key esc
+31850 seat 1 key esc
+32100 key esc
+32150 seat 1 key esc
+32400 key esc
+32450 seat 1 key esc
+32700 key esc
+32750 seat 1 key esc
+33000 peek32 39D4:1EDB
+33000 peek32 39D4:2277
+33000 peek32 39D4:8C29
+33000 peek32 39D4:6EF1
+33000 hash
+33000 key esc
+33001 seat 1 hash
+33050 seat 1 key esc
+33300 key esc
+33350 seat 1 key esc
+33600 key esc
+33650 seat 1 key esc
+33900 key esc
+33950 seat 1 key esc
+34200 key esc
+34250 seat 1 key esc
+34500 key esc
+34550 seat 1 key esc
+34800 key esc
+34850 seat 1 key esc
+35100 key esc
+35150 seat 1 key esc
+35400 key esc
+35450 seat 1 key esc
+35700 key esc
+35750 seat 1 key esc
+36000 key esc
+36050 seat 1 key esc
+36300 key esc
+36350 seat 1 key esc
+36600 key esc
+36650 seat 1 key esc
+36900 key esc
+36950 seat 1 key esc
+37200 key esc
+37250 seat 1 key esc
+37500 key esc
+37550 seat 1 key esc
+37800 key esc
+37850 seat 1 key esc
+38100 key esc
+38150 seat 1 key esc
+38400 key esc
+38450 seat 1 key esc
+38700 key esc
+38750 seat 1 key esc
+39000 key esc
+39050 seat 1 key esc
+39300 key esc
+39350 seat 1 key esc
+39600 key esc
+39650 seat 1 key esc
+39900 key esc
+39950 seat 1 key esc
+39997 peek16 39D4:71E4
+39997 peek32 39D4:2277
+39998 hash
+39999 seat 1 hash
+40000 quit

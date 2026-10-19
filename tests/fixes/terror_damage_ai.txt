@@ -1,0 +1,40 @@
+# option: --terror-damage=200000
+# args: --logical-time
+# The terror damage hits a computer player too: the human swaps the signs at the information board
+# and the bomb goes off in Fun-TV's library (tests/scenarios/event_terrorist_board.txt, on the logical
+# clock).  Player 2's cash (DS:8C12, u32) -12 500 before; classic -62 500 after (the original's
+# $50 000), with the option -212 500; a film of its library is destroyed either way (genre 6 count
+# DS:7057 3 -> 2).
+# expect classic 10000 word 39D4:8C12 == 3036
+# expect classic 10000 word 39D4:8C14 == 65535
+# expect classic 10000 byte 39D4:7057 == 2
+# expect option  10000 word 39D4:8C12 == 49644
+# expect option  10000 word 39D4:8C14 == 65532
+# expect option  10000 byte 39D4:7057 == 2
+400 key esc
+1000 click 64 100
+1300 click 172 185
+2000 poke16 39D4:6143 58840
+2000 poke16 39D4:6145 21
+3500 key esc
+3800 key esc
+4100 key esc
+4400 key esc
+4500 poke16 39D4:7B48 1
+4500 poke16 39D4:7B54 3
+4500 poke16 39D4:7B4A 0
+4500 poke16 39D4:7B46 153
+6000 goto 200 41
+6040 down 1
+6060 up 1
+6300 goto 277 49
+6340 down 1
+6360 up 1
+6600 goto 200 41
+6640 down 1
+6660 up 1
+7000 poke16 39D4:7A5C 1
+7000 poke16 39D4:7A56 2
+7000 poke16 39D4:7A88 0
+7100 poke16 39D4:6143 31424
+7100 poke16 39D4:6145 16

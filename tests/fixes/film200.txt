@@ -1,0 +1,10 @@
+# fix: film-200 (data)
+# Film 200, John Carpenter's "Prince of Darkness" (1987), has the placeholder English title
+# "xxx" and a German text cut off in the resource; it is never offered (flags 5: bit 5 clear).
+# The fix restores its texts (English and German titles, a German description) and puts it on
+# the market after the start savegame (flags byte at film table 4DA5:0008 + 200*0x17 + 6).
+# expect classic 1500 byte 4DA5:1206 == 5
+# expect fixed   1500 byte 4DA5:1206 == 37
+400 key esc
+1000 click 64 100
+1300 click 172 185

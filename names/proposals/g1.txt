@@ -1,0 +1,269 @@
+fn 1DA8:0006 script_count_available  number of screenplays (0x715C records 1..50) with status +4 == 0 and flag bit1 (in pool) - used by the screenplay agency refresh
+fn 1DA8:004E sched_mark_scheduled  clear the "scheduled" flag (movie +7 bit1, series +0x26 bit1) of all programs, then set it for every program in each player's schedule from the current hour (clock_hour_round55) to slot 14
+fn 1DA8:0146 news_total_share  sum of news scores G8(0x3F4B+p) of players still in the game, capped at 95 (% of audience watching the news)
+fn 1DA8:0187 program_total_share  sum of program scores G16(0x24A1+2p) of players still in the game, capped at 95 (% of audience watching TV)
+fn 1DA8:01CB script_episode_count  episodes a screenplay produces: series flag (+5 bit0) -> episode count (+0x22) of its target series, else 1
+fn 1DA8:0217 programs_recover_topicality  every 2nd day: movie topicality (+3) rises to the next multiple of max(+1)/5 (20% steps); series episode topicality rises to the next multiple of max/20 (5% steps)
+fn 1DA8:034E studio_check_finished  for each of the 12 studios whose production finishes today at/after this hour: message 0x10E ("Studio No. %d reports ... completed"), movie/episode becomes available (+6|=0x20) and goes to the owner's archive at price 0, series episode marked produced; whole production done -> script status 99 and studio freed; refreshes planner/library if open
+fn 1DA8:06EA archive_genre_full  ?(player, id, genre; genre 0 = derive from id) counts archive entries of that genre + auction lots held by the player + running productions of that genre; >3 shows a "category full" message and returns -1, else 0 (max 4 programs per genre)
+fn 1DA8:085D prog_id_genre  split a program id: id <= 1000 -> genre = movie genre byte; else id -= 1000 and genre = 11 (series)
+fn 1DA8:0899 ad_spot_number  ?n of the "n/N" label for the ad planned (id+3000) in schedule slot: starts from the contract's spot counter (+4) or the ad's required spots, minus later planned spots of the same ad
+fn 1DA8:099C ad_check_deadlines  for every player contract whose deadline day (+5) is today: pay the ad's penalty (ledger 5), message 0x10F (liquidation damages) or 0x110 (cancelled) for the human, remove the ad from all ad slots and delete the contract
+fn 1DA8:0B53 betty_culture_check  daily check of movie 58 (Betty's cultural program): owner who aired it in slots 1..7 gets letter 0x29 (love letter); 3 days without airing -> movie taken away and put into the auction, Betty love (+0xC) halved, letter 0x111; unowned -> put into the auction
+fn 1DA8:0CB3 auction_add_lot  (slot, id, kind) put a movie (kind 0/-1) or series (other, id+1000) into auction slot: current value as price, lot code 4..10 random (or owner) also stored as the program's owner, clears "available" flag; live movies get a new date: #29 day+4 hour 4, #187 day+4 hour 3, others day+3..5 and a start hour that fits before 1 AM
+fn 1DA8:0E74 msg_post  if the player is the human: store message (text id, 5 dword args, day, hour) in the message list 0x60BF[G8(0x7247)] and notify
+fn 1DA8:0F5B pay_credit_interest  daily interest on the human's credit: money -= credit/20 (5% per day), ledger 0xF
+fn 1DA8:0FB9 pay_daily_costs  per player: rent of every owned studio (ledger 8), transmitter fees = sum of transmitter fee values / 5 (ledger 9; AI pays from its budget), news agency subscriptions 1000 (agency 1) / 10000 (agencies 2,3) per day (ledger 0xA)
+fn 1DA8:1227 market_day_cleanup  end of day: untaken ad offers released, screenplay offers expire after 2 days unsold, film dealer offers returned to the pool (flag 0x20)
+fn 1DA8:135D live_check_missed  for each player's live programs (archive genre 7) dated today: movie 29/187 get rescheduled (recurring), others are lost with message 0x113 "You missed the %s live"
+fn 1DA8:1451 actors_daily_offer  pick today's 15 actors: slot i takes actor i of a random group (0..5, not 4) of the actor pool 0x5013, names unique; copied to 0x5493
+fn 1DA8:1538 newgame_starting_programs  new game: every player gets one free series (random of 18..20) and 3 free genre-6 movies with flag 0x20; the human's first evening (slots 1..7) is filled with random owned programs
+fn 1DA8:17E3 transmitter_reach  population inside a transmitter circle at map x,y (population map AND circle mask, weighted)
+fn 1DA8:18E0 map_density_at  density weight (table 0x1274: 0/1/10/100) of the 2-bit map pixel at x,y
+fn 1DA8:1918 map_sum_population  sum of density weights (0x127C: 0/1/10/100 per pixel) over a map rectangle, x step 8 px
+fn 1DA8:1A03 transmitters_recalc  rebuild player's coverage map, store covered population (all map) at +4 and total transmitter fee values at +0 of the player's transmitter block; returns fees
+fn 1DA8:1ACB coverage_build  clear coverage map 0x8BAA and OR in every active transmitter of the player: slot 1 = whole west half, slot 2 = whole east half (satellites?), others = circle; stores covered population per half in 0x7AD2/0x7AD6
+fn 1DA8:1CC2 door_board_pos  (floor, door, &x, &y) position of a door on the building directory board: y = (14-floor)*15+9, x from door x (0x50/0x74/0xB4/0xD8 -> 0x26/0x3D/0x6A/0x81); floors <= 7 in the right column
+fn 1DA8:1D4E door_label_text  new string with a door's label: text +0x28 (or +0x32) of the floor table, combined "%s %s" with the owner's player name (room type 1) or station name
+fn 1DA8:1EDE clock_hour_round05  clock_hour, +1 once minute >= 5 (news part of the hour is over)
+fn 1DA8:1EF3 clock_hour_round55  clock_hour, +1 once minute >= 55 (ad break started) - first schedule slot still open
+fn 1DA8:1F08 coverage_stamp  OR the 32x16 transmitter circle mask (0x11F4) of a player's transmitter slot onto the coverage map, limited to populated map pixels
+fn 1DA8:2036 transmitter_new_reach  extra population a transmitter at x,y would add to the current coverage (covered-after minus covered-before inside the circle)
+fn 1DA8:21E1 block_population  sum of density weights (0x1284) in a 16-row x 2-word (32x16 px) map block
+fn 1DA8:2293 script_count_scenes  number of entries with item id 17..41 (scene/set items) in a screenplay's first-episode item list
+fn 1DA8:22F6 prog_give_to_player  (id, player, price) set owner, money -= price (ledger 1 movie / 2 series), file it into the archive genre list if < 4 there; else human: into the bag (max 10), AI: purchase undone
+fn 1DA8:24EA script_items_bought  1 if every item of the episode's shopping list (+0xB) of the screenplay is bought
+fn 1DA8:2560 script_role_match_pct  (script, ep, item, actor) how well actor fits a role: sum(min(role requirement, actor attribute)) / sum(requirements) * 100 over attributes 0,2,3
+fn 1DA8:2653 round_to  round a long to a multiple: ((v + m/2) / m) * m
+fn 1DA8:2682 viewers_to_pct  (player, viewers) viewers as % of the player's reach: (v + T/2) / T with T = reach * 2464 / 100
+fn 1DA8:26FC live29_reschedule  live movie 29 recurs: up to 3 more times dated day+3 hour 4, then removed from its owner
+fn 1DA8:2735 live187_reschedule  live movie 187 recurs: up to 5 more times dated day+2 hour 3, then removed from its owner
+fn 1DA8:276D npc_event_daily  choose today's intruder: human with money < -100000 -> bailiff for that player; else from day 3 a 1/3 chance each of terrorist 1, terrorist 2 (only if that event is enabled) or bailiff for the movie agency; sets up the NPC figure 0x7BD8
+fn 1DA8:2905 npc_event_update  per-frame state machine of the intruder (terrorist/bailiff/moral guardian): start walking at a random moment, pick target door of the right room type and owner, walk, plant bomb / act (npc_event_strike), bomb timer and door-closed states
+fn 1DA8:2D3B npc_event_strike  intruder acts at target door: consulate -> room destroyed; studio -> production lost (0x133/0x136); library -> random movie destroyed/seized; news room -> news wiped (bailiff); office -> seizure; moral guardian confiscates the airing movie (0x15B); terrorist damage costs the owner 50000 (0x135)
+fn 1DA8:3202 movie_destroy  (movie, msg, player) remove movie from owner and from the schedule (stops it if on air), message msg; bailiff (type 3) credits half its value to the owner (ledger 0xB)
+fn 1DA8:33A6 movie_title  far pointer to a movie's title from the loaded text table 0x63E5 (49 entries), NULL if absent
+fn 1DA8:33FA movie_description  far pointer to a movie's description text (table 0x63E5 +6)
+fn 1DA8:344E series_title  far pointer to a series title (table 0x65CF, 15 entries)
+fn 1DA8:34A2 series_description  far pointer to a series description (table 0x65CF +6)
+fn 1DA8:34F6 series_episode_title  (series, ep) far pointer to an episode title (table 0x65CF +0xA)
+fn 1DA8:3554 series_episode_description  (series, ep) far pointer to an episode description (table 0x65CF +0x32)
+fn 1DA8:35B2 script_title  far pointer to a screenplay title (table 0x6B15, 10 entries)
+fn 1DA8:35F6 script_role_name  (script, role) far pointer to a role name of a screenplay (table 0x6B15 +6)
+fn 1DA8:3643 door_check_entry  (figure, npc) why a figure may not enter its door: bomb alarm texts 0x130..0x137, screenplay being written 0xF4, someone inside 0x12B, catching a rival in your own room 0x12E pays you a bounty that doubles each time (max 200000), empty room 0x12F, dead player's room 0x49; 0 = may enter
+fn 1DA8:395A rating_rank_hour  rank players by this hour's share (0x24AD); ties -> everybody 1st; ranks stored in 0x5553[p*8+hour]; image deltas +1 / 0 / -1 for 1st/2nd/3rd applied via image_apply_deltas
+fn 1DA8:3BE8 image_apply_deltas  apply int deltas[4] to player images (+0x15) zero-sum: gains and losses clamped to 0..100 and balanced (min), Betty love (+0xC) capped at image, rounding remainder to the leader so images total 100
+fn 1DA8:3F0D transmitter_fee_bracket  smallest of {50000, 100000, 250000, 500000} greater than the value (else 500000) - daily fee class of a transmitter from population*61.6
+fn 1DA8:3F48 news_price  price of a news item by class: {1000, 2000, 3000, 4000, 6000, 8000}[class]
+fn 1DA8:3F5B movie_price  current movie value: price/2 + price*topicality/(2*max topicality), rounded to 1000
+fn 1DA8:4035 series_price  series value: n produced episodes * episode price (+0x2B), half fixed + half scaled by sum(topicality)/sum(max), rounded to 1000
+fn 1DA8:412F format_millions  new string with a viewer count in millions: mode 1 "%d,%d" (0.1 M), mode 2 "%d,%02d" (0.01 M), mode 3 = 1 if >= 1,000,000 else 2
+fn 1DA8:4258 ad_target_group_ok  (ad, group) 1 if the group satisfies the ad's target condition (+0xB..+0xD: negative = excluded group, positive = required groups, none = any)
+fn 1DA8:42E5 news_count_category  number of the human's news items (0x457F) with category (+0x1C) == c
+fn 1DA8:432D news_find_category  next news index after start with category c, -1 if none
+fn 1DA8:4384 player_image_at_least  -1 if player's image (+0x15) >= n, else 0
+fn 1DA8:4439 master_key  (player, op) Betty's master key bit set 0x7A86: op 1 = give, 2 = take back, 0 = query; returns bit
+fn 1DA8:43AD news_agency_image_check  news agency 1..3 cancels a player's subscription when image < {0,5,10,15}[agency] (message 0x152)
+fn 1DA8:4481 sammy_daily_update  Sammy award: every 3 days a random category (only 1..2 before day 5); 2 days later the leader wins (image + {8,4,6,6}[cat], others lose all/half of it), tie -> 1-day extension or no award if nobody scored; returns day%3
+fn 1DA8:4694 sammy_score  player's Sammy score: category points + Betty love/2 (news, series), + love (culture), + love/3 (shows); 0 for dead players
+fn 1DA8:4752 sammy_leader  player with the highest Sammy score, 0 on a tie
+fn 1DA8:47E7 sammy_score_pct  player's Sammy score as % of all players' scores
+fn 0054:085E hotkey_handler  keyboard hotkeys: in the office sub-screen select options (0x7A82) with button highlight; key 0x2F toggles the human figure's alien look (0x7A34); key 0x20 opens the menu (05FF:000A)
+fn 0054:0A0B game_load_init_data  load resource 0xD0 into the start tables (hour factors, studios, players, actors, figures, floors, transmitters ...), load the 430 texts of the language, default player/station names, clear market lists, game speed 30
+fn 0054:0CDA initdata_read  copy the next n bytes of the init-data blob (0x8FB0, cursor 0x11E4) to dst
+fn 0054:0D03 room_return  leave the current room: pop the previous room from the room stack, free/load room graphics, wipe; back in the building reload building backgrounds (day/night by hour >= 21:00)
+fn 0054:0E5F room_enter  push the current room and enter room n: owner = owner of the human figure's door, load room graphics, wipe transition
+fn 0054:0F79 room_load_assets  per-room setup on entry: draw background halves, load sprite resources into 0x100..0x124, room-specific init (office, library, studio, planner, transmitter map, save room ...)
+fn 0054:1DB7 room_free_assets  free all room graphic buffers (0xF4..0x124, 0x8E8A, 0x8EDA)
+fn 0054:1EEC room_draw_background  draw a room background: resource n at x=0 and n-50 at x=160
+fn 0054:1F6F new_day  daily processing: culture check, auction, Sammy, agency/image checks, ad deadlines, market cleanup, missed lives, credit interest, day++, offers, actors, intruder roll, topicality recovery, daily costs, reset figures
+fn 0054:20E0 game_time_tick  advance the game clock; at 01:00 (28800 s after 17:00) end the day (go home, new_day, studios, wipe); hourly broadcast processing; redraw clock and refresh room views at :00/:05/:55
+fn 0054:2425 nop_stub  empty function
+fn 0054:242A archive_locate_selected  find the selected program 0x79D6 in the room owner's archive: genre -> 0x79CA, position -> 0x79C8 (0 if none)
+fn 0054:24E0 sched_clear_slot_redraw  clear a schedule slot of the room owner and redraw the planner
+fn 0054:2505 sched_clear_slot  clear schedule slot of a player and the following continuation slots (9999)
+fn 0054:256E sched_slot_editable  1 if the schedule cell under the mouse may still be changed: programs until minute 5 of their start hour, ads until minute 55
+fn 0054:2632 build_door_index  build 0x8A60: for floors 1..13 the doors with kind 1..3, as (floor, door) pairs ordered by door x
+fn 0054:2741 room_escape  back out one level: close the room's sub-screen (0x8BA4 -> 0) or leave the room (room_return)
+fn 0054:32B6 day_end_go_home  leave all rooms, walk the human to the exit, wipe, clock to 17:00
+fn 0054:32FC player_walk_out  leave rooms, then walk the human figure to floor 1 and the exit x and wait until it arrives
+fn 0054:33B3 day_start_to_boss  walk the human figure to its floor (3p+2), enter the boss room (3), reset other figures to their targets
+fn 0054:3481 screen_transition  if mode == 4: wipe the 320x120 building view from the back buffer (dir, delay)
+fn 0054:34BD screen_wipe  box wipe effect copying a w x h area from a buffer to the screen in shrinking/growing frames (dir 1 = outward), delay per step
+fn 0054:3701 clock_show_start  show text 0xF6 "Start" in the clock field
+fn 0054:3738 tv_update_picture  office TV: picture for what channel 0x79FE airs now: test pattern before 18:00, news (:00-:05), ads (:55) or empty, program picture (+0xC / +0x2F) or genre default
+fn 0054:3855 tv_show_picture  draw TV picture resource (from cache 0x5A0 or loaded) into the TV window, channel digit on the empty picture, skip if unchanged
+fn 0054:39CF tv_family_update  "TV family" in front of the TV: which of 5 members watch from the program's flags (+6 bits), the child leaves after 23:00, moods from the program's topicality 0x7A14 and genre; loads their sprites
+fn 0054:3F89 tv_family_stop  ?reset TV family animation state (0x79F4 = 0, 0x79F6 = 1)
+fn 0054:3F96 savegame_names_alloc  allocate 10 save-slot name buffers (0x8BB2)
+fn 0054:3FC1 savegame_names_load  read the 10 save-slot names (40 bytes each) from resource 0xD1
+fn 0054:4021 savegame_names_store  write the 10 save-slot names back to resource 0xD1
+fn 0054:40A6 tv_family_load_sprite  load a sprite resource into the TV family buffer 0x8C50 at 0x8C5A, fix pointers, advance; returns its address
+fn 0054:4135 planner_refresh  redraw the programme planner if it is open (room 0x1F)
+fn 0054:41E2 library_refresh  redraw the library lists if the library is open (room 4)
+fn 0D5E:0001 res_init  init the resource manager, open the RSC files, list the present resource ids into 0x8C7C
+fn 0D5E:0035 res_disk_mode  1 if resource 500 exists (all data available), else 2 (second disk needed)
+fn 0D5E:0050 disk_access_begin  nested: on first entry stop the game clock and open the resource files
+fn 0D5E:0066 disk_access_end  nested: on last exit close the resource files and restart the game clock
+fn 0D5E:007C res_files_open  open the RSC files
+fn 0D5E:008B res_files_close  close the RSC files
+fn 0D5E:009F debug_nop  empty hook
+fn 0D5E:00A0 res_load_raw  allocate and read a resource without decompressing
+fn 0D5E:00FA res_read_raw  read a resource's raw bytes into buf (inside disk_access_begin/end)
+fn 0D5E:011B res_load0  load + decompress a resource (like res_load, mode flag 0)
+fn 0D5E:025C game_clock_reset  restart the PIT timer and zero the accumulated clock ticks
+fn 0D5E:0280 game_clock_stop  unless paused add elapsed timer ticks * game speed to the clock accumulator
+fn 0D5E:02B1 game_clock_start  restart the timer; frame timer 0x6141 = -(50 / frame divisor 0x7A50)
+fn 0D5E:02D6 game_clock_get  *out = cached game seconds since 17:00
+fn 0D5E:02E4 game_clock_update  game seconds = (accumulated + elapsed*speed) / 50; sets hour (17 + h, wrapped), minute 0x71EC, second 0x71EE
+fn 0D5E:03AD sprite_bank_fixup  set each sprite's data pointer in a sprite bank (count, then w/h/ptr entries; data size w*h*8)
+fn 0D5E:043A figure_sprite_stride  ?n * G16(0x838E) / 8 (+ G16(0x838A) when a1) - size of a figure sprite set in the figure buffer
+fn 0D5E:048D res_query_wait  resource packed size (return) and unpacked size (*out); missing -> "insert disk" message and wait for a click, retry
+fn 0D5E:050F res_cache_packed  keep a resource packed in cache slot (0x7C00, 6 bytes: ptr + unpacked size)
+fn 0D5E:0558 res_cache_unpack  decompress a cached resource into a new buffer
+fn 0D5E:05BC figures_load_sprites  load walking-figure sprite sets: players 17..19 (alien 24 for the human in alien mode), 20, 21, intruder 23 (terrorist) or 22 (bailiff / guardian)
+fn 0D5E:0664 figure_load_sprite_slot  load sprite set res into figure slot of buffer 0xF8 unless already there (0xD0E)
+fn 0D5E:073B game_clock_pause  nested pause: first call folds elapsed time in and sets 0x7A92
+fn 0D5E:0773 game_clock_resume  nested resume: last call clears 0x7A92 and restarts the timer
+fn 0D5E:0795 text_dup  new 500-byte buffer holding a copy of text n of the language table
+fn 0E35:0000 str_format  game sprintf into a new 1000-byte buffer with '#' codes: d int, l long, s string, z byte, v glyph (+0xC0), f bar gauge; width, '0'/'+'/'_' pad, '*n' pixel-width cut
+fn 0E35:04C0 str_digit_count  number of leading digits (-1 if more than 10)
+fn 0E35:0504 fmt_put_int  str_format helper: itoa with sign and padding into the output
+fn 0E35:060D fmt_put_long  str_format helper: ltoa with sign and padding into the output
+fn 0E35:0730 str_to_long  parse leading decimal digits as a long (unused)
+fn 0E35:079A str_patch  ?overwrite the start of dst with n chars of src followed by s2 (unused)
+fn 0E35:0873 mem_zero  zero n bytes at a far pointer
+fn 0E35:08B1 far_strlen  length of a far string
+fn 0E35:08D6 mem_fill_char  fill n bytes with the char *pc
+fn 0E35:0901 text_fit_chars  how many chars of a string fit into n 8-px columns (glyph widths 0x22E, space 3, 1 px gap)
+fn 0E35:0989 text_width_px  pixel width of a string in the game font
+fn 0E35:09F7 str_is_prefix  -1 if a0 is a prefix of a2 (unused)
+fn 0DDD:0001 text_draw  draw a string on the screen buffer at x,y
+fn 0DDD:002B text_draw_right_free  draw a string right-aligned at x into a buffer, then free it
+fn 0DDD:0071 text_draw_free  draw a string on the screen buffer, then free it
+fn 0DDD:00A8 text_draw_to  draw a string into a buffer at x,y
+fn 0DDD:00D0 text_draw_wrap  draw a string on the screen wrapped at n columns with flags
+fn 0DDD:00FA text_draw_to_free  draw a string into a buffer, then free it
+fn 0DDD:012F text_draw_center_free  draw a string centred on x into a buffer, then free it
+fn 0DDD:017B text_draw_center  draw a string centred on x on the screen buffer
+fn 0DDD:01BC text_draw_center_to  draw a string centred on x into a buffer
+fn 0DDD:01FB text_draw_center_ex  draw centred with all options (columns, flags, buffer, max lines)
+fn 0DDD:0239 text_draw_ex_free  draw with columns/flags into a buffer, then free the string
+fn 0DDD:026E text_draw_full_free  draw with all options (columns, flags, buffer, max lines), then free the string
+fn 0DDD:02A2 text_draw_wrap_free  draw on the screen wrapped at n columns with flags, then free the string
+fn 0DDD:02D9 text_draw_full  draw text with word wrap: (x, y, str, columns (0 = 80), flags bit0 = break at space/'-', bit1 = draw style, dest, max lines); '~' = new line, line height 8 or 7 (0x8BA6)
+fn 0DDD:048D text_count_lines  number of lines a string wraps into at n columns
+g 71E4 16 g_day  day counter (incremented in new_day)
+g 71EC 16 g_minute  game clock minute
+g 71EE 16 g_second  game clock second
+g 72A2 16 g_game_speed  game seconds per timer tick unit (30)
+g 6143 32 g_clock_acc  accumulated timer ticks * speed of the day (seconds = acc / 50)
+g 6141 16 g_frame_timer  timer value of the last animation frame
+g 72A4 16 g_clock_timer  raw timer reading at the last clock update
+g 0D0C 16 g_clock_seconds  game seconds since 17:00 (cached)
+g 0D0A 16 g_clock_pause_depth  nesting of game_clock_pause
+g 7A92 16 g_clock_paused  game clock paused
+g 0D04 16 g_disk_idle  nesting counter of disk_access_begin/end (1 = idle)
+g 0D06 16 g_res_open_count  debug counter of resource file opens
+g 7A50 16 g_frame_divisor  animation frame interval = 50 / this ticks
+g 8BA8 16 g_player  human player index (1..3)
+g 8BDC 32 g_player_name  player records [p*0x17], p = 1..3: +0 far name
+g 8BE0 32 g_player_station  player +4: far station name (Mad-TV, Fun-TV, Sun-TV)
+g 8BE4 32 g_player_money  player +8: money (signed)
+g 8BE8 16 g_player_betty_love  ?player +0xC: Betty's affection (halved when her program is dropped, capped at image, < 20 takes the master key)
+g 8BED 8 g_player_news_agency  player +0x11..0x13: news agency 1..3 subscribed
+g 8BF0 8 g_player_out  player +0x14: player is out of the game
+g 8BF1 16 g_player_image  player +0x15: image / market share in %, all players sum to 100
+g 7B42 16 g_figures  walking figures [0x1E], 0..2 players, 5 intruder: +0 x, +2 floor, +4 target x, +6 target floor, +0xE walking, +0x10 entering, +0x12 target door, +0x1A look
+g 7B12 16 g_player_figure  figure index of the human player
+g 838C 16 g_room  current room / screen (0 = building, 1 office, 2 news, 3 boss, 4 library, 5 studio, 8 movie agency, 0x19 transmitter map, 0x1F planner, 0x3A save room)
+g 8A48 16 g_room_stack  rooms entered before the current one
+g 8E8E 16 g_room_stack_top  room stack depth
+g 8BA4 16 g_room_mode  sub-screen / dialog state inside the current room
+g 7A36 16 g_room_owner  player owning the room being visited
+g 7C82 8 g_floors  floor table, 14 floors x 0x7A: door x[10], +0x14 kind, +0x1E room type, +0x28 name text, +0x32 "of" text, +0x46 owner, +0x6E studio index
+g 8A60 8 g_door_index  13 floors x 4 doors x (floor, door)
+g 6165 16 g_studios  12 studios [16 bytes]: +0 screenplay, +2 size, +3 owner, +4 episode, +6 u32 rent, +0xA finish day, +0xC finish hour, +0xE writing
+g 79DE 16 g_cur_studio  studio index of the visited studio
+g 24A9 32 g_movies  far ptr to movie table [0x17], 1..200: +0 genre, +1 max topicality, +3 topicality, +4 blocks, +5 owner, +6 flags (bits0-4 audience, 0x20 available), +8 u32 price, +0xC picture, +0xF live day, +0x11 live hour
+g 2646 32 g_series  far ptr to series table [0x39], 1..50: episodes [3](max, cur, flags), +0x21 genre, +0x22 episodes, +0x23 blocks, +0x24 owner, +0x25 flags, +0x2B u32 episode price, +0x2F picture, +0x31 next episode
+g 715C 32 g_scripts  far ptr to screenplay/production table [0x1B3], 1..50: +4 status (99 done), +5 flags (bit0 series), +6 target program, +9 item lists per episode [0x23], +0x168 role requirements, +0x1A4 role groups
+g 6F19 16 g_archive  library per player [0x6C]: u16 id[genre 1..11][4], +0x60+genre u8 count
+g 4417 16 g_schedule  schedule per player [0x5A]: u16 program[15] (movie, series+1000, 9999 = continued), +0x1E episode[15], +0x3C ad[15] (+3000 planned, +2000 aired)
+g 2483 16 g_bag  programs carried in the bag (10)
+g 734A 16 g_bag_count  number of programs in the bag
+g 1B0D 16 g_auction  auction lots [9], 1..10: +0 id, +2 u32 bid, +6 bidder, +7 lot code, +8 days listed
+g 19ED 16 g_film_offers  ?film dealer offers [8], 1..10: +0 id, returned to the pool at day end
+g 19A0 16 g_ad_offers  ad agency offers [7], 1..10: +0 ad id, +2 taken
+g 196A 16 g_script_offers  screenplay agency offers [9], 1..5: +0 screenplay, +2 taken, +3 days, +4 u32 price, +8 scenes
+g 3F4F 32 g_ads  ad table [0x18]: +0 far name, +9 spots, +0xA viewer class, +0xB..0xD target groups, +0xF taken, +0x14 u32 penalty
+g 1B70 16 g_player_ads  signed contracts per player [0x46] = 10 x 7: +0 ad id, +4 spot counter, +5 deadline day
+g 76A8 16 g_player_ad_count  number of contracts per player
+g 5013 16 g_actor_pool  actor pool, groups [0xC0] x 16 actors [12]: +0 name, +2 u32 fee, +6.. attributes
+g 5493 16 g_actor_offers  today's 15 actors [12]
+g 457F 8 g_player_news  news items per player [0x258] = 20 x 0x1E: +0x1C category, +0x1D price class
+g 72A6 16 g_player_news_count  news items per player
+g 3F4B 8 g_news_score  news attractiveness per player this hour
+g 24A1 16 g_program_score  program attractiveness per player this hour
+g 24AD 16 g_rating  per player [10]: +0 audience share %, +8 no-program flag
+g 1D00 8 g_hour_audience  % of the population watching per hour slot (8)
+g 5553 8 g_hour_rank  per player [8]: rank for each hour of the day
+g 8FB4 16 g_image_delta  int[4] image changes passed to image_apply_deltas
+g 8FBC 16 g_rank_share  int[4] shares being ranked
+g 8FC4 16 g_rank_order  int[3] players by rank
+g 7488 16 g_sammy_category  current Sammy category 1..4 (0 = none); words at +2p = player points
+g 7490 16 g_sammy_day  Sammy cycle day counter (award every 3 days)
+g 7A06 16 g_sammy_winner  player who won a Sammy today
+g 12B0 16 g_sammy_image_bonus  image bonus per Sammy category {8,4,6,6}
+g 1D09 32 g_transmitters  per player [0x1CE]: +0 u32 total fees, +4 u32 reach; slots 1..32 [0xE]: +0 u32 fee, +4 u32 reach, +8 x, +0xA y, +0xC state
+g 7C7E 32 g_population_map  far ptr, 168x108 map of 2-bit population density
+g 8BAA 32 g_coverage_map  far ptr, coverage map of the player being computed
+g 127C 16 g_density_weight  population per density level {0,1,10,100}
+g 11F4 16 g_transmitter_mask  32x16 px circle mask of a transmitter
+g 128C 32 g_transmitter_fees  fee brackets {50000,100000,250000,500000}
+g 7AD2 32 g_coverage_west  covered population, west half of the map
+g 7AD6 32 g_coverage_east  covered population, east half of the map
+g 79CC 16 g_map_player  player whose transmitters are shown on the map
+g 71F5 32 g_ledger  today's money per ledger category (u32 each)
+g 7ADE 32 g_credit  credit taken by the human player
+g 7AE6 32 g_catch_bounty  per figure: money paid when caught in another player's room (doubles, max 200000)
+g 7A16 16 g_caught_figure  figure caught in the human's room (+1)
+g 7A5C 16 g_npc_type  intruder: 1/2 terrorist (from either Duban consulate), 3 bailiff, 4 moral guardian
+g 7A5E 16 g_npc_target_player  player the intruder goes after (8 = movie agency)
+g 7A62 16 g_bomb_timer  frames since the bomb was planted
+g 7A64 16 g_npc_target_door  door the intruder acts at
+g 7A66 16 g_npc_target_floor  floor the intruder acts at
+g 7A68 16 g_door_block  door message: 1 bomb alarm, 2 crazy, 3 work in progress, 4 closed due to bereavement
+g 7A42 16 g_live29_left  remaining reruns of live movie 29
+g 7A9C 16 g_live187_left  remaining reruns of live movie 187
+g 2441 16 g_culture_missed_days  days in a row movie 58 was not aired
+g 7A3A 16 g_betty_letter  per player: pending letter text id (0x29 love letter, 0x111 angry)
+g 7A86 16 g_master_key  bit set of players holding Betty's master key
+g 60BF 16 g_messages  message list [0x1A]: text id, 5 dword args, day, hour
+g 7247 8 g_message_pos  current index in the message list
+g 79FE 16 g_tv_channel  channel shown on the office TV
+g 05B0 16 g_tv_picture  last TV picture shown
+g 05A0 16 g_tv_cache  4 x (picture resource, cache slot)
+g 05B2 8 g_tv_family  5 flags: which TV family members watch
+g 7A14 16 g_tv_program_quality  topicality of the human's current program (TV family mood)
+g 8390 32 g_text  far pointers to the 430 texts of the language
+g 8BAE 32 g_text_buf  buffer holding the text resource
+g 7C00 32 g_res_cache  packed resource cache [6]: far ptr + u16 unpacked size
+g 0D0E 16 g_figure_sprite_res  sprite resource loaded in each figure slot
+g 00F8 32 g_figure_sprites  figure sprite buffer
+g 00F4 32 g_building_bg  building background (day or night)
+g 0100 32 g_room_gfx  room graphics pointers 0x100..0x124
+g 8FB0 32 g_initdata  init-data blob (resource 0xD0) while loading
+g 11E4 16 g_initdata_pos  read position in the init-data blob
+g 8BB2 32 g_save_names  10 save-slot name buffers
+g 8C50 32 g_tv_family_gfx  TV family sprite buffer
+g 8C5A 16 g_tv_family_gfx_pos  fill position in the TV family buffer
+g 022E 8 g_glyph_width  font glyph widths by char
+g 8BA6 16 g_font  font selector (line height 8 / 7)
+g 79D6 16 g_selected_program  program picked up in the planner
+g 79CA 16 g_selected_genre  archive genre of the selected program
+g 79C8 16 g_selected_index  archive position / list index of the selection
+g 7A34 16 g_alien_mode  human figure drawn as alien (hotkey)
+g 6E29 32 g_ai_budget  AI player records [0x3C]: +0xC news, +0x10 studio, +0x14 transmitter budget
+g 74EA 32 g_hour_viewers  per player [32]: viewers per hour
+g 838E 16 g_figure_sprite_cols  ?figure sprite set width factor (from sprite bank size)

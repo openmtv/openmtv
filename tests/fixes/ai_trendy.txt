@@ -1,0 +1,42 @@
+# fix: ai-trendy (24B8:0C4A)
+# Film 138 "Trendy" ended, aired by computer player 3 (g_trendy_player =
+# 3; the human is player 1, so the computer players are 2 and 3 = AI index
+# 0 and 1).  In the ad phase (broadcast_phase_eval(3)) the computer player
+# should copy the three trend genres (set to 5, 11, 9 here: 11 is a series
+# genre) into its own g_ai_trends entry (AI index 1: DS:78AE..78B3).
+# Classic: it writes them by player number, at DS:78BA..78BF -- past the
+# table, over g_ai_odd_today and g_ai_pending_gift: computer player 2 (AI
+# index 0) now holds "gift 11, not yet given" (DS:78BC), and nobody learns
+# the trends.  There are only gifts 1..10: when it gives "gift 11"
+# (ai_give_betty_gift, frame 3001) the gift's decay and use count land on
+# the human's news count (DS:72A8: +256), and the hourly news ageing then
+# runs through 256 inboxes' worth of memory -- the game hangs (seen in a
+# computer-player run on day 11).  Fixed: AI index 1's entry holds the
+# trends, DS:78BA.. stays 0, no gift is given, the news count stays below
+# 21.
+# expect classic 3000 call 24B8:0C4A,3 >= 0
+# expect classic 3000 word 39D4:78BC == 11
+# expect classic 3000 word 39D4:78AE == 0
+# expect classic 3001 call 32BA:1331 >= 0
+# expect classic 3001 word 39D4:72A8 >= 256
+# expect fixed   3000 call 24B8:0C4A,3 >= 0
+# expect fixed   3000 word 39D4:78AE == 5
+# expect fixed   3000 word 39D4:78B0 == 11
+# expect fixed   3000 word 39D4:78B2 == 9
+# expect fixed   3000 word 39D4:78BC == 0
+# expect fixed   3001 call 32BA:1331 >= 0
+# expect fixed   3001 word 39D4:72A8 <= 20
+400 key esc
+1000 click 64 100
+1300 click 172 185
+3000 poke16 39D4:0094 5
+3000 poke16 39D4:0098 11
+3000 poke16 39D4:009C 9
+3000 poke16 39D4:78AE 0
+3000 poke16 39D4:78B0 0
+3000 poke16 39D4:78B2 0
+3000 poke16 39D4:78BA 0
+3000 poke16 39D4:78BC 0
+3000 poke16 39D4:78BE 0
+3000 poke16 39D4:12D4 3
+3001 poke16 39D4:2507 0

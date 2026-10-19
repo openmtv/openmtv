@@ -1,0 +1,65 @@
+# room_studio_produce: start a production in the human's studio (room 5 = studio 6, floor 6
+# door 0) and let it finish: the show lands in the library.  New game.  Test setup = the state
+# after the studio's "new shopping list" and the shop (room_studio_shoplist,
+# room_supermarket_shop): screenplay 23 ("Let's travel!", film 137, 4 hours) marked taken
+# (word 4F7E:2721 = 1540), studios(6).script 39D4:61C5 = 23, .episode 39D4:61C9 = 1, "call
+# 229E:09AF,6" = studio_new_shopping_list(6), then the bought items: actor 2 for item 1 (byte
+# 4F7E:272B; the word also rewrites item 2's type 18) and "Standard" for item 2 (4F7E:272E).
+# figures(0) walk target = floor 6 door 0 (7B48, 7B54, 7B4A, 7B46 = 0x99 elevator).
+#   3400, 3700 clicks on empty spots (nothing; they use up difftests of the click handler)
+#   4000 assistant (0x28) -> menu; 4300 production info (0x4B): quality forecast with the full
+#        cast: "The production is poor! the shabby scene is particularly bad." -> 4600 close
+#   4900 production info again -> 5200 close
+#   5500 start production (0x2B, studio_start_production): film 137 quality 26, list deleted,
+#        "Production in progress. It'll end today at 20:00 o'clock", thrown out of the studio
+#   5800 test poke: end hour 39D4:61D1 = 18 (finish at 18:00 instead of 20:00)
+#   5900 close the message (building view)
+#   18:00 (frame ~10000): studio_check_finished: message 0x10E queued, film 137 to the library
+# Observable: at 5700 studios(6).running 39D4:61D3 = 1, end day 39D4:61CF = 1, end hour
+#   39D4:61D1 = 20, g_shoplist_count(1) 39D4:7482 = 0.  End: player 1's library genre 8 holds
+#   film 137 (library_count(1,8) 39D4:6FED = 1, library_items(1,8,0) 39D4:6FC5 = 137),
+#   films(137).owner (byte 4DA5:0C5C) = 1, end day 39D4:61CF = 0, messages(0).text_id
+#   39D4:60BF = 0x10E (arg 39D4:60C1 = studio 6).
+# end 10600
+400 key esc
+1000 click 64 100
+1300 click 172 185
+2000 hash
+2100 click 230 60
+2500 click 230 60
+2600 poke16 4F7E:2721 1540
+2600 poke16 39D4:61C5 23
+2600 poke16 39D4:61C9 1
+2601 call 229E:09AF,6
+2602 poke16 4F7E:272B 4610
+2602 poke16 4F7E:272E 1
+2602 poke16 39D4:7B48 6
+2602 poke16 39D4:7B54 0
+2602 poke16 39D4:7B4A 0
+2602 poke16 39D4:7B46 153
+3400 click 150 100
+3700 click 150 100
+4000 click 26 40
+4000 hash
+4300 click 150 55
+4600 rclick 160 60
+4900 click 150 55
+5200 rclick 160 60
+5500 click 150 63
+5700 peek8 39D4:61D3
+5700 peek16 39D4:61CF
+5700 peek16 39D4:61D1
+5700 peek16 39D4:7482
+5800 poke16 39D4:61D1 18
+5900 rclick 160 60
+6000 hash
+8000 hash
+10000 hash
+10599 peek8 39D4:6FED
+10599 peek16 39D4:6FC5
+10599 peek8 4DA5:0C5C
+10599 peek16 39D4:61CF
+10599 peek16 39D4:60BF
+10599 peek16 39D4:60C1
+10600 hash
+10601 quit

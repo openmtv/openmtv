@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<!-- build/OpenMTV.app (make launcher-native-app on the Mac): the launcher's window.  No
+     LSApplicationCategoryType of games: macOS would take the launcher for a game and
+     start its game mode with its symbol in the menu bar (a rocket). -->
+<plist version="1.0">
+<dict>
+  <key>CFBundleName</key><string>OpenMTV</string>
+  <key>CFBundleDisplayName</key><string>OpenMTV</string>
+  <key>CFBundleExecutable</key><string>openmtv</string>
+  <key>CFBundleIdentifier</key><string>net.openmtv.launcher</string>
+  <key>CFBundleIconFile</key><string>icon</string>
+  <key>CFBundlePackageType</key><string>APPL</string>
+  <key>CFBundleShortVersionString</key><string>1.0</string>
+  <key>CFBundleVersion</key><string>@VERSION@</string>
+  <key>LSMinimumSystemVersion</key><string>11.0</string>
+  <key>NSHighResolutionCapable</key><true/>
+</dict>
+</plist>

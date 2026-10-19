@@ -1,0 +1,98 @@
+# fix: ai-series-rule (2DD9:162A ai_book_programs_for_contract)
+# Direct call of 2DD9:162A on a prepared state (decompiled build; test pokes at frame 20000,
+# day 1 ~19:00).  Computer player 3 (g_ai_player[1]) then holds contracts [37, 24, 7, 46];
+# contract #3 = ad 46.  Pokes:
+#   ad 46: rule byte +0xC = -15 ("no series of genre 5"; word 39D4:43AB = 0x00F1) and minimum
+#     audience class 1 = 0 viewers (word 39D4:43A9 = 1: class 1, target group 0)
+#   player 3's free hours 12-14 filled with 9999 (39D4:453D/453F/4541), so only hour 9 is free;
+#     its unscheduled films are all 2 or 3 hours long
+#   series 1 (genre 5, unscheduled) becomes player 3's last series: library slot 39D4:70B7 = 1,
+#     counts word 39D4:70C7 = 0x0202 (genre 10: 2, genre 11: 2); series 1 owner 3 and next
+#     episode 1 (series table 4EC7:0008 + 0x39: 4EC7:0065 = 0x4603, 4EC7:0072 = 1)
+#   contract #3's booking-plan flags (39D4:4EDF + 3*0x4D + 3*7 + 6 = 4FE1) = 1: bit 2 cleared,
+#     otherwise 162A skips the contract
+#   g_ai_cur (39D4:2507) = 1 -> player 3; then call ai_book_programs_for_contract(3, 3 spots).
+# Classic: category 11 is checked with id 1 + (char)1000 = -23 -> films(-23) is a byte outside
+#   the film table (0xF9) -> "allowed" -> series 1 goes into hour 9 and ad 46 is booked after
+#   it, although ad 46 excludes series of genre 5 (on air the spot fails: ad_target_group_ok).
+# Fixed: id 1 + 1000 -> series genre 15 is excluded -> nothing is booked.
+# Check: player 3 hour 9: programme 39D4:4537, ad 39D4:4573.
+# expect classic 20001 word 39D4:4537 == 1001
+# expect classic 20001 word 39D4:4573 == 46
+# expect fixed   20001 word 39D4:4537 == 0
+# expect fixed   20001 word 39D4:4573 == 0
+400 key esc
+1000 click 64 100
+1300 click 172 185
+2000 key esc
+2300 key esc
+2600 key esc
+2900 key esc
+3200 key esc
+3500 key esc
+3800 key esc
+4100 key esc
+4400 key esc
+4700 key esc
+5000 key esc
+5300 key esc
+5600 key esc
+5900 key esc
+6200 key esc
+6500 key esc
+6800 key esc
+7100 key esc
+7400 key esc
+7700 key esc
+8000 key esc
+8300 key esc
+8600 key esc
+8900 key esc
+9200 key esc
+9500 key esc
+9800 key esc
+10100 key esc
+10400 key esc
+10700 key esc
+11000 key esc
+11300 key esc
+11600 key esc
+11900 key esc
+12200 key esc
+12500 key esc
+12800 key esc
+13100 key esc
+13400 key esc
+13700 key esc
+14000 key esc
+14300 key esc
+14600 key esc
+14900 key esc
+15200 key esc
+15500 key esc
+15800 key esc
+16100 key esc
+16400 key esc
+16700 key esc
+17000 key esc
+17300 key esc
+17600 key esc
+17900 key esc
+18200 key esc
+18500 key esc
+18800 key esc
+19100 key esc
+19400 key esc
+19700 key esc
+20000 poke16 39D4:453D 9999
+20000 poke16 39D4:453F 9999
+20000 poke16 39D4:4541 9999
+20000 poke16 39D4:43AB 241
+20000 poke16 39D4:43A9 1
+20000 poke16 39D4:70B7 1
+20000 poke16 39D4:70C7 514
+20000 poke16 4EC7:0065 17923
+20000 poke16 4EC7:0072 1
+20000 poke16 39D4:4FE1 1
+20000 poke16 39D4:2507 1
+20000 call 2DD9:162A,3,3

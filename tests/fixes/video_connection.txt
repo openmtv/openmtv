@@ -1,0 +1,15 @@
+# fix: video-connection (data)
+# Screenplay 20, "Video-Connection" (a show, film 134), asks nothing of its two roles:
+# the host (category 5, slot 1) and the star guests (category 7, slots 2 and 3).  How
+# well an actor fits a role (script_role_match_pct 1DA8:2560: screenplay, episode, slot,
+# actor) is then 0 for everyone, and the shooting counts only the set.  The fix gives
+# both roles requirements (humor 20, looks 18, craft 16) after the start savegame.
+# Classic: actor 1 fits the host's and the guests' role 0 %; fixed: more than 0 %.
+# expect classic 1500 call 1DA8:2560,20,1,1,1 == 0
+# expect classic 1500 call 1DA8:2560,20,1,2,1 == 0
+# expect fixed   1500 call 1DA8:2560,20,1,1,1 > 0
+# expect fixed   1500 call 1DA8:2560,20,1,2,1 > 0
+400 key esc
+1000 click 64 100
+1300 click 172 185
+1600 quit

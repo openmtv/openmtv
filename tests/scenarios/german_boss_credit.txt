@@ -1,0 +1,77 @@
+# german_boss_credit: room_boss_credit in German (replay with --args "d"): the same steps and checked values as
+# the English scenario -- German texts drawn in the dialogs and screens it opens (umlauts,
+# longer lines).  The steps below are the English scenario's.
+# room "boss" (room 3, the human's boss: floor 5, door at x 180): credit and repayment.
+# New game (credit line $200 000 taken, cash $200 000, image 34); walk to the boss by
+# clicking his door; four visits through the dialog menu (hotspots: 0x49 the answer box
+# = confirm, 0x24 up arrow (163,83), 0x25 down arrow (163,99)):
+#  1. "repay credit" (main menu option 3, reached with the up arrow wrapping 1 -> 3), amount
+#     "all" (again up 1 -> 3): repays min(cash, credit) rounded down to $50 000
+#     -> g_credit (DS:7ADE, u32) 0, player 1 money (DS:8BFB, u32) 0;
+#  2. "more money" (option 2) with no credit and image 10..49 -> $200 000 credit
+#     -> g_credit 200000, money 200000;
+#  3. test poke: image (DS:8C08) 50; "more money" with a credit <= 400 000 -> haggling menu 4
+#     (DS:7A8E = 4), option 2 -> another $200 000 -> g_credit 400000, money 400000;
+#  4. "repay credit", amount $100 000 (option 1) -> g_credit 300000, money 300000.
+# Each final answer is closed with a click (leaves the room); the next click on the door
+# re-enters with the menu (g_boss_menu DS:7A8E = 0).  German here.
+# end 11000
+400 key esc
+1000 click 64 100
+1300 click 172 185
+2000 hash
+2100 click 230 60
+2500 click 230 60
+2700 click 188 70
+3200 click 230 92
+3550 click 163 83
+3800 click 230 92
+4000 hash
+4150 click 163 83
+4350 click 230 92
+4700 peek16 39D4:7ADE
+4700 peek16 39D4:7AE0
+4700 peek16 39D4:8BFB
+4700 peek16 39D4:8BFD
+4750 click 230 92
+5100 click 188 70
+5750 click 230 92
+6000 click 163 99
+6000 hash
+6150 click 230 92
+6500 peek16 39D4:7ADE
+6500 peek16 39D4:7AE0
+6500 peek16 39D4:8BFB
+6500 peek16 39D4:8BFD
+6550 click 230 92
+6600 poke16 39D4:8C08 50
+6700 click 188 70
+7300 click 230 92
+7550 click 163 99
+7650 click 230 92
+7950 peek16 39D4:7A8E
+7950 click 163 99
+8000 hash
+8050 click 230 92
+8350 peek16 39D4:7ADE
+8350 peek16 39D4:7AE0
+8350 peek16 39D4:8BFB
+8350 peek16 39D4:8BFD
+8400 click 230 92
+8500 click 188 70
+9100 click 230 92
+9350 click 163 99
+9450 click 163 99
+9600 click 230 92
+9900 peek16 39D4:7A8E
+9950 click 230 92
+10000 hash
+10250 peek16 39D4:7ADE
+10250 peek16 39D4:7AE0
+10250 peek16 39D4:8BFB
+10250 peek16 39D4:8BFD
+10300 click 230 92
+10700 peek16 39D4:838C
+11000 hash
+11001 quit
+11001 quit

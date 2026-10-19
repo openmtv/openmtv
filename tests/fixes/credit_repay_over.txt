@@ -1,0 +1,32 @@
+# fix: credit-repay (0AA4:000E room_boss_click, menu 5: the $100k / $200k repayments are not capped at the credit)
+# A credit of $50 000 (test poke; reached in play by repaying "all" with $250 000 of a $300 000 credit), "repay
+# $100 000": the original takes min($100 000, cash) -- the credit goes to -$50 000, and the daily interest
+# (pay_credit_interest 1DA8:0F5B: money -= credit / 20) then pays 5 % a day on it.
+# Steps: new game (cash and credit $200 000); 2600 test poke: credit 50 000 (DS:7ADE); 2700 the boss's door; 3300 the
+# menu; down twice to "repay credit"; 3800 confirm; 4150 amount $100 000 (option 1) confirmed; 4600 the interest call.
+# Classic: 4500 cash 100 000, credit -50 000 (0xFFFF3CB0); 4600 the interest: cash 102 500 (+2 500).
+# Fixed: $50 000 repaid (the whole credit): cash 150 000, credit 0; no interest (cash stays 150 000).
+# expect classic 4500 word 39D4:8BFB == 34464
+# expect classic 4500 word 39D4:8BFD == 1
+# expect classic 4500 word 39D4:7ADE == 15536
+# expect classic 4500 word 39D4:7AE0 == 65535
+# expect classic 4700 word 39D4:8BFB == 36964
+# expect fixed   4500 word 39D4:8BFB == 18928
+# expect fixed   4500 word 39D4:8BFD == 2
+# expect fixed   4500 word 39D4:7ADE == 0
+# expect fixed   4500 word 39D4:7AE0 == 0
+# expect fixed   4700 word 39D4:8BFB == 18928
+400 key esc
+1000 click 64 100
+1300 click 172 185
+2100 click 230 60
+2500 click 230 60
+2600 poke16 39D4:7ADE 50000
+2600 poke16 39D4:7AE0 0
+2700 click 188 70
+3300 click 230 92
+3550 click 163 99
+3650 click 163 99
+3800 click 230 92
+4150 click 230 92
+4600 call 1DA8:0F5B

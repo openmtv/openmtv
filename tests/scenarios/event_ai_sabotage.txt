@@ -1,0 +1,63 @@
+# event_ai_sabotage: a computer player's sabotage at the information board.  Today's intruder is a
+# terrorist; ai_swap_signs_sabotage swaps its target's door sign with a victim room of the human's
+# (here the human's studio), so the bomb destroys the human's studio and costs it $50 000.  English.
+# Steps: new game; 2000 game clock g_clock_acc (DS:6143, u32) = 1 435 000 (00:58) -> day 2;
+#   3500..4400 Esc x4 (boss).  4600 test pokes: today's intruder is terrorist 1 (g_npc_type DS:7A5C
+#   = 1, event state DS:7A56 = 2 waiting, moral guardian DS:7A88 = 0); its target is the consulate
+#   "People's Duban" (room 0x13, door (9,1) shown in board cell row 9 column 2, DS:8AA4).
+#   4800 test call: the sabotage step the computer player runs at the board (state 0xC of
+#   2DD9:000C; g_ai_cur DS:2507 = 1, the second computer player): random victim (50 % a public room,
+#   20 % the human's library, 20 % its studio, 10 % its news room) -- here the studio branch: the
+#   human's studio 6 behind door (6,0), board cell row 6 column 1 (DS:8A8A); the two cells swap.
+#   4900 test pokes: the human walks to its office (DS:7B48 floor 5, 7B54 door 0, 7B4A 0, 7B46 153;
+#   the intruder only sets off while the human is not in the building view).  6100 clock = 1 080 000
+#   (23:00) -> the terrorist walks to the door shown under the consulate's sign: floor 6, door 0
+#   (g_npc_target_floor/door DS:7A66/7A64), plants the bomb; it goes off (npc_event_strike, studio:
+#   production cancelled, studio lost -- renter 0xFF -- door shown destroyed, message 0x133; the
+#   owner pays $50 000, message 0x135) and the event retires (state 1).
+# Observable (PEEK lines): frame 4700 cells DS:8AA4 = (9,1), DS:8A8A = (6,0); frame 4900 swapped.
+#   Frame 6000: in the office (DS:838C = 1), studio 6 renter (DS:6165 + 6*0x10 + 3) = 1, money
+#   (DS:8BFB, u32) 167 000.  Frame 8000: target floor 6, door 0.  Frame 9200: state 1, studio 6
+#   renter 255, money 117 000.
+# end 9200
+400 key esc
+1000 click 64 100
+1300 click 172 185
+2000 poke16 39D4:6143 58840
+2000 poke16 39D4:6145 21
+2000 hash
+3500 key esc
+3800 key esc
+4000 hash
+4100 key esc
+4400 key esc
+4600 poke16 39D4:7A5C 1
+4600 poke16 39D4:7A56 2
+4600 poke16 39D4:7A88 0
+4700 peek16 39D4:8AA4
+4700 peek16 39D4:8A8A
+4700 peek8 39D4:2507
+4800 call 32BA:1800
+4900 peek16 39D4:8AA4
+4900 peek16 39D4:8A8A
+4900 poke16 39D4:7B48 5
+4900 poke16 39D4:7B54 0
+4900 poke16 39D4:7B4A 0
+4900 poke16 39D4:7B46 153
+6000 peek16 39D4:838C
+6000 peek8 39D4:61C8
+6000 peek16 39D4:8BFB
+6000 peek16 39D4:8BFD
+6000 hash
+6100 poke16 39D4:6143 31424
+6100 poke16 39D4:6145 16
+8000 peek16 39D4:7A66
+8000 peek16 39D4:7A64
+8000 hash
+9200 peek16 39D4:7A56
+9200 peek8 39D4:61C8
+9200 peek16 39D4:8BFB
+9200 peek16 39D4:8BFD
+9200 hash
+9201 quit
+9201 quit

@@ -1,0 +1,65 @@
+# fix: ai-bids (2DD9:1DDA)
+# A computer player's auction bids are remembered in a list of 11 places
+# (g_ai_bids DS:756A + player x 0x42, 6 bytes: lot, u32 reserve; count
+# DS:7730 + player x 2): ai_execute_purchases appends one per bid -- the same
+# lot again and again -- and only the human outbidding it empties one.  The
+# 12th of player 3 lands on DS:7672 (g_scripts_owned_count), the 21st on the
+# contract counts (DS:76A8; the ad agency then writes through the garbage).
+# Here: player 3 (g_ai_cur 1) has 11 entries (lots 1..10 and lot 1 again),
+# its plan one bid on lot 3 ($1 000).  Classic: a 12th entry, lot 3 at
+# DS:7672, count 12; fixed: lot 3's entry (the third) reserves 1 000 more,
+# count 11, DS:7672 untouched.
+# expect classic 3000 call 2DD9:1DDA >= 0
+# expect classic 3000 word 39D4:7736 == 12
+# expect classic 3000 word 39D4:7672 == 3
+# expect fixed   3000 call 2DD9:1DDA >= 0
+# expect fixed   3000 word 39D4:7736 == 11
+# expect fixed   3000 word 39D4:7672 == 0
+# expect fixed   3000 word 39D4:763E == 1500
+400 key esc
+1000 click 64 100
+1300 click 172 185
+3000 poke16 39D4:2507 1
+3000 poke16 39D4:7736 11
+3000 poke16 39D4:7672 0
+3000 poke16 39D4:7630 1
+3000 poke16 39D4:7632 500
+3000 poke16 39D4:7634 0
+3000 poke16 39D4:7636 2
+3000 poke16 39D4:7638 500
+3000 poke16 39D4:763A 0
+3000 poke16 39D4:763C 3
+3000 poke16 39D4:763E 500
+3000 poke16 39D4:7640 0
+3000 poke16 39D4:7642 4
+3000 poke16 39D4:7644 500
+3000 poke16 39D4:7646 0
+3000 poke16 39D4:7648 5
+3000 poke16 39D4:764A 500
+3000 poke16 39D4:764C 0
+3000 poke16 39D4:764E 6
+3000 poke16 39D4:7650 500
+3000 poke16 39D4:7652 0
+3000 poke16 39D4:7654 7
+3000 poke16 39D4:7656 500
+3000 poke16 39D4:7658 0
+3000 poke16 39D4:765A 8
+3000 poke16 39D4:765C 500
+3000 poke16 39D4:765E 0
+3000 poke16 39D4:7660 9
+3000 poke16 39D4:7662 500
+3000 poke16 39D4:7664 0
+3000 poke16 39D4:7666 10
+3000 poke16 39D4:7668 500
+3000 poke16 39D4:766A 0
+3000 poke16 39D4:766C 1
+3000 poke16 39D4:766E 500
+3000 poke16 39D4:7670 0
+3000 poke16 39D4:25F9 3
+3000 poke16 39D4:25FB 1
+3000 poke16 39D4:25FD 5
+3000 poke16 39D4:25FF 1000
+3000 poke16 39D4:2601 0
+3000 poke16 39D4:2603 1
+3000 poke16 39D4:72B8 0
+3100 quit

@@ -1,0 +1,47 @@
+# Symbol names for the decompiled sources.  Applied by tools/decomp.py.
+#   fn  SEG:OFF  name        [description]
+#   g   OFFSET   width name  [description]      (DGROUP globals; width 8/16/32)
+# Names are derived from reading the decompiled code; keep descriptions short.
+
+# ---- program entry / startup
+fn 0054:0005 main                  game entry: parse args, load resources, run the game
+fn 0054:4233 choose_language       language prompt (only when no command-line argument)
+
+# ---- memory (wrappers around the Borland far heap)
+fn 0D5E:06FB mem_calloc            farcalloc(count, size)
+fn 0D5E:0729 mem_free              farfree(ptr)
+fn 0D5E:0416 mem_free_ptr          free *pp and set it to NULL
+fn 0E35:088E far_memcpy            copy n bytes between far pointers (forward)
+
+# ---- resources (SOURCE*.RSC)
+fn 0D5E:01A1 res_load              load resource by id and decompress it into a new buffer
+fn 385D:0241 res_exists            resource id lookup; returns 0xFFFF if absent
+
+# ---- graphics
+fn 382C:000E bitmap_alloc          allocate an image buffer (w, h) with an 8-byte header
+fn 105E:0D3B draw_sprite           draw a sprite at x, y into the screen buffer
+fn 105E:0AAC draw_sprite_to        draw a sprite into a given buffer at x, y
+fn 105E:0BD9 draw_atlas_tile       draw tile n of the current tile atlas at x, y
+fn 105E:0A31 col_to_px             n * 8 - 6
+fn 105E:11B5 clip_reset            clip rectangle = 0,0,320,120
+fn 0ED7:08B8 present_frame         wait for retrace, draw cursor, show the back buffer
+
+# ---- input / time
+fn 105E:11DF cursor_x              mouse x relative to the active window
+fn 105E:1213 cursor_y              mouse y relative to the active window
+fn 1DA8:1EC6 clock_hour            current clock hour from the time slot counter
+fn 0D5E:0229 random_n              srand(...) then rand() % n + 1  (n = 0 divides by zero)
+
+# ---- intro
+fn 365F:03F2 intro_play            title / intro sequence (skipped by key or click)
+fn 365F:03A3 intro_play_scene      play the current intro scene until it ends; key or click sets g_intro_skip
+
+# ---- globals
+g 055C 16 g_language               0 = German, 1 = English, 0xFFFF = ask
+g 0580 16 g_debug_level            number of '*' characters in the 2nd argument
+g 161C 16 g_intro_skip             set when the intro is interrupted
+g 7BF6 16 g_mouse_x
+g 7BF8 16 g_mouse_y
+g 71EA 16 g_time_slot              hour index of the broadcast day
+g 8E82 32 g_screen_buf             back buffer for drawing
+g 8F4E 32 g_tile_atlas             current tile/glyph atlas

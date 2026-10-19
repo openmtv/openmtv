@@ -1,0 +1,20 @@
+# fix: ai-visit (2DD9:3C0D)
+# The human plays station 2 (rooms on floor 8; station 1's rooms are on
+# floor 5).  Computer player 1 (AI index 0) is about to enter goal state 5,
+# "sneak into the human's rooms" (state 4, visit counter 0 -> its news room,
+# Betty love 30 >= 20 for the master key); then its next goal is chosen.
+# Classic: the visit goes to the rooms of player 1 -- here its own news room,
+# floor 5; fixed: to the human's news room on floor 8.
+# expect classic 3000 call 2DD9:3C0D == 0
+# expect classic 3001 word 39D4:7B48 == 5
+# expect fixed   3000 call 2DD9:3C0D == 0
+# expect fixed   3001 word 39D4:7B48 == 8
+# expect fixed   3001 word 39D4:7B54 == 1
+400 key esc
+900 click 160 64
+1000 click 64 100
+1300 click 172 185
+3000 poke16 39D4:2507 0
+3000 poke16 39D4:24E5 4
+3000 poke16 39D4:24F3 768
+3000 poke16 39D4:8BFF 30

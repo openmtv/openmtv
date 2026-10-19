@@ -1,0 +1,94 @@
+# fix: title-cache (048C:025B txt_film_cache_load, room 4 = the own library)
+# g_film_txt_cache (DS:63E5) has 49 slots of 10 bytes (film id, title, description).  Entering the
+# own library loads slots 3.. with the case's films (g_bag DS:2483, count DS:734A) and then every
+# archive film, genre 1..10, with no bound.  A film bought for a full genre stays in the case, so
+# 47 films in archive and case are reachable in play; here 40 + 10 = 50 fill slots 3..52, and the
+# four Sundry films 5, 16, 19, 42 land in slots 49..52 = the series cache's slot 0 (DS:65CF).
+# Test pokes, 2550 (new game, English): player 1's archive (DS:6F85 + genre*8 + slot*2) four films
+#   in each genre 1..10 (the first four of that genre by id), counts DS:6FE6..6FEF = 4; series 5
+#   ("Gunsmoke") as the only series (genre 11, DS:6FDD); the case holds 10 more films, all of
+#   full genres.  2900 click the library door (floor 5).
+# Classic: movie_title (1DA8:33A6) of the Sundry films 5 and 42 is NULL (their card shows no title
+#   and no description), series slot 0's id (DS:65CF) is 5: "Gunsmoke" shows the title "Once upon a
+#   time in the West" and episodes "$", "", "", "Paris, Texas", "The everpopular Wim Wender..."; after
+#   leaving (3400 Esc, room DS:838C = 0) slot 0 still says 5 (until slot 0 is loaded again).
+# Fixed: slots 49.. live outside the data segment: titles of 5 and 42 found, DS:65CF untouched (0);
+#   after leaving, their slots are freed with 3..48 (movie_title of 5 is NULL again).
+# Sanity: film 8 (slot 13) has its title in both modes.
+# expect classic 3300 call 1DA8:33A6,8 > 0
+# expect classic 3300 call 1DA8:33A6,5 == 0
+# expect classic 3300 call 1DA8:33A6,42 == 0
+# expect classic 3300 word 39D4:65CF == 5
+# expect classic 3700 word 39D4:838C == 0
+# expect classic 3700 word 39D4:65CF == 5
+# expect fixed   3300 call 1DA8:33A6,8 > 0
+# expect fixed   3300 call 1DA8:33A6,5 > 0
+# expect fixed   3300 call 1DA8:33A6,42 > 0
+# expect fixed   3300 word 39D4:65CF == 0
+# expect fixed   3700 word 39D4:838C == 0
+# expect fixed   3700 call 1DA8:33A6,5 == 0
+# expect fixed   3700 word 39D4:65CF == 0
+400 key esc
+1000 click 64 100
+1300 click 172 185
+2100 click 230 60
+2500 click 230 60
+2550 poke16 39D4:6F8D 8
+2550 poke16 39D4:6F8F 34
+2550 poke16 39D4:6F91 40
+2550 poke16 39D4:6F93 49
+2550 poke16 39D4:6F95 1
+2550 poke16 39D4:6F97 2
+2550 poke16 39D4:6F99 3
+2550 poke16 39D4:6F9B 4
+2550 poke16 39D4:6F9D 15
+2550 poke16 39D4:6F9F 22
+2550 poke16 39D4:6FA1 25
+2550 poke16 39D4:6FA3 44
+2550 poke16 39D4:6FA5 20
+2550 poke16 39D4:6FA7 27
+2550 poke16 39D4:6FA9 30
+2550 poke16 39D4:6FAB 41
+2550 poke16 39D4:6FAD 9
+2550 poke16 39D4:6FAF 24
+2550 poke16 39D4:6FB1 31
+2550 poke16 39D4:6FB3 32
+2550 poke16 39D4:6FB5 58
+2550 poke16 39D4:6FB7 62
+2550 poke16 39D4:6FB9 63
+2550 poke16 39D4:6FBB 64
+2550 poke16 39D4:6FBD 29
+2550 poke16 39D4:6FBF 59
+2550 poke16 39D4:6FC1 60
+2550 poke16 39D4:6FC3 61
+2550 poke16 39D4:6FC5 51
+2550 poke16 39D4:6FC7 52
+2550 poke16 39D4:6FC9 53
+2550 poke16 39D4:6FCB 54
+2550 poke16 39D4:6FCD 6
+2550 poke16 39D4:6FCF 7
+2550 poke16 39D4:6FD1 10
+2550 poke16 39D4:6FD3 11
+2550 poke16 39D4:6FD5 5
+2550 poke16 39D4:6FD7 16
+2550 poke16 39D4:6FD9 19
+2550 poke16 39D4:6FDB 42
+2550 poke16 39D4:6FE6 1028
+2550 poke16 39D4:6FE8 1028
+2550 poke16 39D4:6FEA 1028
+2550 poke16 39D4:6FEC 1028
+2550 poke16 39D4:6FEE 1028
+2550 poke16 39D4:6FDD 5
+2550 poke16 39D4:2483 12
+2550 poke16 39D4:2485 13
+2550 poke16 39D4:2487 14
+2550 poke16 39D4:2489 17
+2550 poke16 39D4:248B 18
+2550 poke16 39D4:248D 21
+2550 poke16 39D4:248F 23
+2550 poke16 39D4:2491 26
+2550 poke16 39D4:2493 28
+2550 poke16 39D4:2495 33
+2550 poke16 39D4:734A 10
+2900 click 224 68
+3400 key esc

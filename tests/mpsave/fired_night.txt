@@ -1,0 +1,24 @@
+# A fired human in a saved game (src/mpsave.c; tools/mpsavetest.py): tests/mp/fired_one
+# -- two humans, station 2's image set to 3 before the first day's end, its boss fires
+# it the next morning, its station leaves the game, seat 1 only watches -- then seat 0
+# plays on to the second day's end, where the game is saved (tag-003.mtvmp) with
+# station 2's human out.
+# humans 1,2
+# play tests/mp/two_humans.txt until 69000
+# play tests/mp/fired_one.txt until 86000
+100000 peek8 39D4:8C1E
+100000 peek16 39D4:8C1F
+100000 peek32 39D4:8BFB
+100000 hash
+100001 seat 1 hash
+130000 peek8 39D4:8C1E
+130000 peek16 39D4:8C1F
+130000 peek32 39D4:8BFB
+130000 hash
+130001 seat 1 hash
+142000 peek16 39D4:71E4
+142000 peek8 39D4:8C1E
+142000 peek32 39D4:8BFB
+142000 hash
+142001 seat 1 hash
+142010 quit

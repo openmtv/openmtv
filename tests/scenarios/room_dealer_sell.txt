@@ -1,0 +1,70 @@
+# room_dealer_sell: library (room 4) -> film agency (room 8): carry an own film to the agency and sell
+# it to Mr. Jabble; a film bought there just now is only taken back (refund), not bought.  English.
+# Steps: new game; dismiss the boss's two messages; 2600 click the library door (floor 5, x 224);
+#   2900 archivist -> genre list; 3100 "Cultural program"; 3300 take tape 1 (film 66, unscheduled) off
+#   the shelf; 3500 drop it into the case; 3700 Esc leaves; 3900 test poke: human figure 0 walks to the
+#   film agency (floor 7 door 0: poke16 7B48 7, 7B54 0, 7B4A 0, 7B46 0x99 = elevator).
+#   (arrives at about 4900; 5040 in the difftest run, whose elevator traffic differs) 5450 hover the
+#   case tape -> info; 5550 buy shelf tape 1 (film 67, $1 000); 5750 drop it on Mr. Jabble (hotspot
+#   0x23) -> a fresh tape is taken back, refunded; 5950 take film 66 out of the case; 6150 drop it on
+#   Mr. Jabble -> sold for $3 000; 6300 Esc leaves.
+# Observable (frame 6600, PEEK lines): money players(1).money DS:8BFB/8BFD = 203000 (6392 + 3*65536);
+#   ledger films sold DS:7221 = 3000, films bought DS:71F9 = 0 (bought and refunded); library genre 6
+#   count DS:6FEB = 2 (ids 69, 70 at DS:6FB5/6FB7); film 66 owner (4DA5:0008 + 66*0x17 + 5) = 0.
+# Content pokes (values the machine-level run already has, so its hashes do not change): the
+#   difftest run (--interp --difftest) plays another game, because random_n() reseeds from the PIT
+#   timer and the tests freeze the timers; the pokes give it the same library.  2550: genre 6 of
+#   player 1 = 69, 66, 70 (DS:6FB5.., count DS:6FEB = 3), owner 1 / flags 0x24 / flags2 (bit 1 =
+#   scheduled) 2, 0, 2 of films 69, 66, 70 (film table 4DA5:0008 + id*0x17 + 5..7); 4700: dealer
+#   shelf slot 1 (DS:19F5: id, u32 price, shelf) = film 67 at $1 000 and its owner/flags 4DA5:0612.
+# end 6800
+400 key esc
+1000 click 64 100
+1300 click 172 185
+2000 hash
+2100 click 230 60
+2500 click 230 60
+2550 poke16 39D4:6FB5 69
+2550 poke16 39D4:6FB7 66
+2550 poke16 39D4:6FB9 70
+2550 poke16 39D4:6FEA 768
+2550 poke16 4DA5:05FB 9217
+2550 poke16 4DA5:05FC 36
+2550 poke16 4DA5:0640 9217
+2550 poke16 4DA5:0641 548
+2550 poke16 4DA5:0657 9217
+2550 poke16 4DA5:0658 548
+2600 click 224 68
+2900 click 255 35
+3100 click 180 56
+3300 click 173 60
+3500 click 40 60
+3700 key esc
+3900 poke16 39D4:7B48 7
+3900 poke16 39D4:7B54 0
+3900 poke16 39D4:7B4A 0
+3900 poke16 39D4:7B46 153
+4000 hash
+4700 poke16 39D4:19F5 67
+4700 poke16 39D4:19F7 1000
+4700 poke16 39D4:19F9 0
+4700 poke16 39D4:19FB 1024
+4700 poke16 4DA5:0612 1024
+5450 goto 228 45
+5550 click 85 90
+5750 click 40 60
+5950 click 228 45
+6000 hash
+6150 click 40 55
+6300 key esc
+6600 peek16 39D4:838C
+6600 peek16 39D4:8BFB
+6600 peek16 39D4:8BFD
+6600 peek16 39D4:7221
+6600 peek16 39D4:71F9
+6600 peek8 39D4:6FEB
+6600 peek16 39D4:6FB5
+6600 peek16 39D4:6FB7
+6600 peek8 4DA5:05FB
+6800 hash
+6801 quit

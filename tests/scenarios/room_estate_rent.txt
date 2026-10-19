@@ -1,0 +1,46 @@
+# room_estate_rent: estate agent (room 10, floor 12 door 0) and its studio plan (room 62).
+# New game: the human (player 1) rents studio 6 (floor 6 door 0, size 1, $2 000/day).  Test
+# pokes: figures(0) walk target = floor 12 door 0 (7B48, 7B54, 7B4A, 7B46 = 0x99 elevator).
+#   4800 click beside the plan (nothing)
+#   5200 click the plan (hotspot 0x27) -> room 62
+#   5600 click studio 12 (floor 12, marker at 110,42): its renter byte is 0 (a room that is not
+#        a free studio; only 0xFF is offered), nothing happens
+#   6000 click studio 6 (own, 225,29): "give it up?" -> 6400 thumbs down (0x25)
+#   6800 click studio 6 again -> 7200 thumbs up (0x24): studio_give_back -> studio_release
+#        (renter 0xFF, door sign "Free studio")
+#   7600 click studio 6 (now free): "empty, $3000 per day (size 1)" -> 8000 thumbs up:
+#        studio_request_rent -> studio_take_over (rent += rent/2, pays 3 x $3 000)
+#   8400 leave the plan, 8800 leave the agent
+# Observable: at 7600 studios(6).renter 39D4:61C8 = 0xFF; at the end 39D4:61C8 = 1, rent
+#   39D4:61CB (u32) = 3000, players(1).money 39D4:8BFB (u32) = 191000.
+# end 9200
+400 key esc
+1000 click 64 100
+1300 click 172 185
+2000 hash
+2100 click 230 60
+2500 click 230 60
+2600 poke16 39D4:7B48 12
+2600 poke16 39D4:7B54 0
+2600 poke16 39D4:7B4A 0
+2600 poke16 39D4:7B46 153
+4000 hash
+4800 click 200 100
+5200 click 50 60
+5600 click 110 42
+6000 click 225 29
+6000 hash
+6400 click 194 87
+6800 click 225 29
+7200 click 124 87
+7600 click 225 29
+7600 peek8 39D4:61C8
+8000 click 124 87
+8000 hash
+8400 rclick 160 60
+8800 rclick 160 60
+9199 peek8 39D4:61C8
+9199 peek32 39D4:61CB
+9199 peek32 39D4:8BFB
+9200 hash
+9201 quit

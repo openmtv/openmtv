@@ -1,0 +1,212 @@
+# The AI improvement with three humans (--ai-improve=strong): no computer player is left to
+# follow anyone -- every machine computes the same game (and the same as without the
+# option: tools/aiimptest.py three_humans).
+# Station 1 buys a transmitter at frame 3600 (the harness's txbuy).
+# humans 1,2,3
+# options --new-game --names Anna,Ben,Cleo --seed 4321 --ai-improve=strong
+600 poke16 39D4:72A2 60
+900 key esc
+950 seat 1 key esc
+1000 seat 2 key esc
+1200 key esc
+1250 seat 1 key esc
+1300 seat 2 key esc
+1500 key esc
+1550 seat 1 key esc
+1600 seat 2 key esc
+1800 key esc
+1850 seat 1 key esc
+1900 seat 2 key esc
+2100 key esc
+2150 seat 1 key esc
+2200 seat 2 key esc
+2400 key esc
+2450 seat 1 key esc
+2500 seat 2 key esc
+2700 key esc
+2750 seat 1 key esc
+2800 seat 2 key esc
+3000 key esc
+3050 seat 1 key esc
+3100 seat 2 key esc
+3300 key esc
+3350 seat 1 key esc
+3400 seat 2 key esc
+3600 txbuy 1 100000
+3600 key esc
+3650 seat 1 key esc
+3700 seat 2 key esc
+3900 key esc
+3950 seat 1 key esc
+4000 seat 2 key esc
+4000 peek32 39D4:1EDB
+4000 hash
+4001 seat 1 hash
+4002 seat 2 hash
+4200 key esc
+4250 seat 1 key esc
+4300 seat 2 key esc
+4500 key esc
+4550 seat 1 key esc
+4600 seat 2 key esc
+4800 key esc
+4850 seat 1 key esc
+4900 seat 2 key esc
+5100 key esc
+5150 seat 1 key esc
+5200 seat 2 key esc
+5400 key esc
+5450 seat 1 key esc
+5500 seat 2 key esc
+5700 key esc
+5750 seat 1 key esc
+5800 seat 2 key esc
+6000 key esc
+6050 seat 1 key esc
+6100 seat 2 key esc
+6300 key esc
+6350 seat 1 key esc
+6400 seat 2 key esc
+6600 key esc
+6650 seat 1 key esc
+6700 seat 2 key esc
+6900 key esc
+6950 seat 1 key esc
+7000 seat 2 key esc
+7200 key esc
+7250 seat 1 key esc
+7300 seat 2 key esc
+7500 key esc
+7550 seat 1 key esc
+7600 seat 2 key esc
+7800 key esc
+7850 seat 1 key esc
+7900 seat 2 key esc
+8100 key esc
+8150 seat 1 key esc
+8200 seat 2 key esc
+8400 key esc
+8450 seat 1 key esc
+8500 seat 2 key esc
+8700 key esc
+8750 seat 1 key esc
+8800 seat 2 key esc
+9000 key esc
+9050 seat 1 key esc
+9100 seat 2 key esc
+9300 key esc
+9350 seat 1 key esc
+9400 seat 2 key esc
+9600 key esc
+9650 seat 1 key esc
+9700 seat 2 key esc
+9900 key esc
+9950 seat 1 key esc
+10000 seat 2 key esc
+10200 key esc
+10250 seat 1 key esc
+10300 seat 2 key esc
+10500 key esc
+10550 seat 1 key esc
+10600 seat 2 key esc
+10800 key esc
+10850 seat 1 key esc
+10900 seat 2 key esc
+11100 key esc
+11150 seat 1 key esc
+11200 seat 2 key esc
+11400 key esc
+11450 seat 1 key esc
+11500 seat 2 key esc
+11700 key esc
+11750 seat 1 key esc
+11800 seat 2 key esc
+12000 key esc
+12000 peek32 39D4:1EDB
+12000 hash
+12001 seat 1 hash
+12002 seat 2 hash
+12050 seat 1 key esc
+12100 seat 2 key esc
+12300 key esc
+12350 seat 1 key esc
+12400 seat 2 key esc
+12600 key esc
+12650 seat 1 key esc
+12700 seat 2 key esc
+12900 key esc
+12950 seat 1 key esc
+13000 seat 2 key esc
+13200 key esc
+13250 seat 1 key esc
+13300 seat 2 key esc
+13500 key esc
+13550 seat 1 key esc
+13600 seat 2 key esc
+13800 key esc
+13850 seat 1 key esc
+13900 seat 2 key esc
+14100 key esc
+14150 seat 1 key esc
+14200 seat 2 key esc
+14400 key esc
+14450 seat 1 key esc
+14500 seat 2 key esc
+14700 key esc
+14750 seat 1 key esc
+14800 seat 2 key esc
+15000 key esc
+15050 seat 1 key esc
+15100 seat 2 key esc
+15300 key esc
+15350 seat 1 key esc
+15400 seat 2 key esc
+15600 key esc
+15650 seat 1 key esc
+15700 seat 2 key esc
+15900 key esc
+15950 seat 1 key esc
+16000 seat 2 key esc
+16200 key esc
+16250 seat 1 key esc
+16300 seat 2 key esc
+16500 key esc
+16550 seat 1 key esc
+16600 seat 2 key esc
+16800 key esc
+16850 seat 1 key esc
+16900 seat 2 key esc
+17100 key esc
+17150 seat 1 key esc
+17200 seat 2 key esc
+17400 key esc
+17450 seat 1 key esc
+17500 seat 2 key esc
+17700 key esc
+17750 seat 1 key esc
+17800 seat 2 key esc
+18000 key esc
+18050 seat 1 key esc
+18100 seat 2 key esc
+18300 key esc
+18350 seat 1 key esc
+18400 seat 2 key esc
+18600 key esc
+18650 seat 1 key esc
+18700 seat 2 key esc
+18900 key esc
+18950 seat 1 key esc
+19000 seat 2 key esc
+19200 key esc
+19250 seat 1 key esc
+19300 seat 2 key esc
+19500 key esc
+19550 seat 1 key esc
+19600 seat 2 key esc
+19800 key esc
+19850 seat 1 key esc
+19900 seat 2 key esc
+19997 hash
+19998 seat 1 hash
+19999 seat 2 hash
+20000 quit

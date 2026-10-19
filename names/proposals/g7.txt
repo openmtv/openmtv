@@ -1,0 +1,18 @@
+g 12D4 16 g_trendy_player  player whose film 138 "Trendy" (Im Trend) ended this hour; in the ad phase an AI copies the current g_trends into g_ai_trends, the human gets message 0x15F; then cleared (24B8:0C4A)
+g 7A44 16 g_present_bld_only  present_frame mode: 1 = copy only the building view to VGA (set by game_frame around building frames), 0 = full screen; 9999 set by bld_render_floors on the day/night switch forces a full copy
+g 7A6A 16 g_terror_retire_idx  terrorist event retired once the intruder has left: word index from 0x79C6 into the intruder event flags 0x7A54+2*type (0x48 = terrorist 1 after consulate room 0x13 was bombed, 0x49 = terrorist 2 after room 0x12); 0 = none
+g 7A88 16 g_guardian_state  moral guardian (intruder 4) event: 0 not today, 1 waiting, 2 triggered when a station airs an X-rated film (flags2 bit3) before 21:00 (target = that player); same 0/1/2 states as the flags 0x7A56..0x7A5A
+g 7A96 16 g_news_placed  1 after the human dropped a news item into a broadcast slot (0 on entering the news room / taking one out); leaving the news room then shows the room -3 newsroom cut-in
+g 7B32 32 g_bld_sprites  res 11: building sprite bank (elevator cabin/door parts, street-level overlays at the sides, door tooltip icons; also used by 26A7)
+g 8356 16 g_tvfam_v2_state  TV-family viewer 2 (rec 0x834E) +8 state: 1 watching, 2 bored (quality <= 7), 3 ?dozing (from 21:00 with quality <= 5)
+g 8358 16 g_tvfam_v2_counter  TV-family viewer 2 (rec 0x834E) +0xA animation counter (wraps at 100 / 135 / 285 by state)
+g 838A 16 g_figure_sprite_cols_adj  ?1 when g_figure_sprite_cols < 8 (set at startup from the figure sprite bank size); added to the column factor by figure_sprite_stride(n, 1)
+g 0D08 16 g_timer_run_count  debug counter: game-clock timer starts minus stops (game_clock_reset/start ++, game_clock_stop --; never read)
+g 0D3E 16 g_room_anim_sub  room animation helper next to g_room_anim_frame: random overlay variant kept between re-rolls (studio, film agency, room -3 from studio), loop count in the library (> 10 -> frame 18); 0 on reset
+g 0D42 16 g_news_anim_pick  room -3 newsroom cut-in animation: random overlay sprite 0..6, re-rolled every 4th frame and never the same twice; 0xFFFF after reset
+g 0D44 32 g_sa_fly1_bg  screenplay agency animation: saved screen under flying object 1 (24x12, frames 812..830, tumbling sprites 10..17, ?thrown paper); 3 records {bitmap, x, y} at 0xD44 freed by room_anim_update(2)
+g 0D48 16 g_sa_fly1_x  x (multiple of 8) where g_sa_fly1_bg was grabbed
+g 0D4A 16 g_sa_fly1_y  y where g_sa_fly1_bg was grabbed
+g 0D4C 32 g_sa_fly2_bg  screenplay agency animation: saved screen under flying object 2 (32x20, frames 824..841, sprites 18..22, ?thrown screenplay); on landing a hidden script sprite is made visible
+g 0D50 16 g_sa_fly2_x  x (multiple of 8) where g_sa_fly2_bg was grabbed
+g 0D52 16 g_sa_fly2_y  y where g_sa_fly2_bg was grabbed

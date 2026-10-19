@@ -1,0 +1,25 @@
+# fix: boss-music (0AA4:000E room_boss_click -> snd_room_music_stop 35F8:058F without its arguments)
+# The tests/scenarios/ending_resigned input: new game, walk to the boss, test poke image 80
+# (39D4:8C08), "I quit", confirm; the click at frame 4500 dismisses the boss's answer and the
+# end sequence starts ("THE END" waits for a click that never comes).  Before it the boss calls
+# snd_room_music_stop without pushing (room, owner); the callee reads the DI and SI that the
+# boss handler's prologue saved -- the main loop's DI = 1 (button held) and SI = 60 -- so
+# classic it runs as for "room 1, owner 60": it records room 1 as the last room
+# (g_snd_room_off, 39D4:160A) and leaves the boss room's sample playing (39D4:1606 = sample
+# loaded), because the last room (3) was not 0.  Fixed: (g_room 3, its owner) -> the sample
+# is stopped and room 3 recorded.
+# expect classic 5000 word 39D4:160A == 1
+# expect classic 5000 word 39D4:1606 != 0
+# expect fixed   5000 word 39D4:160A == 3
+# expect fixed   5000 word 39D4:1606 == 0
+400 key esc
+1000 click 64 100
+1300 click 172 185
+2100 click 230 60
+2500 click 230 60
+2600 poke16 39D4:8C08 80
+2700 click 188 70
+3200 click 230 92
+3600 click 230 90
+4050 click 230 90
+4500 click 230 90

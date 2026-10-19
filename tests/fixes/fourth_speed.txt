@@ -1,0 +1,29 @@
+# option: --fourth-speed
+# Not a fix: the player's choice "fourth speed" (settings [game] fourth_speed, --fourth-speed).
+# New game as player 1; the office (the door from the building view, 2700), the planner (3600),
+# its Control-Center (hotspot 0x45, 3900).  g_game_speed (39D4:72A2) starts at 30.
+# Classic the speed row is three buttons at 96..191 (hotspots 0x3F..0x41 up to x 192): a click
+# at x 200 (beside them) changes nothing.  With the option the row is four buttons at 80..207:
+# x 200 is the fourth (120), x 85 / 125 / 160 the original's three (20 / 30 / 60), x 200 again
+# the fourth.  A right click closes the panel.
+# expect classic 4500 word 39D4:72A2 == 30
+# expect option  4500 word 39D4:72A2 == 120
+# expect option  4800 word 39D4:72A2 == 20
+# expect option  5100 word 39D4:72A2 == 30
+# expect option  5400 word 39D4:72A2 == 60
+# expect option  5700 word 39D4:72A2 == 120
+400 key esc
+1000 click 64 100
+1300 click 172 185
+2100 click 230 60
+2500 click 230 60
+2700 click 88 70
+3200 click 160 30
+3600 click 264 67
+3900 click 303 15
+4300 click 200 104
+4600 click 85 104
+4900 click 125 104
+5200 click 160 104
+5500 click 200 104
+5800 rclick 200 60

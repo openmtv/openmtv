@@ -1,0 +1,127 @@
+{
+ "German texts over 64 KB": [
+  "films: the German texts are 131 KB, at most 64 KB (the game reads them as one resource)",
+  "Filme: die deutschen Texte sind 131 KB groß, höchstens 64 KB (das Spiel liest sie als eine Ressource)"
+ ],
+ "ad one text": [
+  "ad #4, German texts: 1 instead of 2 (advertiser, slogan)",
+  "Werbevertrag #4, deutsche Texte: 1 statt 2 (Werbekunde, Slogan)"
+ ],
+ "ads' texts over 64 KB": [
+  "ads: the German texts are 83 KB, at most 64 KB (the game reads them as one resource)",
+  "Werbeverträge: die deutschen Texte sind 83 KB groß, höchstens 64 KB (das Spiel liest sie als eine Ressource)"
+ ],
+ "an entry without its number": [
+  "ads: an entry without its number (id): null",
+  "Werbeverträge: ein Eintrag ohne seine Nummer (id): null"
+ ],
+ "headline not code page 437": [
+  "news node #2, English headline: \"☂\" cannot be written in the game's character set (code page 437)",
+  "Nachricht #2, englische Schlagzeile: \"☂\" lässt sich im Zeichensatz des Spiels (Codepage 437) nicht schreiben"
+ ],
+ "incomplete": [
+  "not playable yet -- film 202: German title, genre",
+  "noch nicht spielbar -- Film 202: deutscher Titel, Genre"
+ ],
+ "incomplete screenplays": [
+  "not playable yet -- screenplay 26: price, English description, German description, base quality, shopping list; screenplay 27: at most 3 sets in the first list (a studio holds 3), requirements of roles 1-2, actor category of role 2; screenplay 37: price, English description, German description, episode length of series 37, base quality (episodes 3-9), shopping list (episodes 3-9), actor category of roles 1-2, requirements of roles 1-2; screenplay 38: price, English description, German description, episode length of series 38, base quality (episodes 1-10), shopping list (episodes 1-10)",
+  "noch nicht spielbar -- Drehbuch 26: Preis, englische Beschreibung, deutsche Beschreibung, Grundqualität, Einkaufsliste; Drehbuch 27: höchstens 3 Kulissen in der ersten Liste (ein Studio fasst 3), Anforderungen der Rollen 1-2, Besetzungsgruppe von Rolle 2; Drehbuch 37: Preis, englische Beschreibung, deutsche Beschreibung, Folgenlänge von Serie 37, Grundqualität (Folgen 3-9), Einkaufsliste (Folgen 3-9), Besetzungsgruppe der Rollen 1-2, Anforderungen der Rollen 1-2; Drehbuch 38: Preis, englische Beschreibung, deutsche Beschreibung, Folgenlänge von Serie 38, Grundqualität (Folgen 1-10), Einkaufsliste (Folgen 1-10)"
+ ],
+ "list not a list": [
+  "series #3, episodes_qtf: not a list, it takes 33 numbers",
+  "Serie #3, episodes_qtf: keine Liste, es braucht 33 Zahlen"
+ ],
+ "list too short": [
+  "series #3, episodes_qtf: 32 values, it takes 33 numbers",
+  "Serie #3, episodes_qtf: 32 Werte, es braucht 33 Zahlen"
+ ],
+ "list value out of range": [
+  "ad #3, genre_rule[1]: 200 is not between -128 and 127",
+  "Werbevertrag #3, genre_rule[1]: 200 liegt nicht zwischen -128 und 127"
+ ],
+ "no records": [
+  "ads: no list of records",
+  "Werbeverträge: keine Liste von Einträgen"
+ ],
+ "no start films": [
+  "a new game gives each station 3 films (the marked ones, then cultural programmes on the market): only 0 are free, it hangs with fewer than 9",
+  "ein neues Spiel gibt jedem Sender 3 Filme (erst die markierten, dann Kultursendungen vom Markt): nur 0 sind frei, mit weniger als 9 bleibt es hängen"
+ ],
+ "number negative": [
+  "film #-3: no such number",
+  "Film #-3: keine solche Nummer"
+ ],
+ "number too high": [
+  "screenplay #60: the number is too high (at most 50)",
+  "Drehbuch #60: die Nummer ist zu hoch (höchstens 50)"
+ ],
+ "number too high, growing": [
+  "series #1000: the number is too high (at most 999)",
+  "Serie #1000: die Nummer ist zu hoch (höchstens 999)"
+ ],
+ "pack: a number twice": [
+  "pack doppelt: film #201 twice",
+  "Paket doppelt: Film #201 doppelt"
+ ],
+ "packs: more than 999": [
+  "more than 999 films with pack f201",
+  "mehr als 999 Filme mit Paket f201"
+ ],
+ "phrases nine": [
+  "news topic #3, German texts: 9 instead of 10 (phrases)",
+  "Nachrichten-Thema #3, deutsche Texte: 9 statt 10 (Phrasen)"
+ ],
+ "text a number": [
+  "film #7, English title: 7 is not a text",
+  "Film #7, englischer Titel: 7 ist kein Text"
+ ],
+ "text an episode's": [
+  "series #4, English text of episode 2: 256 bytes, at most 255",
+  "Serie #4, englischer Text von Folge 2: 256 Bytes, höchstens 255"
+ ],
+ "text not code page 437": [
+  "ad #3, German slogan: \"€✓✓\" cannot be written in the game's character set (code page 437)",
+  "Werbevertrag #3, deutscher Slogan: \"€✓✓\" lässt sich im Zeichensatz des Spiels (Codepage 437) nicht schreiben"
+ ],
+ "text over 255 bytes": [
+  "film #12, German description: 300 bytes, at most 255",
+  "Film #12, deutsche Beschreibung: 300 Bytes, höchstens 255"
+ ],
+ "texts a string": [
+  "film #9, German texts: \"Titel\" is not a list of texts",
+  "Film #9, deutsche Texte: \"Titel\" ist keine Liste von Texten"
+ ],
+ "texts raw, not hex": [
+  "film #8, German texts: raw is not hex",
+  "Film #8, deutsche Texte: raw ist kein Hex"
+ ],
+ "the original": "(no error)",
+ "unknown beyond": [
+  "film #5, unknown 0x16: beyond the entry's 23 bytes",
+  "Film #5, unknown 0x16: jenseits der 23 Bytes des Eintrags"
+ ],
+ "unknown no offset": [
+  "film #5, unknown x: not an offset (0x..)",
+  "Film #5, unknown x: keine Stelle (0x..)"
+ ],
+ "unknown not hex": [
+  "film #5, unknown 0x0E: \"zz\" is not hex",
+  "Film #5, unknown 0x0E: \"zz\" ist kein Hex"
+ ],
+ "value a fraction": [
+  "film #5, price: 1.5 is not a whole number",
+  "Film #5, price: 1.5 ist keine ganze Zahl"
+ ],
+ "value a text": [
+  "film #5, genre: \"x\" is not a whole number",
+  "Film #5, genre: \"x\" ist keine ganze Zahl"
+ ],
+ "value out of range": [
+  "film #5, quality: 300 is not between 0 and 255",
+  "Film #5, quality: 300 liegt nicht zwischen 0 und 255"
+ ],
+ "value true": [
+  "film #5, blocks: true is not a whole number",
+  "Film #5, blocks: true ist keine ganze Zahl"
+ ]
+}

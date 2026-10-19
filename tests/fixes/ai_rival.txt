@@ -1,0 +1,19 @@
+# fix: ai-rival (2DD9:26EA)
+# The daily budget plan of a computer player ranks it against "the other
+# computer player" and the human; the other one is taken as the computer
+# player that is not g_ai_cur, but ai_new_day plans both with the same
+# g_ai_cur.  Here: human = player 1, computer players 2 (AI index 0) and 3;
+# images 20, 60, 40; g_ai_cur = 1 and player 2 planned.  Classic: its rival
+# is itself (60 is not above 60), so its image rank (DS:6ECC, ai(2) + 0x2B)
+# is 2 although it leads; fixed: rival player 3, rank 1.
+# expect classic 3000 call 2DD9:26EA,2 >= 0
+# expect classic 3000 byte 39D4:6ECC == 2
+# expect fixed   3000 call 2DD9:26EA,2 >= 0
+# expect fixed   3000 byte 39D4:6ECC == 1
+400 key esc
+1000 click 64 100
+1300 click 172 185
+3000 poke16 39D4:8C08 20
+3000 poke16 39D4:8C1F 60
+3000 poke16 39D4:8C36 40
+3000 poke16 39D4:2507 1

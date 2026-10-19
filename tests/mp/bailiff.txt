@@ -1,0 +1,587 @@
+# The bailiff (multiplayer stage 3, tools/seattest.py): two humans as in two_humans;
+# station 2's money set to -$200 000 before the first day's end.  The next day the
+# bailiff goes after the most indebted human -- station 2, not seat 0 (the original
+# looks only at g_player) -- and starts once no human looks at the lower floors: by
+# chance from 18:00, for certain at 23:00.  By then the computer player has swapped
+# the door signs (its dirty trick), and the bailiff follows the signs: at 122000 the
+# test puts them back as the building has them, so he finds station 2's office; the
+# film he takes is reported in seat 1's office (its message count, DS:7247 of its seat).
+# humans 1,2
+# play tests/mp/two_humans.txt until 69000
+69000 poke16 39D4:8C12 62144
+69000 poke16 39D4:8C14 65532
+69000 key esc
+69050 seat 1 key esc
+69300 key esc
+69350 seat 1 key esc
+69600 key esc
+69650 seat 1 key esc
+69900 key esc
+69950 seat 1 key esc
+70000 peek16 39D4:7A5C
+70000 peek16 39D4:7A5E
+70000 seat 1 peek8 39D4:7247
+70000 peek8 39D4:7247
+70000 hash
+70001 seat 1 hash
+70200 key esc
+70250 seat 1 key esc
+70500 key esc
+70550 seat 1 key esc
+70800 key esc
+70850 seat 1 key esc
+71100 key esc
+71150 seat 1 key esc
+71400 key esc
+71450 seat 1 key esc
+71700 key esc
+71750 seat 1 key esc
+72000 key esc
+72000 peek16 39D4:7A5C
+72000 peek16 39D4:7A5E
+72000 seat 1 peek8 39D4:7247
+72000 peek8 39D4:7247
+72000 hash
+72001 seat 1 hash
+72050 seat 1 key esc
+72300 key esc
+72350 seat 1 key esc
+72600 key esc
+72650 seat 1 key esc
+72900 key esc
+72950 seat 1 key esc
+73200 key esc
+73250 seat 1 key esc
+73500 key esc
+73550 seat 1 key esc
+73800 key esc
+73850 seat 1 key esc
+74000 peek16 39D4:7A5C
+74000 peek16 39D4:7A5E
+74000 seat 1 peek8 39D4:7247
+74000 peek8 39D4:7247
+74000 hash
+74001 seat 1 hash
+74100 key esc
+74150 seat 1 key esc
+74400 key esc
+74450 seat 1 key esc
+74700 key esc
+74750 seat 1 key esc
+75000 key esc
+75050 seat 1 key esc
+75300 key esc
+75350 seat 1 key esc
+75600 key esc
+75650 seat 1 key esc
+75900 key esc
+75950 seat 1 key esc
+76000 peek16 39D4:7A5C
+76000 peek16 39D4:7A5E
+76000 seat 1 peek8 39D4:7247
+76000 peek8 39D4:7247
+76000 hash
+76001 seat 1 hash
+76200 key esc
+76250 seat 1 key esc
+76500 key esc
+76550 seat 1 key esc
+76800 key esc
+76850 seat 1 key esc
+77100 key esc
+77150 seat 1 key esc
+77400 key esc
+77450 seat 1 key esc
+77700 key esc
+77750 seat 1 key esc
+78000 key esc
+78000 peek16 39D4:7A5C
+78000 peek16 39D4:7A5E
+78000 seat 1 peek8 39D4:7247
+78000 peek8 39D4:7247
+78000 hash
+78001 seat 1 hash
+78050 seat 1 key esc
+78300 key esc
+78350 seat 1 key esc
+78600 key esc
+78650 seat 1 key esc
+78900 key esc
+78950 seat 1 key esc
+79200 key esc
+79250 seat 1 key esc
+79500 key esc
+79550 seat 1 key esc
+79800 key esc
+79850 seat 1 key esc
+80000 peek16 39D4:7A5C
+80000 peek16 39D4:7A5E
+80000 seat 1 peek8 39D4:7247
+80000 peek8 39D4:7247
+80000 hash
+80001 seat 1 hash
+80100 key esc
+80150 seat 1 key esc
+80400 key esc
+80450 seat 1 key esc
+80700 key esc
+80750 seat 1 key esc
+81000 key esc
+81050 seat 1 key esc
+81300 key esc
+81350 seat 1 key esc
+81600 key esc
+81650 seat 1 key esc
+81900 key esc
+81950 seat 1 key esc
+82000 peek16 39D4:7A5C
+82000 peek16 39D4:7A5E
+82000 seat 1 peek8 39D4:7247
+82000 peek8 39D4:7247
+82000 hash
+82001 seat 1 hash
+82200 key esc
+82250 seat 1 key esc
+82500 key esc
+82550 seat 1 key esc
+82800 key esc
+82850 seat 1 key esc
+83100 key esc
+83150 seat 1 key esc
+83400 key esc
+83450 seat 1 key esc
+83700 key esc
+83750 seat 1 key esc
+84000 key esc
+84000 peek16 39D4:7A5C
+84000 peek16 39D4:7A5E
+84000 seat 1 peek8 39D4:7247
+84000 peek8 39D4:7247
+84000 hash
+84001 seat 1 hash
+84050 seat 1 key esc
+84300 key esc
+84350 seat 1 key esc
+84600 key esc
+84650 seat 1 key esc
+84900 key esc
+84950 seat 1 key esc
+85200 key esc
+85250 seat 1 key esc
+85500 key esc
+85550 seat 1 key esc
+85800 key esc
+85850 seat 1 key esc
+86000 peek16 39D4:7A5C
+86000 peek16 39D4:7A5E
+86000 seat 1 peek8 39D4:7247
+86000 peek8 39D4:7247
+86000 hash
+86001 seat 1 hash
+86100 key esc
+86150 seat 1 key esc
+86400 key esc
+86450 seat 1 key esc
+86700 key esc
+86750 seat 1 key esc
+87000 key esc
+87050 seat 1 key esc
+87300 key esc
+87350 seat 1 key esc
+87600 key esc
+87650 seat 1 key esc
+87900 key esc
+87950 seat 1 key esc
+88000 peek16 39D4:7A5C
+88000 peek16 39D4:7A5E
+88000 seat 1 peek8 39D4:7247
+88000 peek8 39D4:7247
+88000 hash
+88001 seat 1 hash
+88200 key esc
+88250 seat 1 key esc
+88500 key esc
+88550 seat 1 key esc
+88800 key esc
+88850 seat 1 key esc
+89100 key esc
+89150 seat 1 key esc
+89400 key esc
+89450 seat 1 key esc
+89700 key esc
+89750 seat 1 key esc
+90000 peek16 39D4:7A5C
+90000 peek16 39D4:7A5E
+90000 seat 1 peek8 39D4:7247
+90000 peek8 39D4:7247
+90000 hash
+90001 seat 1 hash
+90300 key esc
+90350 seat 1 key esc
+90600 key esc
+90650 seat 1 key esc
+90900 key esc
+90950 seat 1 key esc
+91200 key esc
+91250 seat 1 key esc
+91500 key esc
+91550 seat 1 key esc
+91800 key esc
+91850 seat 1 key esc
+92000 peek16 39D4:7A5C
+92000 peek16 39D4:7A5E
+92000 seat 1 peek8 39D4:7247
+92000 peek8 39D4:7247
+92100 key esc
+92150 seat 1 key esc
+92400 key esc
+92450 seat 1 key esc
+92700 key esc
+92750 seat 1 key esc
+93000 key esc
+93050 seat 1 key esc
+93300 key esc
+93350 seat 1 key esc
+93600 key esc
+93650 seat 1 key esc
+93900 key esc
+93950 seat 1 key esc
+94000 peek16 39D4:7A5C
+94000 peek16 39D4:7A5E
+94000 seat 1 peek8 39D4:7247
+94000 peek8 39D4:7247
+94200 key esc
+94250 seat 1 key esc
+94500 key esc
+94550 seat 1 key esc
+94800 key esc
+94850 seat 1 key esc
+95100 key esc
+95150 seat 1 key esc
+95400 key esc
+95450 seat 1 key esc
+95700 key esc
+95750 seat 1 key esc
+96000 key esc
+96000 peek16 39D4:7A5C
+96000 peek16 39D4:7A5E
+96000 seat 1 peek8 39D4:7247
+96000 peek8 39D4:7247
+96050 seat 1 key esc
+96300 key esc
+96350 seat 1 key esc
+96600 key esc
+96650 seat 1 key esc
+96900 key esc
+96950 seat 1 key esc
+97200 key esc
+97250 seat 1 key esc
+97500 key esc
+97550 seat 1 key esc
+97800 key esc
+97850 seat 1 key esc
+98000 peek16 39D4:7A5C
+98000 peek16 39D4:7A5E
+98000 seat 1 peek8 39D4:7247
+98000 peek8 39D4:7247
+98100 key esc
+98150 seat 1 key esc
+98400 key esc
+98450 seat 1 key esc
+98700 key esc
+98750 seat 1 key esc
+99000 key esc
+99050 seat 1 key esc
+99300 key esc
+99350 seat 1 key esc
+99600 key esc
+99650 seat 1 key esc
+99900 key esc
+99950 seat 1 key esc
+100000 peek16 39D4:7A5C
+100000 peek16 39D4:7A5E
+100000 seat 1 peek8 39D4:7247
+100000 peek8 39D4:7247
+100200 key esc
+100250 seat 1 key esc
+100500 key esc
+100550 seat 1 key esc
+100800 key esc
+100850 seat 1 key esc
+101100 key esc
+101150 seat 1 key esc
+101400 key esc
+101450 seat 1 key esc
+101700 key esc
+101750 seat 1 key esc
+102000 key esc
+102000 peek16 39D4:7A5C
+102000 peek16 39D4:7A5E
+102000 seat 1 peek8 39D4:7247
+102000 peek8 39D4:7247
+102050 seat 1 key esc
+102300 key esc
+102350 seat 1 key esc
+102600 key esc
+102650 seat 1 key esc
+102900 key esc
+102950 seat 1 key esc
+103200 key esc
+103250 seat 1 key esc
+103500 key esc
+103550 seat 1 key esc
+103800 key esc
+103850 seat 1 key esc
+104000 peek16 39D4:7A5C
+104000 peek16 39D4:7A5E
+104000 seat 1 peek8 39D4:7247
+104000 peek8 39D4:7247
+104100 key esc
+104150 seat 1 key esc
+104400 key esc
+104450 seat 1 key esc
+104700 key esc
+104750 seat 1 key esc
+105000 key esc
+105050 seat 1 key esc
+105300 key esc
+105350 seat 1 key esc
+105600 key esc
+105650 seat 1 key esc
+105900 key esc
+105950 seat 1 key esc
+106000 peek16 39D4:7A5C
+106000 peek16 39D4:7A5E
+106000 seat 1 peek8 39D4:7247
+106000 peek8 39D4:7247
+106200 key esc
+106250 seat 1 key esc
+106500 key esc
+106550 seat 1 key esc
+106800 key esc
+106850 seat 1 key esc
+107100 key esc
+107150 seat 1 key esc
+107400 key esc
+107450 seat 1 key esc
+107700 key esc
+107750 seat 1 key esc
+108000 key esc
+108000 peek16 39D4:7A5C
+108000 peek16 39D4:7A5E
+108000 seat 1 peek8 39D4:7247
+108000 peek8 39D4:7247
+108050 seat 1 key esc
+108300 key esc
+108350 seat 1 key esc
+108600 key esc
+108650 seat 1 key esc
+108900 key esc
+108950 seat 1 key esc
+109200 key esc
+109250 seat 1 key esc
+109500 key esc
+109550 seat 1 key esc
+109800 key esc
+109850 seat 1 key esc
+110000 peek16 39D4:7A5C
+110000 peek16 39D4:7A5E
+110000 seat 1 peek8 39D4:7247
+110000 peek8 39D4:7247
+110000 hash
+110001 seat 1 hash
+110100 key esc
+110150 seat 1 key esc
+110400 key esc
+110450 seat 1 key esc
+110700 key esc
+110750 seat 1 key esc
+111000 key esc
+111050 seat 1 key esc
+111300 key esc
+111350 seat 1 key esc
+111600 key esc
+111650 seat 1 key esc
+111900 key esc
+111950 seat 1 key esc
+112000 peek16 39D4:7A5C
+112000 peek16 39D4:7A5E
+112000 seat 1 peek8 39D4:7247
+112000 peek8 39D4:7247
+112200 key esc
+112250 seat 1 key esc
+112500 key esc
+112550 seat 1 key esc
+112800 key esc
+112850 seat 1 key esc
+113100 key esc
+113150 seat 1 key esc
+113400 key esc
+113450 seat 1 key esc
+113700 key esc
+113750 seat 1 key esc
+114000 key esc
+114000 peek16 39D4:7A5C
+114000 peek16 39D4:7A5E
+114000 seat 1 peek8 39D4:7247
+114000 peek8 39D4:7247
+114050 seat 1 key esc
+114300 key esc
+114350 seat 1 key esc
+114600 key esc
+114650 seat 1 key esc
+114900 key esc
+114950 seat 1 key esc
+115200 key esc
+115250 seat 1 key esc
+115500 key esc
+115550 seat 1 key esc
+115800 key esc
+115850 seat 1 key esc
+116000 peek16 39D4:7A5C
+116000 peek16 39D4:7A5E
+116000 seat 1 peek8 39D4:7247
+116000 peek8 39D4:7247
+116100 key esc
+116150 seat 1 key esc
+116400 key esc
+116450 seat 1 key esc
+116700 key esc
+116750 seat 1 key esc
+117000 key esc
+117050 seat 1 key esc
+117300 key esc
+117350 seat 1 key esc
+117600 key esc
+117650 seat 1 key esc
+117900 key esc
+117950 seat 1 key esc
+118000 peek16 39D4:7A5C
+118000 peek16 39D4:7A5E
+118000 seat 1 peek8 39D4:7247
+118000 peek8 39D4:7247
+118200 key esc
+118250 seat 1 key esc
+118500 key esc
+118550 seat 1 key esc
+118800 key esc
+118850 seat 1 key esc
+119100 key esc
+119150 seat 1 key esc
+119400 key esc
+119450 seat 1 key esc
+119700 key esc
+119750 seat 1 key esc
+120000 key esc
+120000 peek16 39D4:7A5C
+120000 peek16 39D4:7A5E
+120000 seat 1 peek8 39D4:7247
+120000 peek8 39D4:7247
+120050 seat 1 key esc
+120300 key esc
+120350 seat 1 key esc
+120600 key esc
+120650 seat 1 key esc
+120900 key esc
+120950 seat 1 key esc
+121200 key esc
+121250 seat 1 key esc
+121500 key esc
+121550 seat 1 key esc
+121800 key esc
+121850 seat 1 key esc
+122000 poke16 39D4:8A60 0
+122000 poke16 39D4:8A62 0
+122000 poke16 39D4:8A64 0
+122000 poke16 39D4:8A66 0
+122000 poke16 39D4:8A68 2
+122000 poke16 39D4:8A6A 0
+122000 poke16 39D4:8A6C 0
+122000 poke16 39D4:8A6E 258
+122000 poke16 39D4:8A70 0
+122000 poke16 39D4:8A72 3
+122000 poke16 39D4:8A74 259
+122000 poke16 39D4:8A76 0
+122000 poke16 39D4:8A78 0
+122000 poke16 39D4:8A7A 0
+122000 poke16 39D4:8A7C 4
+122000 poke16 39D4:8A7E 260
+122000 poke16 39D4:8A80 5
+122000 poke16 39D4:8A82 261
+122000 poke16 39D4:8A84 517
+122000 poke16 39D4:8A86 773
+122000 poke16 39D4:8A88 0
+122000 poke16 39D4:8A8A 6
+122000 poke16 39D4:8A8C 262
+122000 poke16 39D4:8A8E 0
+122000 poke16 39D4:8A90 7
+122000 poke16 39D4:8A92 0
+122000 poke16 39D4:8A94 0
+122000 poke16 39D4:8A96 263
+122000 poke16 39D4:8A98 8
+122000 poke16 39D4:8A9A 264
+122000 poke16 39D4:8A9C 520
+122000 poke16 39D4:8A9E 776
+122000 poke16 39D4:8AA0 0
+122000 poke16 39D4:8AA2 9
+122000 poke16 39D4:8AA4 265
+122000 poke16 39D4:8AA6 0
+122000 poke16 39D4:8AA8 10
+122000 poke16 39D4:8AAA 266
+122000 poke16 39D4:8AAC 0
+122000 poke16 39D4:8AAE 522
+122000 poke16 39D4:8AB0 11
+122000 poke16 39D4:8AB2 267
+122000 poke16 39D4:8AB4 523
+122000 poke16 39D4:8AB6 779
+122000 poke16 39D4:8AB8 0
+122000 poke16 39D4:8ABA 12
+122000 poke16 39D4:8ABC 268
+122000 poke16 39D4:8ABE 0
+122000 poke16 39D4:8AC0 13
+122000 poke16 39D4:8AC2 0
+122000 poke16 39D4:8AC4 0
+122000 poke16 39D4:8AC6 0
+122000 peek16 39D4:7A5C
+122000 peek16 39D4:7A5E
+122000 seat 1 peek8 39D4:7247
+122000 peek8 39D4:7247
+122100 key esc
+122150 seat 1 key esc
+122400 key esc
+122450 seat 1 key esc
+122700 key esc
+122750 seat 1 key esc
+123000 key esc
+123050 seat 1 key esc
+123300 key esc
+123350 seat 1 key esc
+123600 key esc
+123650 seat 1 key esc
+123900 key esc
+123950 seat 1 key esc
+124000 peek16 39D4:7A5C
+124000 peek16 39D4:7A5E
+124000 seat 1 peek8 39D4:7247
+124000 peek8 39D4:7247
+124200 key esc
+124250 seat 1 key esc
+124500 key esc
+124550 seat 1 key esc
+124800 key esc
+124850 seat 1 key esc
+125100 key esc
+125150 seat 1 key esc
+125400 key esc
+125450 seat 1 key esc
+125700 key esc
+125750 seat 1 key esc
+126000 key esc
+126000 peek16 39D4:7A5C
+126000 peek16 39D4:7A5E
+126000 seat 1 peek8 39D4:7247
+126000 peek8 39D4:7247
+126000 hash
+126001 seat 1 hash
+126010 quit
+126050 seat 1 key esc

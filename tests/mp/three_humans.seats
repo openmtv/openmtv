@@ -1,0 +1,83 @@
+HASH frame 2000 mem bddaea39d29ed8f0 vram b30c4ef2111d358b
+STATE frame 2000 04221dc84fc89957 vram b30c4ef2111d358b
+HASH seat 1 frame 2001 vram 116cd266f9ebad41
+HASH seat 2 frame 2002 vram a20c4bec50fb0f06
+HASH frame 6000 mem 3adcbac990e694b3 vram 16d629470db07232
+STATE frame 6000 8a4e6af47d895314 vram 16d629470db07232
+HASH seat 1 frame 6001 vram 627a4a75b80b8f4f
+HASH seat 2 frame 6002 vram b7fea25172e0a04b
+HASH frame 10000 mem 27b120582afc92db vram b1156598b9f65058
+STATE frame 10000 e40069beaa8680ec vram b1156598b9f65058
+HASH seat 1 frame 10001 vram d69e2a83e7f6cf91
+HASH seat 2 frame 10002 vram e69da82f5ba47ae5
+HASH frame 14000 mem 234e404ba1d2f1b0 vram cb03efda4b5f6205
+STATE frame 14000 50b768bf9a2b98ad vram cb03efda4b5f6205
+HASH seat 1 frame 14001 vram a890341852c21d2d
+HASH seat 2 frame 14002 vram a29ecd92cb921a8e
+HASH frame 18000 mem cc99b343f4df93a5 vram e6f97349513c90ff
+STATE frame 18000 ea01ddc8d287ec9f vram e6f97349513c90ff
+HASH seat 1 frame 18001 vram 96685fe9f7293a65
+HASH seat 2 frame 18002 vram c5cec37a6c553f6d
+HASH frame 22000 mem 29195adb95dbc56f vram f612138b0beeb65e
+STATE frame 22000 1aee20e1bbe16e76 vram f612138b0beeb65e
+HASH seat 1 frame 22001 vram e9a11d3e83529e2a
+HASH seat 2 frame 22002 vram 3b6ae0f01b4addec
+HASH frame 26000 mem 8fda1c8d7b0f61f0 vram 8d0655b8ce96668a
+STATE frame 26000 5782b1273dc71598 vram 8d0655b8ce96668a
+HASH seat 1 frame 26001 vram aef3afb3989b35f3
+HASH seat 2 frame 26002 vram c9efc2165fc1ab44
+HASH frame 30000 mem 8ba5203393bf37a4 vram 38c74e590b87b74b
+STATE frame 30000 c512c9780d0487a3 vram 38c74e590b87b74b
+HASH seat 1 frame 30001 vram 8a6ed3655f653449
+HASH seat 2 frame 30002 vram c051a1d517227c26
+HASH frame 34000 mem 99d1c9fe1294ea0c vram 7d128d4dda2fe283
+STATE frame 34000 d4ee05e68945207f vram 7d128d4dda2fe283
+HASH seat 1 frame 34001 vram 0f76d6d054e1955a
+HASH seat 2 frame 34002 vram a3a0cef2494f660a
+HASH frame 38000 mem d74dc3bad69a1dfc vram 216fc89281319477
+STATE frame 38000 e91a1944e8d3b4e0 vram 216fc89281319477
+HASH seat 1 frame 38001 vram 2f31d20bde34b291
+HASH seat 2 frame 38002 vram 3335b785c332dba2
+HASH frame 42000 mem ae7f29e76ab6e15f vram 5175892195db7054
+STATE frame 42000 f7edb46b2bbb48fe vram 5175892195db7054
+HASH seat 1 frame 42001 vram 0d6bb6aa1d62d7b9
+HASH seat 2 frame 42002 vram 8b9d02ff22fe211f
+HASH frame 46000 mem 05dc16fb0dcf33cd vram de685514a3f45c63
+STATE frame 46000 2fb969e12f735bbb vram de685514a3f45c63
+HASH seat 1 frame 46001 vram adc86a007f33ed93
+HASH seat 2 frame 46002 vram b51a19c32782b529
+HASH frame 50000 mem a0dfa4d71175e627 vram 31b102d6653312b8
+STATE frame 50000 63cc1b1eed5b319f vram 31b102d6653312b8
+HASH seat 1 frame 50001 vram 1c887409e06d5958
+HASH seat 2 frame 50002 vram 475237618de98499
+HASH frame 54000 mem 82f204becce85378 vram eaf10aad96e272e6
+STATE frame 54000 517179355e6a8e90 vram eaf10aad96e272e6
+HASH seat 1 frame 54001 vram 8c32b8e3d8bac074
+HASH seat 2 frame 54002 vram 6cc45b6e05ad90ea
+HASH frame 58000 mem 18e6de6b476bfb8b vram 130bd367d9791e15
+STATE frame 58000 d7f7d17b09f4a197 vram 130bd367d9791e15
+HASH seat 1 frame 58001 vram 59397a7fd4cd3233
+HASH seat 2 frame 58002 vram 72217e57dfdf68ec
+HASH frame 62000 mem b14bf9889597c02d vram dad0769e9da1a43b
+STATE frame 62000 6f6166789bf00fc3 vram dad0769e9da1a43b
+HASH seat 1 frame 62001 vram b4ecf4c4be3d870c
+HASH seat 2 frame 62002 vram 30f0c3a34f1f603b
+HASH frame 66000 mem e279aec0b58d2af7 vram 71fee20d9e5ea709
+STATE frame 66000 b217004717329ca2 vram 71fee20d9e5ea709
+HASH seat 1 frame 66001 vram ab9957418d45a8cf
+HASH seat 2 frame 66002 vram 2f2596c343907dae
+PEEK frame 69000 39D4:8BFB 200000
+PEEK frame 69000 39D4:8C12 200000
+PEEK frame 69000 39D4:8C29 200000
+HASH frame 70000 mem 6cb2f6a6ae6d3ad1 vram 047fb1feddc69433
+STATE frame 70000 c111a88c6b59fb3a vram 047fb1feddc69433
+HASH seat 1 frame 70001 vram 9c12765ff4c6c84c
+HASH seat 2 frame 70002 vram ca38a0572ec1761c
+HASH frame 74000 mem 1c5c6fc7d8b77c22 vram 88c935723d98a2b8
+STATE frame 74000 3f878ff2d59dfdc3 vram 88c935723d98a2b8
+HASH seat 1 frame 74001 vram 13d9a3cfa75128e6
+HASH seat 2 frame 74002 vram 4ec8b453c0de806f
+PEEK frame 77900 39D4:8BFB 167000
+PEEK frame 77900 39D4:8C12 167000
+PEEK frame 77900 39D4:8C29 167000
+[quit] T=11129040000 AX=0000 BX=0000 CX=8406 DX=865D SI=003C DI=0000 BP=0FE4 SP=0FD4

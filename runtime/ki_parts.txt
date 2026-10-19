@@ -1,0 +1,382 @@
+# AI pictures (docs/ki-bilder.md): where the game draws an animation part, from
+# HR_KIMAP over every scenario and the AI day (tools/hrai.py parts) -- numbers only:
+#   RES K room N X Y          sprite K of bank RES lies on room N (both halves) at X, Y
+#   RES K sprite R2 K2 X Y    ... on sprite K2 of bank R2 at X, Y
+#   RES K none                drawn, but on nothing at one place (it moves)
+#   RES K group R0 K0 X Y     one of the pictures the game shows together, piece beside
+#                             piece: at X, Y in their picture (R0:K0 the first of them)
+#   RES K cover R2 K2 X Y     a sharp picture (rule nearest) that always lies on picture
+#                             R2:K2 of the model's, at X, Y
+11 2 sprite 5 1 4 98    # 60 % of its pixels, 93 % of those on another picture, 6 places
+13 17 sprite 6 8 -5 -4    # 33 % of its pixels, 66 % of those on another picture, 2 places
+15 8 sprite 15 5 0 0    # 49 % of its pixels, 99 % of those on another picture, 5 places
+17 6 sprite 6 12 4 5    # 47 % of its pixels, 93 % of those on another picture, 22 places
+21 6 sprite 6 10 4 5    # 50 % of its pixels, 50 % of those on another picture, 1 places
+153 3 sprite 163 0 51 72    # 69 % of its pixels, 83 % of those on another picture, 1 places
+166 21 sprite 166 12 8 17    # 33 % of its pixels, 100 % of those on another picture, 1 places
+171 1 room 109 60 56    # 50 % of its pixels, 50 % of those on another picture, 1 places
+174 0 sprite 197 1 11 -1    # 42 % of its pixels, 99 % of those on another picture, 1 places
+174 1 sprite 197 1 11 -1    # 32 % of its pixels, 97 % of those on another picture, 1 places
+174 2 sprite 197 1 11 -1    # 32 % of its pixels, 94 % of those on another picture, 1 places
+174 3 sprite 197 1 11 -1    # 33 % of its pixels, 99 % of those on another picture, 1 places
+176 1 sprite 176 0 10 12    # 50 % of its pixels, 100 % of those on another picture, 4 places
+176 2 sprite 176 0 10 12    # 50 % of its pixels, 100 % of those on another picture, 4 places
+176 3 sprite 176 0 10 12    # 50 % of its pixels, 100 % of those on another picture, 4 places
+176 4 sprite 176 0 7 5    # 75 % of its pixels, 100 % of those on another picture, 4 places
+177 1 sprite 177 14 2 9    # 52 % of its pixels, 100 % of those on another picture, 3 places
+177 2 sprite 177 14 2 9    # 51 % of its pixels, 100 % of those on another picture, 3 places
+177 9 sprite 177 12 0 1    # 76 % of its pixels, 100 % of those on another picture, 1 places
+181 0 room 104 63 8    # 91 % of its pixels, 99 % of those on another picture, 2 places
+181 7 sprite 181 1 9 2    # 100 % of its pixels, 100 % of those on another picture, 1 places
+185 2 room 103 232 56    # 35 % of its pixels, 95 % of those on another picture, 3 places
+185 4 sprite 185 3 1 -1    # 59 % of its pixels, 61 % of those on another picture, 2 places
+185 5 sprite 185 4 0 2    # 60 % of its pixels, 62 % of those on another picture, 2 places
+185 22 room 103 214 28    # 35 % of its pixels, 100 % of those on another picture, 1 places
+185 23 sprite 185 22 11 10    # 48 % of its pixels, 100 % of those on another picture, 1 places
+185 24 sprite 185 22 11 10    # 31 % of its pixels, 100 % of those on another picture, 1 places
+186 0 room 110 238 45    # 48 % of its pixels, 100 % of those on another picture, 1 places
+186 1 room 110 238 51    # 33 % of its pixels, 100 % of those on another picture, 1 places
+186 2 room 110 238 51    # 42 % of its pixels, 100 % of those on another picture, 1 places
+186 3 room 110 238 51    # 33 % of its pixels, 100 % of those on another picture, 1 places
+186 4 room 110 238 51    # 45 % of its pixels, 100 % of those on another picture, 1 places
+186 5 room 110 238 51    # 22 % of its pixels, 100 % of those on another picture, 1 places
+186 6 room 110 238 51    # 33 % of its pixels, 100 % of those on another picture, 1 places
+187 0 room 106 20 36    # 38 % of its pixels, 99 % of those on another picture, 7 places
+187 1 room 106 20 36    # 47 % of its pixels, 99 % of those on another picture, 2 places
+187 2 room 106 30 27    # 43 % of its pixels, 93 % of those on another picture, 11 places
+187 3 room 106 30 27    # 31 % of its pixels, 95 % of those on another picture, 3 places
+192 5 sprite 192 0 20 8    # 35 % of its pixels, 97 % of those on another picture, 2 places
+192 6 sprite 192 0 20 17    # 36 % of its pixels, 100 % of those on another picture, 1 places
+192 7 sprite 192 0 20 17    # 35 % of its pixels, 100 % of those on another picture, 1 places
+192 8 sprite 192 0 20 17    # 31 % of its pixels, 99 % of those on another picture, 1 places
+192 9 sprite 192 0 20 17    # 36 % of its pixels, 98 % of those on another picture, 1 places
+192 14 room 113 41 30    # 36 % of its pixels, 95 % of those on another picture, 1 places
+192 15 room 113 41 30    # 35 % of its pixels, 91 % of those on another picture, 1 places
+192 16 room 113 41 30    # 37 % of its pixels, 97 % of those on another picture, 1 places
+194 1 sprite 194 0 30 12    # 46 % of its pixels, 100 % of those on another picture, 1 places
+197 0 room 109 12 70    # 33 % of its pixels, 99 % of those on another picture, 5 places
+197 1 room 109 6 17    # 41 % of its pixels, 95 % of those on another picture, 23 places
+197 2 room 109 6 16    # 33 % of its pixels, 60 % of those on another picture, 2 places
+197 3 room 109 5 16    # 32 % of its pixels, 65 % of those on another picture, 2 places
+197 4 room 109 5 16    # 33 % of its pixels, 66 % of those on another picture, 2 places
+197 5 room 109 5 16    # 32 % of its pixels, 63 % of those on another picture, 2 places
+197 6 room 109 5 16    # 30 % of its pixels, 61 % of those on another picture, 2 places
+197 7 room 109 6 16    # 32 % of its pixels, 64 % of those on another picture, 2 places
+197 9 sprite 197 8 23 10    # 39 % of its pixels, 100 % of those on another picture, 1 places
+236 0 sprite 9 0 8 2    # 22 % of its pixels, 100 % of those on another picture, 1 places
+240 1 sprite 239 0 15 68    # 50 % of its pixels, 50 % of those on another picture, 1 places
+240 2 sprite 239 0 30 86    # 50 % of its pixels, 50 % of those on another picture, 1 places
+240 3 sprite 239 0 40 96    # 50 % of its pixels, 50 % of those on another picture, 1 places
+240 4 sprite 239 0 44 103    # 55 % of its pixels, 55 % of those on another picture, 1 places
+240 5 sprite 239 0 46 103    # 50 % of its pixels, 50 % of those on another picture, 1 places
+2 0 none
+2 1 none
+2 2 none
+5 0 none
+5 1 none
+6 8 none
+6 9 none
+6 10 none
+6 11 none
+6 12 none
+6 13 none
+6 14 none
+6 16 none
+6 17 none
+6 19 none
+6 20 none
+6 21 none
+6 22 none
+6 23 none
+6 24 none
+6 25 none
+6 26 none
+6 27 none
+6 29 none
+7 9 none
+11 1 none
+11 3 none
+11 4 none
+11 5 none
+11 6 none
+11 7 none
+11 8 none
+11 11 none
+11 12 none
+11 13 none
+11 14 none
+11 15 none
+12 0 none
+13 0 none
+13 1 none
+13 2 none
+13 3 none
+13 5 none
+13 6 none
+13 7 none
+13 8 none
+13 15 none
+13 16 none
+14 0 none
+14 1 none
+15 0 none
+15 1 none
+15 2 none
+15 3 none
+16 0 none
+17 0 none
+17 1 none
+17 2 none
+17 3 none
+17 4 none
+17 5 none
+17 7 none
+17 8 none
+17 9 none
+18 0 none
+18 1 none
+18 2 none
+18 3 none
+18 4 none
+18 5 none
+18 6 none
+18 7 none
+18 8 none
+18 9 none
+19 0 none
+19 1 none
+19 2 none
+19 3 none
+19 4 none
+19 5 none
+19 6 none
+19 7 none
+19 8 none
+19 9 none
+20 0 none
+20 1 none
+20 2 none
+20 3 none
+20 4 none
+20 5 none
+20 8 none
+20 9 none
+21 0 none
+21 1 none
+21 2 none
+21 3 none
+21 4 none
+21 5 none
+21 8 none
+21 9 none
+23 0 none
+23 1 none
+23 2 none
+23 3 none
+23 4 none
+23 5 none
+23 6 none
+23 7 none
+23 8 none
+23 9 none
+25 0 none
+25 1 none
+25 2 none
+25 3 none
+25 4 none
+25 5 none
+25 6 none
+25 7 none
+29 0 none
+29 1 none
+150 0 none
+150 1 none
+150 2 none
+150 3 none
+150 4 none
+150 5 none
+150 6 none
+150 7 none
+150 8 none
+150 9 none
+150 10 none
+150 32 none
+151 0 none
+151 1 none
+151 2 none
+151 3 none
+151 4 none
+151 5 none
+151 6 none
+151 7 none
+151 8 none
+151 9 none
+153 2 none
+153 5 none
+153 6 none
+155 0 none
+155 1 none
+155 2 none
+155 3 none
+155 4 none
+155 5 none
+155 6 none
+155 7 none
+155 8 none
+155 9 none
+156 0 none
+156 1 none
+157 0 none
+157 1 none
+157 2 none
+159 0 none
+159 3 none
+159 5 none
+159 6 none
+160 8 none
+162 0 none
+162 1 none
+162 2 none
+162 3 none
+162 4 none
+162 7 none
+162 8 none
+162 11 none
+163 0 none
+165 0 none
+165 1 none
+165 2 none
+165 3 none
+165 4 none
+165 5 none
+166 0 none
+166 1 none
+166 2 none
+166 3 none
+166 4 none
+166 5 none
+166 6 none
+166 7 none
+166 8 none
+166 9 none
+166 10 none
+166 11 none
+166 12 none
+166 13 none
+166 14 none
+166 15 none
+166 16 none
+166 17 none
+166 18 none
+166 19 none
+166 20 none
+166 22 none
+166 23 none
+166 24 none
+167 0 none
+167 1 none
+167 2 none
+167 3 none
+167 4 none
+167 6 none
+167 14 none
+168 2 none
+169 4 none
+169 8 none
+169 10 none
+169 11 none
+169 15 none
+169 18 none
+169 19 none
+170 0 none
+170 1 none
+170 3 none
+170 7 none
+171 0 none
+172 11 none
+172 14 none
+175 20 none
+175 25 none
+175 26 none
+175 27 none
+175 33 none
+176 0 none
+176 5 none
+176 7 none
+176 10 none
+176 11 none
+177 0 none
+177 8 none
+177 12 none
+177 14 none
+181 1 none
+181 2 none
+181 3 none
+181 8 none
+181 9 none
+182 0 none
+182 1 none
+185 3 none
+188 0 none
+194 0 none
+197 8 none
+197 10 none
+197 11 none
+220 0 none
+226 0 none
+237 0 none
+238 0 none
+239 0 none
+240 0 none
+320 0 none
+9 0 group 9 0 0 0
+9 1 group 9 0 120 0
+10 0 group 10 0 0 0
+10 1 group 10 0 0 56
+10 2 group 10 0 0 9
+10 3 group 10 0 104 9
+15 9 group 15 9 94 0
+15 10 group 15 9 0 51
+28 0 group 28 0 24 0
+28 1 group 28 0 0 0
+28 2 group 28 0 64 0
+28 3 group 28 0 24 30
+28 4 group 28 0 0 30
+28 5 group 28 0 64 30
+30 0 group 30 0 0 0
+30 1 group 30 0 70 0
+30 2 group 30 2 0 0
+30 3 group 30 2 77 0
+169 9 group 169 9 28 0
+169 12 group 169 12 0 0
+169 13 group 169 12 0 8
+169 16 group 169 9 0 24
+182 5 group 182 5 0 0
+182 6 group 182 5 0 16
+192 0 group 192 0 0 0
+192 1 group 192 0 0 49
+307 0 group 307 0 0 0
+308 0 group 307 0 112 0
+309 0 group 307 0 208 0
+7 0 cover 6 24 6 6
+7 2 cover 6 23 1 4
+7 2 cover 6 23 1 12
+7 2 cover 6 24 7 6
+15 13 cover 9 0 23 66
+15 13 cover 9 0 38 66
+15 14 cover 9 0 53 66
+15 14 cover 9 0 68 66
+153 12 cover 163 0 176 0
+153 12 cover 163 0 176 8
+153 12 cover 163 0 176 16
+153 12 cover 163 0 176 96
+182 4 cover 66 0 22 21
+182 4 cover 66 0 22 38
+182 4 cover 66 0 22 55
+182 4 cover 66 0 22 72
+182 4 cover 66 0 22 89
+182 4 cover 116 0 64 21
+182 4 cover 116 0 64 38
+182 4 cover 116 0 64 55
+182 4 cover 116 0 64 72
+182 4 cover 116 0 64 89

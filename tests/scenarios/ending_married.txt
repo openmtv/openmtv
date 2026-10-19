@@ -1,0 +1,25 @@
+# ending "married": new game; test pokes: image and Betty love 100, player 1 carries present 10
+# (honeymoon trip), figure target = Betty (floor 13, door 0, via the elevator x 0x99);
+# in her office pick up the present (hotspot 0x21) and give it to her (0x36) -> Just Married
+# poke16 addresses: 8C08 = pl_image(1), 8BFF = pl_betty_love(1), 74E6/74E7 = g_player_present(0/1),
+# 7B46/7B48/7B4A/7B54 = figures(0).target_x / target_floor / final_x / target_door
+# end 8000
+400 key esc
+1000 click 64 100
+1300 click 172 185
+2000 hash
+2100 click 230 60
+2500 click 230 60
+2600 poke16 39D4:8C08 100
+2600 poke16 39D4:8BFF 100
+2600 poke16 39D4:74E6 2560
+2700 poke16 39D4:7B48 13
+2700 poke16 39D4:7B54 0
+2700 poke16 39D4:7B4A 0
+2700 poke16 39D4:7B46 153
+4000 hash
+4200 click 40 85
+4700 click 140 60
+6000 hash
+8000 hash
+8001 quit

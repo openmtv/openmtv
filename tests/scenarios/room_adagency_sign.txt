@@ -1,0 +1,45 @@
+# room "ad agency" (room 11, floor 10 door 0): take, return and sign advertising contracts (English).
+# New game; dismiss the boss; test pokes: figure 0 walk target = floor 10, door 0, via the elevator
+# (7B48 target_floor, 7B54 target_door, 7B4A final_x, 7B46 target_x 0x99), as a door click would set.
+# Offer shelf on day 1 (g_ad_offers DS:19A0, 7 bytes): slot 1 ad 14, 2 ad 10, 4 ad 27.
+#  3600 click a binder of the front stack (offer slot 1, ad 14) -> drag (g_room_mode 1)
+#  3800 drop it on the briefcase (hotspot 0x21) -> ad_take_contract: contract 0 = ad 14
+#  4000 take offer slot 4 (ad 27, middle stack), 4200 drop it back on the desk (0x26) -> ad_return_offer
+#  4400 take offer slot 2 (ad 10), 4600 into the briefcase -> contract 1 = ad 10
+#  4800 click contract 0 in the briefcase (ad 14, still on offer) -> contract_delete, drag (mode 2),
+#  5000 put it back on the desk (0x26)
+#  5200 click the agent (0x23) -> ad_agency_sign_contracts: ad 10 signed, offers refilled
+#  5400 click the briefcase again -> warning 0x69 (signed already), 5700 click closes it; 5900 right click leaves the agency (signs again: nothing left)
+# Observable at the end: contracts(1, 0).ad DS:1BB6 = 10, its deadline DS:1BBB = 4 (day 1 + 3 days),
+# g_player_ad_count(1) DS:76AA = 1, ads(10).holder DS:404E (byte) = 1.
+# end 6500
+400 key esc
+1000 click 64 100
+1300 click 172 185
+2000 hash
+2100 click 230 60
+2500 click 230 60
+2700 poke16 39D4:7B48 10
+2700 poke16 39D4:7B54 0
+2700 poke16 39D4:7B4A 0
+2700 poke16 39D4:7B46 153
+3600 click 116 92
+3800 click 251 63
+4000 click 136 76
+4000 hash
+4200 click 134 100
+4400 click 124 92
+4600 click 251 63
+4800 click 232 48
+5000 click 134 100
+5200 click 116 37
+5400 click 232 48
+5700 click 200 60
+5900 rclick 200 60
+6000 hash
+6400 peek16 39D4:1BB6
+6400 peek16 39D4:1BBB
+6400 peek16 39D4:76AA
+6400 peek8 39D4:404E
+6500 hash
+6501 quit

@@ -1,0 +1,57 @@
+# fix: studio-takeover (24B8:170C push [bp-34h]: studio_take_over gets the player loop index as the studio)
+# New game, human = player 1 (studio 6 = floor 6 door 0, plan marker (225,29)).  Walk to the
+# estate agent as in tests/fixes/estate_text.txt.  At 6300 studio 6 gets the state a bomb
+# (1DA8:2D3B) leaves on a finished live show that has not aired yet: renter 0xFF, script 0,
+# door "Free studio"/owner 0 -- running stays 1, end day 0.  The plan offers it (text 118,
+# $3000/day); "yes" queues the human (studio_request_rent: reserved DS:61D4 = 1; classic
+# "Warning: Bio-control").  Computer player 2 has film 138 "Trendy" at 18:00..20:00.
+# At 18:00 the programme phase (24B8:0C4A) matches studio 6 (any running studio matches
+# Trendy) and calls studio_take_over(PLAYER 2, 1) instead of (6, 1): studio 2 -- behind the
+# "Psychiatrists Harry MD" door, floor 3 door 0 -- becomes the human's studio (renter DS:6188
+# = 1, rent 2000 -> 3000, $9000 paid, door room DS:7E0E = 5, owner DS:7E36 = 1); studio 6
+# stays free with reserved 1: the plan ignores clicks on it and shows text 113 forever
+# (DS:7215 = g_ledger(LEDGER_STUDIO_RENT), today's rent paid; DS:8BA4 = g_room_mode: the 12100
+# click opens nothing).
+# expect classic 7200 byte 39D4:61D4 == 1
+# expect classic 12000 byte 39D4:6188 == 1
+# expect classic 12000 byte 39D4:7E0E == 5
+# expect classic 12000 byte 39D4:7E36 == 1
+# expect classic 12000 word 39D4:7215 == 9000
+# expect classic 12000 byte 39D4:61C8 == 255
+# expect classic 12000 byte 39D4:61D4 == 1
+# expect classic 12500 word 39D4:8BA4 == 0
+# Fixed: studio 6 goes to the human (renter DS:61C8 = 1, $9000); studio 2 and its door stay the
+#   Psychiatrist's (renter 0, door room 24).  (Its reserved byte stays 1 without "studio-reserved".)
+# expect fixed   12000 byte 39D4:61C8 == 1
+# expect fixed   12000 byte 39D4:6188 == 0
+# expect fixed   12000 byte 39D4:7E0E == 24
+# expect fixed   12000 byte 39D4:7E36 == 0
+# expect fixed   12000 word 39D4:7215 == 9000
+400 key esc
+1000 click 64 100
+1300 click 172 185
+2100 click 230 60
+2500 click 230 60
+2600 poke16 39D4:7B48 12
+2600 poke16 39D4:7B54 0
+2600 poke16 39D4:7B4A 0
+2600 poke16 39D4:7B46 153
+3600 poke16 39D4:7B54 0
+3600 poke16 39D4:7B46 120
+6000 click 50 60
+6300 poke16 39D4:61C5 0
+6300 poke16 39D4:61C7 65281
+6300 poke16 39D4:61C9 0
+6300 poke16 39D4:61CF 0
+6300 poke16 39D4:61D3 1
+6300 poke16 39D4:7F7C 2358
+6300 poke16 39D4:7F86 3465
+6300 poke16 39D4:7F90 32138
+6300 poke16 39D4:7FA4 0
+6400 click 225 29
+6800 click 124 87
+7300 click 160 100
+7300 poke16 39D4:44CD 138
+7300 poke16 39D4:44CF 138
+7300 poke16 39D4:44D1 138
+12100 click 225 29

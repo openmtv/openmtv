@@ -1,0 +1,2150 @@
+# ending "fired": new game, the human only dismisses dialogs (Esc every 300 frames);
+# its image falls by about one point per hour until the boss fires it (around day 6)
+# difftest-until 420000
+#   (measured 2026-10-08: 1125 difftests on day 1, 204 on days 2-5, none on
+#   days 6-8 -- every function called then is already tested; the
+#   machine-level hashes still cover all 8 days)
+# logical-until 30260: on the logical clock the native decompiled build plays the same game
+#   until here; then the AI audience estimate adds stack garbage for tomorrow's hours (32BA:07EC):
+#   in ai_upgrade_ads (2DD9:0710) it adds 3031, a fifth of the word farfree (3985:031D, from
+#   0D5E:0729) left there; the original books the spot (ad_plan_book), the decompiled build
+#   looks for a better ad (ai_find_better_ad).
+#   (Where such garbage comes from depends on earlier stack use: names/FINDINGS.md.)
+400 key esc
+1000 click 64 100
+1300 click 172 185
+2000 key esc
+2000 hash
+2300 key esc
+2600 key esc
+2900 key esc
+3200 key esc
+3500 key esc
+3800 key esc
+4000 hash
+4100 key esc
+4400 key esc
+4700 key esc
+5000 key esc
+5300 key esc
+5600 key esc
+5900 key esc
+6000 hash
+6200 key esc
+6500 key esc
+6800 key esc
+7100 key esc
+7400 key esc
+7700 key esc
+8000 key esc
+8000 hash
+8300 key esc
+8600 key esc
+8900 key esc
+9200 key esc
+9500 key esc
+9800 key esc
+10000 hash
+10100 key esc
+10400 key esc
+10700 key esc
+11000 key esc
+11300 key esc
+11600 key esc
+11900 key esc
+12000 hash
+12200 key esc
+12500 key esc
+12800 key esc
+13100 key esc
+13400 key esc
+13700 key esc
+14000 key esc
+14000 hash
+14300 key esc
+14600 key esc
+14900 key esc
+15200 key esc
+15500 key esc
+15800 key esc
+16000 hash
+16100 key esc
+16400 key esc
+16700 key esc
+17000 key esc
+17300 key esc
+17600 key esc
+17900 key esc
+18000 hash
+18200 key esc
+18500 key esc
+18800 key esc
+19100 key esc
+19400 key esc
+19700 key esc
+20000 key esc
+20000 hash
+20300 key esc
+20600 key esc
+20900 key esc
+21200 key esc
+21500 key esc
+21800 key esc
+22000 hash
+22100 key esc
+22400 key esc
+22700 key esc
+23000 key esc
+23300 key esc
+23600 key esc
+23900 key esc
+24000 hash
+24200 key esc
+24500 key esc
+24800 key esc
+25100 key esc
+25400 key esc
+25700 key esc
+26000 key esc
+26000 hash
+26300 key esc
+26600 key esc
+26900 key esc
+27200 key esc
+27500 key esc
+27800 key esc
+28000 hash
+28100 key esc
+28400 key esc
+28700 key esc
+29000 key esc
+29300 key esc
+29600 key esc
+29900 key esc
+30000 hash
+30200 key esc
+30500 key esc
+30800 key esc
+31100 key esc
+31400 key esc
+31700 key esc
+32000 key esc
+32000 hash
+32300 key esc
+32600 key esc
+32900 key esc
+33200 key esc
+33500 key esc
+33800 key esc
+34000 hash
+34100 key esc
+34400 key esc
+34700 key esc
+35000 key esc
+35300 key esc
+35600 key esc
+35900 key esc
+36000 hash
+36200 key esc
+36500 key esc
+36800 key esc
+37100 key esc
+37400 key esc
+37700 key esc
+38000 key esc
+38000 hash
+38300 key esc
+38600 key esc
+38900 key esc
+39200 key esc
+39500 key esc
+39800 key esc
+40000 hash
+40100 key esc
+40400 key esc
+40700 key esc
+41000 key esc
+41300 key esc
+41600 key esc
+41900 key esc
+42000 hash
+42200 key esc
+42500 key esc
+42800 key esc
+43100 key esc
+43400 key esc
+43700 key esc
+44000 key esc
+44000 hash
+44300 key esc
+44600 key esc
+44900 key esc
+45200 key esc
+45500 key esc
+45800 key esc
+46000 hash
+46100 key esc
+46400 key esc
+46700 key esc
+47000 key esc
+47300 key esc
+47600 key esc
+47900 key esc
+48000 hash
+48200 key esc
+48500 key esc
+48800 key esc
+49100 key esc
+49400 key esc
+49700 key esc
+50000 key esc
+50000 hash
+50300 key esc
+50600 key esc
+50900 key esc
+51200 key esc
+51500 key esc
+51800 key esc
+52000 hash
+52100 key esc
+52400 key esc
+52700 key esc
+53000 key esc
+53300 key esc
+53600 key esc
+53900 key esc
+54000 hash
+54200 key esc
+54500 key esc
+54800 key esc
+55100 key esc
+55400 key esc
+55700 key esc
+56000 key esc
+56000 hash
+56300 key esc
+56600 key esc
+56900 key esc
+57200 key esc
+57500 key esc
+57800 key esc
+58000 hash
+58100 key esc
+58400 key esc
+58700 key esc
+59000 key esc
+59300 key esc
+59600 key esc
+59900 key esc
+60000 hash
+60200 key esc
+60500 key esc
+60800 key esc
+61100 key esc
+61400 key esc
+61700 key esc
+62000 key esc
+62000 hash
+62300 key esc
+62600 key esc
+62900 key esc
+63200 key esc
+63500 key esc
+63800 key esc
+64000 hash
+64100 key esc
+64400 key esc
+64700 key esc
+65000 key esc
+65300 key esc
+65600 key esc
+65900 key esc
+66000 hash
+66200 key esc
+66500 key esc
+66800 key esc
+67100 key esc
+67400 key esc
+67700 key esc
+68000 key esc
+68000 hash
+68300 key esc
+68600 key esc
+68900 key esc
+69200 key esc
+69500 key esc
+69800 key esc
+70000 hash
+70100 key esc
+70400 key esc
+70700 key esc
+71000 key esc
+71300 key esc
+71600 key esc
+71900 key esc
+72000 hash
+72200 key esc
+72500 key esc
+72800 key esc
+73100 key esc
+73400 key esc
+73700 key esc
+74000 key esc
+74000 hash
+74300 key esc
+74600 key esc
+74900 key esc
+75200 key esc
+75500 key esc
+75800 key esc
+76000 hash
+76100 key esc
+76400 key esc
+76700 key esc
+77000 key esc
+77300 key esc
+77600 key esc
+77900 key esc
+78000 hash
+78200 key esc
+78500 key esc
+78800 key esc
+79100 key esc
+79400 key esc
+79700 key esc
+80000 key esc
+80000 hash
+80300 key esc
+80600 key esc
+80900 key esc
+81200 key esc
+81500 key esc
+81800 key esc
+82000 hash
+82100 key esc
+82400 key esc
+82700 key esc
+83000 key esc
+83300 key esc
+83600 key esc
+83900 key esc
+84000 hash
+84200 key esc
+84500 key esc
+84800 key esc
+85100 key esc
+85400 key esc
+85700 key esc
+86000 key esc
+86000 hash
+86300 key esc
+86600 key esc
+86900 key esc
+87200 key esc
+87500 key esc
+87800 key esc
+88000 hash
+88100 key esc
+88400 key esc
+88700 key esc
+89000 key esc
+89300 key esc
+89600 key esc
+89900 key esc
+90000 hash
+90200 key esc
+90500 key esc
+90800 key esc
+91100 key esc
+91400 key esc
+91700 key esc
+92000 key esc
+92000 hash
+92300 key esc
+92600 key esc
+92900 key esc
+93200 key esc
+93500 key esc
+93800 key esc
+94000 hash
+94100 key esc
+94400 key esc
+94700 key esc
+95000 key esc
+95300 key esc
+95600 key esc
+95900 key esc
+96000 hash
+96200 key esc
+96500 key esc
+96800 key esc
+97100 key esc
+97400 key esc
+97700 key esc
+98000 key esc
+98000 hash
+98300 key esc
+98600 key esc
+98900 key esc
+99200 key esc
+99500 key esc
+99800 key esc
+100000 hash
+100100 key esc
+100400 key esc
+100700 key esc
+101000 key esc
+101300 key esc
+101600 key esc
+101900 key esc
+102000 hash
+102200 key esc
+102500 key esc
+102800 key esc
+103100 key esc
+103400 key esc
+103700 key esc
+104000 key esc
+104000 hash
+104300 key esc
+104600 key esc
+104900 key esc
+105200 key esc
+105500 key esc
+105800 key esc
+106000 hash
+106100 key esc
+106400 key esc
+106700 key esc
+107000 key esc
+107300 key esc
+107600 key esc
+107900 key esc
+108000 hash
+108200 key esc
+108500 key esc
+108800 key esc
+109100 key esc
+109400 key esc
+109700 key esc
+110000 key esc
+110000 hash
+110300 key esc
+110600 key esc
+110900 key esc
+111200 key esc
+111500 key esc
+111800 key esc
+112000 hash
+112100 key esc
+112400 key esc
+112700 key esc
+113000 key esc
+113300 key esc
+113600 key esc
+113900 key esc
+114000 hash
+114200 key esc
+114500 key esc
+114800 key esc
+115100 key esc
+115400 key esc
+115700 key esc
+116000 key esc
+116000 hash
+116300 key esc
+116600 key esc
+116900 key esc
+117200 key esc
+117500 key esc
+117800 key esc
+118000 hash
+118100 key esc
+118400 key esc
+118700 key esc
+119000 key esc
+119300 key esc
+119600 key esc
+119900 key esc
+120000 hash
+120200 key esc
+120500 key esc
+120800 key esc
+121100 key esc
+121400 key esc
+121700 key esc
+122000 key esc
+122000 hash
+122300 key esc
+122600 key esc
+122900 key esc
+123200 key esc
+123500 key esc
+123800 key esc
+124000 hash
+124100 key esc
+124400 key esc
+124700 key esc
+125000 key esc
+125300 key esc
+125600 key esc
+125900 key esc
+126000 hash
+126200 key esc
+126500 key esc
+126800 key esc
+127100 key esc
+127400 key esc
+127700 key esc
+128000 key esc
+128000 hash
+128300 key esc
+128600 key esc
+128900 key esc
+129200 key esc
+129500 key esc
+129800 key esc
+130000 hash
+130100 key esc
+130400 key esc
+130700 key esc
+131000 key esc
+131300 key esc
+131600 key esc
+131900 key esc
+132000 hash
+132200 key esc
+132500 key esc
+132800 key esc
+133100 key esc
+133400 key esc
+133700 key esc
+134000 key esc
+134000 hash
+134300 key esc
+134600 key esc
+134900 key esc
+135200 key esc
+135500 key esc
+135800 key esc
+136000 hash
+136100 key esc
+136400 key esc
+136700 key esc
+137000 key esc
+137300 key esc
+137600 key esc
+137900 key esc
+138000 hash
+138200 key esc
+138500 key esc
+138800 key esc
+139100 key esc
+139400 key esc
+139700 key esc
+140000 key esc
+140000 hash
+140300 key esc
+140600 key esc
+140900 key esc
+141200 key esc
+141500 key esc
+141800 key esc
+142000 hash
+142100 key esc
+142400 key esc
+142700 key esc
+143000 key esc
+143300 key esc
+143600 key esc
+143900 key esc
+144000 hash
+144200 key esc
+144500 key esc
+144800 key esc
+145100 key esc
+145400 key esc
+145700 key esc
+146000 key esc
+146000 hash
+146300 key esc
+146600 key esc
+146900 key esc
+147200 key esc
+147500 key esc
+147800 key esc
+148000 hash
+148100 key esc
+148400 key esc
+148700 key esc
+149000 key esc
+149300 key esc
+149600 key esc
+149900 key esc
+150000 hash
+150200 key esc
+150500 key esc
+150800 key esc
+151100 key esc
+151400 key esc
+151700 key esc
+152000 key esc
+152000 hash
+152300 key esc
+152600 key esc
+152900 key esc
+153200 key esc
+153500 key esc
+153800 key esc
+154000 hash
+154100 key esc
+154400 key esc
+154700 key esc
+155000 key esc
+155300 key esc
+155600 key esc
+155900 key esc
+156000 hash
+156200 key esc
+156500 key esc
+156800 key esc
+157100 key esc
+157400 key esc
+157700 key esc
+158000 key esc
+158000 hash
+158300 key esc
+158600 key esc
+158900 key esc
+159200 key esc
+159500 key esc
+159800 key esc
+160000 hash
+160100 key esc
+160400 key esc
+160700 key esc
+161000 key esc
+161300 key esc
+161600 key esc
+161900 key esc
+162000 hash
+162200 key esc
+162500 key esc
+162800 key esc
+163100 key esc
+163400 key esc
+163700 key esc
+164000 key esc
+164000 hash
+164300 key esc
+164600 key esc
+164900 key esc
+165200 key esc
+165500 key esc
+165800 key esc
+166000 hash
+166100 key esc
+166400 key esc
+166700 key esc
+167000 key esc
+167300 key esc
+167600 key esc
+167900 key esc
+168000 hash
+168200 key esc
+168500 key esc
+168800 key esc
+169100 key esc
+169400 key esc
+169700 key esc
+170000 key esc
+170000 hash
+170300 key esc
+170600 key esc
+170900 key esc
+171200 key esc
+171500 key esc
+171800 key esc
+172000 hash
+172100 key esc
+172400 key esc
+172700 key esc
+173000 key esc
+173300 key esc
+173600 key esc
+173900 key esc
+174000 hash
+174200 key esc
+174500 key esc
+174800 key esc
+175100 key esc
+175400 key esc
+175700 key esc
+176000 key esc
+176000 hash
+176300 key esc
+176600 key esc
+176900 key esc
+177200 key esc
+177500 key esc
+177800 key esc
+178000 hash
+178100 key esc
+178400 key esc
+178700 key esc
+179000 key esc
+179300 key esc
+179600 key esc
+179900 key esc
+180000 hash
+180200 key esc
+180500 key esc
+180800 key esc
+181100 key esc
+181400 key esc
+181700 key esc
+182000 key esc
+182000 hash
+182300 key esc
+182600 key esc
+182900 key esc
+183200 key esc
+183500 key esc
+183800 key esc
+184000 hash
+184100 key esc
+184400 key esc
+184700 key esc
+185000 key esc
+185300 key esc
+185600 key esc
+185900 key esc
+186000 hash
+186200 key esc
+186500 key esc
+186800 key esc
+187100 key esc
+187400 key esc
+187700 key esc
+188000 key esc
+188000 hash
+188300 key esc
+188600 key esc
+188900 key esc
+189200 key esc
+189500 key esc
+189800 key esc
+190000 hash
+190100 key esc
+190400 key esc
+190700 key esc
+191000 key esc
+191300 key esc
+191600 key esc
+191900 key esc
+192000 hash
+192200 key esc
+192500 key esc
+192800 key esc
+193100 key esc
+193400 key esc
+193700 key esc
+194000 key esc
+194000 hash
+194300 key esc
+194600 key esc
+194900 key esc
+195200 key esc
+195500 key esc
+195800 key esc
+196000 hash
+196100 key esc
+196400 key esc
+196700 key esc
+197000 key esc
+197300 key esc
+197600 key esc
+197900 key esc
+198000 hash
+198200 key esc
+198500 key esc
+198800 key esc
+199100 key esc
+199400 key esc
+199700 key esc
+200000 key esc
+200000 hash
+200300 key esc
+200600 key esc
+200900 key esc
+201200 key esc
+201500 key esc
+201800 key esc
+202000 hash
+202100 key esc
+202400 key esc
+202700 key esc
+203000 key esc
+203300 key esc
+203600 key esc
+203900 key esc
+204000 hash
+204200 key esc
+204500 key esc
+204800 key esc
+205100 key esc
+205400 key esc
+205700 key esc
+206000 key esc
+206000 hash
+206300 key esc
+206600 key esc
+206900 key esc
+207200 key esc
+207500 key esc
+207800 key esc
+208000 hash
+208100 key esc
+208400 key esc
+208700 key esc
+209000 key esc
+209300 key esc
+209600 key esc
+209900 key esc
+210000 hash
+210200 key esc
+210500 key esc
+210800 key esc
+211100 key esc
+211400 key esc
+211700 key esc
+212000 key esc
+212000 hash
+212300 key esc
+212600 key esc
+212900 key esc
+213200 key esc
+213500 key esc
+213800 key esc
+214000 hash
+214100 key esc
+214400 key esc
+214700 key esc
+215000 key esc
+215300 key esc
+215600 key esc
+215900 key esc
+216000 hash
+216200 key esc
+216500 key esc
+216800 key esc
+217100 key esc
+217400 key esc
+217700 key esc
+218000 key esc
+218000 hash
+218300 key esc
+218600 key esc
+218900 key esc
+219200 key esc
+219500 key esc
+219800 key esc
+220000 hash
+220100 key esc
+220400 key esc
+220700 key esc
+221000 key esc
+221300 key esc
+221600 key esc
+221900 key esc
+222000 hash
+222200 key esc
+222500 key esc
+222800 key esc
+223100 key esc
+223400 key esc
+223700 key esc
+224000 key esc
+224000 hash
+224300 key esc
+224600 key esc
+224900 key esc
+225200 key esc
+225500 key esc
+225800 key esc
+226000 hash
+226100 key esc
+226400 key esc
+226700 key esc
+227000 key esc
+227300 key esc
+227600 key esc
+227900 key esc
+228000 hash
+228200 key esc
+228500 key esc
+228800 key esc
+229100 key esc
+229400 key esc
+229700 key esc
+230000 key esc
+230000 hash
+230300 key esc
+230600 key esc
+230900 key esc
+231200 key esc
+231500 key esc
+231800 key esc
+232000 hash
+232100 key esc
+232400 key esc
+232700 key esc
+233000 key esc
+233300 key esc
+233600 key esc
+233900 key esc
+234000 hash
+234200 key esc
+234500 key esc
+234800 key esc
+235100 key esc
+235400 key esc
+235700 key esc
+236000 key esc
+236000 hash
+236300 key esc
+236600 key esc
+236900 key esc
+237200 key esc
+237500 key esc
+237800 key esc
+238000 hash
+238100 key esc
+238400 key esc
+238700 key esc
+239000 key esc
+239300 key esc
+239600 key esc
+239900 key esc
+240000 hash
+240200 key esc
+240500 key esc
+240800 key esc
+241100 key esc
+241400 key esc
+241700 key esc
+242000 key esc
+242000 hash
+242300 key esc
+242600 key esc
+242900 key esc
+243200 key esc
+243500 key esc
+243800 key esc
+244000 hash
+244100 key esc
+244400 key esc
+244700 key esc
+245000 key esc
+245300 key esc
+245600 key esc
+245900 key esc
+246000 hash
+246200 key esc
+246500 key esc
+246800 key esc
+247100 key esc
+247400 key esc
+247700 key esc
+248000 key esc
+248000 hash
+248300 key esc
+248600 key esc
+248900 key esc
+249200 key esc
+249500 key esc
+249800 key esc
+250000 hash
+250100 key esc
+250400 key esc
+250700 key esc
+251000 key esc
+251300 key esc
+251600 key esc
+251900 key esc
+252000 hash
+252200 key esc
+252500 key esc
+252800 key esc
+253100 key esc
+253400 key esc
+253700 key esc
+254000 key esc
+254000 hash
+254300 key esc
+254600 key esc
+254900 key esc
+255200 key esc
+255500 key esc
+255800 key esc
+256000 hash
+256100 key esc
+256400 key esc
+256700 key esc
+257000 key esc
+257300 key esc
+257600 key esc
+257900 key esc
+258000 hash
+258200 key esc
+258500 key esc
+258800 key esc
+259100 key esc
+259400 key esc
+259700 key esc
+260000 key esc
+260000 hash
+260300 key esc
+260600 key esc
+260900 key esc
+261200 key esc
+261500 key esc
+261800 key esc
+262000 hash
+262100 key esc
+262400 key esc
+262700 key esc
+263000 key esc
+263300 key esc
+263600 key esc
+263900 key esc
+264000 hash
+264200 key esc
+264500 key esc
+264800 key esc
+265100 key esc
+265400 key esc
+265700 key esc
+266000 key esc
+266000 hash
+266300 key esc
+266600 key esc
+266900 key esc
+267200 key esc
+267500 key esc
+267800 key esc
+268000 hash
+268100 key esc
+268400 key esc
+268700 key esc
+269000 key esc
+269300 key esc
+269600 key esc
+269900 key esc
+270000 hash
+270200 key esc
+270500 key esc
+270800 key esc
+271100 key esc
+271400 key esc
+271700 key esc
+272000 key esc
+272000 hash
+272300 key esc
+272600 key esc
+272900 key esc
+273200 key esc
+273500 key esc
+273800 key esc
+274000 hash
+274100 key esc
+274400 key esc
+274700 key esc
+275000 key esc
+275300 key esc
+275600 key esc
+275900 key esc
+276000 hash
+276200 key esc
+276500 key esc
+276800 key esc
+277100 key esc
+277400 key esc
+277700 key esc
+278000 key esc
+278000 hash
+278300 key esc
+278600 key esc
+278900 key esc
+279200 key esc
+279500 key esc
+279800 key esc
+280000 hash
+280100 key esc
+280400 key esc
+280700 key esc
+281000 key esc
+281300 key esc
+281600 key esc
+281900 key esc
+282000 hash
+282200 key esc
+282500 key esc
+282800 key esc
+283100 key esc
+283400 key esc
+283700 key esc
+284000 key esc
+284000 hash
+284300 key esc
+284600 key esc
+284900 key esc
+285200 key esc
+285500 key esc
+285800 key esc
+286000 hash
+286100 key esc
+286400 key esc
+286700 key esc
+287000 key esc
+287300 key esc
+287600 key esc
+287900 key esc
+288000 hash
+288200 key esc
+288500 key esc
+288800 key esc
+289100 key esc
+289400 key esc
+289700 key esc
+290000 key esc
+290000 hash
+290300 key esc
+290600 key esc
+290900 key esc
+291200 key esc
+291500 key esc
+291800 key esc
+292000 hash
+292100 key esc
+292400 key esc
+292700 key esc
+293000 key esc
+293300 key esc
+293600 key esc
+293900 key esc
+294000 hash
+294200 key esc
+294500 key esc
+294800 key esc
+295100 key esc
+295400 key esc
+295700 key esc
+296000 key esc
+296000 hash
+296300 key esc
+296600 key esc
+296900 key esc
+297200 key esc
+297500 key esc
+297800 key esc
+298000 hash
+298100 key esc
+298400 key esc
+298700 key esc
+299000 key esc
+299300 key esc
+299600 key esc
+299900 key esc
+300000 hash
+300200 key esc
+300500 key esc
+300800 key esc
+301100 key esc
+301400 key esc
+301700 key esc
+302000 key esc
+302000 hash
+302300 key esc
+302600 key esc
+302900 key esc
+303200 key esc
+303500 key esc
+303800 key esc
+304000 hash
+304100 key esc
+304400 key esc
+304700 key esc
+305000 key esc
+305300 key esc
+305600 key esc
+305900 key esc
+306000 hash
+306200 key esc
+306500 key esc
+306800 key esc
+307100 key esc
+307400 key esc
+307700 key esc
+308000 key esc
+308000 hash
+308300 key esc
+308600 key esc
+308900 key esc
+309200 key esc
+309500 key esc
+309800 key esc
+310000 hash
+310100 key esc
+310400 key esc
+310700 key esc
+311000 key esc
+311300 key esc
+311600 key esc
+311900 key esc
+312000 hash
+312200 key esc
+312500 key esc
+312800 key esc
+313100 key esc
+313400 key esc
+313700 key esc
+314000 key esc
+314000 hash
+314300 key esc
+314600 key esc
+314900 key esc
+315200 key esc
+315500 key esc
+315800 key esc
+316000 hash
+316100 key esc
+316400 key esc
+316700 key esc
+317000 key esc
+317300 key esc
+317600 key esc
+317900 key esc
+318000 hash
+318200 key esc
+318500 key esc
+318800 key esc
+319100 key esc
+319400 key esc
+319700 key esc
+320000 key esc
+320000 hash
+320300 key esc
+320600 key esc
+320900 key esc
+321200 key esc
+321500 key esc
+321800 key esc
+322000 hash
+322100 key esc
+322400 key esc
+322700 key esc
+323000 key esc
+323300 key esc
+323600 key esc
+323900 key esc
+324000 hash
+324200 key esc
+324500 key esc
+324800 key esc
+325100 key esc
+325400 key esc
+325700 key esc
+326000 key esc
+326000 hash
+326300 key esc
+326600 key esc
+326900 key esc
+327200 key esc
+327500 key esc
+327800 key esc
+328000 hash
+328100 key esc
+328400 key esc
+328700 key esc
+329000 key esc
+329300 key esc
+329600 key esc
+329900 key esc
+330000 hash
+330200 key esc
+330500 key esc
+330800 key esc
+331100 key esc
+331400 key esc
+331700 key esc
+332000 key esc
+332000 hash
+332300 key esc
+332600 key esc
+332900 key esc
+333200 key esc
+333500 key esc
+333800 key esc
+334000 hash
+334100 key esc
+334400 key esc
+334700 key esc
+335000 key esc
+335300 key esc
+335600 key esc
+335900 key esc
+336000 hash
+336200 key esc
+336500 key esc
+336800 key esc
+337100 key esc
+337400 key esc
+337700 key esc
+338000 key esc
+338000 hash
+338300 key esc
+338600 key esc
+338900 key esc
+339200 key esc
+339500 key esc
+339800 key esc
+340000 hash
+340100 key esc
+340400 key esc
+340700 key esc
+341000 key esc
+341300 key esc
+341600 key esc
+341900 key esc
+342000 hash
+342200 key esc
+342500 key esc
+342800 key esc
+343100 key esc
+343400 key esc
+343700 key esc
+344000 key esc
+344000 hash
+344300 key esc
+344600 key esc
+344900 key esc
+345200 key esc
+345500 key esc
+345800 key esc
+346000 hash
+346100 key esc
+346400 key esc
+346700 key esc
+347000 key esc
+347300 key esc
+347600 key esc
+347900 key esc
+348000 hash
+348200 key esc
+348500 key esc
+348800 key esc
+349100 key esc
+349400 key esc
+349700 key esc
+350000 key esc
+350000 hash
+350300 key esc
+350600 key esc
+350900 key esc
+351200 key esc
+351500 key esc
+351800 key esc
+352000 hash
+352100 key esc
+352400 key esc
+352700 key esc
+353000 key esc
+353300 key esc
+353600 key esc
+353900 key esc
+354000 hash
+354200 key esc
+354500 key esc
+354800 key esc
+355100 key esc
+355400 key esc
+355700 key esc
+356000 key esc
+356000 hash
+356300 key esc
+356600 key esc
+356900 key esc
+357200 key esc
+357500 key esc
+357800 key esc
+358000 hash
+358100 key esc
+358400 key esc
+358700 key esc
+359000 key esc
+359300 key esc
+359600 key esc
+359900 key esc
+360000 hash
+360200 key esc
+360500 key esc
+360800 key esc
+361100 key esc
+361400 key esc
+361700 key esc
+362000 key esc
+362000 hash
+362300 key esc
+362600 key esc
+362900 key esc
+363200 key esc
+363500 key esc
+363800 key esc
+364000 hash
+364100 key esc
+364400 key esc
+364700 key esc
+365000 key esc
+365300 key esc
+365600 key esc
+365900 key esc
+366000 hash
+366200 key esc
+366500 key esc
+366800 key esc
+367100 key esc
+367400 key esc
+367700 key esc
+368000 key esc
+368000 hash
+368300 key esc
+368600 key esc
+368900 key esc
+369200 key esc
+369500 key esc
+369800 key esc
+370000 hash
+370100 key esc
+370400 key esc
+370700 key esc
+371000 key esc
+371300 key esc
+371600 key esc
+371900 key esc
+372000 hash
+372200 key esc
+372500 key esc
+372800 key esc
+373100 key esc
+373400 key esc
+373700 key esc
+374000 key esc
+374000 hash
+374300 key esc
+374600 key esc
+374900 key esc
+375200 key esc
+375500 key esc
+375800 key esc
+376000 hash
+376100 key esc
+376400 key esc
+376700 key esc
+377000 key esc
+377300 key esc
+377600 key esc
+377900 key esc
+378000 hash
+378200 key esc
+378500 key esc
+378800 key esc
+379100 key esc
+379400 key esc
+379700 key esc
+380000 key esc
+380000 hash
+380300 key esc
+380600 key esc
+380900 key esc
+381200 key esc
+381500 key esc
+381800 key esc
+382000 hash
+382100 key esc
+382400 key esc
+382700 key esc
+383000 key esc
+383300 key esc
+383600 key esc
+383900 key esc
+384000 hash
+384200 key esc
+384500 key esc
+384800 key esc
+385100 key esc
+385400 key esc
+385700 key esc
+386000 key esc
+386000 hash
+386300 key esc
+386600 key esc
+386900 key esc
+387200 key esc
+387500 key esc
+387800 key esc
+388000 hash
+388100 key esc
+388400 key esc
+388700 key esc
+389000 key esc
+389300 key esc
+389600 key esc
+389900 key esc
+390000 hash
+390200 key esc
+390500 key esc
+390800 key esc
+391100 key esc
+391400 key esc
+391700 key esc
+392000 key esc
+392000 hash
+392300 key esc
+392600 key esc
+392900 key esc
+393200 key esc
+393500 key esc
+393800 key esc
+394000 hash
+394100 key esc
+394400 key esc
+394700 key esc
+395000 key esc
+395300 key esc
+395600 key esc
+395900 key esc
+396000 hash
+396200 key esc
+396500 key esc
+396800 key esc
+397100 key esc
+397400 key esc
+397700 key esc
+398000 key esc
+398000 hash
+398300 key esc
+398600 key esc
+398900 key esc
+399200 key esc
+399500 key esc
+399800 key esc
+400000 hash
+400100 key esc
+400400 key esc
+400700 key esc
+401000 key esc
+401300 key esc
+401600 key esc
+401900 key esc
+402000 hash
+402200 key esc
+402500 key esc
+402800 key esc
+403100 key esc
+403400 key esc
+403700 key esc
+404000 key esc
+404000 hash
+404300 key esc
+404600 key esc
+404900 key esc
+405200 key esc
+405500 key esc
+405800 key esc
+406000 hash
+406100 key esc
+406400 key esc
+406700 key esc
+407000 key esc
+407300 key esc
+407600 key esc
+407900 key esc
+408000 hash
+408200 key esc
+408500 key esc
+408800 key esc
+409100 key esc
+409400 key esc
+409700 key esc
+410000 key esc
+410000 hash
+410300 key esc
+410600 key esc
+410900 key esc
+411200 key esc
+411500 key esc
+411800 key esc
+412000 hash
+412100 key esc
+412400 key esc
+412700 key esc
+413000 key esc
+413300 key esc
+413600 key esc
+413900 key esc
+414000 hash
+414200 key esc
+414500 key esc
+414800 key esc
+415100 key esc
+415400 key esc
+415700 key esc
+416000 key esc
+416000 hash
+416300 key esc
+416600 key esc
+416900 key esc
+417200 key esc
+417500 key esc
+417800 key esc
+418000 hash
+418100 key esc
+418400 key esc
+418700 key esc
+419000 key esc
+419300 key esc
+419600 key esc
+419900 key esc
+420000 hash
+420200 key esc
+420500 key esc
+420800 key esc
+421100 key esc
+421400 key esc
+421700 key esc
+422000 key esc
+422000 hash
+422300 key esc
+422600 key esc
+422900 key esc
+423200 key esc
+423500 key esc
+423800 key esc
+424000 hash
+424100 key esc
+424400 key esc
+424700 key esc
+425000 key esc
+425300 key esc
+425600 key esc
+425900 key esc
+426000 hash
+426200 key esc
+426500 key esc
+426800 key esc
+427100 key esc
+427400 key esc
+427700 key esc
+428000 key esc
+428000 hash
+428300 key esc
+428600 key esc
+428900 key esc
+429200 key esc
+429500 key esc
+429800 key esc
+430000 hash
+430100 key esc
+430400 key esc
+430700 key esc
+431000 key esc
+431300 key esc
+431600 key esc
+431900 key esc
+432000 hash
+432200 key esc
+432500 key esc
+432800 key esc
+433100 key esc
+433400 key esc
+433700 key esc
+434000 key esc
+434000 hash
+434300 key esc
+434600 key esc
+434900 key esc
+435200 key esc
+435500 key esc
+435800 key esc
+436000 hash
+436100 key esc
+436400 key esc
+436700 key esc
+437000 key esc
+437300 key esc
+437600 key esc
+437900 key esc
+438000 hash
+438200 key esc
+438500 key esc
+438800 key esc
+439100 key esc
+439400 key esc
+439700 key esc
+440000 key esc
+440000 hash
+440300 key esc
+440600 key esc
+440900 key esc
+441200 key esc
+441500 key esc
+441800 key esc
+442000 hash
+442100 key esc
+442400 key esc
+442700 key esc
+443000 key esc
+443300 key esc
+443600 key esc
+443900 key esc
+444000 hash
+444200 key esc
+444500 key esc
+444800 key esc
+445100 key esc
+445400 key esc
+445700 key esc
+446000 key esc
+446000 hash
+446300 key esc
+446600 key esc
+446900 key esc
+447200 key esc
+447500 key esc
+447800 key esc
+448000 hash
+448100 key esc
+448400 key esc
+448700 key esc
+449000 key esc
+449300 key esc
+449600 key esc
+449900 key esc
+450000 hash
+450200 key esc
+450500 key esc
+450800 key esc
+451100 key esc
+451400 key esc
+451700 key esc
+452000 key esc
+452000 hash
+452300 key esc
+452600 key esc
+452900 key esc
+453200 key esc
+453500 key esc
+453800 key esc
+454000 hash
+454100 key esc
+454400 key esc
+454700 key esc
+455000 key esc
+455300 key esc
+455600 key esc
+455900 key esc
+456000 hash
+456200 key esc
+456500 key esc
+456800 key esc
+457100 key esc
+457400 key esc
+457700 key esc
+458000 key esc
+458000 hash
+458300 key esc
+458600 key esc
+458900 key esc
+459200 key esc
+459500 key esc
+459800 key esc
+460000 hash
+460100 key esc
+460400 key esc
+460700 key esc
+461000 key esc
+461300 key esc
+461600 key esc
+461900 key esc
+462000 hash
+462200 key esc
+462500 key esc
+462800 key esc
+463100 key esc
+463400 key esc
+463700 key esc
+464000 key esc
+464000 hash
+464300 key esc
+464600 key esc
+464900 key esc
+465200 key esc
+465500 key esc
+465800 key esc
+466000 hash
+466100 key esc
+466400 key esc
+466700 key esc
+467000 key esc
+467300 key esc
+467600 key esc
+467900 key esc
+468000 hash
+468200 key esc
+468500 key esc
+468800 key esc
+469100 key esc
+469400 key esc
+469700 key esc
+470000 key esc
+470000 hash
+470300 key esc
+470600 key esc
+470900 key esc
+471200 key esc
+471500 key esc
+471800 key esc
+472000 hash
+472100 key esc
+472400 key esc
+472700 key esc
+473000 key esc
+473300 key esc
+473600 key esc
+473900 key esc
+474000 hash
+474200 key esc
+474500 key esc
+474800 key esc
+475100 key esc
+475400 key esc
+475700 key esc
+476000 key esc
+476000 hash
+476300 key esc
+476600 key esc
+476900 key esc
+477200 key esc
+477500 key esc
+477800 key esc
+478000 hash
+478100 key esc
+478400 key esc
+478700 key esc
+479000 key esc
+479300 key esc
+479600 key esc
+479900 key esc
+480000 hash
+480200 key esc
+480500 key esc
+480800 key esc
+481100 key esc
+481400 key esc
+481700 key esc
+482000 key esc
+482000 hash
+482300 key esc
+482600 key esc
+482900 key esc
+483200 key esc
+483500 key esc
+483800 key esc
+484000 hash
+484100 key esc
+484400 key esc
+484700 key esc
+485000 key esc
+485300 key esc
+485600 key esc
+485900 key esc
+486000 hash
+486200 key esc
+486500 key esc
+486800 key esc
+487100 key esc
+487400 key esc
+487700 key esc
+488000 key esc
+488000 hash
+488300 key esc
+488600 key esc
+488900 key esc
+489200 key esc
+489500 key esc
+489800 key esc
+490000 hash
+490100 key esc
+490400 key esc
+490700 key esc
+491000 key esc
+491300 key esc
+491600 key esc
+491900 key esc
+492000 hash
+492200 key esc
+492500 key esc
+492800 key esc
+493100 key esc
+493400 key esc
+493700 key esc
+494000 key esc
+494000 hash
+494300 key esc
+494600 key esc
+494900 key esc
+495200 key esc
+495500 key esc
+495800 key esc
+496000 hash
+496100 key esc
+496400 key esc
+496700 key esc
+497000 key esc
+497300 key esc
+497600 key esc
+497900 key esc
+498000 hash
+498200 key esc
+498500 key esc
+498800 key esc
+499100 key esc
+499400 key esc
+499700 key esc
+500000 key esc
+500000 hash
+500300 key esc
+500600 key esc
+500900 key esc
+501200 key esc
+501500 key esc
+501800 key esc
+502000 hash
+502100 key esc
+502400 key esc
+502700 key esc
+503000 key esc
+503300 key esc
+503600 key esc
+503900 key esc
+504000 hash
+504200 key esc
+504500 key esc
+504800 key esc
+505100 key esc
+505400 key esc
+505700 key esc
+506000 key esc
+506000 hash
+506300 key esc
+506600 key esc
+506900 key esc
+507200 key esc
+507500 key esc
+507800 key esc
+508000 hash
+508100 key esc
+508400 key esc
+508700 key esc
+509000 key esc
+509300 key esc
+509600 key esc
+509900 key esc
+510000 hash
+510200 key esc
+510500 key esc
+510800 key esc
+511100 key esc
+511400 key esc
+511700 key esc
+512000 key esc
+512000 hash
+512300 key esc
+512600 key esc
+512900 key esc
+513200 key esc
+513500 key esc
+513800 key esc
+514000 hash
+514100 key esc
+514400 key esc
+514700 key esc
+515000 key esc
+515300 key esc
+515600 key esc
+515900 key esc
+516000 hash
+516200 key esc
+516500 key esc
+516800 key esc
+517100 key esc
+517400 key esc
+517700 key esc
+518000 key esc
+518000 hash
+518300 key esc
+518600 key esc
+518900 key esc
+519200 key esc
+519500 key esc
+519800 key esc
+520000 hash
+520100 key esc
+520400 key esc
+520700 key esc
+521000 key esc
+521300 key esc
+521600 key esc
+521900 key esc
+522000 hash
+522200 key esc
+522500 key esc
+522800 key esc
+523100 key esc
+523400 key esc
+523700 key esc
+524000 key esc
+524000 hash
+524300 key esc
+524600 key esc
+524900 key esc
+525200 key esc
+525500 key esc
+525800 key esc
+526000 hash
+526100 key esc
+526400 key esc
+526700 key esc
+527000 key esc
+527300 key esc
+527600 key esc
+527900 key esc
+528000 hash
+528200 key esc
+528500 key esc
+528800 key esc
+529100 key esc
+529400 key esc
+529700 key esc
+530000 key esc
+530000 hash
+530300 key esc
+530600 key esc
+530900 key esc
+531200 key esc
+531500 key esc
+531800 key esc
+532000 hash
+532100 key esc
+532400 key esc
+532700 key esc
+533000 key esc
+533300 key esc
+533600 key esc
+533900 key esc
+534000 hash
+534200 key esc
+534500 key esc
+534800 key esc
+535100 key esc
+535400 key esc
+535700 key esc
+536000 key esc
+536000 hash
+536300 key esc
+536600 key esc
+536900 key esc
+537200 key esc
+537500 key esc
+537800 key esc
+538000 hash
+538100 key esc
+538400 key esc
+538700 key esc
+539000 key esc
+539300 key esc
+539600 key esc
+539900 key esc
+540000 hash
+540200 key esc
+540500 key esc
+540800 key esc
+541100 key esc
+541400 key esc
+541700 key esc
+542000 key esc
+542000 hash
+542300 key esc
+542600 key esc
+542900 key esc
+543200 key esc
+543500 key esc
+543800 key esc
+544000 hash
+544100 key esc
+544400 key esc
+544700 key esc
+545000 key esc
+545300 key esc
+545600 key esc
+545900 key esc
+546000 hash
+546200 key esc
+546500 key esc
+546800 key esc
+547100 key esc
+547400 key esc
+547700 key esc
+548000 key esc
+548000 hash
+548300 key esc
+548600 key esc
+548900 key esc
+549200 key esc
+549500 key esc
+549800 key esc
+550000 hash
+550100 key esc
+550400 key esc
+550700 key esc
+551000 key esc
+551300 key esc
+551600 key esc
+551900 key esc
+552000 hash
+552200 key esc
+552500 key esc
+552800 key esc
+553100 key esc
+553400 key esc
+553700 key esc
+554000 key esc
+554000 hash
+554300 key esc
+554600 key esc
+554900 key esc
+555200 key esc
+555500 key esc
+555800 key esc
+556000 hash
+556100 key esc
+556400 key esc
+556700 key esc
+557000 key esc
+557300 key esc
+557600 key esc
+557900 key esc
+558000 hash
+558100 hash
+558101 quit

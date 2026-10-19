@@ -1,0 +1,3508 @@
+{
+ "table": "films",
+ "resource": 201,
+ "record_size": 23,
+ "count": 201,
+ "records": [
+  {
+   "id": 201,
+   "genre": 1,
+   "quality": 80,
+   "wear_rate": 4,
+   "topicality": 80,
+   "blocks": 4,
+   "owner": 0,
+   "flags": 118,
+   "flags2": 0,
+   "price": 645000,
+   "jingle": 0,
+   "live_day": 0,
+   "live_slot": 0,
+   "unknown": {
+    "0x13": "0061080a"
+   },
+   "text": {
+    "en": [
+     "Test film 201",
+     "A made-up film for the tests."
+    ],
+    "de": [
+     "Testfilm 201",
+     "Ein ausgedachter Film für die Tests."
+    ]
+   }
+  },
+  {
+   "id": 202,
+   "genre": 1,
+   "quality": 47,
+   "wear_rate": 3,
+   "topicality": 47,
+   "blocks": 2,
+   "owner": 0,
+   "flags": 114,
+   "flags2": 0,
+   "price": 206000,
+   "jingle": 0,
+   "live_day": 0,
+   "live_slot": 0,
+   "unknown": {
+    "0x13": "03630607"
+   },
+   "text": {
+    "en": [
+     "Test film 202",
+     "A made-up film for the tests."
+    ],
+    "de": [
+     "Testfilm 202",
+     "Ein ausgedachter Film für die Tests."
+    ]
+   }
+  },
+  {
+   "id": 203,
+   "genre": 1,
+   "quality": 46,
+   "wear_rate": 3,
+   "topicality": 46,
+   "blocks": 2,
+   "owner": 0,
+   "flags": 102,
+   "flags2": 0,
+   "price": 193000,
+   "jingle": 0,
+   "live_day": 0,
+   "live_slot": 0,
+   "unknown": {
+    "0x13": "005d0507"
+   },
+   "text": {
+    "en": [
+     "Test film 203",
+     "A made-up film for the tests."
+    ],
+    "de": [
+     "Testfilm 203",
+     "Ein ausgedachter Film für die Tests."
+    ]
+   }
+  },
+  {
+   "id": 204,
+   "genre": 1,
+   "quality": 42,
+   "wear_rate": 2,
+   "topicality": 42,
+   "blocks": 3,
+   "owner": 0,
+   "flags": 102,
+   "flags2": 0,
+   "price": 162000,
+   "jingle": 0,
+   "live_day": 0,
+   "live_slot": 0,
+   "unknown": {
+    "0x13": "005f0606"
+   },
+   "text": {
+    "en": [
+     "Test film 204",
+     "A made-up film for the tests."
+    ],
+    "de": [
+     "Testfilm 204",
+     "Ein ausgedachter Film für die Tests."
+    ]
+   }
+  },
+  {
+   "id": 205,
+   "genre": 1,
+   "quality": 45,
+   "wear_rate": 3,
+   "topicality": 45,
+   "blocks": 2,
+   "owner": 0,
+   "flags": 114,
+   "flags2": 0,
+   "price": 182000,
+   "jingle": 0,
+   "live_day": 0,
+   "live_slot": 0,
+   "unknown": {
+    "0x13": "03620507"
+   },
+   "text": {
+    "en": [
+     "Test film 205",
+     "A made-up film for the tests."
+    ],
+    "de": [
+     "Testfilm 205",
+     "Ein ausgedachter Film für die Tests."
+    ]
+   }
+  },
+  {
+   "id": 206,
+   "genre": 1,
+   "quality": 46,
+   "wear_rate": 2,
+   "topicality": 46,
+   "blocks": 2,
+   "owner": 0,
+   "flags": 114,
+   "flags2": 0,
+   "price": 178000,
+   "jingle": 0,
+   "live_day": 0,
+   "live_slot": 0,
+   "unknown": {
+    "0x13": "04650806"
+   },
+   "text": {
+    "en": [
+     "Test film 206",
+     "A made-up film for the tests."
+    ],
+    "de": [
+     "Testfilm 206",
+     "Ein ausgedachter Film für die Tests."
+    ]
+   }
+  },
+  {
+   "id": 207,
+   "genre": 1,
+   "quality": 49,
+   "wear_rate": 3,
+   "topicality": 49,
+   "blocks": 3,
+   "owner": 0,
+   "flags": 115,
+   "flags2": 0,
+   "price": 252000,
+   "jingle": 0,
+   "live_day": 0,
+   "live_slot": 0,
+   "unknown": {
+    "0x13": "03670607"
+   },
+   "text": {
+    "en": [
+     "Test film 207",
+     "A made-up film for the tests."
+    ],
+    "de": [
+     "Testfilm 207",
+     "Ein ausgedachter Film für die Tests."
+    ]
+   }
+  },
+  {
+   "id": 208,
+   "genre": 1,
+   "quality": 44,
+   "wear_rate": 3,
+   "topicality": 44,
+   "blocks": 2,
+   "owner": 0,
+   "flags": 102,
+   "flags2": 0,
+   "price": 167000,
+   "jingle": 0,
+   "live_day": 0,
+   "live_slot": 0,
+   "unknown": {
+    "0x13": "00680706"
+   },
+   "text": {
+    "en": [
+     "Test film 208",
+     "A made-up film for the tests."
+    ],
+    "de": [
+     "Testfilm 208",
+     "Ein ausgedachter Film für die Tests."
+    ]
+   }
+  },
+  {
+   "id": 209,
+   "genre": 1,
+   "quality": 44,
+   "wear_rate": 3,
+   "topicality": 44,
+   "blocks": 3,
+   "owner": 0,
+   "flags": 102,
+   "flags2": 0,
+   "price": 192000,
+   "jingle": 0,
+   "live_day": 0,
+   "live_slot": 0,
+   "unknown": {
+    "0x13": "00690706"
+   },
+   "text": {
+    "en": [
+     "Test film 209",
+     "A made-up film for the tests."
+    ],
+    "de": [
+     "Testfilm 209",
+     "Ein ausgedachter Film für die Tests."
+    ]
+   }
+  },
+  {
+   "id": 210,
+   "genre": 1,
+   "quality": 52,
+   "wear_rate": 4,
+   "topicality": 52,
+   "blocks": 2,
+   "owner": 0,
+   "flags": 99,
+   "flags2": 8,
+   "price": 255000,
+   "jingle": 0,
+   "live_day": 0,
+   "live_slot": 0,
+   "unknown": {
+    "0x13": "00730108"
+   },
+   "text": {
+    "en": [
+     "Test film 210",
+     "A made-up film for the tests."
+    ],
+    "de": [
+     "Testfilm 210",
+     "Ein ausgedachter Film für die Tests."
+    ]
+   }
+  },
+  {
+   "id": 211,
+   "genre": 1,
+   "quality": 59,
+   "wear_rate": 3,
+   "topicality": 59,
+   "blocks": 2,
+   "owner": 0,
+   "flags": 118,
+   "flags2": 0,
+   "price": 310000,
+   "jingle": 0,
+   "live_day": 0,
+   "live_slot": 0,
+   "unknown": {
+    "0x13": "00740808"
+   },
+   "text": {
+    "en": [
+     "Test film 211",
+     "A made-up film for the tests."
+    ],
+    "de": [
+     "Testfilm 211",
+     "Ein ausgedachter Film für die Tests."
+    ]
+   }
+  },
+  {
+   "id": 212,
+   "genre": 2,
+   "quality": 48,
+   "wear_rate": 4,
+   "topicality": 48,
+   "blocks": 2,
+   "owner": 0,
+   "flags": 121,
+   "flags2": 0,
+   "price": 205000,
+   "jingle": 0,
+   "live_day": 0,
+   "live_slot": 0,
+   "unknown": {
+    "0x13": "005e0607"
+   },
+   "text": {
+    "en": [
+     "Test film 212",
+     "A made-up film for the tests."
+    ],
+    "de": [
+     "Testfilm 212",
+     "Ein ausgedachter Film für die Tests."
+    ]
+   }
+  },
+  {
+   "id": 213,
+   "genre": 2,
+   "quality": 48,
+   "wear_rate": 4,
+   "topicality": 48,
+   "blocks": 3,
+   "owner": 0,
+   "flags": 115,
+   "flags2": 0,
+   "price": 237000,
+   "jingle": 0,
+   "live_day": 0,
+   "live_slot": 0,
+   "unknown": {
+    "0x13": "005e0607"
+   },
+   "text": {
+    "en": [
+     "Test film 213",
+     "A made-up film for the tests."
+    ],
+    "de": [
+     "Testfilm 213",
+     "Ein ausgedachter Film für die Tests."
+    ]
+   }
+  },
+  {
+   "id": 214,
+   "genre": 1,
+   "quality": 50,
+   "wear_rate": 3,
+   "topicality": 50,
+   "blocks": 2,
+   "owner": 0,
+   "flags": 115,
+   "flags2": 0,
+   "price": 221000,
+   "jingle": 0,
+   "live_day": 0,
+   "live_slot": 0,
+   "unknown": {
+    "0x13": "005c0408"
+   },
+   "text": {
+    "en": [
+     "Test film 214",
+     "A made-up film for the tests."
+    ],
+    "de": [
+     "Testfilm 214",
+     "Ein ausgedachter Film für die Tests."
+    ]
+   }
+  },
+  {
+   "id": 215,
+   "genre": 2,
+   "quality": 55,
+   "wear_rate": 4,
+   "topicality": 55,
+   "blocks": 3,
+   "owner": 0,
+   "flags": 113,
+   "flags2": 0,
+   "price": 450000,
+   "jingle": 0,
+   "live_day": 0,
+   "live_slot": 0,
+   "unknown": {
+    "0x13": "005f0306"
+   },
+   "text": {
+    "en": [
+     "Test film 215",
+     "A made-up film for the tests."
+    ],
+    "de": [
+     "Testfilm 215",
+     "Ein ausgedachter Film für die Tests."
+    ]
+   }
+  },
+  {
+   "id": 216,
+   "genre": 2,
+   "quality": 61,
+   "wear_rate": 3,
+   "topicality": 61,
+   "blocks": 3,
+   "owner": 0,
+   "flags": 101,
+   "flags2": 0,
+   "price": 353000,
+   "jingle": 0,
+   "live_day": 0,
+   "live_slot": 0,
+   "unknown": {
+    "0x13": "00620908"
+   },
+   "text": {
+    "en": [
+     "Test film 216",
+     "A made-up film for the tests."
+    ],
+    "de": [
+     "Testfilm 216",
+     "Ein ausgedachter Film für die Tests."
+    ]
+   }
+  },
+  {
+   "id": 217,
+   "genre": 2,
+   "quality": 24,
+   "wear_rate": 3,
+   "topicality": 24,
+   "blocks": 2,
+   "owner": 0,
+   "flags": 50,
+   "flags2": 0,
+   "price": 24000,
+   "jingle": 0,
+   "live_day": 0,
+   "live_slot": 0,
+   "unknown": {
+    "0x13": "02620603"
+   },
+   "text": {
+    "en": [
+     "Test film 217",
+     "A made-up film for the tests."
+    ],
+    "de": [
+     "Testfilm 217",
+     "Ein ausgedachter Film für die Tests."
+    ]
+   }
+  },
+  {
+   "id": 218,
+   "genre": 2,
+   "quality": 46,
+   "wear_rate": 3,
+   "topicality": 46,
+   "blocks": 2,
+   "owner": 0,
+   "flags": 113,
+   "flags2": 8,
+   "price": 202000,
+   "jingle": 0,
+   "live_day": 0,
+   "live_slot": 0,
+   "unknown": {
+    "0x13": "00670806"
+   },
+   "text": {
+    "en": [
+     "Test film 218",
+     "A made-up film for the tests."
+    ],
+    "de": [
+     "Testfilm 218",
+     "Ein ausgedachter Film für die Tests."
+    ]
+   }
+  },
+  {
+   "id": 219,
+   "genre": 2,
+   "quality": 58,
+   "wear_rate": 3,
+   "topicality": 58,
+   "blocks": 3,
+   "owner": 0,
+   "flags": 123,
+   "flags2": 0,
+   "price": 357000,
+   "jingle": 0,
+   "live_day": 0,
+   "live_slot": 0,
+   "unknown": {
+    "0x13": "00670808"
+   },
+   "text": {
+    "en": [
+     "Test film 219",
+     "A made-up film for the tests."
+    ],
+    "de": [
+     "Testfilm 219",
+     "Ein ausgedachter Film für die Tests."
+    ]
+   }
+  },
+  {
+   "id": 220,
+   "genre": 2,
+   "quality": 52,
+   "wear_rate": 4,
+   "topicality": 52,
+   "blocks": 2,
+   "owner": 0,
+   "flags": 113,
+   "flags2": 0,
+   "price": 234000,
+   "jingle": 0,
+   "live_day": 0,
+   "live_slot": 0,
+   "unknown": {
+    "0x13": "07730807"
+   },
+   "text": {
+    "en": [
+     "Test film 220",
+     "A made-up film for the tests."
+    ],
+    "de": [
+     "Testfilm 220",
+     "Ein ausgedachter Film für die Tests."
+    ]
+   }
+  },
+  {
+   "id": 221,
+   "genre": 2,
+   "quality": 41,
+   "wear_rate": 4,
+   "topicality": 41,
+   "blocks": 2,
+   "owner": 0,
+   "flags": 112,
+   "flags2": 8,
+   "price": 157000,
+   "jingle": 0,
+   "live_day": 0,
+   "live_slot": 0,
+   "unknown": {
+    "0x13": "00600606"
+   },
+   "text": {
+    "en": [
+     "Test film 221",
+     "A made-up film for the tests."
+    ],
+    "de": [
+     "Testfilm 221",
+     "Ein ausgedachter Film für die Tests."
+    ]
+   }
+  },
+  {
+   "id": 222,
+   "genre": 2,
+   "quality": 36,
+   "wear_rate": 5,
+   "topicality": 36,
+   "blocks": 2,
+   "owner": 0,
+   "flags": 48,
+   "flags2": 8,
+   "price": 119000,
+   "jingle": 0,
+   "live_day": 0,
+   "live_slot": 0,
+   "unknown": {
+    "0x13": "00630407"
+   },
+   "text": {
+    "en": [
+     "Test film 222",
+     "A made-up film for the tests."
+    ],
+    "de": [
+     "Testfilm 222",
+     "Ein ausgedachter Film für die Tests."
+    ]
+   }
+  },
+  {
+   "id": 223,
+   "genre": 2,
+   "quality": 65,
+   "wear_rate": 4,
+   "topicality": 65,
+   "blocks": 2,
+   "owner": 0,
+   "flags": 117,
+   "flags2": 0,
+   "price": 374000,
+   "jingle": 0,
+   "live_day": 0,
+   "live_slot": 0,
+   "unknown": {
+    "0x13": "007a0809"
+   },
+   "text": {
+    "en": [
+     "Test film 223",
+     "A made-up film for the tests."
+    ],
+    "de": [
+     "Testfilm 223",
+     "Ein ausgedachter Film für die Tests."
+    ]
+   }
+  },
+  {
+   "id": 224,
+   "genre": 2,
+   "quality": 36,
+   "wear_rate": 4,
+   "topicality": 36,
+   "blocks": 2,
+   "owner": 0,
+   "flags": 49,
+   "flags2": 8,
+   "price": 109000,
+   "jingle": 0,
+   "live_day": 0,
+   "live_slot": 0,
+   "unknown": {
+    "0x13": "00720605"
+   },
+   "text": {
+    "en": [
+     "Test film 224",
+     "A made-up film for the tests."
+    ],
+    "de": [
+     "Testfilm 224",
+     "Ein ausgedachter Film für die Tests."
+    ]
+   }
+  },
+  {
+   "id": 225,
+   "genre": 2,
+   "quality": 53,
+   "wear_rate": 3,
+   "topicality": 53,
+   "blocks": 3,
+   "owner": 0,
+   "flags": 101,
+   "flags2": 8,
+   "price": 262000,
+   "jingle": 0,
+   "live_day": 0,
+   "live_slot": 0,
+   "unknown": {
+    "0x13": "006d0907"
+   },
+   "text": {
+    "en": [
+     "Test film 225",
+     "A made-up film for the tests."
+    ],
+    "de": [
+     "Testfilm 225",
+     "Ein ausgedachter Film für die Tests."
+    ]
+   }
+  },
+  {
+   "id": 226,
+   "genre": 2,
+   "quality": 45,
+   "wear_rate": 4,
+   "topicality": 45,
+   "blocks": 2,
+   "owner": 0,
+   "flags": 49,
+   "flags2": 0,
+   "price": 169000,
+   "jingle": 0,
+   "live_day": 0,
+   "live_slot": 0,
+   "unknown": {
+    "0x13": "00650207"
+   },
+   "text": {
+    "en": [
+     "Test film 226",
+     "A made-up film for the tests."
+    ],
+    "de": [
+     "Testfilm 226",
+     "Ein ausgedachter Film für die Tests."
+    ]
+   }
+  },
+  {
+   "id": 227,
+   "genre": 3,
+   "quality": 53,
+   "wear_rate": 4,
+   "topicality": 53,
+   "blocks": 4,
+   "owner": 0,
+   "flags": 101,
+   "flags2": 0,
+   "price": 347000,
+   "jingle": 0,
+   "live_day": 0,
+   "live_slot": 0,
+   "unknown": {
+    "0x13": "005f0807"
+   },
+   "text": {
+    "en": [
+     "Test film 227",
+     "A made-up film for the tests."
+    ],
+    "de": [
+     "Testfilm 227",
+     "Ein ausgedachter Film für die Tests."
+    ]
+   }
+  },
+  {
+   "id": 228,
+   "genre": 3,
+   "quality": 56,
+   "wear_rate": 5,
+   "topicality": 56,
+   "blocks": 4,
+   "owner": 0,
+   "flags": 102,
+   "flags2": 0,
+   "price": 359000,
+   "jingle": 0,
+   "live_day": 0,
+   "live_slot": 0,
+   "unknown": {
+    "0x13": "005d0a07"
+   },
+   "text": {
+    "en": [
+     "Test film 228",
+     "A made-up film for the tests."
+    ],
+    "de": [
+     "Testfilm 228",
+     "Ein ausgedachter Film für die Tests."
+    ]
+   }
+  },
+  {
+   "id": 229,
+   "genre": 3,
+   "quality": 60,
+   "wear_rate": 4,
+   "topicality": 60,
+   "blocks": 3,
+   "owner": 0,
+   "flags": 117,
+   "flags2": 0,
+   "price": 466000,
+   "jingle": 0,
+   "live_day": 0,
+   "live_slot": 0,
+   "unknown": {
+    "0x13": "00640908"
+   },
+   "text": {
+    "en": [
+     "Test film 229",
+     "A made-up film for the tests."
+    ],
+    "de": [
+     "Testfilm 229",
+     "Ein ausgedachter Film für die Tests."
+    ]
+   }
+  },
+  {
+   "id": 230,
+   "genre": 3,
+   "quality": 69,
+   "wear_rate": 3,
+   "topicality": 69,
+   "blocks": 4,
+   "owner": 0,
+   "flags": 121,
+   "flags2": 0,
+   "price": 566000,
+   "jingle": 0,
+   "live_day": 0,
+   "live_slot": 0,
+   "unknown": {
+    "0x13": "00650a09"
+   },
+   "text": {
+    "en": [
+     "Test film 230",
+     "A made-up film for the tests."
+    ],
+    "de": [
+     "Testfilm 230",
+     "Ein ausgedachter Film für die Tests."
+    ]
+   }
+  },
+  {
+   "id": 231,
+   "genre": 3,
+   "quality": 69,
+   "wear_rate": 3,
+   "topicality": 69,
+   "blocks": 4,
+   "owner": 0,
+   "flags": 117,
+   "flags2": 0,
+   "price": 603000,
+   "jingle": 0,
+   "live_day": 0,
+   "live_slot": 0,
+   "unknown": {
+    "0x13": "00670a09"
+   },
+   "text": {
+    "en": [
+     "Test film 231",
+     "A made-up film for the tests."
+    ],
+    "de": [
+     "Testfilm 231",
+     "Ein ausgedachter Film für die Tests."
+    ]
+   }
+  },
+  {
+   "id": 232,
+   "genre": 3,
+   "quality": 54,
+   "wear_rate": 4,
+   "topicality": 54,
+   "blocks": 3,
+   "owner": 0,
+   "flags": 115,
+   "flags2": 0,
+   "price": 351000,
+   "jingle": 0,
+   "live_day": 0,
+   "live_slot": 0,
+   "unknown": {
+    "0x13": "00680608"
+   },
+   "text": {
+    "en": [
+     "Test film 232",
+     "A made-up film for the tests."
+    ],
+    "de": [
+     "Testfilm 232",
+     "Ein ausgedachter Film für die Tests."
+    ]
+   }
+  },
+  {
+   "id": 233,
+   "genre": 3,
+   "quality": 47,
+   "wear_rate": 4,
+   "topicality": 47,
+   "blocks": 3,
+   "owner": 0,
+   "flags": 38,
+   "flags2": 0,
+   "price": 277000,
+   "jingle": 0,
+   "live_day": 0,
+   "live_slot": 0,
+   "unknown": {
+    "0x13": "03600607"
+   },
+   "text": {
+    "en": [
+     "Test film 233",
+     "A made-up film for the tests."
+    ],
+    "de": [
+     "Testfilm 233",
+     "Ein ausgedachter Film für die Tests."
+    ]
+   }
+  },
+  {
+   "id": 234,
+   "genre": 3,
+   "quality": 65,
+   "wear_rate": 4,
+   "topicality": 65,
+   "blocks": 4,
+   "owner": 0,
+   "flags": 101,
+   "flags2": 0,
+   "price": 492000,
+   "jingle": 0,
+   "live_day": 0,
+   "live_slot": 0,
+   "unknown": {
+    "0x13": "007b0809"
+   },
+   "text": {
+    "en": [
+     "Test film 234",
+     "A made-up film for the tests."
+    ],
+    "de": [
+     "Testfilm 234",
+     "Ein ausgedachter Film für die Tests."
+    ]
+   }
+  },
+  {
+   "id": 235,
+   "genre": 3,
+   "quality": 41,
+   "wear_rate": 4,
+   "topicality": 41,
+   "blocks": 3,
+   "owner": 0,
+   "flags": 101,
+   "flags2": 0,
+   "price": 193000,
+   "jingle": 0,
+   "live_day": 0,
+   "live_slot": 0,
+   "unknown": {
+    "0x13": "02680805"
+   },
+   "text": {
+    "en": [
+     "Test film 235",
+     "A made-up film for the tests."
+    ],
+    "de": [
+     "Testfilm 235",
+     "Ein ausgedachter Film für die Tests."
+    ]
+   }
+  },
+  {
+   "id": 236,
+   "genre": 4,
+   "quality": 39,
+   "wear_rate": 1,
+   "topicality": 39,
+   "blocks": 2,
+   "owner": 0,
+   "flags": 35,
+   "flags2": 0,
+   "price": 129000,
+   "jingle": 0,
+   "live_day": 0,
+   "live_slot": 0,
+   "unknown": {
+    "0x13": "005d0805"
+   },
+   "text": {
+    "en": [
+     "Test film 236",
+     "A made-up film for the tests."
+    ],
+    "de": [
+     "Testfilm 236",
+     "Ein ausgedachter Film für die Tests."
+    ]
+   }
+  },
+  {
+   "id": 237,
+   "genre": 4,
+   "quality": 51,
+   "wear_rate": 2,
+   "topicality": 51,
+   "blocks": 2,
+   "owner": 0,
+   "flags": 110,
+   "flags2": 0,
+   "price": 223000,
+   "jingle": 0,
+   "live_day": 0,
+   "live_slot": 0,
+   "unknown": {
+    "0x13": "005d0508"
+   },
+   "text": {
+    "en": [
+     "Test film 237",
+     "A made-up film for the tests."
+    ],
+    "de": [
+     "Testfilm 237",
+     "Ein ausgedachter Film für die Tests."
+    ]
+   }
+  },
+  {
+   "id": 238,
+   "genre": 1,
+   "quality": 62,
+   "wear_rate": 2,
+   "topicality": 62,
+   "blocks": 3,
+   "owner": 0,
+   "flags": 103,
+   "flags2": 0,
+   "price": 367000,
+   "jingle": 0,
+   "live_day": 0,
+   "live_slot": 0,
+   "unknown": {
+    "0x13": "005e0a08"
+   },
+   "text": {
+    "en": [
+     "Test film 238",
+     "A made-up film for the tests."
+    ],
+    "de": [
+     "Testfilm 238",
+     "Ein ausgedachter Film für die Tests."
+    ]
+   }
+  },
+  {
+   "id": 239,
+   "genre": 4,
+   "quality": 46,
+   "wear_rate": 3,
+   "topicality": 46,
+   "blocks": 2,
+   "owner": 0,
+   "flags": 120,
+   "flags2": 0,
+   "price": 195000,
+   "jingle": 0,
+   "live_day": 0,
+   "live_slot": 0,
+   "unknown": {
+    "0x13": "005e0507"
+   },
+   "text": {
+    "en": [
+     "Test film 239",
+     "A made-up film for the tests."
+    ],
+    "de": [
+     "Testfilm 239",
+     "Ein ausgedachter Film für die Tests."
+    ]
+   }
+  },
+  {
+   "id": 240,
+   "genre": 4,
+   "quality": 33,
+   "wear_rate": 2,
+   "topicality": 33,
+   "blocks": 2,
+   "owner": 0,
+   "flags": 53,
+   "flags2": 0,
+   "price": 99000,
+   "jingle": 0,
+   "live_day": 0,
+   "live_slot": 0,
+   "unknown": {
+    "0x13": "005e0405"
+   },
+   "text": {
+    "en": [
+     "Test film 240",
+     "A made-up film for the tests."
+    ],
+    "de": [
+     "Testfilm 240",
+     "Ein ausgedachter Film für die Tests."
+    ]
+   }
+  },
+  {
+   "id": 241,
+   "genre": 1,
+   "quality": 47,
+   "wear_rate": 3,
+   "topicality": 47,
+   "blocks": 2,
+   "owner": 0,
+   "flags": 113,
+   "flags2": 0,
+   "price": 212000,
+   "jingle": 0,
+   "live_day": 0,
+   "live_slot": 0,
+   "unknown": {
+    "0x13": "00620507"
+   },
+   "text": {
+    "en": [
+     "Test film 241",
+     "A made-up film for the tests."
+    ],
+    "de": [
+     "Testfilm 241",
+     "Ein ausgedachter Film für die Tests."
+    ]
+   }
+  },
+  {
+   "id": 242,
+   "genre": 4,
+   "quality": 47,
+   "wear_rate": 4,
+   "topicality": 47,
+   "blocks": 2,
+   "owner": 0,
+   "flags": 113,
+   "flags2": 0,
+   "price": 201000,
+   "jingle": 0,
+   "live_day": 0,
+   "live_slot": 0,
+   "unknown": {
+    "0x13": "086a0607"
+   },
+   "text": {
+    "en": [
+     "Test film 242",
+     "A made-up film for the tests."
+    ],
+    "de": [
+     "Testfilm 242",
+     "Ein ausgedachter Film für die Tests."
+    ]
+   }
+  },
+  {
+   "id": 243,
+   "genre": 4,
+   "quality": 59,
+   "wear_rate": 2,
+   "topicality": 59,
+   "blocks": 2,
+   "owner": 0,
+   "flags": 103,
+   "flags2": 0,
+   "price": 333000,
+   "jingle": 0,
+   "live_day": 0,
+   "live_slot": 0,
+   "unknown": {
+    "0x13": "046f0908"
+   },
+   "text": {
+    "en": [
+     "Test film 243",
+     "A made-up film for the tests."
+    ],
+    "de": [
+     "Testfilm 243",
+     "Ein ausgedachter Film für die Tests."
+    ]
+   }
+  },
+  {
+   "id": 244,
+   "genre": 4,
+   "quality": 47,
+   "wear_rate": 3,
+   "topicality": 47,
+   "blocks": 2,
+   "owner": 0,
+   "flags": 102,
+   "flags2": 0,
+   "price": 191000,
+   "jingle": 0,
+   "live_day": 0,
+   "live_slot": 0,
+   "unknown": {
+    "0x13": "046c0507"
+   },
+   "text": {
+    "en": [
+     "Test film 244",
+     "A made-up film for the tests."
+    ],
+    "de": [
+     "Testfilm 244",
+     "Ein ausgedachter Film für die Tests."
+    ]
+   }
+  },
+  {
+   "id": 245,
+   "genre": 4,
+   "quality": 33,
+   "wear_rate": 3,
+   "topicality": 33,
+   "blocks": 2,
+   "owner": 0,
+   "flags": 57,
+   "flags2": 0,
+   "price": 99000,
+   "jingle": 0,
+   "live_day": 0,
+   "live_slot": 0,
+   "unknown": {
+    "0x13": "02650405"
+   },
+   "text": {
+    "en": [
+     "Test film 245",
+     "A made-up film for the tests."
+    ],
+    "de": [
+     "Testfilm 245",
+     "Ein ausgedachter Film für die Tests."
+    ]
+   }
+  },
+  {
+   "id": 246,
+   "genre": 4,
+   "quality": 39,
+   "wear_rate": 2,
+   "topicality": 39,
+   "blocks": 2,
+   "owner": 0,
+   "flags": 38,
+   "flags2": 0,
+   "price": 141000,
+   "jingle": 0,
+   "live_day": 0,
+   "live_slot": 0,
+   "unknown": {
+    "0x13": "05670705"
+   },
+   "text": {
+    "en": [
+     "Test film 246",
+     "A made-up film for the tests."
+    ],
+    "de": [
+     "Testfilm 246",
+     "Ein ausgedachter Film für die Tests."
+    ]
+   }
+  },
+  {
+   "id": 247,
+   "genre": 4,
+   "quality": 57,
+   "wear_rate": 3,
+   "topicality": 57,
+   "blocks": 2,
+   "owner": 0,
+   "flags": 113,
+   "flags2": 0,
+   "price": 287000,
+   "jingle": 0,
+   "live_day": 0,
+   "live_slot": 0,
+   "unknown": {
+    "0x13": "006d0708"
+   },
+   "text": {
+    "en": [
+     "Test film 247",
+     "A made-up film for the tests."
+    ],
+    "de": [
+     "Testfilm 247",
+     "Ein ausgedachter Film für die Tests."
+    ]
+   }
+  },
+  {
+   "id": 248,
+   "genre": 4,
+   "quality": 57,
+   "wear_rate": 3,
+   "topicality": 57,
+   "blocks": 2,
+   "owner": 0,
+   "flags": 122,
+   "flags2": 0,
+   "price": 571000,
+   "jingle": 0,
+   "live_day": 0,
+   "live_slot": 0,
+   "unknown": {
+    "0x13": "007b0509"
+   },
+   "text": {
+    "en": [
+     "Test film 248",
+     "A made-up film for the tests."
+    ],
+    "de": [
+     "Testfilm 248",
+     "Ein ausgedachter Film für die Tests."
+    ]
+   }
+  },
+  {
+   "id": 249,
+   "genre": 4,
+   "quality": 35,
+   "wear_rate": 2,
+   "topicality": 35,
+   "blocks": 2,
+   "owner": 0,
+   "flags": 49,
+   "flags2": 0,
+   "price": 111000,
+   "jingle": 0,
+   "live_day": 0,
+   "live_slot": 0,
+   "unknown": {
+    "0x13": "00620804"
+   },
+   "text": {
+    "en": [
+     "Test film 249",
+     "A made-up film for the tests."
+    ],
+    "de": [
+     "Testfilm 249",
+     "Ein ausgedachter Film für die Tests."
+    ]
+   }
+  },
+  {
+   "id": 250,
+   "genre": 4,
+   "quality": 57,
+   "wear_rate": 3,
+   "topicality": 57,
+   "blocks": 4,
+   "owner": 0,
+   "flags": 113,
+   "flags2": 8,
+   "price": 377000,
+   "jingle": 0,
+   "live_day": 0,
+   "live_slot": 0,
+   "unknown": {
+    "0x13": "00710808"
+   },
+   "text": {
+    "en": [
+     "Test film 250",
+     "A made-up film for the tests."
+    ],
+    "de": [
+     "Testfilm 250",
+     "Ein ausgedachter Film für die Tests."
+    ]
+   }
+  },
+  {
+   "id": 251,
+   "genre": 5,
+   "quality": 55,
+   "wear_rate": 2,
+   "topicality": 55,
+   "blocks": 3,
+   "owner": 0,
+   "flags": 113,
+   "flags2": 8,
+   "price": 321000,
+   "jingle": 0,
+   "live_day": 0,
+   "live_slot": 0,
+   "unknown": {
+    "0x13": "005e0a07"
+   },
+   "text": {
+    "en": [
+     "Test film 251",
+     "A made-up film for the tests."
+    ],
+    "de": [
+     "Testfilm 251",
+     "Ein ausgedachter Film für die Tests."
+    ]
+   }
+  },
+  {
+   "id": 252,
+   "genre": 5,
+   "quality": 54,
+   "wear_rate": 4,
+   "topicality": 54,
+   "blocks": 2,
+   "owner": 0,
+   "flags": 99,
+   "flags2": 8,
+   "price": 274000,
+   "jingle": 0,
+   "live_day": 0,
+   "live_slot": 0,
+   "unknown": {
+    "0x13": "005f0907"
+   },
+   "text": {
+    "en": [
+     "Test film 252",
+     "A made-up film for the tests."
+    ],
+    "de": [
+     "Testfilm 252",
+     "Ein ausgedachter Film für die Tests."
+    ]
+   }
+  },
+  {
+   "id": 253,
+   "genre": 5,
+   "quality": 35,
+   "wear_rate": 5,
+   "topicality": 35,
+   "blocks": 2,
+   "owner": 0,
+   "flags": 37,
+   "flags2": 0,
+   "price": 110000,
+   "jingle": 0,
+   "live_day": 0,
+   "live_slot": 0,
+   "unknown": {
+    "0x13": "005f0904"
+   },
+   "text": {
+    "en": [
+     "Test film 253",
+     "A made-up film for the tests."
+    ],
+    "de": [
+     "Testfilm 253",
+     "Ein ausgedachter Film für die Tests."
+    ]
+   }
+  },
+  {
+   "id": 254,
+   "genre": 5,
+   "quality": 39,
+   "wear_rate": 3,
+   "topicality": 39,
+   "blocks": 2,
+   "owner": 0,
+   "flags": 39,
+   "flags2": 0,
+   "price": 71000,
+   "jingle": 0,
+   "live_day": 0,
+   "live_slot": 0,
+   "unknown": {
+    "0x13": "00600805"
+   },
+   "text": {
+    "en": [
+     "Test film 254",
+     "A made-up film for the tests."
+    ],
+    "de": [
+     "Testfilm 254",
+     "Ein ausgedachter Film für die Tests."
+    ]
+   }
+  },
+  {
+   "id": 255,
+   "genre": 5,
+   "quality": 45,
+   "wear_rate": 4,
+   "topicality": 45,
+   "blocks": 2,
+   "owner": 0,
+   "flags": 101,
+   "flags2": 8,
+   "price": 172000,
+   "jingle": 0,
+   "live_day": 0,
+   "live_slot": 0,
+   "unknown": {
+    "0x13": "005c0507"
+   },
+   "text": {
+    "en": [
+     "Test film 255",
+     "A made-up film for the tests."
+    ],
+    "de": [
+     "Testfilm 255",
+     "Ein ausgedachter Film für die Tests."
+    ]
+   }
+  },
+  {
+   "id": 256,
+   "genre": 5,
+   "quality": 49,
+   "wear_rate": 4,
+   "topicality": 49,
+   "blocks": 2,
+   "owner": 0,
+   "flags": 117,
+   "flags2": 0,
+   "price": 227000,
+   "jingle": 0,
+   "live_day": 0,
+   "live_slot": 0,
+   "unknown": {
+    "0x13": "035f0607"
+   },
+   "text": {
+    "en": [
+     "Test film 256",
+     "A made-up film for the tests."
+    ],
+    "de": [
+     "Testfilm 256",
+     "Ein ausgedachter Film für die Tests."
+    ]
+   }
+  },
+  {
+   "id": 257,
+   "genre": 5,
+   "quality": 59,
+   "wear_rate": 4,
+   "topicality": 59,
+   "blocks": 3,
+   "owner": 0,
+   "flags": 103,
+   "flags2": 0,
+   "price": 319000,
+   "jingle": 0,
+   "live_day": 0,
+   "live_slot": 0,
+   "unknown": {
+    "0x13": "036a0808"
+   },
+   "text": {
+    "en": [
+     "Test film 257",
+     "A made-up film for the tests."
+    ],
+    "de": [
+     "Testfilm 257",
+     "Ein ausgedachter Film für die Tests."
+    ]
+   }
+  },
+  {
+   "id": 258,
+   "genre": 5,
+   "quality": 45,
+   "wear_rate": 3,
+   "topicality": 45,
+   "blocks": 3,
+   "owner": 0,
+   "flags": 101,
+   "flags2": 0,
+   "price": 204000,
+   "jingle": 0,
+   "live_day": 0,
+   "live_slot": 0,
+   "unknown": {
+    "0x13": "005f0806"
+   },
+   "text": {
+    "en": [
+     "Test film 258",
+     "A made-up film for the tests."
+    ],
+    "de": [
+     "Testfilm 258",
+     "Ein ausgedachter Film für die Tests."
+    ]
+   }
+  },
+  {
+   "id": 259,
+   "genre": 5,
+   "quality": 49,
+   "wear_rate": 4,
+   "topicality": 49,
+   "blocks": 2,
+   "owner": 0,
+   "flags": 103,
+   "flags2": 0,
+   "price": 202000,
+   "jingle": 0,
+   "live_day": 0,
+   "live_slot": 0,
+   "unknown": {
+    "0x13": "00770707"
+   },
+   "text": {
+    "en": [
+     "Test film 259",
+     "A made-up film for the tests."
+    ],
+    "de": [
+     "Testfilm 259",
+     "Ein ausgedachter Film für die Tests."
+    ]
+   }
+  },
+  {
+   "id": 260,
+   "genre": 5,
+   "quality": 52,
+   "wear_rate": 3,
+   "topicality": 52,
+   "blocks": 3,
+   "owner": 0,
+   "flags": 115,
+   "flags2": 0,
+   "price": 249000,
+   "jingle": 0,
+   "live_day": 0,
+   "live_slot": 0,
+   "unknown": {
+    "0x13": "00660807"
+   },
+   "text": {
+    "en": [
+     "Test film 260",
+     "A made-up film for the tests."
+    ],
+    "de": [
+     "Testfilm 260",
+     "Ein ausgedachter Film für die Tests."
+    ]
+   }
+  },
+  {
+   "id": 261,
+   "genre": 5,
+   "quality": 57,
+   "wear_rate": 3,
+   "topicality": 57,
+   "blocks": 2,
+   "owner": 0,
+   "flags": 99,
+   "flags2": 0,
+   "price": 300000,
+   "jingle": 0,
+   "live_day": 0,
+   "live_slot": 0,
+   "unknown": {
+    "0x13": "00650708"
+   },
+   "text": {
+    "en": [
+     "Test film 261",
+     "A made-up film for the tests."
+    ],
+    "de": [
+     "Testfilm 261",
+     "Ein ausgedachter Film für die Tests."
+    ]
+   }
+  },
+  {
+   "id": 262,
+   "genre": 5,
+   "quality": 51,
+   "wear_rate": 4,
+   "topicality": 51,
+   "blocks": 2,
+   "owner": 0,
+   "flags": 113,
+   "flags2": 0,
+   "price": 216000,
+   "jingle": 0,
+   "live_day": 0,
+   "live_slot": 0,
+   "unknown": {
+    "0x13": "00660707"
+   },
+   "text": {
+    "en": [
+     "Test film 262",
+     "A made-up film for the tests."
+    ],
+    "de": [
+     "Testfilm 262",
+     "Ein ausgedachter Film für die Tests."
+    ]
+   }
+  },
+  {
+   "id": 263,
+   "genre": 6,
+   "quality": 12,
+   "wear_rate": 3,
+   "topicality": 12,
+   "blocks": 2,
+   "owner": 0,
+   "flags": 36,
+   "flags2": 0,
+   "price": 9000,
+   "jingle": 0,
+   "live_day": 0,
+   "live_slot": 0,
+   "unknown": {
+    "0x13": "02630906"
+   },
+   "text": {
+    "en": [
+     "Test film 263",
+     "A made-up film for the tests."
+    ],
+    "de": [
+     "Testfilm 263",
+     "Ein ausgedachter Film für die Tests."
+    ]
+   }
+  },
+  {
+   "id": 264,
+   "genre": 6,
+   "quality": 18,
+   "wear_rate": 3,
+   "topicality": 18,
+   "blocks": 2,
+   "owner": 0,
+   "flags": 36,
+   "flags2": 0,
+   "price": 19000,
+   "jingle": 0,
+   "live_day": 0,
+   "live_slot": 0,
+   "unknown": {
+    "0x13": "00660607"
+   },
+   "text": {
+    "en": [
+     "Test film 264",
+     "A made-up film for the tests."
+    ],
+    "de": [
+     "Testfilm 264",
+     "Ein ausgedachter Film für die Tests."
+    ]
+   }
+  },
+  {
+   "id": 265,
+   "genre": 6,
+   "quality": 16,
+   "wear_rate": 3,
+   "topicality": 16,
+   "blocks": 2,
+   "owner": 0,
+   "flags": 52,
+   "flags2": 0,
+   "price": 15000,
+   "jingle": 0,
+   "live_day": 0,
+   "live_slot": 0,
+   "unknown": {
+    "0x13": "00680306"
+   },
+   "text": {
+    "en": [
+     "Test film 265",
+     "A made-up film for the tests."
+    ],
+    "de": [
+     "Testfilm 265",
+     "Ein ausgedachter Film für die Tests."
+    ]
+   }
+  },
+  {
+   "id": 266,
+   "genre": 6,
+   "quality": 20,
+   "wear_rate": 3,
+   "topicality": 20,
+   "blocks": 2,
+   "owner": 0,
+   "flags": 44,
+   "flags2": 0,
+   "price": 24000,
+   "jingle": 0,
+   "live_day": 0,
+   "live_slot": 0,
+   "unknown": {
+    "0x13": "04690806"
+   },
+   "text": {
+    "en": [
+     "Test film 266",
+     "A made-up film for the tests."
+    ],
+    "de": [
+     "Testfilm 266",
+     "Ein ausgedachter Film für die Tests."
+    ]
+   }
+  },
+  {
+   "id": 267,
+   "genre": 6,
+   "quality": 15,
+   "wear_rate": 3,
+   "topicality": 15,
+   "blocks": 2,
+   "owner": 0,
+   "flags": 36,
+   "flags2": 0,
+   "price": 13500,
+   "jingle": 0,
+   "live_day": 0,
+   "live_slot": 0,
+   "unknown": {
+    "0x13": "006a0706"
+   },
+   "text": {
+    "en": [
+     "Test film 267",
+     "A made-up film for the tests."
+    ],
+    "de": [
+     "Testfilm 267",
+     "Ein ausgedachter Film für die Tests."
+    ]
+   }
+  },
+  {
+   "id": 268,
+   "genre": 6,
+   "quality": 6,
+   "wear_rate": 3,
+   "topicality": 6,
+   "blocks": 2,
+   "owner": 0,
+   "flags": 36,
+   "flags2": 0,
+   "price": 2200,
+   "jingle": 0,
+   "live_day": 0,
+   "live_slot": 0,
+   "unknown": {
+    "0x13": "026f0a06"
+   },
+   "text": {
+    "en": [
+     "Test film 268",
+     "A made-up film for the tests."
+    ],
+    "de": [
+     "Testfilm 268",
+     "Ein ausgedachter Film für die Tests."
+    ]
+   }
+  },
+  {
+   "id": 269,
+   "genre": 6,
+   "quality": 2,
+   "wear_rate": 3,
+   "topicality": 2,
+   "blocks": 3,
+   "owner": 0,
+   "flags": 36,
+   "flags2": 0,
+   "price": 600,
+   "jingle": 0,
+   "live_day": 0,
+   "live_slot": 0,
+   "unknown": {
+    "0x13": "02690906"
+   },
+   "text": {
+    "en": [
+     "Test film 269",
+     "A made-up film for the tests."
+    ],
+    "de": [
+     "Testfilm 269",
+     "Ein ausgedachter Film für die Tests."
+    ]
+   }
+  },
+  {
+   "id": 270,
+   "genre": 6,
+   "quality": 14,
+   "wear_rate": 3,
+   "topicality": 14,
+   "blocks": 2,
+   "owner": 0,
+   "flags": 37,
+   "flags2": 0,
+   "price": 12000,
+   "jingle": 0,
+   "live_day": 0,
+   "live_slot": 0,
+   "unknown": {
+    "0x13": "00760408"
+   },
+   "text": {
+    "en": [
+     "Test film 270",
+     "A made-up film for the tests."
+    ],
+    "de": [
+     "Testfilm 270",
+     "Ein ausgedachter Film für die Tests."
+    ]
+   }
+  },
+  {
+   "id": 271,
+   "genre": 7,
+   "quality": 80,
+   "wear_rate": 0,
+   "topicality": 80,
+   "blocks": 4,
+   "owner": 0,
+   "flags": 117,
+   "flags2": 4,
+   "price": 2500000,
+   "jingle": 0,
+   "live_day": 0,
+   "live_slot": 0,
+   "unknown": {
+    "0x13": "005d040a"
+   },
+   "text": {
+    "en": [
+     "Test film 271",
+     "A made-up film for the tests."
+    ],
+    "de": [
+     "Testfilm 271",
+     "Ein ausgedachter Film für die Tests."
+    ]
+   }
+  },
+  {
+   "id": 272,
+   "genre": 7,
+   "quality": 70,
+   "wear_rate": 0,
+   "topicality": 70,
+   "blocks": 2,
+   "owner": 0,
+   "flags": 122,
+   "flags2": 4,
+   "price": 1000000,
+   "jingle": 0,
+   "live_day": 0,
+   "live_slot": 0,
+   "unknown": {
+    "0x13": "005c0a08"
+   },
+   "text": {
+    "en": [
+     "Test film 272",
+     "A made-up film for the tests."
+    ],
+    "de": [
+     "Testfilm 272",
+     "Ein ausgedachter Film für die Tests."
+    ]
+   }
+  },
+  {
+   "id": 273,
+   "genre": 7,
+   "quality": 55,
+   "wear_rate": 0,
+   "topicality": 55,
+   "blocks": 2,
+   "owner": 0,
+   "flags": 102,
+   "flags2": 4,
+   "price": 600000,
+   "jingle": 0,
+   "live_day": 0,
+   "live_slot": 0,
+   "unknown": {
+    "0x13": "005e0808"
+   },
+   "text": {
+    "en": [
+     "Test film 273",
+     "A made-up film for the tests."
+    ],
+    "de": [
+     "Testfilm 273",
+     "Ein ausgedachter Film für die Tests."
+    ]
+   }
+  },
+  {
+   "id": 274,
+   "genre": 7,
+   "quality": 60,
+   "wear_rate": 0,
+   "topicality": 60,
+   "blocks": 4,
+   "owner": 0,
+   "flags": 115,
+   "flags2": 4,
+   "price": 800000,
+   "jingle": 0,
+   "live_day": 0,
+   "live_slot": 0,
+   "unknown": {
+    "0x13": "00650406"
+   },
+   "text": {
+    "en": [
+     "Test film 274",
+     "A made-up film for the tests."
+    ],
+    "de": [
+     "Testfilm 274",
+     "Ein ausgedachter Film für die Tests."
+    ]
+   }
+  },
+  {
+   "id": 275,
+   "genre": 7,
+   "quality": 65,
+   "wear_rate": 0,
+   "topicality": 65,
+   "blocks": 4,
+   "owner": 0,
+   "flags": 115,
+   "flags2": 4,
+   "price": 1200000,
+   "jingle": 0,
+   "live_day": 0,
+   "live_slot": 0,
+   "unknown": {
+    "0x13": "03690709"
+   },
+   "text": {
+    "en": [
+     "Test film 275",
+     "A made-up film for the tests."
+    ],
+    "de": [
+     "Testfilm 275",
+     "Ein ausgedachter Film für die Tests."
+    ]
+   }
+  },
+  {
+   "id": 276,
+   "genre": 9,
+   "quality": 63,
+   "wear_rate": 3,
+   "topicality": 63,
+   "blocks": 2,
+   "owner": 0,
+   "flags": 121,
+   "flags2": 0,
+   "price": 377000,
+   "jingle": 0,
+   "live_day": 0,
+   "live_slot": 0,
+   "unknown": {
+    "0x13": "005d0809"
+   },
+   "text": {
+    "en": [
+     "Test film 276",
+     "A made-up film for the tests."
+    ],
+    "de": [
+     "Testfilm 276",
+     "Ein ausgedachter Film für die Tests."
+    ]
+   }
+  },
+  {
+   "id": 277,
+   "genre": 9,
+   "quality": 59,
+   "wear_rate": 4,
+   "topicality": 59,
+   "blocks": 3,
+   "owner": 0,
+   "flags": 117,
+   "flags2": 0,
+   "price": 321000,
+   "jingle": 0,
+   "live_day": 0,
+   "live_slot": 0,
+   "unknown": {
+    "0x13": "00600209"
+   },
+   "text": {
+    "en": [
+     "Test film 277",
+     "A made-up film for the tests."
+    ],
+    "de": [
+     "Testfilm 277",
+     "Ein ausgedachter Film für die Tests."
+    ]
+   }
+  },
+  {
+   "id": 278,
+   "genre": 9,
+   "quality": 53,
+   "wear_rate": 3,
+   "topicality": 53,
+   "blocks": 2,
+   "owner": 0,
+   "flags": 120,
+   "flags2": 0,
+   "price": 234000,
+   "jingle": 0,
+   "live_day": 0,
+   "live_slot": 0,
+   "unknown": {
+    "0x13": "00610608"
+   },
+   "text": {
+    "en": [
+     "Test film 278",
+     "A made-up film for the tests."
+    ],
+    "de": [
+     "Testfilm 278",
+     "Ein ausgedachter Film für die Tests."
+    ]
+   }
+  },
+  {
+   "id": 279,
+   "genre": 9,
+   "quality": 60,
+   "wear_rate": 3,
+   "topicality": 60,
+   "blocks": 3,
+   "owner": 0,
+   "flags": 113,
+   "flags2": 0,
+   "price": 350000,
+   "jingle": 0,
+   "live_day": 0,
+   "live_slot": 0,
+   "unknown": {
+    "0x13": "00630908"
+   },
+   "text": {
+    "en": [
+     "Test film 279",
+     "A made-up film for the tests."
+    ],
+    "de": [
+     "Testfilm 279",
+     "Ein ausgedachter Film für die Tests."
+    ]
+   }
+  },
+  {
+   "id": 280,
+   "genre": 9,
+   "quality": 55,
+   "wear_rate": 4,
+   "topicality": 55,
+   "blocks": 3,
+   "owner": 0,
+   "flags": 124,
+   "flags2": 0,
+   "price": 578000,
+   "jingle": 0,
+   "live_day": 0,
+   "live_slot": 0,
+   "unknown": {
+    "0x13": "00630409"
+   },
+   "text": {
+    "en": [
+     "Test film 280",
+     "A made-up film for the tests."
+    ],
+    "de": [
+     "Testfilm 280",
+     "Ein ausgedachter Film für die Tests."
+    ]
+   }
+  },
+  {
+   "id": 281,
+   "genre": 9,
+   "quality": 68,
+   "wear_rate": 3,
+   "topicality": 68,
+   "blocks": 3,
+   "owner": 0,
+   "flags": 113,
+   "flags2": 0,
+   "price": 489000,
+   "jingle": 0,
+   "live_day": 0,
+   "live_slot": 0,
+   "unknown": {
+    "0x13": "006c0a09"
+   },
+   "text": {
+    "en": [
+     "Test film 281",
+     "A made-up film for the tests."
+    ],
+    "de": [
+     "Testfilm 281",
+     "Ein ausgedachter Film für die Tests."
+    ]
+   }
+  },
+  {
+   "id": 282,
+   "genre": 9,
+   "quality": 69,
+   "wear_rate": 4,
+   "topicality": 69,
+   "blocks": 3,
+   "owner": 0,
+   "flags": 123,
+   "flags2": 0,
+   "price": 880000,
+   "jingle": 0,
+   "live_day": 0,
+   "live_slot": 0,
+   "unknown": {
+    "0x13": "006d070a"
+   },
+   "text": {
+    "en": [
+     "Test film 282",
+     "A made-up film for the tests."
+    ],
+    "de": [
+     "Testfilm 282",
+     "Ein ausgedachter Film für die Tests."
+    ]
+   }
+  },
+  {
+   "id": 283,
+   "genre": 9,
+   "quality": 68,
+   "wear_rate": 3,
+   "topicality": 68,
+   "blocks": 3,
+   "owner": 0,
+   "flags": 113,
+   "flags2": 0,
+   "price": 483000,
+   "jingle": 0,
+   "live_day": 0,
+   "live_slot": 0,
+   "unknown": {
+    "0x13": "006e0a09"
+   },
+   "text": {
+    "en": [
+     "Test film 283",
+     "A made-up film for the tests."
+    ],
+    "de": [
+     "Testfilm 283",
+     "Ein ausgedachter Film für die Tests."
+    ]
+   }
+  },
+  {
+   "id": 284,
+   "genre": 9,
+   "quality": 71,
+   "wear_rate": 4,
+   "topicality": 71,
+   "blocks": 3,
+   "owner": 0,
+   "flags": 121,
+   "flags2": 0,
+   "price": 464000,
+   "jingle": 0,
+   "live_day": 0,
+   "live_slot": 0,
+   "unknown": {
+    "0x13": "0070030a"
+   },
+   "text": {
+    "en": [
+     "Test film 284",
+     "A made-up film for the tests."
+    ],
+    "de": [
+     "Testfilm 284",
+     "Ein ausgedachter Film für die Tests."
+    ]
+   }
+  },
+  {
+   "id": 285,
+   "genre": 9,
+   "quality": 59,
+   "wear_rate": 3,
+   "topicality": 59,
+   "blocks": 3,
+   "owner": 0,
+   "flags": 117,
+   "flags2": 0,
+   "price": 327000,
+   "jingle": 0,
+   "live_day": 0,
+   "live_slot": 0,
+   "unknown": {
+    "0x13": "00720908"
+   },
+   "text": {
+    "en": [
+     "Test film 285",
+     "A made-up film for the tests."
+    ],
+    "de": [
+     "Testfilm 285",
+     "Ein ausgedachter Film für die Tests."
+    ]
+   }
+  },
+  {
+   "id": 286,
+   "genre": 9,
+   "quality": 59,
+   "wear_rate": 4,
+   "topicality": 59,
+   "blocks": 3,
+   "owner": 0,
+   "flags": 116,
+   "flags2": 0,
+   "price": 353000,
+   "jingle": 0,
+   "live_day": 0,
+   "live_slot": 0,
+   "unknown": {
+    "0x13": "00790808"
+   },
+   "text": {
+    "en": [
+     "Test film 286",
+     "A made-up film for the tests."
+    ],
+    "de": [
+     "Testfilm 286",
+     "Ein ausgedachter Film für die Tests."
+    ]
+   }
+  },
+  {
+   "id": 287,
+   "genre": 9,
+   "quality": 47,
+   "wear_rate": 3,
+   "topicality": 47,
+   "blocks": 2,
+   "owner": 0,
+   "flags": 113,
+   "flags2": 0,
+   "price": 209000,
+   "jingle": 0,
+   "live_day": 0,
+   "live_slot": 0,
+   "unknown": {
+    "0x13": "04610607"
+   },
+   "text": {
+    "en": [
+     "Test film 287",
+     "A made-up film for the tests."
+    ],
+    "de": [
+     "Testfilm 287",
+     "Ein ausgedachter Film für die Tests."
+    ]
+   }
+  },
+  {
+   "id": 288,
+   "genre": 10,
+   "quality": 67,
+   "wear_rate": 2,
+   "topicality": 67,
+   "blocks": 2,
+   "owner": 0,
+   "flags": 110,
+   "flags2": 0,
+   "price": 392000,
+   "jingle": 0,
+   "live_day": 0,
+   "live_slot": 0,
+   "unknown": {
+    "0x13": "005e0909"
+   },
+   "text": {
+    "en": [
+     "Test film 288",
+     "A made-up film for the tests."
+    ],
+    "de": [
+     "Testfilm 288",
+     "Ein ausgedachter Film für die Tests."
+    ]
+   }
+  },
+  {
+   "id": 289,
+   "genre": 10,
+   "quality": 52,
+   "wear_rate": 2,
+   "topicality": 52,
+   "blocks": 2,
+   "owner": 0,
+   "flags": 105,
+   "flags2": 0,
+   "price": 249000,
+   "jingle": 0,
+   "live_day": 0,
+   "live_slot": 0,
+   "unknown": {
+    "0x13": "005f0807"
+   },
+   "text": {
+    "en": [
+     "Test film 289",
+     "A made-up film for the tests."
+    ],
+    "de": [
+     "Testfilm 289",
+     "Ein ausgedachter Film für die Tests."
+    ]
+   }
+  },
+  {
+   "id": 290,
+   "genre": 10,
+   "quality": 44,
+   "wear_rate": 1,
+   "topicality": 44,
+   "blocks": 3,
+   "owner": 0,
+   "flags": 37,
+   "flags2": 0,
+   "price": 98000,
+   "jingle": 0,
+   "live_day": 0,
+   "live_slot": 0,
+   "unknown": {
+    "0x13": "005e0a05"
+   },
+   "text": {
+    "en": [
+     "Test film 290",
+     "A made-up film for the tests."
+    ],
+    "de": [
+     "Testfilm 290",
+     "Ein ausgedachter Film für die Tests."
+    ]
+   }
+  },
+  {
+   "id": 291,
+   "genre": 10,
+   "quality": 45,
+   "wear_rate": 3,
+   "topicality": 45,
+   "blocks": 2,
+   "owner": 0,
+   "flags": 101,
+   "flags2": 0,
+   "price": 169000,
+   "jingle": 0,
+   "live_day": 0,
+   "live_slot": 0,
+   "unknown": {
+    "0x13": "005c0806"
+   },
+   "text": {
+    "en": [
+     "Test film 291",
+     "A made-up film for the tests."
+    ],
+    "de": [
+     "Testfilm 291",
+     "Ein ausgedachter Film für die Tests."
+    ]
+   }
+  },
+  {
+   "id": 292,
+   "genre": 10,
+   "quality": 60,
+   "wear_rate": 3,
+   "topicality": 60,
+   "blocks": 3,
+   "owner": 0,
+   "flags": 113,
+   "flags2": 8,
+   "price": 381000,
+   "jingle": 0,
+   "live_day": 0,
+   "live_slot": 0,
+   "unknown": {
+    "0x13": "00700908"
+   },
+   "text": {
+    "en": [
+     "Test film 292",
+     "A made-up film for the tests."
+    ],
+    "de": [
+     "Testfilm 292",
+     "Ein ausgedachter Film für die Tests."
+    ]
+   }
+  },
+  {
+   "id": 293,
+   "genre": 10,
+   "quality": 56,
+   "wear_rate": 2,
+   "topicality": 56,
+   "blocks": 2,
+   "owner": 0,
+   "flags": 122,
+   "flags2": 0,
+   "price": 287000,
+   "jingle": 0,
+   "live_day": 0,
+   "live_slot": 0,
+   "unknown": {
+    "0x13": "00650708"
+   },
+   "text": {
+    "en": [
+     "Test film 293",
+     "A made-up film for the tests."
+    ],
+    "de": [
+     "Testfilm 293",
+     "Ein ausgedachter Film für die Tests."
+    ]
+   }
+  },
+  {
+   "id": 294,
+   "genre": 10,
+   "quality": 63,
+   "wear_rate": 3,
+   "topicality": 63,
+   "blocks": 3,
+   "owner": 0,
+   "flags": 115,
+   "flags2": 0,
+   "price": 408000,
+   "jingle": 0,
+   "live_day": 0,
+   "live_slot": 0,
+   "unknown": {
+    "0x13": "03760709"
+   },
+   "text": {
+    "en": [
+     "Test film 294",
+     "A made-up film for the tests."
+    ],
+    "de": [
+     "Testfilm 294",
+     "Ein ausgedachter Film für die Tests."
+    ]
+   }
+  },
+  {
+   "id": 295,
+   "genre": 10,
+   "quality": 41,
+   "wear_rate": 3,
+   "topicality": 41,
+   "blocks": 2,
+   "owner": 0,
+   "flags": 50,
+   "flags2": 0,
+   "price": 151000,
+   "jingle": 0,
+   "live_day": 0,
+   "live_slot": 0,
+   "unknown": {
+    "0x13": "07650606"
+   },
+   "text": {
+    "en": [
+     "Test film 295",
+     "A made-up film for the tests."
+    ],
+    "de": [
+     "Testfilm 295",
+     "Ein ausgedachter Film für die Tests."
+    ]
+   }
+  },
+  {
+   "id": 296,
+   "genre": 10,
+   "quality": 63,
+   "wear_rate": 2,
+   "topicality": 63,
+   "blocks": 2,
+   "owner": 0,
+   "flags": 107,
+   "flags2": 0,
+   "price": 352000,
+   "jingle": 0,
+   "live_day": 0,
+   "live_slot": 0,
+   "unknown": {
+    "0x13": "00670809"
+   },
+   "text": {
+    "en": [
+     "Test film 296",
+     "A made-up film for the tests."
+    ],
+    "de": [
+     "Testfilm 296",
+     "Ein ausgedachter Film für die Tests."
+    ]
+   }
+  },
+  {
+   "id": 297,
+   "genre": 10,
+   "quality": 40,
+   "wear_rate": 3,
+   "topicality": 40,
+   "blocks": 2,
+   "owner": 0,
+   "flags": 112,
+   "flags2": 8,
+   "price": 150000,
+   "jingle": 0,
+   "live_day": 0,
+   "live_slot": 0,
+   "unknown": {
+    "0x13": "03600805"
+   },
+   "text": {
+    "en": [
+     "Test film 297",
+     "A made-up film for the tests."
+    ],
+    "de": [
+     "Testfilm 297",
+     "Ein ausgedachter Film für die Tests."
+    ]
+   }
+  },
+  {
+   "id": 298,
+   "genre": 10,
+   "quality": 36,
+   "wear_rate": 3,
+   "topicality": 36,
+   "blocks": 2,
+   "owner": 0,
+   "flags": 49,
+   "flags2": 8,
+   "price": 109000,
+   "jingle": 0,
+   "live_day": 0,
+   "live_slot": 0,
+   "unknown": {
+    "0x13": "09660904"
+   },
+   "text": {
+    "en": [
+     "Test film 298",
+     "A made-up film for the tests."
+    ],
+    "de": [
+     "Testfilm 298",
+     "Ein ausgedachter Film für die Tests."
+    ]
+   }
+  },
+  {
+   "id": 299,
+   "genre": 10,
+   "quality": 63,
+   "wear_rate": 4,
+   "topicality": 63,
+   "blocks": 2,
+   "owner": 0,
+   "flags": 113,
+   "flags2": 0,
+   "price": 332000,
+   "jingle": 0,
+   "live_day": 0,
+   "live_slot": 0,
+   "unknown": {
+    "0x13": "00770809"
+   },
+   "text": {
+    "en": [
+     "Test film 299",
+     "A made-up film for the tests."
+    ],
+    "de": [
+     "Testfilm 299",
+     "Ein ausgedachter Film für die Tests."
+    ]
+   }
+  },
+  {
+   "id": 300,
+   "genre": 10,
+   "quality": 52,
+   "wear_rate": 3,
+   "topicality": 52,
+   "blocks": 2,
+   "owner": 0,
+   "flags": 114,
+   "flags2": 0,
+   "price": 240000,
+   "jingle": 0,
+   "live_day": 0,
+   "live_slot": 0,
+   "unknown": {
+    "0x13": "036c0807"
+   },
+   "text": {
+    "en": [
+     "Test film 300",
+     "A made-up film for the tests."
+    ],
+    "de": [
+     "Testfilm 300",
+     "Ein ausgedachter Film für die Tests."
+    ]
+   }
+  },
+  {
+   "id": 301,
+   "genre": 2,
+   "quality": 90,
+   "wear_rate": 2,
+   "topicality": 90,
+   "blocks": 4,
+   "owner": 0,
+   "flags": 117,
+   "flags2": 0,
+   "price": 816000,
+   "jingle": 0,
+   "live_day": 0,
+   "live_slot": 0,
+   "unknown": {
+    "0x13": "004f0a06"
+   },
+   "text": {
+    "en": [
+     "Test film 301",
+     "A made-up film for the tests."
+    ],
+    "de": [
+     "Testfilm 301",
+     "Ein ausgedachter Film für die Tests."
+    ]
+   }
+  },
+  {
+   "id": 302,
+   "genre": 5,
+   "quality": 40,
+   "wear_rate": 3,
+   "topicality": 40,
+   "blocks": 4,
+   "owner": 0,
+   "flags": 101,
+   "flags2": 0,
+   "price": 168000,
+   "jingle": 0,
+   "live_day": 0,
+   "live_slot": 0,
+   "unknown": {
+    "0x13": "004a0a05"
+   },
+   "text": {
+    "en": [
+     "Test film 302",
+     "A made-up film for the tests."
+    ],
+    "de": [
+     "Testfilm 302",
+     "Ein ausgedachter Film für die Tests."
+    ]
+   }
+  },
+  {
+   "id": 303,
+   "genre": 2,
+   "quality": 42,
+   "wear_rate": 3,
+   "topicality": 42,
+   "blocks": 3,
+   "owner": 0,
+   "flags": 101,
+   "flags2": 0,
+   "price": 180000,
+   "jingle": 0,
+   "live_day": 0,
+   "live_slot": 0,
+   "unknown": {
+    "0x13": "02510805"
+   },
+   "text": {
+    "en": [
+     "Test film 303",
+     "A made-up film for the tests."
+    ],
+    "de": [
+     "Testfilm 303",
+     "Ein ausgedachter Film für die Tests."
+    ]
+   }
+  },
+  {
+   "id": 304,
+   "genre": 10,
+   "quality": 36,
+   "wear_rate": 2,
+   "topicality": 36,
+   "blocks": 3,
+   "owner": 0,
+   "flags": 38,
+   "flags2": 0,
+   "price": 128000,
+   "jingle": 0,
+   "live_day": 0,
+   "live_slot": 0,
+   "unknown": {
+    "0x13": "004b0906"
+   },
+   "text": {
+    "en": [
+     "Test film 304",
+     "A made-up film for the tests."
+    ],
+    "de": [
+     "Testfilm 304",
+     "Ein ausgedachter Film für die Tests."
+    ]
+   }
+  },
+  {
+   "id": 305,
+   "genre": 5,
+   "quality": 62,
+   "wear_rate": 4,
+   "topicality": 62,
+   "blocks": 2,
+   "owner": 0,
+   "flags": 99,
+   "flags2": 8,
+   "price": 360000,
+   "jingle": 0,
+   "live_day": 0,
+   "live_slot": 0,
+   "unknown": {
+    "0x13": "005b0907"
+   },
+   "text": {
+    "en": [
+     "Test film 305",
+     "A made-up film for the tests."
+    ],
+    "de": [
+     "Testfilm 305",
+     "Ein ausgedachter Film für die Tests."
+    ]
+   }
+  },
+  {
+   "id": 306,
+   "genre": 2,
+   "quality": 38,
+   "wear_rate": 4,
+   "topicality": 38,
+   "blocks": 2,
+   "owner": 0,
+   "flags": 49,
+   "flags2": 0,
+   "price": 134000,
+   "jingle": 0,
+   "live_day": 0,
+   "live_slot": 0,
+   "unknown": {
+    "0x13": "00540805"
+   },
+   "text": {
+    "en": [
+     "Test film 306",
+     "A made-up film for the tests."
+    ],
+    "de": [
+     "Testfilm 306",
+     "Ein ausgedachter Film für die Tests."
+    ]
+   }
+  },
+  {
+   "id": 307,
+   "genre": 4,
+   "quality": 44,
+   "wear_rate": 3,
+   "topicality": 44,
+   "blocks": 2,
+   "owner": 0,
+   "flags": 121,
+   "flags2": 0,
+   "price": 182000,
+   "jingle": 0,
+   "live_day": 0,
+   "live_slot": 0,
+   "unknown": {
+    "0x13": "00540707"
+   },
+   "text": {
+    "en": [
+     "Test film 307",
+     "A made-up film for the tests."
+    ],
+    "de": [
+     "Testfilm 307",
+     "Ein ausgedachter Film für die Tests."
+    ]
+   }
+  },
+  {
+   "id": 308,
+   "genre": 2,
+   "quality": 34,
+   "wear_rate": 3,
+   "topicality": 34,
+   "blocks": 2,
+   "owner": 0,
+   "flags": 49,
+   "flags2": 0,
+   "price": 102000,
+   "jingle": 0,
+   "live_day": 0,
+   "live_slot": 0,
+   "unknown": {
+    "0x13": "004c0807"
+   },
+   "text": {
+    "en": [
+     "Test film 308",
+     "A made-up film for the tests."
+    ],
+    "de": [
+     "Testfilm 308",
+     "Ein ausgedachter Film für die Tests."
+    ]
+   }
+  },
+  {
+   "id": 309,
+   "genre": 4,
+   "quality": 22,
+   "wear_rate": 2,
+   "topicality": 22,
+   "blocks": 2,
+   "owner": 0,
+   "flags": 49,
+   "flags2": 0,
+   "price": 41000,
+   "jingle": 0,
+   "live_day": 0,
+   "live_slot": 0,
+   "unknown": {
+    "0x13": "034b0802"
+   },
+   "text": {
+    "en": [
+     "Test film 309",
+     "A made-up film for the tests."
+    ],
+    "de": [
+     "Testfilm 309",
+     "Ein ausgedachter Film für die Tests."
+    ]
+   }
+  },
+  {
+   "id": 310,
+   "genre": 9,
+   "quality": 6,
+   "wear_rate": 1,
+   "topicality": 6,
+   "blocks": 2,
+   "owner": 0,
+   "flags": 48,
+   "flags2": 0,
+   "price": 3400,
+   "jingle": 0,
+   "live_day": 0,
+   "live_slot": 0,
+   "unknown": {
+    "0x13": "003a0101"
+   },
+   "text": {
+    "en": [
+     "Test film 310",
+     "A made-up film for the tests."
+    ],
+    "de": [
+     "Testfilm 310",
+     "Ein ausgedachter Film für die Tests."
+    ]
+   }
+  },
+  {
+   "id": 311,
+   "genre": 4,
+   "quality": 8,
+   "wear_rate": 3,
+   "topicality": 8,
+   "blocks": 2,
+   "owner": 0,
+   "flags": 56,
+   "flags2": 0,
+   "price": 5400,
+   "jingle": 0,
+   "live_day": 0,
+   "live_slot": 0,
+   "unknown": {
+    "0x13": "004e0101"
+   },
+   "text": {
+    "en": [
+     "Test film 311",
+     "A made-up film for the tests."
+    ],
+    "de": [
+     "Testfilm 311",
+     "Ein ausgedachter Film für die Tests."
+    ]
+   }
+  },
+  {
+   "id": 312,
+   "genre": 4,
+   "quality": 15,
+   "wear_rate": 2,
+   "topicality": 15,
+   "blocks": 2,
+   "owner": 0,
+   "flags": 38,
+   "flags2": 0,
+   "price": 22000,
+   "jingle": 0,
+   "live_day": 0,
+   "live_slot": 0,
+   "unknown": {
+    "0x13": "02380503"
+   },
+   "text": {
+    "en": [
+     "Test film 312",
+     "A made-up film for the tests."
+    ],
+    "de": [
+     "Testfilm 312",
+     "Ein ausgedachter Film für die Tests."
+    ]
+   }
+  },
+  {
+   "id": 313,
+   "genre": 10,
+   "quality": 20,
+   "wear_rate": 2,
+   "topicality": 20,
+   "blocks": 2,
+   "owner": 0,
+   "flags": 45,
+   "flags2": 0,
+   "price": 38000,
+   "jingle": 0,
+   "live_day": 0,
+   "live_slot": 0,
+   "unknown": {
+    "0x13": "023e0503"
+   },
+   "text": {
+    "en": [
+     "Test film 313",
+     "A made-up film for the tests."
+    ],
+    "de": [
+     "Testfilm 313",
+     "Ein ausgedachter Film für die Tests."
+    ]
+   }
+  },
+  {
+   "id": 314,
+   "genre": 2,
+   "quality": 5,
+   "wear_rate": 3,
+   "topicality": 5,
+   "blocks": 2,
+   "owner": 0,
+   "flags": 36,
+   "flags2": 0,
+   "price": 2300,
+   "jingle": 0,
+   "live_day": 0,
+   "live_slot": 0,
+   "unknown": {
+    "0x13": "02160701"
+   },
+   "text": {
+    "en": [
+     "Test film 314",
+     "A made-up film for the tests."
+    ],
+    "de": [
+     "Testfilm 314",
+     "Ein ausgedachter Film für die Tests."
+    ]
+   }
+  },
+  {
+   "id": 315,
+   "genre": 2,
+   "quality": 14,
+   "wear_rate": 4,
+   "topicality": 14,
+   "blocks": 2,
+   "owner": 0,
+   "flags": 48,
+   "flags2": 8,
+   "price": 19000,
+   "jingle": 0,
+   "live_day": 0,
+   "live_slot": 0,
+   "unknown": {
+    "0x13": "00440704"
+   },
+   "text": {
+    "en": [
+     "Test film 315",
+     "A made-up film for the tests."
+    ],
+    "de": [
+     "Testfilm 315",
+     "Ein ausgedachter Film für die Tests."
+    ]
+   }
+  },
+  {
+   "id": 316,
+   "genre": 4,
+   "quality": 24,
+   "wear_rate": 2,
+   "topicality": 24,
+   "blocks": 2,
+   "owner": 0,
+   "flags": 38,
+   "flags2": 0,
+   "price": 51000,
+   "jingle": 0,
+   "live_day": 0,
+   "live_slot": 0,
+   "unknown": {
+    "0x13": "003b0804"
+   },
+   "text": {
+    "en": [
+     "Test film 316",
+     "A made-up film for the tests."
+    ],
+    "de": [
+     "Testfilm 316",
+     "Ein ausgedachter Film für die Tests."
+    ]
+   }
+  },
+  {
+   "id": 317,
+   "genre": 5,
+   "quality": 22,
+   "wear_rate": 3,
+   "topicality": 22,
+   "blocks": 2,
+   "owner": 0,
+   "flags": 38,
+   "flags2": 0,
+   "price": 45000,
+   "jingle": 0,
+   "live_day": 0,
+   "live_slot": 0,
+   "unknown": {
+    "0x13": "003a0802"
+   },
+   "text": {
+    "en": [
+     "Test film 317",
+     "A made-up film for the tests."
+    ],
+    "de": [
+     "Testfilm 317",
+     "Ein ausgedachter Film für die Tests."
+    ]
+   }
+  },
+  {
+   "id": 318,
+   "genre": 4,
+   "quality": 18,
+   "wear_rate": 2,
+   "topicality": 18,
+   "blocks": 2,
+   "owner": 0,
+   "flags": 37,
+   "flags2": 0,
+   "price": 31000,
+   "jingle": 0,
+   "live_day": 0,
+   "live_slot": 0,
+   "unknown": {
+    "0x13": "03400802"
+   },
+   "text": {
+    "en": [
+     "Test film 318",
+     "A made-up film for the tests."
+    ],
+    "de": [
+     "Testfilm 318",
+     "Ein ausgedachter Film für die Tests."
+    ]
+   }
+  },
+  {
+   "id": 319,
+   "genre": 1,
+   "quality": 23,
+   "wear_rate": 3,
+   "topicality": 23,
+   "blocks": 2,
+   "owner": 0,
+   "flags": 50,
+   "flags2": 0,
+   "price": 44000,
+   "jingle": 0,
+   "live_day": 0,
+   "live_slot": 0,
+   "unknown": {
+    "0x13": "00430806"
+   },
+   "text": {
+    "en": [
+     "Test film 319",
+     "A made-up film for the tests."
+    ],
+    "de": [
+     "Testfilm 319",
+     "Ein ausgedachter Film für die Tests."
+    ]
+   }
+  },
+  {
+   "id": 320,
+   "genre": 2,
+   "quality": 12,
+   "wear_rate": 3,
+   "topicality": 12,
+   "blocks": 2,
+   "owner": 0,
+   "flags": 41,
+   "flags2": 0,
+   "price": 12400,
+   "jingle": 0,
+   "live_day": 0,
+   "live_slot": 0,
+   "unknown": {
+    "0x13": "00210702"
+   },
+   "text": {
+    "en": [
+     "Test film 320",
+     "A made-up film for the tests."
+    ],
+    "de": [
+     "Testfilm 320",
+     "Ein ausgedachter Film für die Tests."
+    ]
+   }
+  },
+  {
+   "id": 321,
+   "genre": 3,
+   "quality": 13,
+   "wear_rate": 3,
+   "topicality": 13,
+   "blocks": 3,
+   "owner": 0,
+   "flags": 36,
+   "flags2": 0,
+   "price": 21000,
+   "jingle": 0,
+   "live_day": 0,
+   "live_slot": 0,
+   "unknown": {
+    "0x13": "02520701"
+   },
+   "text": {
+    "en": [
+     "Test film 321",
+     "A made-up film for the tests."
+    ],
+    "de": [
+     "Testfilm 321",
+     "Ein ausgedachter Film für die Tests."
+    ]
+   }
+  },
+  {
+   "id": 322,
+   "genre": 1,
+   "quality": 12,
+   "wear_rate": 2,
+   "topicality": 12,
+   "blocks": 2,
+   "owner": 0,
+   "flags": 38,
+   "flags2": 0,
+   "price": 13100,
+   "jingle": 0,
+   "live_day": 0,
+   "live_slot": 0,
+   "unknown": {
+    "0x13": "02570702"
+   },
+   "text": {
+    "en": [
+     "Test film 322",
+     "A made-up film for the tests."
+    ],
+    "de": [
+     "Testfilm 322",
+     "Ein ausgedachter Film für die Tests."
+    ]
+   }
+  },
+  {
+   "id": 323,
+   "genre": 10,
+   "quality": 16,
+   "wear_rate": 3,
+   "topicality": 16,
+   "blocks": 2,
+   "owner": 0,
+   "flags": 49,
+   "flags2": 0,
+   "price": 21000,
+   "jingle": 0,
+   "live_day": 0,
+   "live_slot": 0,
+   "unknown": {
+    "0x13": "005e0702"
+   },
+   "text": {
+    "en": [
+     "Test film 323",
+     "A made-up film for the tests."
+    ],
+    "de": [
+     "Testfilm 323",
+     "Ein ausgedachter Film für die Tests."
+    ]
+   }
+  },
+  {
+   "id": 324,
+   "genre": 1,
+   "quality": 4,
+   "wear_rate": 1,
+   "topicality": 4,
+   "blocks": 2,
+   "owner": 0,
+   "flags": 48,
+   "flags2": 0,
+   "price": 1400,
+   "jingle": 0,
+   "live_day": 0,
+   "live_slot": 0,
+   "unknown": {
+    "0x13": "00670101"
+   },
+   "text": {
+    "en": [
+     "Test film 324",
+     "A made-up film for the tests."
+    ],
+    "de": [
+     "Testfilm 324",
+     "Ein ausgedachter Film für die Tests."
+    ]
+   }
+  },
+  {
+   "id": 325,
+   "genre": 9,
+   "quality": 9,
+   "wear_rate": 5,
+   "topicality": 9,
+   "blocks": 2,
+   "owner": 0,
+   "flags": 48,
+   "flags2": 0,
+   "price": 7200,
+   "jingle": 0,
+   "live_day": 0,
+   "live_slot": 0,
+   "unknown": {
+    "0x13": "00710101"
+   },
+   "text": {
+    "en": [
+     "Test film 325",
+     "A made-up film for the tests."
+    ],
+    "de": [
+     "Testfilm 325",
+     "Ein ausgedachter Film für die Tests."
+    ]
+   }
+  }
+ ]
+}

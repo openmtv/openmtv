@@ -1,0 +1,77 @@
+# fix: studio-reserved (229E:1080 studio_take_over / 229E:1264 studio_release leave +0xF)
+# At 6300 studio 6 gets the state a bomb (1DA8:2D3B) leaves DURING a production: renter 0xFF,
+# script 0, episode 0, door "Free studio"/owner 0 -- running 1 and the end (today 18:00) stay.
+# The human queues for it (reserved DS:61D4 = 1).  18:00: 1DA8:034E hands it over correctly
+# (studio_take_over(6, 1): renter 1, rent 3000, $9000) and leaves reserved = 1.
+# [Side bug: finishing "screenplay 0" for renter 0xFF files film 0 into player -1's library =
+# DS:6EAD..: computer player 2's news budget DS:6EAD 1470 -> 0, DS:6F0D 0 -> 1.]
+# 12100: the plan ignores a click on studio 6 (no give-up box: g_room_mode DS:8BA4 = 0).
+# 13100: his own production, Love boat episode 1, ends 19:00 -> 1DA8:034E calls
+# studio_take_over(6, 1) AGAIN: rent 4500, $13500 paid, screenplay wiped (script 0, not
+# returned).  21600: a finished live show waits in studio 6 (screenplay 1 "Joker" -> film 51,
+# running 1, end day 0) and he airs film 51 at 20:00: 24B8:0C4A calls studio_take_over(player
+# 1, 1) -- studio 1 behind the "Laundry room" door (floor 2 door 0) becomes his studio.
+# expect classic 7200 byte 39D4:61D4 == 1
+# expect classic 12000 byte 39D4:61C8 == 1
+# expect classic 12000 word 39D4:61CB == 3000
+# expect classic 12000 byte 39D4:61D4 == 1
+# expect classic 12000 word 39D4:6EAD == 0
+# expect classic 12500 word 39D4:8BA4 == 0
+# expect classic 21500 word 39D4:61CB == 4500
+# expect classic 21500 word 39D4:61C5 == 0
+# expect classic 21500 word 39D4:7215 == 22500
+# expect classic 30500 word 39D4:71EA == 20
+# expect classic 30500 byte 39D4:6178 == 1
+# expect classic 30500 word 39D4:7215 == 31500
+# expect classic 30500 byte 39D4:7D94 == 5
+# expect classic 30500 byte 39D4:7DBC == 1
+# Fixed: the hand-over clears the byte; 12100 the plan opens the give-up box (room mode 1); no
+#   second take-over at 19:00 (rent stays 3000, $9000 in all, Love boat stays in studio 6); airing
+#   film 51 hands out nothing (studio 1 renter 0, the Laundry room door stays room 22).  13100 and
+#   21600 set up the productions (script, episode, end, running via the high byte of 61D2) and
+#   leave the reserved byte DS:61D4 as the game left it.
+# expect fixed   12000 byte 39D4:61D4 == 0
+# expect fixed   12500 word 39D4:8BA4 == 1
+# expect fixed   21500 word 39D4:61CB == 3000
+# expect fixed   21500 word 39D4:61C5 == 8
+# expect fixed   21500 word 39D4:7215 == 9000
+# expect fixed   30500 byte 39D4:6178 == 0
+# expect fixed   30500 word 39D4:7215 == 9000
+# expect fixed   30500 byte 39D4:7D94 == 22
+# expect fixed   30500 byte 39D4:7DBC == 0
+400 key esc
+1000 click 64 100
+1300 click 172 185
+2100 click 230 60
+2500 click 230 60
+2600 poke16 39D4:7B48 12
+2600 poke16 39D4:7B54 0
+2600 poke16 39D4:7B4A 0
+2600 poke16 39D4:7B46 153
+3600 poke16 39D4:7B54 0
+3600 poke16 39D4:7B46 120
+6000 click 50 60
+6300 poke16 39D4:61C5 0
+6300 poke16 39D4:61C7 65281
+6300 poke16 39D4:61C9 0
+6300 poke16 39D4:61CF 1
+6300 poke16 39D4:61D1 18
+6300 poke16 39D4:61D3 1
+6300 poke16 39D4:7F7C 2358
+6300 poke16 39D4:7F86 3465
+6300 poke16 39D4:7F90 32138
+6300 poke16 39D4:7FA4 0
+6400 click 225 29
+6800 click 124 87
+7300 click 160 100
+12100 click 225 29
+13100 poke16 39D4:61C5 8
+13100 poke16 39D4:61C9 2
+13100 poke16 39D4:61CF 1
+13100 poke16 39D4:61D1 19
+13100 poke16 39D4:61D2 256
+21600 poke16 39D4:61C5 1
+21600 poke16 39D4:61C9 2
+21600 poke16 39D4:61CF 0
+21600 poke16 39D4:61D2 256
+21600 poke16 39D4:4477 51

@@ -1,0 +1,98 @@
+# fix: ai-fill-genre (2DD9:0DD9, instruction 2DD9:1316 mov al,[bp-7])
+# The audience comparison aud[[bp-8]][hour] x topicality >= aud[[bp-7]][hour] x best topicality looks up
+# the best's row by its category: a series is category 11 = row 11, the family-series row, whatever
+# its genre (rows 11..15 = series genres 1..5, as in 32BA:03BC; row 11 at 18..24h: 95 85 75 55 25 20 15).
+# Constructed library: day 1 frame 21000, computer player 2 (g_ai_cur 0), minimum 0, odd-length count
+# of the half day even (78B6 = 0; poke16 keeps 78B7 = 1), no films (counts of categories 1..10 = 0), category 11 = series 21
+# (whodunit) then 12 (family), next episode 2 for both (+31h); fill 23:00 (slot 6, slots 6-7 free).
+# Series 21 is the first, best (episode topicality read by 0DD9: 65); series 12 (73):
+# classic 20 x 73 = 1460 >= row 11 20 x 65 = 1300 -> family series 12 at 23:00;
+# fixed: 1460 < row 14 60 x 65 = 3900 -> series 21 stays.  The estimate 32BA:03BC for 23:00:
+# series 21 2 513 280 viewers, series 12 278 432.
+# expect classic 21000 word 39D4:44D7 == 1012
+# expect classic 21000 call 32BA:03BC,6,1021,1 == 22912
+# expect classic 21000 call 32BA:03BC,6,1012,1 == 16288
+# expect fixed   21000 word 39D4:44D7 == 1021
+400 key esc
+1000 click 64 100
+1300 click 172 185
+2000 key esc
+2300 key esc
+2600 key esc
+2900 key esc
+3200 key esc
+3500 key esc
+3800 key esc
+4100 key esc
+4400 key esc
+4700 key esc
+5000 key esc
+5300 key esc
+5600 key esc
+5900 key esc
+6200 key esc
+6500 key esc
+6800 key esc
+7100 key esc
+7400 key esc
+7700 key esc
+8000 key esc
+8300 key esc
+8600 key esc
+8900 key esc
+9200 key esc
+9500 key esc
+9800 key esc
+10100 key esc
+10400 key esc
+10700 key esc
+11000 key esc
+11300 key esc
+11600 key esc
+11900 key esc
+12200 key esc
+12500 key esc
+12800 key esc
+13100 key esc
+13400 key esc
+13700 key esc
+14000 key esc
+14300 key esc
+14600 key esc
+14900 key esc
+15200 key esc
+15500 key esc
+15800 key esc
+16100 key esc
+16400 key esc
+16700 key esc
+17000 key esc
+17300 key esc
+17600 key esc
+17900 key esc
+18200 key esc
+18500 key esc
+18800 key esc
+19100 key esc
+19400 key esc
+19700 key esc
+20000 key esc
+20300 key esc
+20600 key esc
+20900 key esc
+21000 poke16 39D4:2506 0
+21000 poke16 39D4:7772 0
+21000 poke16 39D4:7774 0
+21000 poke16 39D4:78B6 256
+21000 poke16 39D4:7052 0
+21000 poke16 39D4:7054 0
+21000 poke16 39D4:7056 0
+21000 poke16 39D4:7058 0
+21000 poke16 39D4:705A 0
+21000 poke16 39D4:7049 21
+21000 poke16 39D4:704B 12
+21000 poke16 39D4:705C 2
+21000 poke16 4EC7:04E6 2
+21000 poke16 4EC7:02E5 2
+21000 poke16 39D4:24EB 6
+21000 call 2DD9:0DD9

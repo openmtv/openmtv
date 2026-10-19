@@ -1,0 +1,56 @@
+# option: --credit-line=700000
+# The boss's credit line (0AA4:000E room_boss_click, image 10..49 with a credit): the original haggles another
+# $100 000 from day 2 while the credit is <= $200 000 -- a line of $300 000.  With --credit-line=N the line is
+# $200 000 + $100 000 per day since day 1, up to N (credit_haggle_max, src/fixes.c): day 4 -> $500 000.
+# Steps: new game (credit $200 000, image 34); 2600 test poke: day 4 (g_day DS:71E4); four visits, each: the boss's
+# door, the menu, down to "more money", confirm ("Another $200.000 credit? Never!", menu 3), down to "A minimum of
+# $100.000?", confirm, close (the visits of tests/scenarios/room_boss_credit; credit g_credit DS:7ADE, u32).
+# Option: 4350 credit 300 000; 6450 400 000; 8550 500 000; 10650 still 500 000 -- the fourth refused (day 4's line).
+# Classic: 4350 300 000; 5850 (the second visit, just after its "more money") still 300 000: refused, the
+#   original's line; its other clicks then land in the building, so nothing later is checked.
+# expect option  4350 word 39D4:7ADE == 37856
+# expect option  4350 word 39D4:7AE0 == 4
+# expect option  6450 word 39D4:7ADE == 6784
+# expect option  6450 word 39D4:7AE0 == 6
+# expect option  8550 word 39D4:7ADE == 41248
+# expect option  8550 word 39D4:7AE0 == 7
+# expect option  10650 word 39D4:7ADE == 41248
+# expect option  10650 word 39D4:7AE0 == 7
+# expect classic 4350 word 39D4:7ADE == 37856
+# expect classic 4350 word 39D4:7AE0 == 4
+# expect classic 5850 word 39D4:7ADE == 37856
+# expect classic 5850 word 39D4:7AE0 == 4
+400 key esc
+1000 click 64 100
+1300 click 172 185
+2100 click 230 60
+2500 click 230 60
+2600 poke16 39D4:71E4 4
+2700 click 188 70
+3300 click 230 92
+3550 click 163 99
+3650 click 230 92
+3950 click 163 99
+4050 click 230 92
+4400 click 230 92
+4800 click 188 70
+5400 click 230 92
+5650 click 163 99
+5750 click 230 92
+6050 click 163 99
+6150 click 230 92
+6500 click 230 92
+6900 click 188 70
+7500 click 230 92
+7750 click 163 99
+7850 click 230 92
+8150 click 163 99
+8250 click 230 92
+8600 click 230 92
+9000 click 188 70
+9600 click 230 92
+9850 click 163 99
+9950 click 230 92
+10250 click 163 99
+10350 click 230 92
+10700 click 230 92

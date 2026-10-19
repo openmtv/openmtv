@@ -1,0 +1,57 @@
+# event_bailiff: a human more than $100 000 in debt is visited by the bailiff, who seizes a film from
+# the library and credits half its value.  English.
+# Steps: new game; 1500 test poke: money (DS:8BFB, u32) = -150 000; 2000 game clock g_clock_acc
+#   (DS:6143, u32, game seconds * 50 since 17:00) = 1 435 000 (00:58) -> the day ends; new_day ->
+#   npc_event_daily: money < -100 000 -> intruder type 3 (bailiff, g_npc_type DS:7A5C) for player 1
+#   (g_npc_target_player DS:7A5E), its event state (DS:7A54 + 2*type = DS:7A5A) 2 = waiting.
+#   Day 2: 3500..4400 Esc x4 (boss); 4700 click the library door (floor 5, x 224): the intruder only
+#   sets off while the human is not in the building view.  5300 test poke: clock = 1 080 000 (23:00;
+#   from 18:00 it sets off at a random moment, after 22:00 at once) -> npc_event_update: state 3,
+#   the bailiff walks to the door of room type 1 (office) owned by player 1, acts there
+#   (npc_event_strike: a random film of the library, movie_destroy with type 3 credits half its
+#   value), leaves (state 0x22) and retires (state 1).
+# Observable (PEEK lines): frame 3400 day 2, type 3, target 1, state 2.  Frame 5200: genre 6 shelf
+#   of player 1 (DS:6FB5..) = 69, 66, 70, count DS:6FEB = 3, film 66 owner (4DA5:0008 + 66*0x17 + 5)
+#   = 1, money = -183 000 (13608 + 65533*65536 - 2^32: daily costs on top).  Frame 9200: state 1,
+#   shelf 69, 70, 0, count 2, film 66 owner 0, money -181 500 (+1 500).
+# end 9200
+400 key esc
+1000 click 64 100
+1300 click 172 185
+1500 poke16 39D4:8BFB 46608
+1500 poke16 39D4:8BFD 65533
+2000 poke16 39D4:6143 58840
+2000 poke16 39D4:6145 21
+2000 hash
+3400 peek16 39D4:71E4
+3400 peek16 39D4:7A5C
+3400 peek16 39D4:7A5E
+3400 peek16 39D4:7A5A
+3500 key esc
+3800 key esc
+4000 hash
+4100 key esc
+4400 key esc
+4700 click 224 68
+5200 peek16 39D4:6FB5
+5200 peek16 39D4:6FB7
+5200 peek16 39D4:6FB9
+5200 peek8 39D4:6FEB
+5200 peek8 4DA5:05FB
+5200 peek16 39D4:8BFB
+5200 peek16 39D4:8BFD
+5300 poke16 39D4:6143 31424
+5300 poke16 39D4:6145 16
+6000 hash
+8000 hash
+9200 peek16 39D4:7A5A
+9200 peek16 39D4:6FB5
+9200 peek16 39D4:6FB7
+9200 peek16 39D4:6FB9
+9200 peek8 39D4:6FEB
+9200 peek8 4DA5:05FB
+9200 peek16 39D4:8BFB
+9200 peek16 39D4:8BFD
+9200 hash
+9201 quit
+9201 quit

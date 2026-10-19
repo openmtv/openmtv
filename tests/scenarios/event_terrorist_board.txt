@@ -1,0 +1,86 @@
+# event_terrorist_board: sabotage through the information board.  The human swaps the sign of the
+# terrorist's target (the "People's Duban" consulate, room 0x13) with Fun-TV's library, so the bomb
+# goes off there: Fun-TV loses a film and pays $50 000.  English.
+# Steps: new game; 2000 game clock g_clock_acc (DS:6143, u32) = 1 435 000 (00:58) -> day 2;
+#   3500..4400 Esc x4 (boss); 4500 test poke: walk to the board (DS:7B48 floor 1, 7B54 door 3,
+#   7B4A 0, 7B46 153).  Board cells (row = floor f at y 110-8f, columns x 6/81/165/240 ...) and
+#   g_door_index (DS:8A60, (floor, door) per cell, 8 bytes per row from floor 1): "People's Duban"
+#   = row 9 column 2 (DS:8AA4 = (9,1); floors_door_room DS:7CA0 + 9*0x7A + 1 = 0x13), "Library
+#   Fun-TV" = row 8 column 3 (DS:8A9E = (8,3), room 4).  6000 pick up People's Duban, 6300 drop it
+#   on Library Fun-TV (whose sign is now carried), 6600 drop that on the emptied cell -> DS:8AA4 =
+#   (8,3), DS:8A9E = (9,1).
+#   7000 test pokes: today's intruder is terrorist 1 (g_npc_type DS:7A5C = 1, its event state
+#   DS:7A56 = 2 waiting, the moral guardian off DS:7A88 = 0) -- npc_event_daily rolls intruders only
+#   from day 3; it set up the intruder figure (DS:7BD8) at the day change.  7100 clock = 1 080 000
+#   (23:00) -> npc_event_update: state 3; the terrorist looks for the cell showing room 0x13 and
+#   walks to the physical door of that cell: floor 8, door 3 (Fun-TV's library; the human stays in
+#   the board room, so the intruder sets off); plants the bomb (g_npc_target_floor/door DS:7A66 /
+#   7A64 = 8 / 3, g_bomb_timer DS:7A62 counts), leaves (state 0x22); the bomb goes off
+#   (npc_event_strike: a random film of the library destroyed, the owner pays $50 000) and the
+#   event retires (state 1).
+# Observable (PEEK lines): frame 6900 the swapped cells.  Frame 7000: player 2 money (DS:8C12, u32)
+#   -12 500; its library (archive DS:6F19 + 2*0x6C: ids [genre][4] from DS:6FF1, counts at +0x60)
+#   genre 6 = 65, 63, 64 (DS:7021..), count DS:7057 = 3; film 63 owner (4DA5:0008 + 63*0x17 + 5) 2.
+#   Frame 9000 target floor 8, door 3.  Frame 10000: state 1, money -62 500, genre 6 = 65, 64 (count
+#   2), film 63 owner 0 (destroyed: program_withdraw).
+# Ends at frame 10000: from frame 10425 on the AI's audience estimate adds non-zero stack garbage
+#   (32BA:07EC; a word farfree's 3985:0205 left there), the one place where the native decompiled
+#   build cannot follow the original (docs/ROADMAP.md, Phase 3 exit).
+# end 10000
+400 key esc
+1000 click 64 100
+1300 click 172 185
+2000 poke16 39D4:6143 58840
+2000 poke16 39D4:6145 21
+2000 hash
+3500 key esc
+3800 key esc
+4000 hash
+4100 key esc
+4400 key esc
+4500 poke16 39D4:7B48 1
+4500 poke16 39D4:7B54 3
+4500 poke16 39D4:7B4A 0
+4500 poke16 39D4:7B46 153
+5900 peek16 39D4:838C
+5900 peek16 39D4:8AA4
+5900 peek16 39D4:8A9E
+6000 goto 200 41
+6000 hash
+6040 down 1
+6060 up 1
+6300 goto 277 49
+6340 down 1
+6360 up 1
+6600 goto 200 41
+6640 down 1
+6660 up 1
+6900 peek16 39D4:8AA4
+6900 peek16 39D4:8A9E
+7000 poke16 39D4:7A5C 1
+7000 poke16 39D4:7A56 2
+7000 poke16 39D4:7A88 0
+7000 peek16 39D4:8C12
+7000 peek16 39D4:8C14
+7000 peek8 39D4:7057
+7000 peek8 4DA5:05B6
+7000 peek16 39D4:7021
+7000 peek16 39D4:7023
+7000 peek16 39D4:7025
+7100 poke16 39D4:6143 31424
+7100 poke16 39D4:6145 16
+8000 hash
+9000 peek16 39D4:7A56
+9000 peek16 39D4:7A66
+9000 peek16 39D4:7A64
+10000 peek16 39D4:7A56
+10000 peek16 39D4:8C12
+10000 peek16 39D4:8C14
+10000 peek16 39D4:7021
+10000 peek16 39D4:7023
+10000 peek16 39D4:7025
+10000 peek8 39D4:7057
+10000 peek8 4DA5:05B6
+10000 hash
+10001 quit
+10001 quit

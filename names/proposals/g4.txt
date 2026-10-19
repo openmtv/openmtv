@@ -1,0 +1,326 @@
+fn 05FF:000A ui_on_left_click  left-click dispatcher: g_cur_player_rec=&players[g_player], g_hotspot=hotspot_at_cursor(0); y<120 -> per-room handler by g_room (0 building,1 office,2 news,3 boss,4 library,5 studio,8 film agency,9 script agency,10/62 estate agent,11 ad agency,12 supermarket,13/61 room board,14 Betty,25 transmitter map,31 planner,58 load/save,63 shop,64 porter,65 new-game setup); y>=120 -> bottom panel (TV sound knob, channel buttons, pause room -5); rooms -1/-3/0x42 = click closes
+fn 05FF:0359 room_filmagency_click  film agency (room 8): buy film/series from 10 dealer shelf slots (money -= price at once, ledger cat 1 film / 2 series, item id +10000 marks 'fresh, refundable'); drop on dealer (0x18) returns fresh item for refund else msg 0x67; drop on Mr. Jabble (0x23) sells own film for full price (ledger 0xB/0xC) and puts it into the 10-slot auction if flag bit6, else back to dealer stock; auction needs image>=10 (msg 0xCB); state 4 = bidding on auction slots (229E_0088)
+fn 05FF:090A room_library_click  library/archive (room 4): 12 genres x 4 shelf slots per player; pick film from shelf (only if 229E_051F allows), from bag; drop on bag (max 10, msg 0x66) or shelf (max 4 per genre, msgs 0x64/0x65; genre 11 = series, id+1000); genre picker list 0x22/0x17
+fn 05FF:0D0E room_planner_click  program planner / schedule (room 31): drag films/series/ads into hourly slots of sched table 0x4417 (9999 = continuation hour), scroll 0x79C6 (0/7), statistics graph (hotspot 0x33: picks axis scale 1..60 from max of today/yesterday/7-day viewer stats)
+fn 05FF:1B1D room_building_click  building view (room 0): click on elevator (hotspot 0x1A) or on a floor (0x1B) sets the player figure's walk target: door under cursor (kinds 1-3 rooms, 6 info board, 10 porter) or plain x (max 236); other floor -> walk to elevator x 0x98 and queue final x in fig+8
+fn 05FF:1D23 room_roomboard_click  information board (room 13): 13x4 grid of room signs (g_roomboard); pick up a sign (cell byte+100 = taken) and drop it on another cell to swap them (sabotage: board no longer matches the doors); only signs with a name or studios can be moved
+fn 05FF:21C0 room_roomboard_goto_click  information board in 'go' mode (room 61): clicking a board cell sends the player figure to the physical door at that row(floor)/column (x 0x50/0x74/0xB4/0xD8), whatever sign is displayed there, then leaves the board
+fn 05FF:23D8 room_office_click  player's office (room 1): wall map 0x1C -> room 25 transmitter map, 0x1D -> room 31 planner, 0x1E -> room 58 load/save; 0x36 letter/mail if flagged; 0x45-0x4A ? TV/VCR transport buttons (g_office_vcr_mode 1..5, 0x49 enters view state 2); 0x3E speeds up; 0x44 leave
+fn 05FF:25A4 room_newsroom_click  news studio (room 2): subscribe/cancel the 3 news agencies (1 Political $1000 needs image>=5, 2 Show-business $10000 image>=10, 3 Sundry $10000 image>=15, else msg 0xCC; ledger cat 0xA); browse news by category with scroll; drag a news item (0x1E-byte record) into one of 3 broadcast slots, paying its price (1DA8_3F48 of price class) when taken from the pool; slots can be swapped
+fn 05FF:2C02 room_txmap_click  transmitter map (room 25): buy a transmitter at map x,y (reach=1DA8_2036, price=f(reach*616/10), max 30 transmitters, msg 0x62), satellites (slots 1,2) toggle; view other players' maps (0x4-6) / stats (0x7-9); browse own transmitters (0x12/0x13) and sell one (0x14) to an opponent bid (32BA_000A, income cat 0xD) or scrap it (0x15); last transmitter cannot be sold (msg 0x63)
+fn 05FF:33F6 room_adagency_click  advertising agency (room 11): take an ad offer (10 slots) if image >= required (1DA8_2682 from ad image class; X-rated ads need image>=20; else msg 0xCD); give back an ad taken today (else msg 0x69 'already signed'); drop on bag signs it (max 10 contracts, msg 0x66); 0x23 = confirm/leave (ad_agency_sign_contracts)
+fn 05FF:380B room_scriptagency_click  screenplay agency (room 9): buy one of 5 screenplays (money -= price, ledger cat 4), return a script bought today (refund) else msg 0x2A 'No returns'; drop on bag (max 5 scripts); 0x44 finalize purchases and leave
+fn 05FF:3AB7 room_estateagent_click  real-estate agent (rooms 10 and 62): 0x27 opens studio plan (room 62); click a studio: own -> offer to give it up (229E_104A), free -> rent it for 3/2 of base rent per day (229E_100C); updates g_estate_wealth (0..10) from total studio rents for the room decoration
+fn 05FF:3DDF room_studio_click  production studio (room 5): insert screenplay from bag (studio size check vs 1DA8_2293, msg 0x3E), take it out, throw away (0xA); menu: new shopping list (229E_09AF), production info = quality forecast (actors fit*weight + props quality, scaled x125/100 -> >80 'good', >60 'neat', >40 'poor', else 'catastrophe', plus which part is worse), start production (needs script, all items bought 1DA8_24EA, then 229E_0B98) with end day/hour message
+fn 05FF:44CF saveload_reload_names  busy cursor, redraw, reload the 10 save-slot names from resource 0xD1 (0054_3FC1) and redraw the slot list
+fn 05FF:44F4 room_saveload_click  load/save room (room 58): 10 slots (2x5); save = text entry of name, write names to res 0xD1 and game to res 0xD2+slot (229E_200D), 'Disk full!' on g_save_error; load = 229E_1386(0xD2+slot) and re-init time/room/music; creates the save index res 0xD1 (0x190 bytes) if missing
+fn 05FF:4957 room_porter_click  porter (room 64): gossip bubble: bailiff/impound news from g_porter_event (type 3: victim self -> text 0x13A, other player -> 0x13B, 8 = film agency -> 0x13C), otherwise 0x13D 'boring day'; second click closes
+fn 0AA4:000E room_boss_click  boss (room 3). State 1 morning talk: greeting by image (<5 fired, <15, <75, else 'my dear'), complaints about cancelled hours / missed ads yesterday, Sammy result, verdict (<20 failure), Sammy announcement, warnings by image. State 2 menu: quit (image>=75 or Sammy winner -> boss begs; else fired), more money (image<10 thrown out; 10-49: $200,000 credit once, haggle for +$100k/+$200k; >=50: $400,000 credit, haggle +$200k/+$400k; Sammy winner gets full amount), repay credit ($100k/$200k/all, rounded down to $50k, limited by money, ledger cat 0x10)
+fn 0AA4:0AC5 room_newgame_click  new-game setup (room 65): choose human player 1-3, edit station names, difficulty 1-3; start: computer players get $300,000 (easy/normal) or $750,000 (difficult) divided by (debug_level+1), figure speed 3; human gets $200,000 money + $200,000 credit, image 34, figure speed 4; 0x4B -> load game (room 58), 0x24 quit
+fn 0AA4:0D65 room_supermarket_click  supermarket (room 12): menu presents/equipment; presents shop: 10 presents for Betty (2x5, price in g_presents), carry max one (msg 0x46), return for refund; equipment: needs a shopping list from the studio (msg 0xEC), opens the first incomplete list in room 63
+fn 0AA4:10CC room_shop_click  production shopping (room 63): fill the current shopping list's 10 slots with actors (7 roles x 16 actors, cost = actor fee x episode multiplier) or props (scene types >=16, 3 quality levels); actors refuse by image: any needs image>=10, fee>5000 needs >=15, fee>10000 needs >=20 (msg 0x99); replacing an item refunds the old one; scroll lists; 0x23 choose another list
+fn 0AA4:1D27 present_store_in_bag  supermarket: put the dragged present into the player's present slot (g_player_present), back to presents shop state
+fn 0AA4:1D53 present_store_in_bag_betty  Betty's room: put the dragged present back into the player's present slot, state 0
+fn 0AA4:1D7F present_return_to_shop  supermarket: drop present on counter; refund its price if it was bought now (id>100)
+fn 0AA4:1DC0 room_betty_click  Betty's office (room 14): talk (love<20 or already has key), else gives the master key (msg 0x15D); give present: plastic-surgery voucher (2) resets love to 0, honeymoon trip (10) wins the game if love>=100 (105E_447B) else refused, others add present love value, value then decays to 70% per gift, love capped at player image
+fn 0AA4:2054 shop_draw_drag_icon  draw the dragged actor's portrait (actor rec +0xA icon; >15 from second atlas) into the drag image
+fn 0AA4:20C1 shop_redraw  redraw shopping screen (26A7_3B04) and present
+fn 0AA4:20CC news_draw_card  draw a 0x1E-byte news record (a0) at x,y: colour by category, headline, '*** HH:00 today/old ** $ price ***'
+fn 0AA4:2197 ui_hotspot_at_cursor  look up the 145-entry hotspot table (rect, room, room state or 0xFF, owner-only flag) for the cursor; returns hotspot id (0 = none); a0=1 allows owner-only hotspots in other players' rooms
+fn 0AA4:2243 tx_next_slot  next active transmitter slot (1..32, wrapping) of the viewed player at or after a0 (skips empty and state 2)
+fn 0AA4:22AB tx_prev_slot  previous active transmitter slot (wrapping) of the viewed player at or before a0
+fn 0AA4:2313 film_sell_to_dealer  sell the dragged own film/series back to the dealer: money += price (1DA8_3F5B / 4035), ledger 0xB/0xC, owner cleared
+fn 0AA4:23B5 ad_agency_sign_contracts  ad agency confirm: mark all taken offers as owned by the player (ad +0xF), clear their offer slots, refill offers (24B8_000C)
+fn 0AA4:2439 script_agency_finalize  screenplay agency: clear sold shelf slots and refill the shelf (24B8_02C1)
+fn 0AA4:2491 library_film_to_bag  library: append dragged film to the bag
+fn 0AA4:24C3 library_film_to_shelf  library: put dragged film/series (series id-1000) on the current genre shelf, count++
+fn 0AA4:2546 filmagency_film_to_bag  film agency: append dragged film to the bag (strips the +10000 'fresh' marker)
+fn 0AA4:2586 filmagency_return_film  film agency: give a freshly bought film back to the dealer: refund price (negative ledger entry cat 1/2), shelf slot available again
+fn 0AA4:267A ad_return_offer  ad agency: drop held ad back on its offer slot (unmark taken)
+fn 0AA4:26CD ad_take_contract  ad agency: add held ad to player's contracts (spots 0, deadline day = today + ad days), count++
+fn 0AA4:2761 script_return_to_agency  screenplay agency: return held script to its shelf slot with refund (negative ledger cat 4)
+fn 0AA4:2807 script_to_bag  screenplay agency: add held script to player's script list (+2 aux byte, episode counter 1)
+fn 0AA4:2884 script_to_bag_from_studio  studio: put held script back into player's script list with its episode counter
+fn 0AA4:28F2 studio_insert_script  put held script into the current studio (script id, episode = aux, progress = aux-1)
+fn 0AA4:2950 studio_take_script  take the script out of the current studio into the hand (cancels production state 222A_0206)
+fn 0AA4:2A04 studio_swap_script  when dropping a script on an occupied studio: pick up the studio's old script (it is replaced later)
+fn 0AA4:2AB7 ui_animate_toggle  animate a 0<->30 slider variable (*a0) in steps of 2 with redraw (TV cover/blind; used with g_tv_off)
+fn 0AA4:2B31 tv_update_sound  after TV on/off: play silence (sound 0xDC) when off, else the jingle of the program running on the watched channel (0054_3738)
+fn 0AA4:2B55 txmap_after_sale  transmitter map: after selling/scrapping move to next transmitter, redraw, recompute coverage
+fn 193D:000F bld_render_floors  render the building into g_building_buf for scroll y (a0): day/night sky switch, scroll the buffer by 30-px floors, draw walls, doors (kind sprite table 0x1180), owner flags, studio marks, floor numbers and elevator shafts
+fn 193D:077D bld_blit_view  copy the visible part of g_building_buf (208x109) to the screen buffer at x 56
+fn 193D:07BB bld_draw_elevator  draw elevator shaft/cabin on floor a0 (cabin floor g_elevator_floor, offset g_elevator_offset, doors g_elevator_door, figures riding)
+fn 193D:0AAF bld_draw_side_scenery  draw left/right parallax side backgrounds (sky/city, scroll / g_elevator_speed) and street-level sprites near the ground
+fn 193D:0C1C bld_update_frame  building tick: elevator, figure AI, render floors/sides/view, animate figures, overlays (scaffold, bomb marker)
+fn 193D:0D62 fig_animate  move figures toward target x by their speed (fig+0x1A, x snapped to multiples), pick walk/elevator/door animation frames, draw visible ones
+fn 193D:12FA fig_think  people logic for the 6 figures: NPC wanderers (figs 3-5) pick random floors/doors (type 0 same floor, type 1 other floor), open/close doors, elevator boarding; player figures blocked at locked own-type rooms of others without master key (msg 0x15C)
+fn 193D:1B63 elevator_update  move elevator cabin one step (speed g_elevator_speed px, 30 px per floor) toward the riding/calling figure, door open/close counter; camera follows the player's figure (scroll = floor*30-60, 0..321)
+fn 193D:1DF9 bld_draw_overlays  encounter bubbles when two figures meet on a floor, door name tooltip under mouse, status-bar message g_status_msg (incl. robbery texts 0x12A/0x12E), bottom-panel tooltips
+fn 193D:2424 door_label_text  allocated label for door a0 on floor a1: 'Office of <player>', '<name> <station>' for own-type rooms, 'Studio of <station>', plain room name; NULL if owner is out of the game
+fn 193D:257A player_fired_sequence  player g_fired_player is thrown out (falling animation); computer player: marked out of game, loses contracts, films, series, studios, Betty's love; human player: game over, back to title (load res 0x2B)
+fn 193D:2C8A fired_draw_background  draw the elevator-shaft background tiles used during the fired animation
+fn 222A:0001 money_ledger_new_day  copy today's 0x54-byte finance ledger to yesterday, clear it, opening balance = player's money
+fn 222A:004A rating_stats_new_day  shift per-player daily stats to 'yesterday', push today's average of 7 samples into the 7-day viewer history (0x6DA9), clear today's stats
+fn 222A:0206 studio_cancel_production  clear the script/episode of studio a0 and delete the renter's shopping lists for that script
+fn 222A:02A1 tx_commit_day  settle transmitter changes of player a0: scrapped (state 2) removed, newly bought (state 1) paid now (ledger cat 3), then recompute coverage
+fn 222A:03D1 shoplist_clear_first  ? zero the first shopping list record of player a0 (unused)
+fn 222A:03EE bag_remove  remove bag slot a0 (shift down, count--)
+fn 222A:0424 shoplists_book_costs  book production purchases of player a0 into the ledger (cat 7, cost = multiplier x actor fee / prop price) for items changed since last booking; book a present bought today (cat 6)
+fn 222A:061E bag_unload_to_library  move films from the bag into the player's library shelves (owner set, max 4 per genre); special recurring live films 0x1D and 0xBB start their countdown events
+fn 3985:000D rtl_free  Borland free(ptr) (large model) -> farfree
+fn 3985:001F heap_insert_free_block  Borland far heap: link block into the circular free list (rover)
+fn 3985:00BE heap_join_free_blocks  Borland far heap: merge block a2 into preceding free block a0
+fn 3985:0136 heap_free_last_block  Borland far heap: release the last block (and a free predecessor) back to DOS via brk
+fn 3985:021B heap_free_inner_block  Borland far heap: mark block free, merge with free neighbours
+fn 3985:02E7 rtl_farfree  Borland farfree(ptr): header = ptr-8; last block -> free_last_block else free_inner_block
+fn 38C6:0087 heap_allocate_partial_block  Borland far heap: split size a2:a3 off the end of free block a0, return data ptr
+fn 38C6:0137 heap_create_block  Borland far heap: grow heap by sbrk for a new used block of size a0:a1
+fn 38C6:01A5 heap_create_first_block  Borland far heap: first allocation, sets heap first/last
+fn 385D:0001 res_init  init resource manager: info {1 drive, current 0}, no files open, allocate 600 x 8-byte index
+fn 385D:0037 res_select_drive  stub (returns 0): drive selection removed
+fn 385D:003E res_flush  stub, called before res_close_all
+fn 385D:0043 res_close_all  close all open *.rsc handles
+fn 385D:0070 res_open_all  find all *.rsc, open read/write, read each 600x6-byte header into the index (later files override)
+fn 385D:0200 res_list_present  write count + ids of all resources with nonzero size to buffer a0
+fn 385D:029A res_read  read whole resource a0 into far buffer (a1 off, a2 seg)
+fn 385D:0336 res_write  write a3 bytes from far buffer (a1,a2) over resource a0 in its RSC file (save games)
+fn 385D:03C3 res_read_part  read a4 bytes at offset a3 of resource a0 into (a1,a2)
+fn 385D:045B res_write_part  write a4 bytes at offset a3 of resource a0 from (a1,a2)
+fn 385D:04F3 res_create  append a new resource a0 of a1 bytes at the end of the first RSC file and register it in the file header and index
+fn 3848:0002 res_bank_sizes  sprite bank resource a0: *a1 = packed size, *a3 = unpacked size (2 + n*8 + sum ceil(w/8)*8*h)
+fn 3833:0001 bitmap_alloc2  identical copy of bitmap_alloc (w,h) used for the drag cursor image
+fn 3839:0004 bank_mem_size  in-memory size of a decoded sprite bank: 2 + count*8 + sum(w8*h*8)
+g 8F03 16 g_hotspot  hotspot id under cursor at the last click (ui_hotspot_at_cursor)
+g 8BA4 16 g_room_state  sub-state of the current room's dialog (0 = idle, 1.. = holding item / submenu)
+g 8BA8 16 g_player  index of the human player (1..3)
+g 7A36 16 g_room_owner  player owning the room being visited (own room when == g_player)
+g 7B12 16 g_player_fig  figure index of the human player (g_player-1)
+g 838C 16 g_room  current room id (0 = building, <0 = message/pause screens, see ui_on_left_click)
+g 8A48 16 g_room_stack  stack of nested room ids (indexed by g_room_depth)
+g 8E8E 16 g_room_depth  depth of g_room_stack
+g 8F19 32 g_cur_player_rec  far ptr to players[g_player]
+g 8BDC 8 g_players  player records 4 x 0x17 (index 0 unused)
+g 8390 32 g_text  far ptrs to the 430 strings of the language text resource (199 German / 253 English)
+g 7C82 8 g_floors  14 floor records of 0x7A bytes (doors of the building)
+g 7B42 16 g_figures  6 figure records of 0x1E bytes (0-2 players, 3-5 NPCs)
+g 8A60 8 g_roomboard  information board: 13 rows x 4 cells of (floor, door) bytes; +100 = sign picked up
+g 0638 16 g_hotspots  145 hotspot records of 12 bytes
+g 032E 16 g_filmshelf_rects  film agency shelf slot rects (x1,y1,x2,y2), slots 1..10
+g 19ED 16 g_film_offers  film dealer shelf, slots 1..10 of 8 bytes
+g 1B0D 16 g_auction  film auction slots 1..10 of 9 bytes
+g 2483 16 g_bag_films  films carried in the bag (10 ids; >=1000 series)
+g 734A 16 g_bag_count  number of films in the bag
+g 8F09 16 g_drag_film  dragged film id (<1000 film, >=1000 series+1000, +10000 = bought now)
+g 8F0B 16 g_drag_item  dragged generic item (script, present, actor, prop, transmitter...)
+g 8F05 16 g_drag_aux  extra value of the dragged item (episodes / byte)
+g 8EFC 16 g_drag_ad  dragged ad id
+g 6147 8 g_drag_news  copy (0x1E bytes) of the dragged news record
+g 8EFA 16 g_drag_news_new  dragged news comes from the pool and must be paid
+g 0390 32 g_drag_image  drag cursor bitmap (non-null while something is dragged)
+g 79CE 16 g_redraw  request redraw / refresh flag
+g 79EA 16 g_status_msg  text id to show in the status bar (0/1 = none)
+g 24A9 32 g_films  far ptr to film table (0x17-byte records)
+g 2646 32 g_series  far ptr to series table (0x39-byte records)
+g 715C 32 g_productions  far ptr to screenplay/production table (0x1B3-byte records)
+g 6F19 16 g_library  per-player library 0x6C: [12 genres][4] film ids, +0x60 counts
+g 19A0 16 g_ad_offers  ad agency offers, slots 1..10 of 7 bytes
+g 3F4F 32 g_ads  ad table, 0x18-byte records
+g 1B70 16 g_contracts  per-player ad contracts (stride 0x46, 10 x 7 bytes)
+g 76A8 16 g_contract_count  per-player number of ad contracts
+g 196A 16 g_script_offers  screenplay shelf slots 1..5 of 9 bytes
+g 1A45 16 g_player_scripts  per-player screenplays (stride 0x32, 10 x 5 bytes)
+g 7672 16 g_player_script_count  per-player number of screenplays
+g 6165 16 g_studios  13 studio records of 16 bytes (index 1..12)
+g 79DE 16 g_cur_studio  studio index of the studio room being visited (door +0x6E)
+g 734C 16 g_shoplists  per-player shopping lists (stride 0x4B, 5 x 0xF bytes)
+g 7480 16 g_shoplist_count  per-player number of shopping lists
+g 5013 16 g_actors  actor table: 7 roles x 16 actors x 12 bytes
+g 6235 32 g_prop_prices  props: 24 scene types x 4 quality levels, u32 price
+g 724A 16 g_presents  presents for Betty, 1..10 x 8 bytes
+g 74E6 8 g_player_present  per-player present carried (id, +100 if bought today)
+g 1D09 16 g_transmitters  per-player transmitters (stride 0x1CE, slots 1..32 of 0xE bytes)
+g 8F0D 32 g_tx_bids  2 opponents' bids for the transmitter being sold
+g 00F2 8 g_opponents  the 2 computer player indices
+g 457F 8 g_news_pool  per-player available news (stride 0x258, 0x1E-byte records)
+g 3D6B 8 g_news_slots  per-player news broadcast slots 1..3 (stride 0x78, 0x1E-byte records)
+g 7A72 16 g_news_category  news list category shown (1..3)
+g 7A70 16 g_news_scroll  news list scroll offset
+g 4417 16 g_schedule  per-player schedule (stride 0x5A): programs by hour, ads at +0x3C; 9999 = continuation
+g 79C6 16 g_planner_scroll  planner hour scroll (0 or 7)
+g 79E0 16 g_shop_list  shopping list index being filled
+g 79E2 16 g_shop_category  actor role 1..7 or scene type >=16 shown in the shop
+g 79E4 16 g_shop_actor_scroll  actor list scroll (step 5)
+g 79E6 16 g_shop_slot_scroll  shopping list slot scroll (step 3)
+g 71F1 32 g_ledger_today  today's finance ledger (0x54 bytes; [0] opening balance, then categories)
+g 7492 32 g_ledger_yesterday  yesterday's finance ledger
+g 6DA9 32 g_viewer_history  per-player 7-day history of average viewers (stride 0x20, u32)
+g 74EA 32 g_viewer_today  per-player today's 7 viewer samples (stride 0x20, u32)
+g 78BE 32 g_viewer_yesterday  per-player yesterday's viewer samples
+g 7AFE 32 g_credit  bank credit of the human player
+g 71E4 16 g_day  current day number (1 = first day)
+g 71EC 16 g_minute  minute of the current hour
+g 7488 16 g_sammy_category  category of the next Sammy award (1 news, 2 culture, 3 shows, 4 series)
+g 7A06 16 g_sammy_winner  player who won the Sammy today
+g 7A02 16 g_boss_cancelled_hours  hours of cancelled programs yesterday (boss complains)
+g 7A04 16 g_boss_missed_ads  commercials not run yesterday (boss complains)
+g 7A0E 16 g_boss_talk_step  step of the boss's morning speech
+g 7A8E 16 g_boss_menu  boss dialog menu level (-1 close, -2 done)
+g 7A90 16 g_boss_choice  selected option in the boss dialog
+g 05E8 16 g_player_quit  set when the player quit / was fired by the boss
+g 7A54 16 g_fired_player  player to be thrown out
+g 7A94 16 g_difficulty  1 easy, 2 normal, 3 difficult
+g 7C78 16 g_game_mode  1 title/new-game screen, 2 new game started, 3 running after load
+g 8BB2 32 g_save_names  10 far ptrs to 40-byte save slot names (res 0xD1)
+g 7A98 16 g_save_error  disk write error during save
+g 79FE 16 g_tv_channel  station shown on the TV in the bottom panel
+g 7A10 16 g_tv_off  TV cover position 0 (on) .. 30 (off)
+g 7A9A 16 g_pause_request  set by the pause key: next click opens pause screen (room -5)
+g 7A82 16 g_office_vcr_mode  ? office TV/VCR transport button 1..5
+g 7A7E 16 g_office_vcr_delay  ? office TV/VCR frame delay (min 1)
+g 7A5C 16 g_porter_event  type of the day's event the porter gossips about (3 = bailiff/impound)
+g 7A5E 16 g_porter_victim  player hit by that event (8 = film agency)
+g 7A16 16 g_robbery_player  other player in the robbery status message
+g 7AF2 32 g_robbery_amount  money in the robbery status message
+g 7A2E 16 g_estate_wealth  estate agent's room decoration level 0..10 from total studio rent
+g 8C4E 16 g_bld_scroll  building view vertical scroll (0..321)
+g 8A5C 16 g_bld_top_floor  floor shown at the top of the view (scroll/30+5)
+g 11A4 16 g_bld_drawn_top  top floor of the last render
+g 11A6 16 g_bld_drawn_scroll  scroll of the last side-scenery render
+g 8C6A 16 g_bld_full_redraw  force full building redraw
+g 117E 16 g_daylight  2 = day graphics, 1 = night (clock_hour < 4)
+g 8EDA 32 g_building_buf  208x150 building bitmap
+g 8BDA 16 g_elevator_floor  floor of the elevator cabin
+g 0128 16 g_elevator_offset  cabin pixel offset between floors
+g 012A 16 g_elevator_door  door counter 0..2 (2 = open)
+g 7A4E 16 g_elevator_speed  cabin speed in px per tick (also scenery parallax divisor)
+g 8C6C 16 g_elevator_caller  figure waiting for the elevator
+g 8C54 16 g_elevator_calls  number of pending elevator calls
+g 7A3A 16 g_elevator_boarding  figure entering the cabin (-1 none)
+g 0386 16 g_clip_on  clipping enabled
+g 0388 16 g_clip_x1  clip rect
+g 038A 16 g_clip_y1  clip rect
+g 038C 16 g_clip_x2  clip rect
+g 038E 16 g_clip_y2  clip rect
+g 8ACC 16 g_tooltips  show door/panel tooltips when 1
+g 8FAE 16 g_tmp_a  scratch global
+g 8FAC 16 g_tmp_b  scratch global
+g A686 32 g_res_index  resource index: 600 x {u16 handle, u16 size, u32 offset}
+g A68A 16 g_res_open  rsc files are open
+g A68C 16 g_res_nfiles  number of open rsc files
+g A68E 16 g_res_handles  handles of the open rsc files
+g 8EB0 16 g_res_drives  resource drive info {count, current}
+g 8C7C 16 g_res_present  count + list of resource ids present
+g 1824 32 g_heap_first  Borland far heap first block
+g 1828 32 g_heap_last  Borland far heap last block
+g 182C 32 g_heap_rover  Borland far heap free-list rover
+g 7A3C 16 g_player_letter  pending letter text id per player (array at 7A3A+2*p, p=1..3), shown in the office (2B74_1E56)
+g 7A42 16 g_live1d_countdown  day countdown of recurring live film 0x1D (reset 3)
+g 7A9C 16 g_livebb_countdown  day countdown of recurring live film 0xBB (reset 5)
+g 05E6 16 g_boss_complained  boss already complained in this speech
+g 8F15 16 g_estate_studio  studio selected at the estate agent
+g 7ADA 32 g_estate_base_rent  reference total studio rent for g_estate_wealth
+g 79FC 16 g_planner_graph_scale  viewer graph axis scale chosen from the maximum (1..60)
+rec 8BDC 17 00 32 name  player name (far ptr)
+rec 8BDC 17 04 32 station  station name (far ptr)
+rec 8BDC 17 08 32 money  cash
+rec 8BDC 17 0C 16 betty_love  Betty's affection (capped at image)
+rec 8BDC 17 11 8 news_sub  news agency subscriptions +0x11..+0x13 (1 political, 2 show, 3 sundry)
+rec 8BDC 17 14 8 out_of_game  player eliminated (fired); hides doors, channel, map
+rec 8BDC 17 15 16 image  player image/reputation (gates auction, ads, actors, credit, boss)
+rec 7C82 7A 00 8 door_x  x position of door i (+i, up to 10 doors)
+rec 7C82 7A 0A 8 door_y_ofs  y offset of door sprite
+rec 7C82 7A 14 8 door_kind  door sprite kind (1-3 room doors, 6 info board, 10 porter, others decoration; 0 ends list)
+rec 7C82 7A 1E 8 door_room  room id behind the door (1 office,2 news,3 boss,4 library,5 studio,8 film agency,...)
+rec 7C82 7A 28 8 door_name  text id of the sign
+rec 7C82 7A 32 8 door_name_alt  alternate (short) text id
+rec 7C82 7A 3C 8 door_open  door currently open
+rec 7C82 7A 46 8 door_owner  owning player (0 = public)
+rec 7C82 7A 50 8 door_tip_w  tooltip width (cells)
+rec 7C82 7A 5A 8 door_tip_h  tooltip height (cells)
+rec 7C82 7A 64 8 door_icon  tooltip icon
+rec 7C82 7A 6E 8 door_studio  studio index (1..12) for studio doors
+rec 7C82 7A 78 16 wall_style  floor wall style
+rec 7B42 1E 00 16 x  current x
+rec 7B42 1E 02 16 floor  current floor
+rec 7B42 1E 04 16 target_x  walk target x
+rec 7B42 1E 06 16 target_floor  walk target floor
+rec 7B42 1E 08 16 final_x  x to walk to after the elevator ride
+rec 7B42 1E 0C 16 anim  animation frame / facing
+rec 7B42 1E 0E 16 motion  motion state (3 = in elevator, 5 = entering door)
+rec 7B42 1E 10 16 task  NPC task state (0 choose, 1 walking, 2 in room, 3 leaving)
+rec 7B42 1E 12 16 target_door  door to enter (-1 none, -2 elevator)
+rec 7B42 1E 14 16 cur_door  door last used
+rec 7B42 1E 16 16 lift_phase  elevator boarding phase 0..4
+rec 7B42 1E 18 16 kind  0/1 NPC walker types, 2 player figure
+rec 7B42 1E 1A 16 speed  px per step (human 4, computer 3)
+rec 7B42 1E 1C 16 in_room  inside a room
+rec 0638 0C 00 16 x1  hotspot rect (x1,y1,x2,y2 at +0..+6)
+rec 0638 0C 08 8 room  room id
+rec 0638 0C 09 8 state  required g_room_state (0xFF any)
+rec 0638 0C 0A 8 owner_only  only in own rooms
+rec 0638 0C 0B 8 id  hotspot id
+rec 24A9 17 00 8 genre  film genre 1..10 (library shelf)
+rec 24A9 17 05 8 owner  owning player (0 = dealer)
+rec 24A9 17 06 16 flags  ? bit5 cleared when sold, bit6 = goes to auction when sold
+rec 24A9 17 0C 16 jingle  sound id when broadcast (0 = by genre)
+rec 24A9 17 0F 16 live_day  day of a live broadcast
+rec 2646 39 21 8 genre  series genre (jingle 0xE6+genre)
+rec 2646 39 24 8 owner  owning player
+rec 2646 39 25 16 flags  as film flags
+rec 2646 39 2F 16 jingle  sound id
+rec 19ED 08 00 16 film  film id on the dealer shelf
+rec 19ED 08 02 32 price  price
+rec 19ED 08 07 8 status  <0 taken (-100 while dragged)
+rec 1B0D 09 00 16 film  film in auction
+rec 1B0D 09 02 32 price  price
+rec 1B0D 09 07 8 seller  player who put it in
+rec 19A0 07 00 16 ad  ad id offered
+rec 19A0 07 02 8 status  <0 taken
+rec 3F4F 18 00 32 name  ad/brand name
+rec 3F4F 18 08 8 days  days allowed to fulfil
+rec 3F4F 18 0A 8 image_class  class 1..n -> u32 from table at DS:0xA8, 1DA8_2682 turns it into the required image
+rec 3F4F 18 0C 8 x_rated  needs image >= 20
+rec 3F4F 18 0F 8 owner  contract holder
+rec 1B70 07 00 16 ad  ad id (per player stride 0x46)
+rec 1B70 07 04 8 spots_done  spots broadcast
+rec 1B70 07 05 16 deadline  last day
+rec 196A 09 00 16 script  screenplay id
+rec 196A 09 02 8 status  <0 taken
+rec 196A 09 04 32 price  price
+rec 196A 09 08 8 aux  ? byte copied to the player's script (+2)
+rec 1A45 05 00 16 script  screenplay id (per player stride 0x32)
+rec 1A45 05 02 8 aux  ? byte from shelf
+rec 1A45 05 03 16 episode  next episode to produce
+rec 6165 10 00 16 script  screenplay in production
+rec 6165 10 02 8 size  studio size
+rec 6165 10 03 8 renter  renting player (0xFF none)
+rec 6165 10 04 8 episode  ? episode / episodes needed
+rec 6165 10 05 8 progress  ? episodes ready / lists bought
+rec 6165 10 06 32 rent  rent per day
+rec 6165 10 0A 16 end_day  production end day
+rec 6165 10 0C 16 end_hour  production end hour
+rec 6165 10 0F 8 reserved  ? pending renter (0xFF none)
+rec 715C 1B3 04 8 state  ? 0x63 = screenplay thrown away
+rec 715C 1B3 08 8 ep_base  episode block (0x23 bytes per episode at +8): base quality
+rec 715C 1B3 0A 8 ep_mult  episode block: cost multiplier for actors/props
+rec 715C 1B3 0C 8 slot_type  episode slots 1..10 at +8+3*i: +1 type (1-15 role, >=16 scene), +2 weight, +3 chosen item
+rec 715C 1B3 1A3 8 role_category  per role type: actor category 1..7
+rec 734C 0F 00 16 script  shopping list for screenplay (per player stride 0x4B)
+rec 734C 0F 02 16 episode  episode
+rec 734C 0F 04 8 booked  items already booked to the ledger (+4+i, i 1..10)
+rec 5013 0C 00 16 name  actor name id (role stride 0xC0)
+rec 5013 0C 02 32 fee  fee per block
+rec 5013 0C 0A 16 icon  portrait sprite
+rec 724A 08 02 32 price  present price
+rec 724A 08 06 8 love  love points (decays to 70% after each gift)
+rec 724A 08 07 8 given  times given
+rec 1D09 0E 00 32 price  transmitter price (per player stride 0x1CE)
+rec 1D09 0E 04 32 reach  viewers in range
+rec 1D09 0E 08 16 x  map x
+rec 1D09 0E 0A 16 y  map y
+rec 1D09 0E 0C 16 state  0 active, 1 bought today (unpaid), 2 sold/scrapped
+rec 457F 1E 00 16 headline  news text (per player stride 0x258)
+rec 457F 1E 18 16 hour  hour of the news
+rec 457F 1E 1A 16 day  day of the news
+rec 457F 1E 1C 8 category  news category / colour
+rec 457F 1E 1D 8 price_class  price class (1DA8_3F48)

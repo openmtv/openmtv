@@ -1,0 +1,107 @@
+# Caught by a human (multiplayer stage 3, tools/seattest.py): two humans as in two_humans.
+# Seat 1 (station 2) walks into station 1's office (test pokes of figure 1: floor 5 door 0,
+# via the elevator) and stays; seat 0 walks home to its office (pokes of figure 0) and
+# catches it there: seat 0 gets the bounty ("You surprised Brian! Bingo: $10000!"),
+# seat 1 pays its fine and is thrown out of the room ("You were surprised by Archie!...").
+# Station 2 has the master key (DS:7A86 bit 2, a test poke): a human goes into a rival's room
+# only with it (found by the review of 2026-10-11: other humans than seat 0 went in without).
+# humans 1,2
+# play tests/mp/two_humans.txt until 6000
+6000 poke16 39D4:7A86 4
+6000 poke16 39D4:7B66 5
+6000 poke16 39D4:7B72 0
+6000 poke16 39D4:7B68 0
+6000 poke16 39D4:7B64 153
+6000 key esc
+6000 seat 1 peek16 39D4:838C
+6000 peek16 39D4:838C
+6000 peek32 39D4:8BFB
+6000 peek32 39D4:8C12
+6000 hash
+6001 seat 1 hash
+6250 seat 1 peek16 39D4:838C
+6250 peek16 39D4:838C
+6250 peek32 39D4:8BFB
+6250 peek32 39D4:8C12
+6300 key esc
+6500 seat 1 peek16 39D4:838C
+6500 peek16 39D4:838C
+6500 peek32 39D4:8BFB
+6500 peek32 39D4:8C12
+6600 key esc
+6750 seat 1 peek16 39D4:838C
+6750 peek16 39D4:838C
+6750 peek32 39D4:8BFB
+6750 peek32 39D4:8C12
+6900 key esc
+7000 seat 1 peek16 39D4:838C
+7000 peek16 39D4:838C
+7000 peek32 39D4:8BFB
+7000 peek32 39D4:8C12
+7000 hash
+7001 seat 1 hash
+7200 key esc
+7250 seat 1 peek16 39D4:838C
+7250 peek16 39D4:838C
+7250 peek32 39D4:8BFB
+7250 peek32 39D4:8C12
+7500 key esc
+7500 seat 1 peek16 39D4:838C
+7500 peek16 39D4:838C
+7500 peek32 39D4:8BFB
+7500 peek32 39D4:8C12
+7750 seat 1 peek16 39D4:838C
+7750 peek16 39D4:838C
+7750 peek32 39D4:8BFB
+7750 peek32 39D4:8C12
+7800 key esc
+8000 poke16 39D4:7B48 5
+8000 poke16 39D4:7B54 0
+8000 poke16 39D4:7B4A 0
+8000 poke16 39D4:7B46 153
+8000 seat 1 peek16 39D4:838C
+8000 peek16 39D4:838C
+8000 peek32 39D4:8BFB
+8000 peek32 39D4:8C12
+8000 hash
+8001 seat 1 hash
+8100 key esc
+8250 seat 1 peek16 39D4:838C
+8250 peek16 39D4:838C
+8250 peek32 39D4:8BFB
+8250 peek32 39D4:8C12
+8400 key esc
+8500 seat 1 peek16 39D4:838C
+8500 peek16 39D4:838C
+8500 peek32 39D4:8BFB
+8500 peek32 39D4:8C12
+8700 key esc
+8750 seat 1 peek16 39D4:838C
+8750 peek16 39D4:838C
+8750 peek32 39D4:8BFB
+8750 peek32 39D4:8C12
+9000 key esc
+9000 seat 1 peek16 39D4:838C
+9000 peek16 39D4:838C
+9000 peek32 39D4:8BFB
+9000 peek32 39D4:8C12
+9000 hash
+9001 seat 1 hash
+9250 seat 1 peek16 39D4:838C
+9250 peek16 39D4:838C
+9250 peek32 39D4:8BFB
+9250 peek32 39D4:8C12
+9300 key esc
+9500 seat 1 peek16 39D4:838C
+9500 peek16 39D4:838C
+9500 peek32 39D4:8BFB
+9500 peek32 39D4:8C12
+9600 key esc
+9750 seat 1 peek16 39D4:838C
+9750 peek16 39D4:838C
+9750 peek32 39D4:8BFB
+9750 peek32 39D4:8C12
+9900 key esc
+10000 hash
+10001 seat 1 hash
+10010 quit

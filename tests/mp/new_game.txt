@@ -1,0 +1,53 @@
+# A new game at once (multiplayer stage 4: how a network game starts): --new-game -- no
+# intro, no setup screen: the setup's Start with its defaults -- and --difficulty 3 (the
+# computer player on station 3 starts with $750 000 instead of $300 000; $100 500 are
+# left after its first purchases), the managers named Anna and Ben, the start's randomness
+# from --seed.  Seat 1 joins in the
+# first morning (frame ~517 instead of ~1256 after the setup by hand); both are welcomed
+# by their bosses and dismiss the dialogs with Esc, then stand in the building.
+# humans 1,2
+# options --new-game --difficulty 3 --names Anna,Ben --seed 1234
+300 peek16 39D4:7C78
+300 peek16 39D4:7A94
+600 peek16 39D4:7C78
+600 hash
+601 seat 1 hash
+1500 peek16 39D4:838C
+1500 seat 1 peek16 39D4:838C
+1500 peek32 39D4:8BFB
+1500 peek32 39D4:8C12
+1500 peek32 39D4:8C29
+1500 hash
+1501 seat 1 hash
+3000 peek16 39D4:838C
+3000 seat 1 peek16 39D4:838C
+3000 peek32 39D4:8BFB
+3000 peek32 39D4:8C12
+3000 peek32 39D4:8C29
+3000 hash
+3001 seat 1 hash
+3300 key esc
+3350 seat 1 key esc
+3600 key esc
+3650 seat 1 key esc
+3900 key esc
+3950 seat 1 key esc
+4200 key esc
+4250 seat 1 key esc
+4500 key esc
+4550 seat 1 key esc
+4800 key esc
+4850 seat 1 key esc
+5100 key esc
+5150 seat 1 key esc
+5400 key esc
+5450 seat 1 key esc
+5700 key esc
+5750 seat 1 key esc
+6000 key esc
+6050 seat 1 key esc
+6100 peek16 39D4:838C
+6100 seat 1 peek16 39D4:838C
+6100 hash
+6101 seat 1 hash
+6110 quit

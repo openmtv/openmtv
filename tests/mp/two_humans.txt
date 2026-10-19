@@ -1,0 +1,577 @@
+# Two humans (multiplayer stage 3, tools/seattest.py): seat 0 on station 1, seat 1 on
+# station 2, the computer player on station 3.
+# humans 1,2
+# A new game (Esc, "New game", "Start"); seat 1 joins in the first morning and goes
+# to its boss; both dismiss their dialogs with Esc every 300 frames.  Seat 1 then
+# points at its own doors (their names: "Office of Brian", "News studio of
+# Fun-TV") and enters its office (its room at 4900), Esc leaves it (5400) -- the world's clock runs on.  At the
+# first day's end (frame ~69800) both are taken out of their rooms, walk home
+# (the world waits for both), pay their costs (credit interest included: $167 000
+# each) and go to their boss in the morning.  Every seat's lines are compared
+# with two_humans.seats (recorded: tools/seattest.py --record-mp).
+400 key esc
+1000 click 64 100
+1300 click 172 185
+2000 key esc
+2000 hash
+2001 seat 1 hash
+2050 seat 1 key esc
+2300 key esc
+2350 seat 1 key esc
+2600 key esc
+2650 seat 1 key esc
+2900 key esc
+2950 seat 1 key esc
+3200 key esc
+3250 seat 1 key esc
+3500 key esc
+3550 seat 1 key esc
+3800 key esc
+3850 seat 1 key esc
+4100 key esc
+4130 seat 1 mouse 88 70
+4180 seat 1 hash
+4190 seat 1 mouse 122 70
+4240 seat 1 hash
+4260 seat 1 click 88 70
+4400 key esc
+4700 key esc
+4800 seat 1 hash
+4900 seat 1 peek16 39D4:838C
+4900 seat 1 hash
+5000 key esc
+5050 seat 1 key esc
+5050 seat 1 key esc
+5300 key esc
+5350 seat 1 key esc
+5400 seat 1 peek16 39D4:838C
+5600 key esc
+5650 seat 1 key esc
+5900 key esc
+5950 seat 1 key esc
+6000 hash
+6001 seat 1 hash
+6200 key esc
+6250 seat 1 key esc
+6500 key esc
+6550 seat 1 key esc
+6800 key esc
+6850 seat 1 key esc
+7100 key esc
+7150 seat 1 key esc
+7400 key esc
+7450 seat 1 key esc
+7700 key esc
+7750 seat 1 key esc
+8000 key esc
+8050 seat 1 key esc
+8300 key esc
+8350 seat 1 key esc
+8600 key esc
+8650 seat 1 key esc
+8900 key esc
+8950 seat 1 key esc
+9200 key esc
+9250 seat 1 key esc
+9500 key esc
+9550 seat 1 key esc
+9800 key esc
+9850 seat 1 key esc
+10000 hash
+10001 seat 1 hash
+10100 key esc
+10150 seat 1 key esc
+10400 key esc
+10450 seat 1 key esc
+10700 key esc
+10750 seat 1 key esc
+11000 key esc
+11050 seat 1 key esc
+11300 key esc
+11350 seat 1 key esc
+11600 key esc
+11650 seat 1 key esc
+11900 key esc
+11950 seat 1 key esc
+12200 key esc
+12250 seat 1 key esc
+12500 key esc
+12550 seat 1 key esc
+12800 key esc
+12850 seat 1 key esc
+13100 key esc
+13150 seat 1 key esc
+13400 key esc
+13450 seat 1 key esc
+13700 key esc
+13750 seat 1 key esc
+14000 key esc
+14000 hash
+14001 seat 1 hash
+14050 seat 1 key esc
+14300 key esc
+14350 seat 1 key esc
+14600 key esc
+14650 seat 1 key esc
+14900 key esc
+14950 seat 1 key esc
+15200 key esc
+15250 seat 1 key esc
+15500 key esc
+15550 seat 1 key esc
+15800 key esc
+15850 seat 1 key esc
+16100 key esc
+16150 seat 1 key esc
+16400 key esc
+16450 seat 1 key esc
+16700 key esc
+16750 seat 1 key esc
+17000 key esc
+17050 seat 1 key esc
+17300 key esc
+17350 seat 1 key esc
+17600 key esc
+17650 seat 1 key esc
+17900 key esc
+17950 seat 1 key esc
+18000 hash
+18001 seat 1 hash
+18200 key esc
+18250 seat 1 key esc
+18500 key esc
+18550 seat 1 key esc
+18800 key esc
+18850 seat 1 key esc
+19100 key esc
+19150 seat 1 key esc
+19400 key esc
+19450 seat 1 key esc
+19700 key esc
+19750 seat 1 key esc
+20000 key esc
+20050 seat 1 key esc
+20300 key esc
+20350 seat 1 key esc
+20600 key esc
+20650 seat 1 key esc
+20900 key esc
+20950 seat 1 key esc
+21200 key esc
+21250 seat 1 key esc
+21500 key esc
+21550 seat 1 key esc
+21800 key esc
+21850 seat 1 key esc
+22000 hash
+22001 seat 1 hash
+22100 key esc
+22150 seat 1 key esc
+22400 key esc
+22450 seat 1 key esc
+22700 key esc
+22750 seat 1 key esc
+23000 key esc
+23050 seat 1 key esc
+23300 key esc
+23350 seat 1 key esc
+23600 key esc
+23650 seat 1 key esc
+23900 key esc
+23950 seat 1 key esc
+24200 key esc
+24250 seat 1 key esc
+24500 key esc
+24550 seat 1 key esc
+24800 key esc
+24850 seat 1 key esc
+25100 key esc
+25150 seat 1 key esc
+25400 key esc
+25450 seat 1 key esc
+25700 key esc
+25750 seat 1 key esc
+26000 key esc
+26000 hash
+26001 seat 1 hash
+26050 seat 1 key esc
+26300 key esc
+26350 seat 1 key esc
+26600 key esc
+26650 seat 1 key esc
+26900 key esc
+26950 seat 1 key esc
+27200 key esc
+27250 seat 1 key esc
+27500 key esc
+27550 seat 1 key esc
+27800 key esc
+27850 seat 1 key esc
+28100 key esc
+28150 seat 1 key esc
+28400 key esc
+28450 seat 1 key esc
+28700 key esc
+28750 seat 1 key esc
+29000 key esc
+29050 seat 1 key esc
+29300 key esc
+29350 seat 1 key esc
+29600 key esc
+29650 seat 1 key esc
+29900 key esc
+29950 seat 1 key esc
+30000 hash
+30001 seat 1 hash
+30200 key esc
+30250 seat 1 key esc
+30500 key esc
+30550 seat 1 key esc
+30800 key esc
+30850 seat 1 key esc
+31100 key esc
+31150 seat 1 key esc
+31400 key esc
+31450 seat 1 key esc
+31700 key esc
+31750 seat 1 key esc
+32000 key esc
+32050 seat 1 key esc
+32300 key esc
+32350 seat 1 key esc
+32600 key esc
+32650 seat 1 key esc
+32900 key esc
+32950 seat 1 key esc
+33200 key esc
+33250 seat 1 key esc
+33500 key esc
+33550 seat 1 key esc
+33800 key esc
+33850 seat 1 key esc
+34000 hash
+34001 seat 1 hash
+34100 key esc
+34150 seat 1 key esc
+34400 key esc
+34450 seat 1 key esc
+34700 key esc
+34750 seat 1 key esc
+35000 key esc
+35050 seat 1 key esc
+35300 key esc
+35350 seat 1 key esc
+35600 key esc
+35650 seat 1 key esc
+35900 key esc
+35950 seat 1 key esc
+36200 key esc
+36250 seat 1 key esc
+36500 key esc
+36550 seat 1 key esc
+36800 key esc
+36850 seat 1 key esc
+37100 key esc
+37150 seat 1 key esc
+37400 key esc
+37450 seat 1 key esc
+37700 key esc
+37750 seat 1 key esc
+38000 key esc
+38000 hash
+38001 seat 1 hash
+38050 seat 1 key esc
+38300 key esc
+38350 seat 1 key esc
+38600 key esc
+38650 seat 1 key esc
+38900 key esc
+38950 seat 1 key esc
+39200 key esc
+39250 seat 1 key esc
+39500 key esc
+39550 seat 1 key esc
+39800 key esc
+39850 seat 1 key esc
+40100 key esc
+40150 seat 1 key esc
+40400 key esc
+40450 seat 1 key esc
+40700 key esc
+40750 seat 1 key esc
+41000 key esc
+41050 seat 1 key esc
+41300 key esc
+41350 seat 1 key esc
+41600 key esc
+41650 seat 1 key esc
+41900 key esc
+41950 seat 1 key esc
+42000 hash
+42001 seat 1 hash
+42200 key esc
+42250 seat 1 key esc
+42500 key esc
+42550 seat 1 key esc
+42800 key esc
+42850 seat 1 key esc
+43100 key esc
+43150 seat 1 key esc
+43400 key esc
+43450 seat 1 key esc
+43700 key esc
+43750 seat 1 key esc
+44000 key esc
+44050 seat 1 key esc
+44300 key esc
+44350 seat 1 key esc
+44600 key esc
+44650 seat 1 key esc
+44900 key esc
+44950 seat 1 key esc
+45200 key esc
+45250 seat 1 key esc
+45500 key esc
+45550 seat 1 key esc
+45800 key esc
+45850 seat 1 key esc
+46000 hash
+46001 seat 1 hash
+46100 key esc
+46150 seat 1 key esc
+46400 key esc
+46450 seat 1 key esc
+46700 key esc
+46750 seat 1 key esc
+47000 key esc
+47050 seat 1 key esc
+47300 key esc
+47350 seat 1 key esc
+47600 key esc
+47650 seat 1 key esc
+47900 key esc
+47950 seat 1 key esc
+48200 key esc
+48250 seat 1 key esc
+48500 key esc
+48550 seat 1 key esc
+48800 key esc
+48850 seat 1 key esc
+49100 key esc
+49150 seat 1 key esc
+49400 key esc
+49450 seat 1 key esc
+49700 key esc
+49750 seat 1 key esc
+50000 key esc
+50000 hash
+50001 seat 1 hash
+50050 seat 1 key esc
+50300 key esc
+50350 seat 1 key esc
+50600 key esc
+50650 seat 1 key esc
+50900 key esc
+50950 seat 1 key esc
+51200 key esc
+51250 seat 1 key esc
+51500 key esc
+51550 seat 1 key esc
+51800 key esc
+51850 seat 1 key esc
+52100 key esc
+52150 seat 1 key esc
+52400 key esc
+52450 seat 1 key esc
+52700 key esc
+52750 seat 1 key esc
+53000 key esc
+53050 seat 1 key esc
+53300 key esc
+53350 seat 1 key esc
+53600 key esc
+53650 seat 1 key esc
+53900 key esc
+53950 seat 1 key esc
+54000 hash
+54001 seat 1 hash
+54200 key esc
+54250 seat 1 key esc
+54500 key esc
+54550 seat 1 key esc
+54800 key esc
+54850 seat 1 key esc
+55100 key esc
+55150 seat 1 key esc
+55400 key esc
+55450 seat 1 key esc
+55700 key esc
+55750 seat 1 key esc
+56000 key esc
+56050 seat 1 key esc
+56300 key esc
+56350 seat 1 key esc
+56600 key esc
+56650 seat 1 key esc
+56900 key esc
+56950 seat 1 key esc
+57200 key esc
+57250 seat 1 key esc
+57500 key esc
+57550 seat 1 key esc
+57800 key esc
+57850 seat 1 key esc
+58000 hash
+58001 seat 1 hash
+58100 key esc
+58150 seat 1 key esc
+58400 key esc
+58450 seat 1 key esc
+58700 key esc
+58750 seat 1 key esc
+59000 key esc
+59050 seat 1 key esc
+59300 key esc
+59350 seat 1 key esc
+59600 key esc
+59650 seat 1 key esc
+59900 key esc
+59950 seat 1 key esc
+60200 key esc
+60250 seat 1 key esc
+60500 key esc
+60550 seat 1 key esc
+60800 key esc
+60850 seat 1 key esc
+61100 key esc
+61150 seat 1 key esc
+61400 key esc
+61450 seat 1 key esc
+61700 key esc
+61750 seat 1 key esc
+62000 key esc
+62000 hash
+62001 seat 1 hash
+62050 seat 1 key esc
+62300 key esc
+62350 seat 1 key esc
+62600 key esc
+62650 seat 1 key esc
+62900 key esc
+62950 seat 1 key esc
+63200 key esc
+63250 seat 1 key esc
+63500 key esc
+63550 seat 1 key esc
+63800 key esc
+63850 seat 1 key esc
+64100 key esc
+64150 seat 1 key esc
+64400 key esc
+64450 seat 1 key esc
+64700 key esc
+64750 seat 1 key esc
+65000 key esc
+65050 seat 1 key esc
+65300 key esc
+65350 seat 1 key esc
+65600 key esc
+65650 seat 1 key esc
+65900 key esc
+65950 seat 1 key esc
+66000 hash
+66001 seat 1 hash
+66200 key esc
+66250 seat 1 key esc
+66500 key esc
+66550 seat 1 key esc
+66800 key esc
+66850 seat 1 key esc
+67100 key esc
+67150 seat 1 key esc
+67400 key esc
+67450 seat 1 key esc
+67700 key esc
+67750 seat 1 key esc
+68000 key esc
+68050 seat 1 key esc
+68300 key esc
+68350 seat 1 key esc
+68600 key esc
+68650 seat 1 key esc
+68900 key esc
+68950 seat 1 key esc
+69000 peek32 39D4:8BFB
+69000 peek32 39D4:8C12
+69000 peek32 39D4:8C29
+69200 key esc
+69250 seat 1 key esc
+69500 key esc
+69550 seat 1 key esc
+69800 key esc
+69850 seat 1 key esc
+70000 hash
+70001 seat 1 hash
+70100 key esc
+70150 seat 1 key esc
+70400 key esc
+70450 seat 1 key esc
+70700 key esc
+70750 seat 1 key esc
+71000 key esc
+71050 seat 1 key esc
+71300 key esc
+71350 seat 1 key esc
+71600 key esc
+71650 seat 1 key esc
+71900 key esc
+71950 seat 1 key esc
+72200 key esc
+72250 seat 1 key esc
+72500 key esc
+72550 seat 1 key esc
+72800 key esc
+72850 seat 1 key esc
+73000 peek32 39D4:8BFB
+73000 peek32 39D4:8C12
+73000 peek32 39D4:8C29
+73100 key esc
+73150 seat 1 key esc
+73400 key esc
+73450 seat 1 key esc
+73700 key esc
+73750 seat 1 key esc
+74000 key esc
+74000 hash
+74001 seat 1 hash
+74050 seat 1 key esc
+74300 key esc
+74350 seat 1 key esc
+74600 key esc
+74650 seat 1 key esc
+74900 key esc
+74950 seat 1 key esc
+75200 key esc
+75250 seat 1 key esc
+75500 key esc
+75550 seat 1 key esc
+75800 key esc
+75850 seat 1 key esc
+76100 key esc
+76150 seat 1 key esc
+76400 key esc
+76450 seat 1 key esc
+76700 key esc
+76750 seat 1 key esc
+77000 key esc
+77050 seat 1 key esc
+77300 key esc
+77350 seat 1 key esc
+77600 key esc
+77650 seat 1 key esc
+77900 key esc
+77900 peek32 39D4:8BFB
+77900 peek32 39D4:8C12
+77900 peek32 39D4:8C29
+77950 seat 1 key esc
+78000 quit

@@ -1,0 +1,19 @@
+# A guest at a rival's door (multiplayer, tools/seattest.py): two humans as in two_humans; seat 1
+# (station 2) is walked to station 1's office (test pokes of figure 1: floor 5 door 0, via the
+# elevator) without the master key.  The door stays shut ("locked", the message in seat 1's
+# status line): the figure gives the door up (its target door, DS:7B72, 0xFFFF) and seat 1
+# stays in the building (g_room 0).  It went in before: the original checks the key only for
+# g_player's figure -- in the world that is seat 0's (found by the review of 2026-10-11).
+# humans 1,2
+# play tests/mp/two_humans.txt until 6000
+6000 poke16 39D4:7B66 5
+6000 poke16 39D4:7B72 0
+6000 poke16 39D4:7B68 0
+6000 poke16 39D4:7B64 153
+6500 seat 1 peek16 39D4:838C
+7000 seat 1 peek16 39D4:838C
+7000 peek16 39D4:7B72
+7500 seat 1 peek16 39D4:838C
+7500 hash
+7501 seat 1 hash
+7600 quit

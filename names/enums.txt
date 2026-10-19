@@ -1,0 +1,99 @@
+# Enumerations rendered by tools/decomp.py.  A constant compared with,
+# assigned to, passed as or switched on a target becomes the enum name.
+#
+#   enum NAME PREFIX
+#   target REGEX          rendered C lvalue (casts removed), e.g. ^g_room$
+#   param FUNCTION INDEX  argument word INDEX of a call (decompiled or machine-level)
+#   VALUE NAME            members (hex or decimal; only non-negative values)
+
+enum room ROOM
+target ^g_room$
+target ^hotspots\(.*\)\.room$
+param room_enter 0
+0x00 BUILDING
+0x01 OFFICE
+0x02 NEWS
+0x03 BOSS
+0x04 LIBRARY
+0x05 STUDIO
+0x08 FILM_AGENCY
+0x09 SCRIPT_AGENCY
+0x0A ESTATE_AGENT
+0x0B AD_AGENCY
+0x0C SUPERMARKET
+0x0D INFO_BOARD
+0x0E BETTY
+0x19 TX_MAP
+0x1F PLANNER
+0x3A SAVE_ROOM
+0x3D INFO_BOARD_GO
+0x3E ESTATE_PLAN
+0x3F SHOP
+0x40 PORTER
+0x41 NEW_GAME
+
+enum genre GENRE
+target ^films\(.*\)\.genre$
+target ^AT\(film, \w+\)\.genre$
+1 LOVE
+2 ACTION
+3 EPIC
+4 COMEDY
+5 WHODUNIT
+6 CULTURE
+7 LIVE
+8 SHOW
+9 SF
+10 SUNDRY
+
+enum series_genre SGENRE
+target ^series\(.*\)\.genre$
+target ^AT\(series, \w+\)\.genre$
+1 FAMILY
+2 SF
+3 WESTERN
+4 WHODUNIT
+5 SUNDRY
+
+enum ledger LEDGER
+param ledger_add 0
+1 FILMS_BOUGHT
+2 SERIES_BOUGHT
+3 TRANSMITTERS
+4 SCRIPTS
+5 DAMAGES
+6 SUNDRY
+7 CAST
+8 STUDIO_RENT
+9 TX_FEES
+10 NEWS
+11 FILMS_SOLD
+12 SERIES_SOLD
+13 SUNDRY_INCOME
+14 AD_INCOME
+15 INTEREST
+16 CREDIT_REPAID
+
+enum news_category NEWS
+target ^news_pool\(.*\)\.category$
+target ^inbox\(.*\)\.category$
+target ^stories\(.*\)\.category$
+1 POLITICS
+2 SHOWBIZ
+3 SUNDRY
+
+enum ai_state AI
+target ^g_ai_state\(.*\)$
+0 OFFICE_BOOK
+1 AD_AGENCY
+2 MOVIE_AGENCY
+3 NEWS_ROOM
+4 OFFICE_TX
+5 RIVAL_1
+6 RIVAL_2
+7 PRODUCTION
+8 OFFICE_PLAN
+9 SUPERMARKET
+10 BETTY
+11 INFO_BOARD
+12 PORTER

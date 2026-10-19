@@ -1,0 +1,83 @@
+# rooms "information board" (room 13, floor 1 door 3), "porter" (room 64, floor 1 door 0)
+# and the board in the elevator ("go" mode, room 61): swap two door signs, then get sent to
+# the wrong office by them.
+# New game; test pokes set the human figure's walk target to the board door (DS:7B48 floor,
+# 7B54 door, 7B4A final x, 7B46 target x = 153 elevator).  Clicks are 'goto X Y' +
+# 'down'/'up' 40/60 frames later.  Board cells: row = floor f at y 110-8f .. 117-8f,
+# columns x 6..80, 81..155, 165..239, 240..314; g_door_index (DS:8A60) holds
+# (floor, door) per cell, 8 bytes per row starting with floor 1.
+#  - pick up "Office Archie" (row 5, column 0: DS:8A80 = (5,0)) -> cell marked +100,
+#    mode 1; drop it on "Office Brian" (row 8, column 0, DS:8A98 = (8,0)) -> Brian's sign
+#    is carried; drop that on the emptied cell -> DS:8A80 = (8,0), DS:8A98 = (5,0), mode 0;
+#  - right click leaves; click the porter's door (80,95): gossip "What a boring day"
+#    (no bailiff today, text 0x13D, mode 1), click closes it (mode 0), right click leaves;
+#  - click the elevator (hotspot 0x1A, 159,95): the figure walks in with target door -2,
+#    which opens the board in "go" mode (DS:838C = 61); click "Office Archie", now shown at
+#    row 8 -> the figure is sent to the physical door there: target floor (DS:7B48) 8,
+#    door (DS:7B54) 0 = Brian's office; it rides up (DS:7B44 floor 8) and is refused
+#    ("You have no key, you bozo!").  English.
+# end 10500
+400 key esc
+1000 click 64 100
+1300 click 172 185
+2000 hash
+2100 click 230 60
+2500 click 230 60
+2700 poke16 39D4:7B48 1
+2700 poke16 39D4:7B54 3
+2700 poke16 39D4:7B4A 0
+2700 poke16 39D4:7B46 153
+3500 peek16 39D4:838C
+4000 hash
+4100 goto 40 73
+4140 down 1
+4160 up 1
+4300 peek16 39D4:8BA4
+4300 peek8 39D4:8A81
+4400 goto 40 49
+4440 down 1
+4460 up 1
+4600 peek16 39D4:8BA4
+4700 goto 40 73
+4740 down 1
+4760 up 1
+4900 peek16 39D4:8BA4
+4900 peek16 39D4:8A80
+4900 peek16 39D4:8A98
+5000 goto 200 60
+5040 down 2
+5060 up 2
+5400 peek16 39D4:838C
+5450 goto 80 95
+5490 down 1
+5510 up 1
+6000 peek16 39D4:838C
+6000 hash
+6600 goto 160 60
+6640 down 1
+6660 up 1
+6800 peek16 39D4:8BA4
+6900 goto 160 60
+6940 down 1
+6960 up 1
+7100 peek16 39D4:8BA4
+7200 goto 160 60
+7240 down 2
+7260 up 2
+7600 peek16 39D4:838C
+7700 goto 159 95
+7740 down 1
+7760 up 1
+8000 hash
+8600 peek16 39D4:838C
+8700 goto 40 49
+8740 down 1
+8760 up 1
+8900 peek16 39D4:838C
+8900 peek16 39D4:7B48
+8900 peek16 39D4:7B54
+10000 hash
+10400 peek16 39D4:7B44
+10400 peek16 39D4:838C
+10500 hash
+10501 quit

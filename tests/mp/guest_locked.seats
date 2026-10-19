@@ -1,0 +1,17 @@
+HASH frame 2000 mem a19664847c1dacda vram b30c4ef2111d358b
+STATE frame 2000 852984772fc90273 vram b30c4ef2111d358b
+HASH seat 1 frame 2001 vram f17f9191a654dc7c
+HASH seat 1 frame 4180 vram 308825f60cd36f44
+HASH seat 1 frame 4240 vram c45ec9c20e9eefad
+HASH seat 1 frame 4800 vram 66a388058541ce99
+PEEK seat 1 frame 4900 39D4:838C 1
+HASH seat 1 frame 4900 vram a6377dca11652df1
+PEEK seat 1 frame 5400 39D4:838C 0
+PEEK seat 1 frame 6500 39D4:838C 0
+PEEK frame 7000 39D4:7B72 65535
+PEEK seat 1 frame 7000 39D4:838C 0
+HASH frame 7500 mem 41f53158e31c8baf vram f87013c24ea9d4d8
+STATE frame 7500 9dd13dbd7a4bafd2 vram f87013c24ea9d4d8
+PEEK seat 1 frame 7500 39D4:838C 0
+HASH seat 1 frame 7501 vram 458dda4c382a5675
+[quit] T=1084368026 AX=FFFF BX=0000 CX=8406 DX=865D SI=003C DI=0000 BP=0FE4 SP=0FD4

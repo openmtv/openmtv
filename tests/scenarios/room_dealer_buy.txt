@@ -1,0 +1,91 @@
+# room_dealer_buy: film agency (room 8, floor 7 door 0): look at programme info, buy a film, buy and
+# return a second one, take a fresh tape out of the case and back, leave (the case is unloaded into
+# the library), come back, buy a series, fail to buy a film with too little money.  English.
+# Steps: new game; dismiss the boss's two messages; test poke: human figure 0 walks to the film agency
+#   (poke16 7B48 target_floor 7, 7B54 target_door 0, 7B4A final_x 0, 7B46 target_x 0x99 = elevator).
+#   3950 hover shelf tape 10 -> info "Doctor Zhivago" (film 94, epic, $25 000); 4100 buy it (money
+#   200 000 -> 175 000); 4300 drop it into the case; 4400 hover the case tape -> info; 4500 buy tape 7
+#   (film 92, $40 000); 4700 drop it on the dealer's counter -> returned, refunded; 4800 take film 94
+#   out of the case (+10000 'fresh' marker), 4900 right click -> back into the case; 5050 Esc leaves:
+#   bids committed, shelf refilled (slot 10 = series 1030 "A Colt for all cases", $135 000), case
+#   unloaded into the library; 5350 click the agency door -> back in; 5700 hover slot 10 -> series
+#   info; 5800 buy it (money 40 000); 6000 into the case; 6100 click tape 4 (film 12, $144 000) ->
+#   "Warning: Not enough money!"; 6400 Esc closes it; 6500 Esc leaves (series into the library).
+# Observable (frame 6800, PEEK lines): money players(1).money DS:8BFB = 40000 (DS:8BFD = 0);
+#   library of player 1 (DS:6F85, u16 id[genre][4], u8 count at +0x60+genre): genre 3 count DS:6FE8 = 1
+#   with id DS:6F9D = 94, series count DS:6FF0 = 2 with ids 18, 30 (DS:6FDD, DS:6FDF); film 94 owner
+#   (film table 4DA5:0008 + 94*0x17 + 5) = 1; ledger films bought DS:71F9 = 25000, series bought DS:71FD = 135000.
+# Content pokes (values the machine-level run already has, so its hashes do not change): the
+#   difftest run (--interp --difftest) plays another game, because random_n() reseeds from the PIT
+#   timer and the tests freeze the timers; the pokes give it the same dealer offers.  3700: shelf
+#   slots 10 / 7 / 4 (g_dealer DS:19ED + 8*slot: id, u32 price, shelf) = films 94 / 92 / 12 and
+#   those films' owner/flags bytes (film table 4DA5:0008 + id*0x17 + 5); 5200: slot 10 = series
+#   1030 (series 30: owner/flags 4EC7:06DA, next episode 4EC7:06E7) and slot 4 again.
+# end 7000
+400 key esc
+1000 click 64 100
+1300 click 172 185
+2000 hash
+2100 click 230 60
+2500 click 230 60
+2600 poke16 39D4:7B48 7
+2600 poke16 39D4:7B54 0
+2600 poke16 39D4:7B4A 0
+2600 poke16 39D4:7B46 153
+3700 poke16 39D4:1A3D 94
+3700 poke16 39D4:1A3F 25000
+3700 poke16 39D4:1A41 0
+3700 poke16 39D4:1A43 2304
+3700 poke16 39D4:1A25 92
+3700 poke16 39D4:1A27 40000
+3700 poke16 39D4:1A29 0
+3700 poke16 39D4:1A2B 2048
+3700 poke16 39D4:1A0D 12
+3700 poke16 39D4:1A0F 12928
+3700 poke16 39D4:1A11 2
+3700 poke16 39D4:1A13 1024
+3700 poke16 4DA5:087F 512
+3700 poke16 4DA5:0851 1024
+3700 poke16 4DA5:0121 6144
+3950 goto 168 75
+4000 hash
+4100 click 168 75
+4300 click 240 60
+4400 goto 228 45
+4500 click 146 80
+4700 click 120 80
+4800 click 228 45
+4900 rclick 200 110
+5050 key esc
+5200 poke16 39D4:1A3D 1030
+5200 poke16 39D4:1A3F 3928
+5200 poke16 39D4:1A41 2
+5200 poke16 39D4:1A43 2560
+5200 poke16 39D4:1A0D 12
+5200 poke16 39D4:1A0F 12928
+5200 poke16 39D4:1A11 2
+5200 poke16 39D4:1A13 1024
+5200 poke16 4EC7:06DA 2560
+5200 poke16 4EC7:06E7 1
+5350 click 88 68
+5700 goto 168 75
+5800 click 168 75
+6000 click 240 60
+6000 hash
+6100 click 121 80
+6400 key esc
+6500 key esc
+6800 peek16 39D4:838C
+6800 peek16 39D4:8BFB
+6800 peek16 39D4:8BFD
+6800 peek8 39D4:6FE8
+6800 peek16 39D4:6F9D
+6800 peek8 39D4:6FF0
+6800 peek16 39D4:6FDD
+6800 peek16 39D4:6FDF
+6800 peek8 4DA5:087F
+6800 peek16 39D4:71F9
+6800 peek16 39D4:71FD
+6800 peek16 39D4:71FF
+7000 hash
+7001 quit

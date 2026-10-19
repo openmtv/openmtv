@@ -1,0 +1,17 @@
+# The end of a day for a spectator seat (multiplayer stage 2, tools/seattest.py).
+# play tests/scenarios/ending_fired.txt until 72600
+# Seat 1 joins in the building (frame 2394) and watches the first day end
+# (around frame 69800): the seat requests of the world -- "Done" in the
+# clock field, the TV off, the viewers; the view going dark when the
+# human is home; the new day wiped in, "Start", viewers and money (200 ->
+# 167 after the day's costs).  Seat 0's game must stay the single-player
+# game; seat 1's screen as recorded in spectator_day_end.seats.
+69700 seat 1 hash
+70300 seat 1 hash
+70800 seat 1 hash
+70950 seat 1 hash
+71100 seat 1 hash
+71500 seat 1 hash
+72500 seat 1 hash
+72590 hash
+72591 quit

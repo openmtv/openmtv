@@ -1,0 +1,89 @@
+# fix: ai-odd-range (2DD9:0DD9 ai_fill_program_slot, instructions 2DD9:1147 / 2DD9:1197)
+# The odd-length rule of the computer players' schedule filling: a film with an odd number of
+# hours may only take a slot when the scan of the half day (18:00-24:00 or tomorrow's) finds
+# no other free hour or enough short programmes are left (ai_count_short_programs).  The
+# range of that scan, [bp-12h]..[bp-11h], is only set for series; for films the original
+# reads the stack word door_check_entry left there in the same ai_tick (its saved DI = 1):
+# the range 1..0, the scan never runs and the rule never rejects a film.  New game, the
+# human only presses Esc.  Day 2, ~frame 22200, computer player 2 fills 22:00 (hour slot 5):
+# classic it takes film 88 (3 hours, slots 5-7); fixed (the half day of the hour) the scan
+# finds free hours, the rule rejects film 88 and the 2-hour film 129 takes slots 5-6, slot 7
+# stays free (later filled).  Check: player 2 slot 5 = 39D4:4417 + 2*0x5A + 2*5 = 44D5,
+# slot 7 = 44D9.
+# expect classic 23000 word 39D4:44D5 == 88
+# expect classic 23000 word 39D4:44D9 == 9999
+# expect fixed   23000 word 39D4:44D5 == 129
+# expect fixed   23000 word 39D4:44D9 == 0
+400 key esc
+1000 click 64 100
+1300 click 172 185
+2000 key esc
+2300 key esc
+2600 key esc
+2900 key esc
+3200 key esc
+3500 key esc
+3800 key esc
+4100 key esc
+4400 key esc
+4700 key esc
+5000 key esc
+5300 key esc
+5600 key esc
+5900 key esc
+6200 key esc
+6500 key esc
+6800 key esc
+7100 key esc
+7400 key esc
+7700 key esc
+8000 key esc
+8300 key esc
+8600 key esc
+8900 key esc
+9200 key esc
+9500 key esc
+9800 key esc
+10100 key esc
+10400 key esc
+10700 key esc
+11000 key esc
+11300 key esc
+11600 key esc
+11900 key esc
+12200 key esc
+12500 key esc
+12800 key esc
+13100 key esc
+13400 key esc
+13700 key esc
+14000 key esc
+14300 key esc
+14600 key esc
+14900 key esc
+15200 key esc
+15500 key esc
+15800 key esc
+16100 key esc
+16400 key esc
+16700 key esc
+17000 key esc
+17300 key esc
+17600 key esc
+17900 key esc
+18200 key esc
+18500 key esc
+18800 key esc
+19100 key esc
+19400 key esc
+19700 key esc
+20000 key esc
+20300 key esc
+20600 key esc
+20900 key esc
+21200 key esc
+21500 key esc
+21800 key esc
+22100 key esc
+22400 key esc
+22700 key esc

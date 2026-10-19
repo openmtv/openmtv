@@ -1,0 +1,32 @@
+# option: --seats 2 --humans 1,2
+# case-corner in a network game (fixes.h FIX_MP_ALWAYS): two human seats (stations 1 and 2, seat 0 plays the script),
+# no --fixes -- classic, as a host's "Classic" would set it -- and still the corner of the case hands out nothing.
+# Steps and addresses as tests/fixes/case_corner.txt; the expectations are its "fixed" ones.  Checked the other way
+# on 2026-10-12: built with FIX_MP_ALWAYS 0 the same run takes film 4 and sells it for $160 000 (its "classic" ones).
+# expect option 4000 word 39D4:838C == 8
+# expect option 4700 word 39D4:734A == 1
+# expect option 4900 word 39D4:8F09 > 10000
+# expect option 4900 word 39D4:734A == 0
+# expect option 5100 word 39D4:734A == 1
+# expect option 5300 word 39D4:7A18 == 0
+# expect option 5500 word 39D4:8F09 != 4
+# expect option 5500 word 39D4:734A == 1
+# expect option 5700 word 39D4:7221 == 0
+# expect option 5700 word 39D4:7223 == 0
+400 key esc
+1000 click 64 100
+1300 click 172 185
+2100 click 230 60
+2500 click 230 60
+2900 poke16 39D4:7B48 7
+2900 poke16 39D4:7B54 0
+2900 poke16 39D4:7B4A 0
+2900 poke16 39D4:7B46 153
+4300 poke16 39D4:24A3 4
+4400 click 85 90
+4600 click 240 60
+4800 click 228 45
+5000 rclick 200 110
+5200 goto 278 95
+5400 click 278 95
+5600 click 40 55

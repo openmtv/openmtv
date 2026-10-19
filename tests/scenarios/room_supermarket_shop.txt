@@ -1,0 +1,75 @@
+# room_supermarket_shop: supermarket (room 12, floor 2 door 1) with its production shop
+# (room 63) and the presents catalogue.  New game.  Test setup = the state the studio leaves
+# after "new shopping list" (room_studio_shoplist): screenplay 23 marked taken (word
+# 4F7E:2721 = state 4 | flags 6 << 8), studios(6).script 39D4:61C5 = 23, .episode/.episode_last
+# 39D4:61C9 = 1/0, then "call 229E:09AF,6" = studio_new_shopping_list(6): list (23, episode 1),
+# cost multiplier 1.  Screenplay 23 needs one actor (role "MC", category 5) and one scene
+# (type 18 "Phantasy").  figures(0) walk target = floor 2 door 1 (7B48, 7B54, 7B4A, 7B46).
+#   3600 shopkeeper (0x23) -> menu; 4200 "Equipment" (0x2D) -> shop, list overlay
+#   4600 close the overlay and select slot 1 (MC): five actors $7500 $5000 $12000 $5000 $10000
+#   5000 pick actor 1 -> 5400 drop into slot 1 (money -7500)
+#   5800 pick actor 2 -> 6200 drop onto slot 1: actor 1 refunded, actor 2 paid (-5000), actor 1
+#        in hand -> 6600 right click drops it
+#   7000 scroll right (0x31; only five actors: no change)
+#   7400 select slot 2 (Phantasy) -> 7800 pick "Standard" ($200) -> 8200 drop into slot 2
+#   8600 list overlay (0x23) -> 9000 close -> 9400 leave the shop (back in the supermarket)
+#   9800 shopkeeper -> 10200 "Presents" (0x2C): catalogue of 10 gifts
+#   10600 buy gift 2 ($1000) -> 11000 drop it on the counter (0x35): refunded
+#   11400 buy gift 1 ($99, electric can opener) -> 11800 into the case (0x21; hot spot (16,12))
+#   12200 close the catalogue, 12600 leave: shoplists_book_costs books the purchases
+# Observable (end): screenplay 23 episode 1 bought items (bytes) 4F7E:272B = 2 (actor 2),
+#   4F7E:272E = 1 (Standard); shoplists(1,0) booked bytes 39D4:739C = 2, 39D4:739D = 1;
+#   g_player_present(1) 39D4:74E7 = 1 (101 = "bought today" until leaving);
+#   players(1).money 39D4:8BFB (u32) = 194701.
+# end 13000
+400 key esc
+1000 click 64 100
+1300 click 172 185
+2000 hash
+2100 click 230 60
+2500 click 230 60
+2600 poke16 4F7E:2721 1540
+2600 poke16 39D4:61C5 23
+2600 poke16 39D4:61C9 1
+2601 call 229E:09AF,6
+2602 poke16 39D4:7B48 2
+2602 poke16 39D4:7B54 1
+2602 poke16 39D4:7B4A 0
+2602 poke16 39D4:7B46 153
+3600 click 25 60
+4000 hash
+4200 click 130 67
+4600 click 84 106
+5000 click 135 18
+5400 click 84 90
+5800 click 172 18
+6000 hash
+6200 click 84 90
+6600 rclick 160 60
+7000 click 83 14
+7400 click 172 106
+7800 click 106 34
+8000 hash
+8200 click 172 90
+8600 click 25 36
+9000 rclick 160 60
+9400 rclick 160 60
+9800 click 25 60
+10000 hash
+10200 click 130 43
+10600 click 150 28
+11000 click 166 52
+11400 click 110 28
+11800 click 56 92
+12000 hash
+12200 rclick 160 60
+12500 peek8 39D4:74E7
+12600 rclick 160 60
+12999 peek8 4F7E:272B
+12999 peek8 4F7E:272E
+12999 peek8 39D4:739C
+12999 peek8 39D4:739D
+12999 peek8 39D4:74E7
+12999 peek32 39D4:8BFB
+13000 hash
+13001 quit

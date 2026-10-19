@@ -1,0 +1,30 @@
+# fix: ai-warning (229E:0225, 2DD9:4719)
+# sched_place_program refuses an hour that is over with "Warning: ..." (text
+# 0x2D): room_enter(-1) and a message box (ui_box mode 0, a popup with its
+# saved background) on the human's screen -- also when a computer player
+# places: ai_place_live_programs tries a live film whose hour is over today at
+# every office visit, each try another box, never closed, until a popup's
+# background save gets a null bitmap and writes the screen over the interrupt
+# vectors.  Here: 20:00 (g_time_slot DS:71EA = 20), player 2's placement of
+# its genre-7 programme 0 at 18:00 (slot 1); the human is with the boss (room
+# 3, his box open: g_ui_box_depth DS:14F0 = 1).  Classic: the warning screen
+# (g_room DS:838C = 0xFFFF) and a second box (depth 2); fixed: refused without
+# a word (room 3, depth 1).  The human's own placement there (frame 3050)
+# still warns either way.
+# expect classic 3000 call 229E:0225,0,7,1,2 == 0
+# expect classic 3000 word 39D4:838C == 0xFFFF
+# expect classic 3000 word 39D4:14F0 == 2
+# expect fixed   3000 call 229E:0225,0,7,1,2 == 0
+# expect fixed   3000 word 39D4:838C == 3
+# expect fixed   3000 word 39D4:14F0 == 1
+# expect classic 3050 call 229E:0225,0,7,1,1 == 0
+# expect classic 3050 word 39D4:14F0 == 3
+# expect fixed   3050 call 229E:0225,0,7,1,1 == 0
+# expect fixed   3050 word 39D4:838C == 0xFFFF
+# expect fixed   3050 word 39D4:14F0 == 2
+400 key esc
+1000 click 64 100
+1300 click 172 185
+3000 poke16 39D4:71EA 20
+3050 poke16 39D4:71EA 20
+3100 quit

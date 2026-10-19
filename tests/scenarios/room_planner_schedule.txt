@@ -1,0 +1,64 @@
+# room "office" -> "programme planner" (room 1 floor 5 door 0 -> room 31): rearrange the schedule (English).
+# New game; dismiss the boss; click the office door in the building view; in the office 3200 a click
+# on the empty wall (nothing happens; this first room_office_click call passes the difftest, the
+# one that opens the planner cannot be compared), 3600 the planner.
+# Starting schedule of player 1 (DS:4471 + 2*slot, slots 1..7 = 18:00..24:00 today, 8..14 tomorrow):
+# 69 (2 h), 1018 x3 (series 18), 70 (2 h); library genre 6 = films 69, 66 (1 h), 70; series: 18.
+# While a programme is dragged the click point is the drag image's corner (cursor_x/y - drag hotspot).
+#  3900 library button (0x0E) -> genre list (mode 1), 4100 genre 6 (culture) -> titles (mode 2),
+#  4300 film 66 -> drag (mode 3), 4500 drop on 18:00 -> sched_place_program replaces film 69,
+#       which is now dragged; 4700 drop it on 19:00 (2 h) -> removes the series episode at 20:00,
+#       which is now dragged; 4900 right click drops it (back to the archive)
+#  5100 waste bin (0x0A, mode 4; click point = cursor + 5), 5300 click 23:00 -> film 70 removed,
+#  5500 right click
+#  5700 library -> 5900 series (genre 11) -> 6100 series 18 -> 6300 drop on 23:00
+#  6500 arrow down (0x0C: tomorrow), 6700 library -> genre 6 -> film 70 -> 7300 drop on 18:00 (slot 8)
+#  7500 pick it up from the schedule (0x0F) and 7700 drop it on 20:00 (slot 10); 7900 arrow up
+# Observable at the end (player 1 programme slots, DS:4471 + 2*slot): slot 1 (DS:4473) = 66,
+# slot 2 = 69, slot 3 = 9999 (continued), slots 4..6 = 1018, slot 7 = 0, slot 8 (DS:4481) = 0,
+# slot 10 (DS:4485) = 70, slot 11 = 9999.
+# end 8500
+400 key esc
+1000 click 64 100
+1300 click 172 185
+2000 hash
+2100 click 230 60
+2500 click 230 60
+2700 click 88 70
+3200 click 160 30
+3600 click 264 67
+3900 click 303 49
+4000 hash
+4100 click 244 56
+4300 click 235 87
+4500 click 219 15
+4700 click 219 35
+4900 rclick 200 60
+5100 click 19 100
+5300 click 140 85
+5500 rclick 140 85
+5700 click 303 49
+5900 click 244 96
+6000 hash
+6100 click 235 77
+6300 click 219 93
+6500 click 19 37
+6700 click 303 49
+6900 click 244 56
+7100 click 235 96
+7300 click 219 12
+7500 click 140 12
+7700 click 140 48
+7900 click 19 19
+8000 hash
+8400 peek16 39D4:4473
+8400 peek16 39D4:4475
+8400 peek16 39D4:4477
+8400 peek16 39D4:4479
+8400 peek16 39D4:447D
+8400 peek16 39D4:447F
+8400 peek16 39D4:4481
+8400 peek16 39D4:4485
+8400 peek16 39D4:4487
+8500 hash
+8501 quit

@@ -1,0 +1,38 @@
+# Loading the save with a fired human (src/mpsave.c; tools/mpsavetest.py): the save of
+# fired_night.txt; seat 1 comes back as it left -- watching (its station out, no boss,
+# its clicks ignored) -- seat 0 goes to its boss and plays.
+# humans 1,2
+# options --mp-load {fired_night} --seed 77
+300 peek16 39D4:71E4
+300 peek8 39D4:8C1E
+1500 peek16 39D4:838C
+1500 seat 1 peek16 39D4:838C
+1500 peek8 39D4:8C1E
+1500 peek32 39D4:8BFB
+1500 hash
+1501 seat 1 hash
+3300 key esc
+3350 seat 1 key esc
+3600 key esc
+3650 seat 1 key esc
+3900 key esc
+3950 seat 1 key esc
+4200 key esc
+4250 seat 1 key esc
+4500 key esc
+4550 seat 1 key esc
+4800 key esc
+4850 seat 1 key esc
+5100 key esc
+5150 seat 1 key esc
+5400 key esc
+5450 seat 1 key esc
+5700 key esc
+5750 seat 1 key esc
+6100 peek16 39D4:838C
+6100 seat 1 peek16 39D4:838C
+6100 peek8 39D4:8C1E
+6100 peek32 39D4:8BFB
+6100 hash
+6101 seat 1 hash
+6110 quit

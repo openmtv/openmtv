@@ -1,0 +1,38 @@
+# option: --terror-damage=250000
+# args: --logical-time
+# The terror damage (option, src/fixes.c terror_damage): a computer player's sabotage sends the
+# terrorist's bomb into the human's studio (tests/scenarios/event_ai_sabotage.txt, on the logical
+# clock).  Classic: the original's $50 000 -- cash 167 000 -> 117 000 (DS:8BFB), the day's ledger
+# "credit repaid" (DS:71F1 + 0x44, shown under sundry costs) 50 000, two messages (studio lost 0x134,
+# repair costs 0x135 = 309 at DS:60D9).  Option 250 000: cash -83 000, ledger 250 000, the same
+# messages (the text says $250.000: msg_show_next, terror_text).
+# expect classic 9200 word 39D4:8BFB == 51464
+# expect classic 9200 word 39D4:8BFD == 1
+# expect classic 9200 word 39D4:7235 == 50000
+# expect classic 9200 byte 39D4:7247 == 2
+# expect classic 9200 word 39D4:60D9 == 309
+# expect option  9200 word 39D4:8BFB == 48072
+# expect option  9200 word 39D4:8BFD == 65534
+# expect option  9200 word 39D4:7235 == 53392
+# expect option  9200 word 39D4:7237 == 3
+# expect option  9200 byte 39D4:7247 == 2
+# expect option  9200 word 39D4:60D9 == 309
+400 key esc
+1000 click 64 100
+1300 click 172 185
+2000 poke16 39D4:6143 58840
+2000 poke16 39D4:6145 21
+3500 key esc
+3800 key esc
+4100 key esc
+4400 key esc
+4600 poke16 39D4:7A5C 1
+4600 poke16 39D4:7A56 2
+4600 poke16 39D4:7A88 0
+4800 call 32BA:1800
+4900 poke16 39D4:7B48 5
+4900 poke16 39D4:7B54 0
+4900 poke16 39D4:7B4A 0
+4900 poke16 39D4:7B46 153
+6100 poke16 39D4:6143 31424
+6100 poke16 39D4:6145 16

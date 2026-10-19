@@ -1,0 +1,34 @@
+# The host changes rooms (multiplayer, tools/seattest.py): two humans as in two_humans; seat 0
+# (the host: it runs the world) goes into its office (clicked at 3000, entered 3175..3373)
+# and out again (Esc at 3800, the building drawn again 3801..3894).  Such a room change of
+# the host's took up to 173 frames in which the other seats had no turn: their screens stood
+# still.  Now they have one each frame of it (runtime/seat.c seat_disk_pass): seat 1 moves
+# its pointer during the host's room changes and its screen (the HASH seat lines) changes
+# while they last.
+# humans 1,2
+# play tests/mp/two_humans.txt until 2700
+3000 click 88 70
+3190 seat 1 pointer 100 100
+3220 seat 1 pointer 140 110
+3230 seat 1 hash
+3250 seat 1 pointer 180 120
+3270 seat 1 pointer 220 130
+3280 seat 1 hash
+3300 seat 1 pointer 100 60
+3320 seat 1 pointer 60 140
+3330 seat 1 hash
+3340 seat 1 pointer 260 90
+3355 seat 1 pointer 120 50
+3365 seat 1 hash
+3400 hash
+3401 seat 1 hash
+3800 key esc
+3810 seat 1 pointer 200 100
+3830 seat 1 pointer 60 100
+3840 seat 1 hash
+3850 seat 1 pointer 150 150
+3870 seat 1 pointer 250 60
+3880 seat 1 hash
+4300 hash
+4301 seat 1 hash
+4400 quit

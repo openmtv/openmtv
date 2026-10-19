@@ -1,0 +1,9 @@
+HASH frame 2000 mem f54c69c522141ad5 vram 5f1e5885aed95a7f
+HASH frame 4000 mem f710164e0b3e2a33 vram cc47cd08caca3fb8
+HASH frame 6000 mem 348f6eaff8b227a4 vram ca8320f067b44bd5
+PEEK frame 7600 39D4:61C8 255
+HASH frame 8000 mem 68067833795ffcbe vram 510532fa0d4da6de
+PEEK frame 9199 39D4:61C8 1
+PEEK frame 9199 39D4:61CB 3000
+PEEK frame 9199 39D4:8BFB 191000
+HASH frame 9200 mem ac1f105977df27d7 vram 2150c34d8c568c64

@@ -1,0 +1,633 @@
+{
+ "table": "ads",
+ "resource": 204,
+ "record_size": 24,
+ "count": 51,
+ "records": [
+  {
+   "id": 51,
+   "days": 3,
+   "spots": 4,
+   "min_audience_class": 1,
+   "target_group": 0,
+   "genre_rule": [
+    0,
+    0,
+    0
+   ],
+   "holder": 0,
+   "fee": 26500,
+   "penalty": 14000,
+   "text": {
+    "de": [
+     "Testwerbung 51",
+     "Eine ausgedachte Werbung für die Tests."
+    ],
+    "en": [
+     "Test ad 51",
+     "A made-up ad for the tests."
+    ]
+   }
+  },
+  {
+   "id": 52,
+   "days": 2,
+   "spots": 3,
+   "min_audience_class": 1,
+   "target_group": 0,
+   "genre_rule": [
+    0,
+    0,
+    0
+   ],
+   "holder": 0,
+   "fee": 16000,
+   "penalty": 6500,
+   "text": {
+    "de": [
+     "Testwerbung 52",
+     "Eine ausgedachte Werbung für die Tests."
+    ],
+    "en": [
+     "Test ad 52",
+     "A made-up ad for the tests."
+    ]
+   }
+  },
+  {
+   "id": 53,
+   "days": 3,
+   "spots": 5,
+   "min_audience_class": 1,
+   "target_group": 0,
+   "genre_rule": [
+    0,
+    0,
+    0
+   ],
+   "holder": 0,
+   "fee": 37000,
+   "penalty": 17000,
+   "text": {
+    "de": [
+     "Testwerbung 53",
+     "Eine ausgedachte Werbung für die Tests."
+    ],
+    "en": [
+     "Test ad 53",
+     "A made-up ad for the tests."
+    ]
+   }
+  },
+  {
+   "id": 54,
+   "days": 7,
+   "spots": 14,
+   "min_audience_class": 2,
+   "target_group": 0,
+   "genre_rule": [
+    0,
+    0,
+    0
+   ],
+   "holder": 0,
+   "fee": 240000,
+   "penalty": 0,
+   "text": {
+    "de": [
+     "Testwerbung 54",
+     "Eine ausgedachte Werbung für die Tests."
+    ],
+    "en": [
+     "Test ad 54",
+     "A made-up ad for the tests."
+    ]
+   }
+  },
+  {
+   "id": 55,
+   "days": 2,
+   "spots": 3,
+   "min_audience_class": 2,
+   "target_group": 0,
+   "genre_rule": [
+    0,
+    0,
+    0
+   ],
+   "holder": 0,
+   "fee": 52000,
+   "penalty": 37000,
+   "text": {
+    "de": [
+     "Testwerbung 55",
+     "Eine ausgedachte Werbung für die Tests."
+    ],
+    "en": [
+     "Test ad 55",
+     "A made-up ad for the tests."
+    ]
+   }
+  },
+  {
+   "id": 56,
+   "days": 3,
+   "spots": 3,
+   "min_audience_class": 3,
+   "target_group": 0,
+   "genre_rule": [
+    6,
+    0,
+    0
+   ],
+   "holder": 0,
+   "fee": 130000,
+   "penalty": 200000,
+   "text": {
+    "de": [
+     "Testwerbung 56",
+     "Eine ausgedachte Werbung für die Tests."
+    ],
+    "en": [
+     "Test ad 56",
+     "A made-up ad for the tests."
+    ]
+   }
+  },
+  {
+   "id": 57,
+   "days": 1,
+   "spots": 2,
+   "min_audience_class": 3,
+   "target_group": 0,
+   "genre_rule": [
+    0,
+    0,
+    0
+   ],
+   "holder": 0,
+   "fee": 51000,
+   "penalty": 0,
+   "text": {
+    "de": [
+     "Testwerbung 57",
+     "Eine ausgedachte Werbung für die Tests."
+    ],
+    "en": [
+     "Test ad 57",
+     "A made-up ad for the tests."
+    ]
+   }
+  },
+  {
+   "id": 58,
+   "days": 3,
+   "spots": 4,
+   "min_audience_class": 3,
+   "target_group": 0,
+   "genre_rule": [
+    -6,
+    0,
+    0
+   ],
+   "holder": 0,
+   "fee": 90000,
+   "penalty": 79000,
+   "text": {
+    "de": [
+     "Testwerbung 58",
+     "Eine ausgedachte Werbung für die Tests."
+    ],
+    "en": [
+     "Test ad 58",
+     "A made-up ad for the tests."
+    ]
+   }
+  },
+  {
+   "id": 59,
+   "days": 3,
+   "spots": 5,
+   "min_audience_class": 3,
+   "target_group": 0,
+   "genre_rule": [
+    0,
+    0,
+    0
+   ],
+   "holder": 0,
+   "fee": 100000,
+   "penalty": 95000,
+   "text": {
+    "de": [
+     "Testwerbung 59",
+     "Eine ausgedachte Werbung für die Tests."
+    ],
+    "en": [
+     "Test ad 59",
+     "A made-up ad for the tests."
+    ]
+   }
+  },
+  {
+   "id": 60,
+   "days": 3,
+   "spots": 3,
+   "min_audience_class": 4,
+   "target_group": 0,
+   "genre_rule": [
+    -2,
+    -9,
+    -5
+   ],
+   "holder": 0,
+   "fee": 110000,
+   "penalty": 100000,
+   "text": {
+    "de": [
+     "Testwerbung 60",
+     "Eine ausgedachte Werbung für die Tests."
+    ],
+    "en": [
+     "Test ad 60",
+     "A made-up ad for the tests."
+    ]
+   }
+  },
+  {
+   "id": 61,
+   "days": 2,
+   "spots": 2,
+   "min_audience_class": 4,
+   "target_group": 0,
+   "genre_rule": [
+    1,
+    0,
+    0
+   ],
+   "holder": 0,
+   "fee": 150000,
+   "penalty": 100000,
+   "text": {
+    "de": [
+     "Testwerbung 61",
+     "Eine ausgedachte Werbung für die Tests."
+    ],
+    "en": [
+     "Test ad 61",
+     "A made-up ad for the tests."
+    ]
+   }
+  },
+  {
+   "id": 62,
+   "days": 2,
+   "spots": 4,
+   "min_audience_class": 4,
+   "target_group": 0,
+   "genre_rule": [
+    0,
+    0,
+    0
+   ],
+   "holder": 0,
+   "fee": 150000,
+   "penalty": 98000,
+   "text": {
+    "de": [
+     "Testwerbung 62",
+     "Eine ausgedachte Werbung für die Tests."
+    ],
+    "en": [
+     "Test ad 62",
+     "A made-up ad for the tests."
+    ]
+   }
+  },
+  {
+   "id": 63,
+   "days": 1,
+   "spots": 2,
+   "min_audience_class": 5,
+   "target_group": 0,
+   "genre_rule": [
+    2,
+    0,
+    0
+   ],
+   "holder": 0,
+   "fee": 350000,
+   "penalty": 6000000,
+   "text": {
+    "de": [
+     "Testwerbung 63",
+     "Eine ausgedachte Werbung für die Tests."
+    ],
+    "en": [
+     "Test ad 63",
+     "A made-up ad for the tests."
+    ]
+   }
+  },
+  {
+   "id": 64,
+   "days": 3,
+   "spots": 3,
+   "min_audience_class": 5,
+   "target_group": 0,
+   "genre_rule": [
+    0,
+    0,
+    0
+   ],
+   "holder": 0,
+   "fee": 160000,
+   "penalty": 150000,
+   "text": {
+    "de": [
+     "Testwerbung 64",
+     "Eine ausgedachte Werbung für die Tests."
+    ],
+    "en": [
+     "Test ad 64",
+     "A made-up ad for the tests."
+    ]
+   }
+  },
+  {
+   "id": 65,
+   "days": 2,
+   "spots": 3,
+   "min_audience_class": 5,
+   "target_group": 0,
+   "genre_rule": [
+    0,
+    0,
+    0
+   ],
+   "holder": 0,
+   "fee": 150000,
+   "penalty": 94000,
+   "text": {
+    "de": [
+     "Testwerbung 65",
+     "Eine ausgedachte Werbung für die Tests."
+    ],
+    "en": [
+     "Test ad 65",
+     "A made-up ad for the tests."
+    ]
+   }
+  },
+  {
+   "id": 66,
+   "days": 2,
+   "spots": 2,
+   "min_audience_class": 6,
+   "target_group": 0,
+   "genre_rule": [
+    9,
+    12,
+    0
+   ],
+   "holder": 0,
+   "fee": 725000,
+   "penalty": 600000,
+   "text": {
+    "de": [
+     "Testwerbung 66",
+     "Eine ausgedachte Werbung für die Tests."
+    ],
+    "en": [
+     "Test ad 66",
+     "A made-up ad for the tests."
+    ]
+   }
+  },
+  {
+   "id": 67,
+   "days": 3,
+   "spots": 4,
+   "min_audience_class": 6,
+   "target_group": 0,
+   "genre_rule": [
+    0,
+    0,
+    0
+   ],
+   "holder": 0,
+   "fee": 530000,
+   "penalty": 380000,
+   "text": {
+    "de": [
+     "Testwerbung 67",
+     "Eine ausgedachte Werbung für die Tests."
+    ],
+    "en": [
+     "Test ad 67",
+     "A made-up ad for the tests."
+    ]
+   }
+  },
+  {
+   "id": 68,
+   "days": 2,
+   "spots": 3,
+   "min_audience_class": 6,
+   "target_group": 0,
+   "genre_rule": [
+    0,
+    0,
+    0
+   ],
+   "holder": 0,
+   "fee": 440000,
+   "penalty": 370000,
+   "text": {
+    "de": [
+     "Testwerbung 68",
+     "Eine ausgedachte Werbung für die Tests."
+    ],
+    "en": [
+     "Test ad 68",
+     "A made-up ad for the tests."
+    ]
+   }
+  },
+  {
+   "id": 69,
+   "days": 3,
+   "spots": 3,
+   "min_audience_class": 7,
+   "target_group": 0,
+   "genre_rule": [
+    0,
+    0,
+    0
+   ],
+   "holder": 0,
+   "fee": 580000,
+   "penalty": 560000,
+   "text": {
+    "de": [
+     "Testwerbung 69",
+     "Eine ausgedachte Werbung für die Tests."
+    ],
+    "en": [
+     "Test ad 69",
+     "A made-up ad for the tests."
+    ]
+   }
+  },
+  {
+   "id": 70,
+   "days": 3,
+   "spots": 4,
+   "min_audience_class": 7,
+   "target_group": 0,
+   "genre_rule": [
+    0,
+    0,
+    0
+   ],
+   "holder": 0,
+   "fee": 970000,
+   "penalty": 920000,
+   "text": {
+    "de": [
+     "Testwerbung 70",
+     "Eine ausgedachte Werbung für die Tests."
+    ],
+    "en": [
+     "Test ad 70",
+     "A made-up ad for the tests."
+    ]
+   }
+  },
+  {
+   "id": 71,
+   "days": 3,
+   "spots": 4,
+   "min_audience_class": 8,
+   "target_group": 0,
+   "genre_rule": [
+    11,
+    12,
+    14
+   ],
+   "holder": 0,
+   "fee": 1490000,
+   "penalty": 1430000,
+   "text": {
+    "de": [
+     "Testwerbung 71",
+     "Eine ausgedachte Werbung für die Tests."
+    ],
+    "en": [
+     "Test ad 71",
+     "A made-up ad for the tests."
+    ]
+   }
+  },
+  {
+   "id": 72,
+   "days": 3,
+   "spots": 5,
+   "min_audience_class": 8,
+   "target_group": 0,
+   "genre_rule": [
+    0,
+    0,
+    0
+   ],
+   "holder": 0,
+   "fee": 2450000,
+   "penalty": 1560000,
+   "text": {
+    "de": [
+     "Testwerbung 72",
+     "Eine ausgedachte Werbung für die Tests."
+    ],
+    "en": [
+     "Test ad 72",
+     "A made-up ad for the tests."
+    ]
+   }
+  },
+  {
+   "id": 73,
+   "days": 4,
+   "spots": 2,
+   "min_audience_class": 9,
+   "target_group": 0,
+   "genre_rule": [
+    7,
+    0,
+    0
+   ],
+   "holder": 0,
+   "fee": 2670000,
+   "penalty": 2570000,
+   "text": {
+    "de": [
+     "Testwerbung 73",
+     "Eine ausgedachte Werbung für die Tests."
+    ],
+    "en": [
+     "Test ad 73",
+     "A made-up ad for the tests."
+    ]
+   }
+  },
+  {
+   "id": 74,
+   "days": 3,
+   "spots": 3,
+   "min_audience_class": 9,
+   "target_group": 0,
+   "genre_rule": [
+    0,
+    0,
+    0
+   ],
+   "holder": 0,
+   "fee": 1930000,
+   "penalty": 1240000,
+   "text": {
+    "de": [
+     "Testwerbung 74",
+     "Eine ausgedachte Werbung für die Tests."
+    ],
+    "en": [
+     "Test ad 74",
+     "A made-up ad for the tests."
+    ]
+   }
+  },
+  {
+   "id": 75,
+   "days": 3,
+   "spots": 3,
+   "min_audience_class": 10,
+   "target_group": 0,
+   "genre_rule": [
+    0,
+    0,
+    0
+   ],
+   "holder": 0,
+   "fee": 6000000,
+   "penalty": 6000000,
+   "text": {
+    "de": [
+     "Testwerbung 75",
+     "Eine ausgedachte Werbung für die Tests."
+    ],
+    "en": [
+     "Test ad 75",
+     "A made-up ad for the tests."
+    ]
+   }
+  }
+ ]
+}

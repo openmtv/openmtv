@@ -1,0 +1,29 @@
+// the launcher's window on Windows: make launcher-win (windres -I build/icons)
+#include <winver.h>
+
+1 ICON "icon.ico"
+1 24 "madtv.manifest"
+
+1 VERSIONINFO
+FILEVERSION 1,0,0,0
+PRODUCTVERSION 1,0,0,0
+FILEOS VOS_NT_WINDOWS32
+FILETYPE VFT_APP
+BEGIN
+  BLOCK "StringFileInfo"
+  BEGIN
+    BLOCK "040704B0"
+    BEGIN
+      VALUE "FileDescription", "OpenMTV"
+      VALUE "ProductName", "OpenMTV"
+      VALUE "InternalName", "openmtv"
+      VALUE "OriginalFilename", "openmtv.exe"
+      VALUE "FileVersion", "1.0"
+      VALUE "ProductVersion", "1.0"
+    END
+  END
+  BLOCK "VarFileInfo"
+  BEGIN
+    VALUE "Translation", 0x0407, 1200
+  END
+END

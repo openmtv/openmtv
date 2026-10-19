@@ -1,0 +1,193 @@
+# fix: case-owner (05FF:090A room_library_click -> 1C18:12F2 program_withdraw leaves a tape in the case ownerless and on the market)
+# A library tape carried in the case is ownerless and "on the market"; leaving the
+# film agency runs dealer_refill (24B8:04B9) before bag_unload_to_library (222A:061E), so the dealer
+# offers the tape the player carries, and the unload then files it back into the player's library.
+# Setup as tests/fixes/library_shelf_owner.txt: film 66 alone in player 1's genre 6 (owner 1, flags 0x04);
+# 3000-3100 drain the market (11 x: empty the 10 dealer slots, call dealer_refill) so the refill's random
+# pick is forced.  Steps: 2900 library door; 3200 archivist; 3400 "Cultural program"; 3600 take tape 0
+# (program_withdraw: owner 0, flags |= 0x20); 3800 drop it into the case; 4000 Esc; 4200 test poke: walk
+# to the film agency (floor 7 door 0); 6000 Esc leaves the agency (nothing bought, nothing sold).
+# Classic: 3900 bag[0] DS:2483 = 66, owner 4DA5:05FB = 0, flags 4DA5:05FC = 0x24; 5900 (inside) dealer
+#   slot 1 DS:19F5 = 0; 6300 dealer slot 1 = 66 on offer (days DS:19FC >= 0), flags 0x04 (refill cleared
+#   0x20), case empty, film 66 back on the shelf (DS:6FB5 = 66, count DS:6FEB = 1) with owner 1.
+#   5900: the human is in the film agency (room DS:838C = 8) in both modes.
+# expect classic 3110 word 39D4:19F5 == 0
+# expect classic 5900 word 39D4:838C == 8
+# expect classic 3900 word 39D4:2483 == 66
+# expect classic 3900 byte 4DA5:05FB == 0
+# expect classic 3900 byte 4DA5:05FC == 36
+# expect classic 5900 word 39D4:19F5 == 0
+# expect classic 6300 word 39D4:19F5 == 66
+# expect classic 6300 word 39D4:6FB5 == 66
+# expect classic 6300 byte 4DA5:05FB == 1
+# expect classic 6300 byte 4DA5:05FC == 4
+# expect classic 6300 word 39D4:734A == 0
+# Fixed: film 66 keeps owner 1 in the case (flags stay 0x24, the owner alone keeps it off the
+#   market, as with "library-owner"); leaving the agency, the refill offers nothing (slot 1 = 0) and
+#   the unload files it back.
+# expect fixed   3110 word 39D4:19F5 == 0
+# expect fixed   3900 word 39D4:2483 == 66
+# expect fixed   5900 word 39D4:838C == 8
+# expect fixed   3900 byte 4DA5:05FB == 1
+# expect fixed   6300 word 39D4:19F5 == 0
+# expect fixed   6300 word 39D4:6FB5 == 66
+# expect fixed   6300 byte 4DA5:05FB == 1
+# expect fixed   6300 byte 4DA5:05FC == 36
+# expect fixed   6300 word 39D4:734A == 0
+400 key esc
+1000 click 64 100
+1300 click 172 185
+2100 click 230 60
+2500 click 230 60
+2550 poke16 39D4:6FB5 66
+2550 poke16 39D4:6FEA 256
+2550 poke16 4DA5:05FB 1025
+2550 poke16 4DA5:05FC 4
+2900 click 224 68
+3000 poke16 39D4:19FB 39936
+3000 poke16 39D4:1A03 39936
+3000 poke16 39D4:1A0B 39936
+3000 poke16 39D4:1A13 39936
+3000 poke16 39D4:1A1B 39936
+3000 poke16 39D4:1A23 39936
+3000 poke16 39D4:1A2B 39936
+3000 poke16 39D4:1A33 39936
+3000 poke16 39D4:1A3B 39936
+3000 poke16 39D4:1A43 39936
+3000 call 24B8:04B9
+3010 poke16 39D4:19FB 39936
+3010 poke16 39D4:1A03 39936
+3010 poke16 39D4:1A0B 39936
+3010 poke16 39D4:1A13 39936
+3010 poke16 39D4:1A1B 39936
+3010 poke16 39D4:1A23 39936
+3010 poke16 39D4:1A2B 39936
+3010 poke16 39D4:1A33 39936
+3010 poke16 39D4:1A3B 39936
+3010 poke16 39D4:1A43 39936
+3010 call 24B8:04B9
+3020 poke16 39D4:19FB 39936
+3020 poke16 39D4:1A03 39936
+3020 poke16 39D4:1A0B 39936
+3020 poke16 39D4:1A13 39936
+3020 poke16 39D4:1A1B 39936
+3020 poke16 39D4:1A23 39936
+3020 poke16 39D4:1A2B 39936
+3020 poke16 39D4:1A33 39936
+3020 poke16 39D4:1A3B 39936
+3020 poke16 39D4:1A43 39936
+3020 call 24B8:04B9
+3030 poke16 39D4:19FB 39936
+3030 poke16 39D4:1A03 39936
+3030 poke16 39D4:1A0B 39936
+3030 poke16 39D4:1A13 39936
+3030 poke16 39D4:1A1B 39936
+3030 poke16 39D4:1A23 39936
+3030 poke16 39D4:1A2B 39936
+3030 poke16 39D4:1A33 39936
+3030 poke16 39D4:1A3B 39936
+3030 poke16 39D4:1A43 39936
+3030 call 24B8:04B9
+3040 poke16 39D4:19FB 39936
+3040 poke16 39D4:1A03 39936
+3040 poke16 39D4:1A0B 39936
+3040 poke16 39D4:1A13 39936
+3040 poke16 39D4:1A1B 39936
+3040 poke16 39D4:1A23 39936
+3040 poke16 39D4:1A2B 39936
+3040 poke16 39D4:1A33 39936
+3040 poke16 39D4:1A3B 39936
+3040 poke16 39D4:1A43 39936
+3040 call 24B8:04B9
+3050 poke16 39D4:19FB 39936
+3050 poke16 39D4:1A03 39936
+3050 poke16 39D4:1A0B 39936
+3050 poke16 39D4:1A13 39936
+3050 poke16 39D4:1A1B 39936
+3050 poke16 39D4:1A23 39936
+3050 poke16 39D4:1A2B 39936
+3050 poke16 39D4:1A33 39936
+3050 poke16 39D4:1A3B 39936
+3050 poke16 39D4:1A43 39936
+3050 call 24B8:04B9
+3060 poke16 39D4:19FB 39936
+3060 poke16 39D4:1A03 39936
+3060 poke16 39D4:1A0B 39936
+3060 poke16 39D4:1A13 39936
+3060 poke16 39D4:1A1B 39936
+3060 poke16 39D4:1A23 39936
+3060 poke16 39D4:1A2B 39936
+3060 poke16 39D4:1A33 39936
+3060 poke16 39D4:1A3B 39936
+3060 poke16 39D4:1A43 39936
+3060 call 24B8:04B9
+3070 poke16 39D4:19FB 39936
+3070 poke16 39D4:1A03 39936
+3070 poke16 39D4:1A0B 39936
+3070 poke16 39D4:1A13 39936
+3070 poke16 39D4:1A1B 39936
+3070 poke16 39D4:1A23 39936
+3070 poke16 39D4:1A2B 39936
+3070 poke16 39D4:1A33 39936
+3070 poke16 39D4:1A3B 39936
+3070 poke16 39D4:1A43 39936
+3070 call 24B8:04B9
+3080 poke16 39D4:19FB 39936
+3080 poke16 39D4:1A03 39936
+3080 poke16 39D4:1A0B 39936
+3080 poke16 39D4:1A13 39936
+3080 poke16 39D4:1A1B 39936
+3080 poke16 39D4:1A23 39936
+3080 poke16 39D4:1A2B 39936
+3080 poke16 39D4:1A33 39936
+3080 poke16 39D4:1A3B 39936
+3080 poke16 39D4:1A43 39936
+3080 call 24B8:04B9
+3090 poke16 39D4:19FB 39936
+3090 poke16 39D4:1A03 39936
+3090 poke16 39D4:1A0B 39936
+3090 poke16 39D4:1A13 39936
+3090 poke16 39D4:1A1B 39936
+3090 poke16 39D4:1A23 39936
+3090 poke16 39D4:1A2B 39936
+3090 poke16 39D4:1A33 39936
+3090 poke16 39D4:1A3B 39936
+3090 poke16 39D4:1A43 39936
+3090 call 24B8:04B9
+3100 poke16 39D4:19FB 39936
+3100 poke16 39D4:1A03 39936
+3100 poke16 39D4:1A0B 39936
+3100 poke16 39D4:1A13 39936
+3100 poke16 39D4:1A1B 39936
+3100 poke16 39D4:1A23 39936
+3100 poke16 39D4:1A2B 39936
+3100 poke16 39D4:1A33 39936
+3100 poke16 39D4:1A3B 39936
+3100 poke16 39D4:1A43 39936
+3100 call 24B8:04B9
+3110 peek16 39D4:19F5
+3200 click 255 35
+3400 click 180 56
+3600 click 164 60
+3800 click 40 60
+3900 peek16 39D4:734A
+3900 peek16 39D4:2483
+3900 peek8 39D4:6FEB
+3900 peek8 4DA5:05FB
+3900 peek8 4DA5:05FC
+4000 key esc
+4200 poke16 39D4:7B48 7
+4200 poke16 39D4:7B54 0
+4200 poke16 39D4:7B4A 0
+4200 poke16 39D4:7B46 153
+5900 peek16 39D4:19F5
+5900 peek16 39D4:2483
+6000 key esc
+6300 peek16 39D4:19F5
+6300 peek8 39D4:19FC
+6300 peek16 39D4:734A
+6300 peek8 39D4:6FEB
+6300 peek16 39D4:6FB5
+6300 peek8 4DA5:05FB
+6300 peek8 4DA5:05FC
+6400 quit

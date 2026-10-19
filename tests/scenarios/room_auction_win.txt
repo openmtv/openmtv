@@ -1,0 +1,110 @@
+# room_auction_win: film auction at the film agency (room 8, Mr. Jabble; needs image >= 10, the human
+# starts with 34): bid on a lot, take the bid back, bid again, fail on a lot that is too expensive,
+# win the lot at the day change, then carry the won film from the library (room 4) back to the agency
+# and sell it, which puts it into the auction again.  English.
+# Steps: new game; dismiss the boss's two messages; 2600 test poke: human figure 0 walks to the film
+#   agency (poke16 7B48 target_floor 7, 7B54 target_door 0, 7B4A final_x 0, 7B46 target_x 0x99).
+#   4050 click Mr. Jabble (hotspot 0x23) -> auction board; 4250 hover lot 1 -> info "Who framed Roger
+#   Rabbit?" (film 47, bid $166 000); 4400 bid (pending), 4550 click again = bid withdrawn, 4700 bid;
+#   4900 lot 5 "Live Aid" ($770 000) -> "Not enough money!"; 5100 Esc; 5200 Esc closes the board;
+#   5400 Esc leaves -> the pending bid is committed (frame 5700: lot 1 DS:1B16 = 47, bid DS:1B18/1B1A =
+#   176000 = 166 000 + 10 000, bidder DS:1B1C = 1).
+#   5800 test poke: game clock g_clock_acc (DS:6143, u32, game seconds * 50 since 17:00) = 1 435 000
+#   (00:58) instead of waiting ~65 000 frames -> the day ends; new_day / auction_daily give the lot to
+#   the high bidder.  Day 2: 7500..8400 Esc x4 (boss); 8500 click the library door; 8850 genre list;
+#   9050 "Comedy" -> film 47; 9250 take it; 9450 into the case; 9650 Esc; 9850 test poke: walk to the
+#   film agency; 11150 hover the case tape; 11200 take it; 11400 drop it on Mr. Jabble -> a film from
+#   the auction pool (flags bit 6) goes back into a free auction lot, the seller gets its price;
+#   11550 open the board (lot 9 = film 47); 11800 Esc; 11900 Esc leaves.
+# Observable (PEEK lines): frame 8500 (day 2, DS:71E4 = 2): film 47 owner (film table 4DA5:0008 +
+#   47*0x17 + 5) = 1, library genre 4 of player 1 count DS:6FE9 = 1, id DS:6FA5 = 47, money DS:8BFB/8BFD
+#   = -9000 (200 000 - bid 176 000 - daily costs).  Frame 12200: auction lot 9 (DS:1B0D + 9*9) program
+#   DS:1B5E = 47, bid DS:1B60/1B62 = 166000, seller DS:1B65 = 1; money = 157000 (25928 + 2*65536);
+#   ledger films sold DS:7221/7223 = 166000; library genre 4 count DS:6FE9 = 0.
+# Content pokes (values the machine-level run already has, so its hashes do not change): the
+#   difftest run (--interp --difftest) plays another game, because random_n() reseeds from the PIT
+#   timer and the tests freeze the timers; the pokes give it the same lots.  3700: auction lot 1
+#   (g_auction DS:1B0D + 9*lot: id, u32 bid, bidder, seller, idle days) = film 47 at $166 000 from
+#   seller 6, lot 5 = film 164 at $700 000, and the two films' owner/flags (4DA5:0446, 4DA5:0EC9).
+# end 12400
+400 key esc
+1000 click 64 100
+1300 click 172 185
+2000 hash
+2100 click 230 60
+2500 click 230 60
+2600 poke16 39D4:7B48 7
+2600 poke16 39D4:7B54 0
+2600 poke16 39D4:7B4A 0
+2600 poke16 39D4:7B46 153
+3700 poke16 39D4:1B16 47
+3700 poke16 39D4:1B18 34928
+3700 poke16 39D4:1B1A 2
+3700 poke16 39D4:1B1C 1536
+3700 poke16 39D4:1B1D 6
+3700 poke16 39D4:1B3A 164
+3700 poke16 39D4:1B3C 44640
+3700 poke16 39D4:1B3E 10
+3700 poke16 39D4:1B40 2304
+3700 poke16 39D4:1B41 9
+3700 poke16 4DA5:0446 19206
+3700 poke16 4DA5:0EC9 16393
+4000 hash
+4050 click 40 35
+4250 goto 80 20
+4400 click 80 20
+4550 click 80 20
+4700 click 80 20
+4850 goto 80 95
+4900 click 80 95
+5100 key esc
+5200 key esc
+5400 key esc
+5700 peek16 39D4:1B16
+5700 peek16 39D4:1B18
+5700 peek16 39D4:1B1A
+5700 peek8 39D4:1B1C
+5800 poke16 39D4:6143 58840
+5800 poke16 39D4:6145 21
+6000 hash
+7500 key esc
+7800 key esc
+8000 hash
+8100 key esc
+8400 key esc
+8500 peek16 39D4:71E4
+8500 peek8 4DA5:0446
+8500 peek8 39D4:6FE9
+8500 peek16 39D4:6FA5
+8500 peek16 39D4:8BFB
+8500 peek16 39D4:8BFD
+8500 click 224 68
+8850 click 255 35
+9050 click 180 40
+9250 click 164 60
+9450 click 40 60
+9650 key esc
+9850 poke16 39D4:7B48 7
+9850 poke16 39D4:7B54 0
+9850 poke16 39D4:7B4A 0
+9850 poke16 39D4:7B46 153
+10000 hash
+11150 goto 228 45
+11200 click 228 45
+11400 click 40 55
+11550 click 40 35
+11800 key esc
+11900 key esc
+12000 hash
+12200 peek16 39D4:838C
+12200 peek16 39D4:1B5E
+12200 peek16 39D4:1B60
+12200 peek16 39D4:1B62
+12200 peek8 39D4:1B65
+12200 peek16 39D4:8BFB
+12200 peek16 39D4:8BFD
+12200 peek16 39D4:7221
+12200 peek16 39D4:7223
+12200 peek8 39D4:6FE9
+12400 hash
+12401 quit

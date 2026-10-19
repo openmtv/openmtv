@@ -1,0 +1,18 @@
+# A spectator seat with input (multiplayer stage 2, tools/seattest.py).
+# play tests/session1.txt until 7000
+# Seat 1 joins at frame 5914 (seat 0 in the building of a running game),
+# its cursor shown in the middle of the building.  It moves the cursor onto
+# the studio's door on floor 6 (the door's name shows in its view only),
+# then tries a click and a key, which a spectator ignores.  Seat 0's game
+# must stay the single-player game; the HASH seat lines (seat 1's screen)
+# must be those in spectator_input.seats.
+6000 seat 1 hash
+6010 seat 1 mouse 125 40
+6100 seat 1 hash
+6200 seat 1 click 200 70
+6200 seat 1 key esc
+6400 seat 1 hash
+6500 seat 1 move -60 30
+6600 seat 1 hash
+7000 hash
+7001 quit

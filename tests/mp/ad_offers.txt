@@ -1,0 +1,43 @@
+# The ad agency with 17 offers in a network game (the option --ad-offers, tools/seattest.py): two
+# humans, a new game (--seed 29) as tests/mp/ad_agency; seat 1 (station 2) is walked to the ad
+# agency (test pokes of figure 1: floor 10, door 0).  A new game has only the original's 10
+# offers (the start savegame); 5000 seat 1 takes the folder at 116 92 (front row: offer 6),
+# 5200 puts it into the briefcase, 5400 the agent signs: the agency refills -- the empty place
+# and offers 11..17 (segment EE00 = EC50 relative to the load segment, 7 bytes each).  5800 seat
+# 1 takes offer 16 from the back row (171 50), 6000 into the briefcase, 6200 signs: station 2
+# holds two contracts (g_player_ad_count(2) DS:76AC).  Every machine the same: both seats' offers,
+# contracts and screens as recorded.
+# humans 1,2
+# options --new-game --seed 29 --ad-offers=17
+3300 key esc
+3350 seat 1 key esc
+3600 seat 1 click 30 60
+3800 seat 1 click 30 60
+3900 poke16 39D4:7B66 10
+3900 poke16 39D4:7B72 0
+3900 poke16 39D4:7B68 0
+3900 poke16 39D4:7B64 153
+4900 peek16 EC50:0000
+4900 seat 1 peek16 39D4:838C
+5000 seat 1 click 116 92
+5200 seat 1 click 251 63
+5400 seat 1 click 116 37
+5700 peek16 EC50:0000
+5700 peek16 EC50:0007
+5700 peek16 EC50:000E
+5700 peek16 EC50:0015
+5700 peek16 EC50:001C
+5700 peek16 EC50:0023
+5700 peek16 EC50:002A
+5700 seat 1 peek16 EC50:0023
+5700 seat 1 peek16 39D4:76AC
+5800 seat 1 click 171 50
+6000 seat 1 click 251 63
+6200 seat 1 click 116 37
+6500 seat 1 peek16 39D4:76AC
+6500 seat 1 peek16 39D4:1BFC
+6500 seat 1 peek16 39D4:1C03
+6500 peek16 EC50:0023
+6500 hash
+6501 seat 1 hash
+6600 quit

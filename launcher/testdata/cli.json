@@ -1,0 +1,117 @@
+{
+ "--lifted": [
+  2,
+  "",
+  "play: --lifted: build/mtv is not built yet (make)\n"
+ ],
+ "--mod without a value": [
+  2,
+  "",
+  "play: --mod needs a value -- the options: ./play.sh -h\n"
+ ],
+ "--record": [
+  2,
+  "",
+  "play: --record: build/mtv is not built yet (make)\n"
+ ],
+ "--scale without a value": [
+  2,
+  "",
+  "play: --scale needs a value -- the options: ./play.sh -h\n"
+ ],
+ "a pack twice": [
+  2,
+  "",
+  "play: the mod test-filme+test-filme was not built: a mod twice in test-filme+test-filme\n"
+ ],
+ "a pack unknown": [
+  2,
+  "",
+  "play: the mod gibtsnicht was not built: no mod gibtsnicht\n"
+ ],
+ "a stray word": [
+  2,
+  "",
+  "play: unknown option \"x\" -- the options: ./play.sh -h\n"
+ ],
+ "bare --settings": [
+  2,
+  "",
+  "play: --settings=FILE (with =) -- the options: ./play.sh -h\n"
+ ],
+ "build: a pack": [
+  0,
+  "ROOT/build/mods/test-serien\n",
+  ""
+ ],
+ "build: no name": [
+  2,
+  "",
+  "openmtv build NAME (or A+B+C) [--game DIR]\n"
+ ],
+ "build: unknown pack": [
+  1,
+  "",
+  "openmtv build: no mod gibtsnicht\n"
+ ],
+ "empty --settings=": [
+  2,
+  "",
+  "play: --settings=FILE needs a file -- the options: ./play.sh -h\n"
+ ],
+ "help": [
+  0,
+  "OpenMTV -- how to start it\n\n  ./play.sh                  the launcher in the browser: the contents, the settings,\n                             play, multiplayer (LAN or internet), the content editor\n  ./play.sh editor           the content editor in the browser: films, series, ads, news\n  ./play.sh --direct         the game at once, as the settings have it\n  ./play.sh d | e            the game at once, in German | English this time\n  ./play.sh OPTION ...       the game at once, with these options this time:\n\n    --classic                exactly the original (none of its bugs fixed)\n    --fixes=a,b              only the named bug fixes\n    --mod NAME | A+B+C       with the content pack mods/NAME (several: in this order)\n    --fullscreen             fullscreen (F11 or Alt+Enter switch while playing)\n    --scale N                the window N times 320x240\n    --aspect 4:3|square      4:3 like a VGA monitor, or square pixels\n    --filter sharp|nearest|linear|mmpx|hr-pixel\n                             sharp: even pixels at any size; mmpx: smoothed edges;\n                             hr-pixel: drawn at 4 times the resolution (a finer font,\n                             exact frames and bars), the pictures' pixels as they are\n    --integer                whole-number scale factors only\n    --mouse captured|free|system\n                             free: the system pointer moves the game's cursor;\n                             system: the system's arrow is the game's\n    --start-money=N          the cash of a new game, in dollars (the original: 200000)\n    --credit-line=N          the most the boss lends (image below 50), in dollars:\n                             +100000 a day from day 2 (the original: 300000);\n                             original: the original's credit, fix credit-repay off\n    --terror-damage=N        what a terrorist's bomb costs the owner of the room, in\n                             dollars (the original: 50000; 0: nothing, no message)\n    --sammy-prize=N[,N,N,N]  the Sammy winner's prize money, in dollars: one amount, or\n                             news, culture, shows, series (the original: none)\n    --fourth-speed[=yes|no]  a fourth game speed, twice the fastest\n    --fast-rooms[=yes|no]    room changes at once, without the wipe and loading wait\n    --cast-fit[=yes|no]      the shop shows each actor's fit for the role, in per cent\n    --series-topicality[=yes|no]\n                             the series card shows how topical the series still is\n    --ai-improve=off|normal|strong\n                             computer players build up their transmitters when you\n                             build up yours, a while later (the original: off)\n    --ad-offers=N            the contracts the ad agency offers at a time, 10 to 17\n                             (the original: 10)\n    --film-offers=N          the films and series the film dealer offers at a time,\n                             10 to 17 (the original: 10)\n    --settings=FILE          another settings file\n    --print                  the game's command line, printed instead of started\n    -h, --help               this help\n\nThe settings: BASE/cfg-en/madtv/settings.ini\nThe original game files (SOURCE1.RSC, SOURCE2.RSC): BASE/game (GAME=...)\n",
+  ""
+ ],
+ "help, German": [
+  0,
+  "OpenMTV -- so startet man es\n\n  ./play.sh                  der Launcher im Browser: Inhalte, Einstellungen, Spielen,\n                             Mehrspieler (LAN oder Internet), der Inhalts-Editor\n  ./play.sh editor           der Inhalts-Editor im Browser: Filme, Serien, Werbung, Nachrichten\n  ./play.sh --direct         sofort das Spiel, so wie die Einstellungen es sagen\n  ./play.sh d | e            sofort das Spiel, diesmal auf Deutsch | Englisch\n  ./play.sh OPTION ...       sofort das Spiel, diesmal mit diesen Optionen:\n\n    --classic                genau das Original (keiner seiner Fehler behoben)\n    --fixes=a,b              nur die genannten Fehlerbehebungen\n    --mod NAME | A+B+C       mit dem Inhaltspaket mods/NAME (mehrere: in dieser Folge)\n    --fullscreen             Vollbild (F11 oder Alt+Enter schalten beim Spielen um)\n    --scale N                das Fenster N-mal 320x240\n    --aspect 4:3|square      4:3 wie ein VGA-Monitor, oder quadratische Pixel\n    --filter sharp|nearest|linear|mmpx|hr-pixel\n                             sharp: gleichmäßige Pixel in jeder Größe; mmpx: geglättete Kanten;\n                             hr-pixel: in vierfacher Auflösung gezeichnet (feinere Schrift,\n                             genaue Rahmen und Balken), die Pixel der Bilder wie sie sind\n    --integer                nur ganzzahlige Vergrößerung\n    --mouse captured|free|system\n                             free: der Mauszeiger des Systems führt den des Spiels;\n                             system: der Pfeil des Systems ist der des Spiels\n    --start-money=N          das Startgeld eines neuen Spiels in Dollar (Original: 200000)\n    --credit-line=N          so viel leiht der Chef höchstens (Image unter 50), in Dollar:\n                             ab Tag 2 jeden Tag 100000 mehr (Original: 300000);\n                             original: der Kredit des Originals, Fix credit-repay aus\n    --terror-damage=N        so viel kostet die Bombe eines Terroristen den Besitzer des Raums,\n                             in Dollar (Original: 50000; 0: nichts, keine Meldung)\n    --sammy-prize=N[,N,N,N]  das Preisgeld des Sammy-Gewinners in Dollar: ein Betrag, oder\n                             News, Kultur, Shows, Serien (Original: keins)\n    --fourth-speed[=yes|no]  eine vierte Spielgeschwindigkeit, doppelt so schnell wie die schnellste\n    --fast-rooms[=yes|no]    Raumwechsel sofort, ohne Blende und Ladezeit\n    --cast-fit[=yes|no]      der Laden zeigt, wie gut jeder Schauspieler zur Rolle passt, in Prozent\n    --series-topicality[=yes|no]\n                             die Serienkarte zeigt, wie aktuell die Serie noch ist\n    --ai-improve=off|normal|strong\n                             Computerspieler bauen ihr Sendenetz nach, wenn du deins\n                             ausbaust, mit etwas Verzögerung (das Original: off)\n    --ad-offers=N            so viele Verträge bietet die Werbeagentur auf einmal an,\n                             10 bis 17 (Original: 10)\n    --film-offers=N          so viele Filme und Serien bietet der Filmhändler auf einmal an,\n                             10 bis 17 (Original: 10)\n    --settings=FILE          eine andere Einstellungsdatei\n    --print                  die Befehlszeile des Spiels nur ausgeben, nicht starten\n    -h, --help               diese Hilfe\n\nDie Einstellungen: BASE/cfg-de/madtv/settings.ini\nDie Original-Spieldateien (SOURCE1.RSC, SOURCE2.RSC): BASE/game (GAME=...)\n",
+  ""
+ ],
+ "help, OpenMTV.cmd": [
+  0,
+  "OpenMTV -- how to start it\n\n  OpenMTV.cmd                the launcher in the browser: the contents, the settings,\n                             play, multiplayer (LAN or internet), the content editor\n  OpenMTV.cmd editor         the content editor in the browser: films, series, ads, news\n  OpenMTV.cmd --direct       the game at once, as the settings have it\n  OpenMTV.cmd d | e          the game at once, in German | English this time\n  OpenMTV.cmd OPTION ...     the game at once, with these options this time:\n\n    --classic                exactly the original (none of its bugs fixed)\n    --fixes=a,b              only the named bug fixes\n    --mod NAME | A+B+C       with the content pack mods/NAME (several: in this order)\n    --fullscreen             fullscreen (F11 or Alt+Enter switch while playing)\n    --scale N                the window N times 320x240\n    --aspect 4:3|square      4:3 like a VGA monitor, or square pixels\n    --filter sharp|nearest|linear|mmpx|hr-pixel\n                             sharp: even pixels at any size; mmpx: smoothed edges;\n                             hr-pixel: drawn at 4 times the resolution (a finer font,\n                             exact frames and bars), the pictures' pixels as they are\n    --integer                whole-number scale factors only\n    --mouse captured|free|system\n                             free: the system pointer moves the game's cursor;\n                             system: the system's arrow is the game's\n    --start-money=N          the cash of a new game, in dollars (the original: 200000)\n    --credit-line=N          the most the boss lends (image below 50), in dollars:\n                             +100000 a day from day 2 (the original: 300000);\n                             original: the original's credit, fix credit-repay off\n    --terror-damage=N        what a terrorist's bomb costs the owner of the room, in\n                             dollars (the original: 50000; 0: nothing, no message)\n    --sammy-prize=N[,N,N,N]  the Sammy winner's prize money, in dollars: one amount, or\n                             news, culture, shows, series (the original: none)\n    --fourth-speed[=yes|no]  a fourth game speed, twice the fastest\n    --fast-rooms[=yes|no]    room changes at once, without the wipe and loading wait\n    --cast-fit[=yes|no]      the shop shows each actor's fit for the role, in per cent\n    --series-topicality[=yes|no]\n                             the series card shows how topical the series still is\n    --ai-improve=off|normal|strong\n                             computer players build up their transmitters when you\n                             build up yours, a while later (the original: off)\n    --ad-offers=N            the contracts the ad agency offers at a time, 10 to 17\n                             (the original: 10)\n    --film-offers=N          the films and series the film dealer offers at a time,\n                             10 to 17 (the original: 10)\n    --settings=FILE          another settings file\n    --print                  the game's command line, printed instead of started\n    -h, --help               this help\n\nThe settings: BASE/cfg-en/madtv/settings.ini\nThe original game files (SOURCE1.RSC, SOURCE2.RSC): BASE/game (GAME=...)\n",
+  ""
+ ],
+ "intro": [
+  2,
+  "",
+  "play: intro: build/mtv-intro is not built yet (make)\n"
+ ],
+ "no SOURCE2.RSC": [
+  2,
+  "",
+  "play: SOURCE2.RSC not found in BASE/game-without-source2 (set GAME to the directory with the original game files)\n"
+ ],
+ "print": [
+  0,
+  "ROOT/build/mtv-dec --game ROOT/run --logical-time --settings\n",
+  ""
+ ],
+ "print, a network game": [
+  0,
+  "ROOT/build/mtv-dec --game ROOT/build/mp/abc --logical-time --settings --mp 127.0.0.1:7640 --seat 1 --humans 1,2 --new-game --names Ann,Bo, --seed 5 --mouse=system\n",
+  ""
+ ],
+ "print, a pack": [
+  0,
+  "ROOT/build/mtv-dec --game ROOT/build/mods/test-filme --args e --logical-time --settings\n",
+  ""
+ ],
+ "print, options": [
+  0,
+  "ROOT/build/mtv-dec --game ROOT/run --args d --classic --logical-time --settings=/x/other.ini --scale 4 --fullscreen --fourth-speed=yes --start-money=500000\n",
+  ""
+ ],
+ "the game not built": [
+  2,
+  "",
+  "play: the game: build/mtv-dec is not built yet (make)\n"
+ ],
+ "unknown option": [
+  2,
+  "",
+  "play: unknown option \"--frobnicate\" -- the options: ./play.sh -h\n"
+ ]
+}

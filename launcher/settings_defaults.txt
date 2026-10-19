@@ -1,0 +1,86 @@
+# OpenMTV settings.  ./play.sh reads them; an option on its command line
+# overrides one for that run (e.g. ./play.sh --fullscreen, ./play.sh d).
+
+[display]
+# start in fullscreen (F11, Alt+Enter or Cmd+F switch while playing; remembered)
+fullscreen = no
+# window size: N times 320x240
+scale = 3
+# 4:3 like a VGA monitor, or square (square pixels, 16:10)
+aspect = 4:3
+# sharp (even pixels at any size), nearest, linear, mmpx (smoothed edges
+# and diagonals, only the picture's own colours), or hr-pixel (drawn at 4x:
+# a finer font, exact frames and bars, the pictures' pixels as they are);
+# hr-pixel only in the decompiled build
+filter = sharp
+# AI upscaling (docs/ki-bilder.md): a picture set the launcher made from your game
+# files (a .ki file; empty: none), shown with filter hr-pixel; Ctrl+K (on the
+# Mac also Cmd+K) switches them off and on while playing.  Only the decompiled build.
+ai_pictures =
+# whole-number scale factors only
+integer = no
+# the production shop shows how well each actor fits the role picked in the
+# shopping list, in per cent (the game's own rating), instead of the three bars
+# humor, appearance, craft (no: the original's panel).  Only the decompiled build.
+cast_fit = no
+
+[game]
+# english, german, or ask (the game's own prompt)
+language = english
+# classic: exactly the original game, none of its bugs fixed (yes), whatever
+# "fixes" below says -- it stays the choice for when classic is off again
+classic = no
+# fixes of the original's bugs: all, none (exactly the original game), or a
+# comma-separated list of names (build/mtv-dec --fixes=list prints them)
+fixes = all
+# your cash when a new game starts, in dollars, 0 to 100000000 (the original:
+# 200000; the credit stays 200000).  Only the decompiled build has it.
+start_money = 200000
+# the most the boss lends you (image 10 to 49), in dollars, 300000 to 100000000 in
+# steps of 100000: the $200000 of the start, then $100000 more a day from day 2
+# (the original: 300000, i.e. once).  original: the original's credit, and the
+# fix credit-repay off (also in a network game).  Only the decompiled build has it.
+credit_line = 700000
+# what a terrorist's bomb costs the owner of the room it hits (sabotage through
+# the information board), in dollars, 0 to 100000000 (the original: 50000; 0: no
+# repair costs and no message).  Only the decompiled build has it.
+terror_damage = 50000
+# the Sammy's prize money for its winner, by category (the best news, cultural
+# engagement, self-produced shows, self-produced series), in dollars, 0 to
+# 100000000 (the original: 0, the Sammy brings image only).  Only the decompiled build.
+sammy_news = 0
+sammy_culture = 0
+sammy_shows = 0
+sammy_series = 0
+# a fourth game speed in the planner's Control-Center, twice the fastest of
+# the original's three (no: the original's three).  Only the decompiled build.
+fourth_speed = no
+# room changes without the original's wipe and loading wait, as in a network
+# game (the game's clock stands in a room change either way; no: the original's
+# pace).  Only the decompiled build.
+fast_rooms = no
+# the series card shows how topical the series still is, a bar as on the film
+# card: all its episodes' topicality against their quality (no: the original's
+# card without it).  Only the decompiled build.
+series_topicality = yes
+# computer players build up their transmitter network when you build up yours,
+# a while later: off (the original), normal, or strong.  Only the decompiled build.
+ai_improve = off
+# the contracts the ad agency offers at a time, 10 to 17 (the original: 10, its
+# three stacks of folders; from 11 the folders stand in a front and a back
+# row).  Only the decompiled build has it.
+ad_offers = 10
+# the films and series the film dealer offers at a time, 10 to 17 (the
+# original: 10, the row of tapes on his counter; from 11 the row grows to the
+# left).  Only the decompiled build has it.
+film_offers = 10
+
+[sound]
+sound = on
+
+[input]
+# captured: the game takes the mouse (Pause releases it); free: the system
+# pointer moves the game's cursor, with the system's speed, and can leave the window;
+# system: like free, and the system's own arrow is the game's (no lag; the game's
+# other cursors stay; only the decompiled build)
+mouse = captured

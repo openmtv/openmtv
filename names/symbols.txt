@@ -1,0 +1,1340 @@
+# Symbol names for the decompiled sources.  Applied by tools/decomp.py.
+#   fn  SEG:OFF  name        [description]
+#   g   OFFSET   width name  [description]      (DGROUP globals; width 8/16/32)
+# Names are derived from reading the decompiled code; keep descriptions short.
+
+# ---- program entry / startup
+fn 0054:0005 main                  game entry: parse args, load resources, run the game
+fn 0054:4233 choose_language       language prompt (only when no command-line argument)
+
+# ---- memory (wrappers around the Borland far heap)
+fn 0D5E:06FB mem_calloc            farcalloc(count, size)
+fn 0D5E:0729 mem_free              farfree(ptr)
+fn 0D5E:0416 mem_free_ptr          free *pp and set it to NULL
+fn 0E35:088E far_memcpy            copy n bytes between far pointers (forward)
+
+# ---- resources (SOURCE*.RSC)
+fn 0D5E:01A1 res_load              load resource by id and decompress it into a new buffer
+fn 385D:0241 res_exists            resource id lookup; returns 0xFFFF if absent
+
+# ---- graphics
+fn 382C:000E bitmap_alloc          allocate an image buffer (w, h) with an 8-byte header
+fn 105E:0D3B draw_sprite           draw a sprite at x, y into the screen buffer
+fn 105E:0AAC draw_sprite_to        draw a sprite into a given buffer at x, y
+fn 105E:0BD9 draw_atlas_tile       draw tile n of the current tile atlas at x, y
+fn 105E:0A31 col_to_px             n * 8 - 6
+fn 105E:11B5 clip_reset            clip rectangle = 0,0,320,120
+fn 0ED7:08B8 present_frame         wait for retrace, draw cursor, show the back buffer
+
+# ---- input / time
+fn 105E:11DF cursor_x              mouse x relative to the active window
+fn 105E:1213 cursor_y              mouse y relative to the active window
+fn 1DA8:1EC6 clock_hour            current clock hour from the time slot counter
+fn 0D5E:0229 random_n              srand(...) then rand() % n + 1  (n = 0 divides by zero)
+
+# ---- intro
+fn 365F:03F2 intro_play            title / intro sequence (skipped by key or click)
+fn 365F:03A3 intro_play_scene      play the current intro scene until it ends; key or click sets g_intro_skip
+
+# ---- globals
+g 055C 16 g_language               0 = German, 1 = English, 0xFFFF = ask
+g 0580 16 g_debug_level            number of '*' characters in the 2nd argument
+g 161C 16 g_intro_skip             set when the intro is interrupted
+g 7BF6 16 g_mouse_x
+g 7BF8 16 g_mouse_y
+g 71EA 16 g_time_slot              hour index of the broadcast day
+g 8E82 32 g_screen_buf             back buffer for drawing
+g 8F4E 32 g_tile_atlas             current tile/glyph atlas
+
+# ---- merged from names/proposals/*.txt
+fn 0054:085E hotkey_handler               keyboard hotkeys: in the office sub-screen select options (0x7A82) with button highlight; key 0x2F toggles the human figure's alien look (0x7A34); key 0x20 opens the menu (05FF:000A)
+fn 0054:0A0B game_load_init_data          load resource 0xD0 into the start tables (hour factors, studios, players, actors, figures, floors, transmitters ...), load the 430 texts of the language, default player/station names, clear market lists, game speed 30
+fn 0054:0CDA initdata_read                copy the next n bytes of the init-data blob (0x8FB0, cursor 0x11E4) to dst
+fn 0054:0D03 room_return                  leave the current room: pop the previous room from the room stack, free/load room graphics, wipe; back in the building reload building backgrounds (day/night by hour >= 21:00)
+fn 0054:0E5F room_enter                   push the current room and enter room n: owner = owner of the human figure's door, load room graphics, wipe transition
+fn 0054:0F79 room_load_assets             per-room setup on entry: draw background halves, load sprite resources into 0x100..0x124, room-specific init (office, library, studio, planner, transmitter map, save room ...)
+fn 0054:1DB7 room_free_assets             free all room graphic buffers (0xF4..0x124, 0x8E8A, 0x8EDA)
+fn 0054:1EEC room_draw_background         draw a room background: resource n at x=0 and n-50 at x=160
+fn 0054:1F6F new_day                      daily processing: culture check, auction, Sammy, agency/image checks, ad deadlines, market cleanup, missed lives, credit interest, day++, offers, actors, intruder roll, topicality recovery, daily costs, reset figures
+fn 0054:20E0 game_time_tick               advance the game clock; at 01:00 (28800 s after 17:00) end the day (go home, new_day, studios, wipe); hourly broadcast processing; redraw clock and refresh room views at :00/:05/:55
+fn 0054:2425 nop_stub                     empty function
+fn 0054:242A archive_locate_selected      find the selected program 0x79D6 in the room owner's archive: genre -> 0x79CA, position -> 0x79C8 (0 if none)
+fn 0054:24E0 sched_clear_slot_redraw      clear a schedule slot of the room owner and redraw the planner
+fn 0054:2505 sched_clear_slot             clear schedule slot of a player and the following continuation slots (9999)
+fn 0054:256E sched_slot_editable          1 if the schedule cell under the mouse may still be changed: programs until minute 5 of their start hour, ads until minute 55
+fn 0054:2632 build_door_index             build 0x8A60: for floors 1..13 the doors with kind 1..3, as (floor, door) pairs ordered by door x
+fn 0054:2741 room_escape                  back out one level: close the room's sub-screen (0x8BA4 -> 0) or leave the room (room_return)
+fn 0054:32B6 day_end_go_home              leave all rooms, walk the human to the exit, wipe, clock to 17:00
+fn 0054:32FC player_walk_out              leave rooms, then walk the human figure to floor 1 and the exit x and wait until it arrives
+fn 0054:33B3 day_start_to_boss            walk the human figure to its floor (3p+2), enter the boss room (3), reset other figures to their targets
+fn 0054:3481 screen_transition            if mode == 4: wipe the 320x120 building view from the back buffer (dir, delay)
+fn 0054:34BD screen_wipe                  box wipe effect copying a w x h area from a buffer to the screen in shrinking/growing frames (dir 1 = outward), delay per step
+fn 0054:3701 clock_show_start             show text 0xF6 "Start" in the clock field
+fn 0054:3738 tv_update_picture            office TV: picture for what channel 0x79FE airs now: test pattern before 18:00, news (:00-:05), ads (:55) or empty, program picture (+0xC / +0x2F) or genre default
+fn 0054:3855 tv_show_picture              draw TV picture resource (from cache 0x5A0 or loaded) into the TV window, channel digit on the empty picture, skip if unchanged
+fn 0054:39CF tv_family_update             "TV family" in front of the TV: which of 5 members watch from the program's flags (+6 bits), the child leaves after 23:00, moods from the program's topicality 0x7A14 and genre; loads their sprites
+fn 0054:3F89 tv_family_stop               ?reset TV family animation state (0x79F4 = 0, 0x79F6 = 1)
+fn 0054:3F96 savegame_names_alloc         allocate 10 save-slot name buffers (0x8BB2)
+fn 0054:3FC1 savegame_names_load          read the 10 save-slot names (40 bytes each) from resource 0xD1
+fn 0054:4021 savegame_names_store         write the 10 save-slot names back to resource 0xD1
+fn 0054:40A6 tv_family_load_sprite        load a sprite resource into the TV family buffer 0x8C50 at 0x8C5A, fix pointers, advance; returns its address
+fn 0054:4135 planner_refresh              redraw the programme planner if it is open (room 0x1F)
+fn 0054:41E2 library_refresh              redraw the library lists if the library is open (room 4)
+fn 048C:0007 txt_news_cache_load          load the texts of player a0's news inbox, broadcast slots (and the dragged item in the news room) into g_news_txt_cache
+fn 048C:0147 txt_news_cache_load_one      (slot, news_id): read one news text from the language news-text resource into cache slot
+fn 048C:020F txt_news_cache_free          free all 24 news text cache entries
+fn 048C:025B txt_film_cache_load          (room, arg): load film titles/descriptions needed by a room into g_film_txt_cache (0: film arg into slot 0; 0x1F planner: library+aired schedule; 0x63/0x64: all stations' schedules; 4 library(+bag); 8 movie agency: bag, dealer, auction; 9 script agency; 5 studio; 0xC supermarket lists)
+fn 048C:094A txt_film_cache_find          0xFFFF if film id a0 is already in the film text cache
+fn 048C:098F txt_film_cache_load_one      (film_id, slot): read title and description (2 length-prefixed strings) of a film into a cache slot
+fn 048C:0AB5 txt_film_cache_free          free film text cache slots 3..48 (a0 = 0, room contents) or 0..2 (a0 != 0)
+fn 048C:0AFC txt_film_cache_free_one      free both strings of film text cache slot a0
+fn 048C:0B69 txt_series_cache_load        (room, arg): same as txt_film_cache_load for series texts (title, description, episode titles)
+fn 048C:11B6 txt_series_cache_find        0xFFFF if series id a0 is already in the series text cache
+fn 048C:11FB txt_series_cache_load_one    (series_id, slot): read the 22 strings of a series into a cache slot
+fn 048C:131B txt_series_cache_free        free series text cache slots 3..14 (a0 = 0) or 0..2
+fn 048C:1362 txt_series_cache_free_one    free the 22 strings of series text cache slot a0
+fn 048C:13C6 txt_script_cache_load        (room, arg): load screenplay texts for room 9 (script agency: script 0x22, own scripts, offers), 5 (studio) or 0xC (supermarket lists)
+fn 048C:15A2 txt_script_cache_load_one    (prod_id, slot): read the 16 strings of a screenplay into g_script_txt_cache
+fn 048C:16C8 txt_script_cache_free_all    free all 10 screenplay text cache entries
+fn 048C:16EB txt_script_cache_free_one    free the 16 strings of screenplay text cache slot a0
+fn 05FF:000A ui_on_left_click             left-click dispatcher: g_cur_player_rec=&players[g_player], g_hotspot=hotspot_at_cursor(0); y<120 -> per-room handler by g_room (0 building,1 office,2 news,3 boss,4 library,5 studio,8 film agency,9 script agency,10/62 estate agent,11 ad agency,12 supermarket,13/61 room board,14 Betty,25 transmitter map,31 planner,58 load/save,63 shop,64 porter,65 new-game setup); y>=120 -> bottom panel (TV sound knob, channel buttons, pause room -5); rooms -1/-3/0x42 = click closes
+fn 05FF:0359 room_filmagency_click        film agency (room 8): buy film/series from 10 dealer shelf slots (money -= price at once, ledger cat 1 film / 2 series, item id +10000 marks 'fresh, refundable'); drop on dealer (0x18) returns fresh item for refund else msg 0x67; drop on Mr. Jabble (0x23) sells own film for full price (ledger 0xB/0xC) and puts it into the 10-slot auction if flag bit6, else back to dealer stock; auction needs image>=10 (msg 0xCB); state 4 = bidding on auction slots (229E_0088)
+fn 05FF:090A room_library_click           library/archive (room 4): 12 genres x 4 shelf slots per player; pick film from shelf (only if 229E_051F allows), from bag; drop on bag (max 10, msg 0x66) or shelf (max 4 per genre, msgs 0x64/0x65; genre 11 = series, id+1000); genre picker list 0x22/0x17
+fn 05FF:0D0E room_planner_click           program planner / schedule (room 31): drag films/series/ads into hourly slots of sched table 0x4417 (9999 = continuation hour), scroll 0x79C6 (0/7), statistics graph (hotspot 0x33: picks axis scale 1..60 from max of today/yesterday/7-day viewer stats)
+fn 05FF:1B1D room_building_click          building view (room 0): click on elevator (hotspot 0x1A) or on a floor (0x1B) sets the player figure's walk target: door under cursor (kinds 1-3 rooms, 6 info board, 10 porter) or plain x (max 236); other floor -> walk to elevator x 0x98 and queue final x in fig+8
+fn 05FF:1D23 room_roomboard_click         information board (room 13): 13x4 grid of room signs (g_roomboard); pick up a sign (cell byte+100 = taken) and drop it on another cell to swap them (sabotage: board no longer matches the doors); only signs with a name or studios can be moved
+fn 05FF:21C0 room_roomboard_goto_click    information board in 'go' mode (room 61): clicking a board cell sends the player figure to the physical door at that row(floor)/column (x 0x50/0x74/0xB4/0xD8), whatever sign is displayed there, then leaves the board
+fn 05FF:23D8 room_office_click            player's office (room 1): wall map 0x1C -> room 25 transmitter map, 0x1D -> room 31 planner, 0x1E -> room 58 load/save; 0x36 letter/mail if flagged; 0x45-0x4A ? TV/VCR transport buttons (g_office_vcr_mode 1..5, 0x49 enters view state 2); 0x3E speeds up; 0x44 leave
+fn 05FF:25A4 room_newsroom_click          news studio (room 2): subscribe/cancel the 3 news agencies (1 Political $1000 needs image>=5, 2 Show-business $10000 image>=10, 3 Sundry $10000 image>=15, else msg 0xCC; ledger cat 0xA); browse news by category with scroll; drag a news item (0x1E-byte record) into one of 3 broadcast slots, paying its price (1DA8_3F48 of price class) when taken from the pool; slots can be swapped
+fn 05FF:2C02 room_txmap_click             transmitter map (room 25): buy a transmitter at map x,y (reach=1DA8_2036, price=f(reach*616/10), max 30 transmitters, msg 0x62), satellites (slots 1,2) toggle; view other players' maps (0x4-6) / stats (0x7-9); browse own transmitters (0x12/0x13) and sell one (0x14) to an opponent bid (32BA_000A, income cat 0xD) or scrap it (0x15); last transmitter cannot be sold (msg 0x63)
+fn 05FF:33F6 room_adagency_click          advertising agency (room 11): take an ad offer (10 slots) if image >= required (1DA8_2682 from ad image class; X-rated ads need image>=20; else msg 0xCD); give back an ad taken today (else msg 0x69 'already signed'); drop on bag signs it (max 10 contracts, msg 0x66); 0x23 = confirm/leave (ad_agency_sign_contracts)
+fn 05FF:380B room_scriptagency_click      screenplay agency (room 9): buy one of 5 screenplays (money -= price, ledger cat 4), return a script bought today (refund) else msg 0x2A 'No returns'; drop on bag (max 5 scripts); 0x44 finalize purchases and leave
+fn 05FF:3AB7 room_estateagent_click       real-estate agent (rooms 10 and 62): 0x27 opens studio plan (room 62); click a studio: own -> offer to give it up (229E_104A), free -> rent it for 3/2 of base rent per day (229E_100C); updates g_estate_wealth (0..10) from total studio rents for the room decoration
+fn 05FF:3DDF room_studio_click            production studio (room 5): insert screenplay from bag (studio size check vs 1DA8_2293, msg 0x3E), take it out, throw away (0xA); menu: new shopping list (229E_09AF), production info = quality forecast (actors fit*weight + props quality, scaled x125/100 -> >80 'good', >60 'neat', >40 'poor', else 'catastrophe', plus which part is worse), start production (needs script, all items bought 1DA8_24EA, then 229E_0B98) with end day/hour message
+fn 05FF:44CF saveload_reload_names        busy cursor, redraw, reload the 10 save-slot names from resource 0xD1 (0054_3FC1) and redraw the slot list
+fn 05FF:44F4 room_saveload_click          load/save room (room 58): 10 slots (2x5); save = text entry of name, write names to res 0xD1 and game to res 0xD2+slot (229E_200D), 'Disk full!' on g_save_error; load = 229E_1386(0xD2+slot) and re-init time/room/music; creates the save index res 0xD1 (0x190 bytes) if missing
+fn 05FF:4957 room_porter_click            porter (room 64): gossip bubble: bailiff/impound news from g_porter_event (type 3: victim self -> text 0x13A, other player -> 0x13B, 8 = film agency -> 0x13C), otherwise 0x13D 'boring day'; second click closes
+fn 0AA4:000E room_boss_click              boss (room 3). State 1 morning talk: greeting by image (<5 fired, <15, <75, else 'my dear'), complaints about cancelled hours / missed ads yesterday, Sammy result, verdict (<20 failure), Sammy announcement, warnings by image. State 2 menu: quit (image>=75 or Sammy winner -> boss begs; else fired), more money (image<10 thrown out; 10-49: $200,000 credit once, haggle for +$100k/+$200k; >=50: $400,000 credit, haggle +$200k/+$400k; Sammy winner gets full amount), repay credit ($100k/$200k/all, rounded down to $50k, limited by money, ledger cat 0x10)
+fn 0AA4:0AC5 room_newgame_click           new-game setup (room 65): choose human player 1-3, edit station names, difficulty 1-3; start: computer players get $300,000 (easy/normal) or $750,000 (difficult) divided by (debug_level+1), figure speed 3; human gets $200,000 money + $200,000 credit, image 34, figure speed 4; 0x4B -> load game (room 58), 0x24 quit
+fn 0AA4:0D65 room_supermarket_click       supermarket (room 12): menu presents/equipment; presents shop: 10 presents for Betty (2x5, price in g_presents), carry max one (msg 0x46), return for refund; equipment: needs a shopping list from the studio (msg 0xEC), opens the first incomplete list in room 63
+fn 0AA4:10CC room_shop_click              production shopping (room 63): fill the current shopping list's 10 slots with actors (7 roles x 16 actors, cost = actor fee x episode multiplier) or props (scene types >=16, 3 quality levels); actors refuse by image: any needs image>=10, fee>5000 needs >=15, fee>10000 needs >=20 (msg 0x99); replacing an item refunds the old one; scroll lists; 0x23 choose another list
+fn 0AA4:1D27 present_store_in_bag         supermarket: put the dragged present into the player's present slot (g_player_present), back to presents shop state
+fn 0AA4:1D53 present_store_in_bag_betty   Betty's room: put the dragged present back into the player's present slot, state 0
+fn 0AA4:1D7F present_return_to_shop       supermarket: drop present on counter; refund its price if it was bought now (id>100)
+fn 0AA4:1DC0 room_betty_click             Betty's office (room 14): talk (love<20 or already has key), else gives the master key (msg 0x15D); give present: plastic-surgery voucher (2) resets love to 0, honeymoon trip (10) wins the game if love>=100 (105E_447B) else refused, others add present love value, value then decays to 70% per gift, love capped at player image
+fn 0AA4:2054 shop_draw_drag_icon          draw the dragged actor's portrait (actor rec +0xA icon; >15 from second atlas) into the drag image
+fn 0AA4:20C1 shop_redraw                  redraw shopping screen (26A7_3B04) and present
+fn 0AA4:20CC news_draw_card               draw a 0x1E-byte news record (a0) at x,y: colour by category, headline, '*** HH:00 today/old ** $ price ***'
+fn 0AA4:2197 ui_hotspot_at_cursor         look up the 145-entry hotspot table (rect, room, room state or 0xFF, owner-only flag) for the cursor; returns hotspot id (0 = none); a0=1 allows owner-only hotspots in other players' rooms
+fn 0AA4:2243 tx_next_slot                 next active transmitter slot (1..32, wrapping) of the viewed player at or after a0 (skips empty and state 2)
+fn 0AA4:22AB tx_prev_slot                 previous active transmitter slot (wrapping) of the viewed player at or before a0
+fn 0AA4:2313 film_sell_to_dealer          sell the dragged own film/series back to the dealer: money += price (1DA8_3F5B / 4035), ledger 0xB/0xC, owner cleared
+fn 0AA4:23B5 ad_agency_sign_contracts     ad agency confirm: mark all taken offers as owned by the player (ad +0xF), clear their offer slots, refill offers (24B8_000C)
+fn 0AA4:2439 script_agency_finalize       screenplay agency: clear sold shelf slots and refill the shelf (24B8_02C1)
+fn 0AA4:2491 library_film_to_bag          library: append dragged film to the bag
+fn 0AA4:24C3 library_film_to_shelf        library: put dragged film/series (series id-1000) on the current genre shelf, count++
+fn 0AA4:2546 filmagency_film_to_bag       film agency: append dragged film to the bag (strips the +10000 'fresh' marker)
+fn 0AA4:2586 filmagency_return_film       film agency: give a freshly bought film back to the dealer: refund price (negative ledger entry cat 1/2), shelf slot available again
+fn 0AA4:267A ad_return_offer              ad agency: drop held ad back on its offer slot (unmark taken)
+fn 0AA4:26CD ad_take_contract             ad agency: add held ad to player's contracts (spots 0, deadline day = today + ad days), count++
+fn 0AA4:2761 script_return_to_agency      screenplay agency: return held script to its shelf slot with refund (negative ledger cat 4)
+fn 0AA4:2807 script_to_bag                screenplay agency: add held script to player's script list (+2 aux byte, episode counter 1)
+fn 0AA4:2884 script_to_bag_from_studio    studio: put held script back into player's script list with its episode counter
+fn 0AA4:28F2 studio_insert_script         put held script into the current studio (script id, episode = aux, progress = aux-1)
+fn 0AA4:2950 studio_take_script           take the script out of the current studio into the hand (cancels production state 222A_0206)
+fn 0AA4:2A04 studio_swap_script           when dropping a script on an occupied studio: pick up the studio's old script (it is replaced later)
+fn 0AA4:2AB7 ui_animate_toggle            animate a 0<->30 slider variable (*a0) in steps of 2 with redraw (TV cover/blind; used with g_tv_off)
+fn 0AA4:2B31 tv_update_sound              after TV on/off: play silence (sound 0xDC) when off, else the jingle of the program running on the watched channel (0054_3738)
+fn 0AA4:2B55 txmap_after_sale             transmitter map: after selling/scrapping move to next transmitter, redraw, recompute coverage
+fn 0D5E:0001 res_init                     init the resource manager, open the RSC files, list the present resource ids into 0x8C7C
+fn 0D5E:0035 res_disk_mode                1 if resource 500 exists (all data available), else 2 (second disk needed)
+fn 0D5E:0050 disk_access_begin            nested: on first entry stop the game clock and open the resource files
+fn 0D5E:0066 disk_access_end              nested: on last exit close the resource files and restart the game clock
+fn 0D5E:007C res_files_open               open the RSC files
+fn 0D5E:008B res_files_close              close the RSC files
+fn 0D5E:009F debug_nop                    empty hook
+fn 0D5E:00A0 res_load_raw                 allocate and read a resource without decompressing
+fn 0D5E:00FA res_read_raw                 read a resource's raw bytes into buf (inside disk_access_begin/end)
+fn 0D5E:011B res_load0                    load + decompress a resource (like res_load, mode flag 0)
+fn 0D5E:025C game_clock_reset             restart the PIT timer and zero the accumulated clock ticks
+fn 0D5E:0280 game_clock_stop              unless paused add elapsed timer ticks * game speed to the clock accumulator
+fn 0D5E:02B1 game_clock_start             restart the timer; frame timer 0x6141 = -(50 / frame divisor 0x7A50)
+fn 0D5E:02D6 game_clock_get               *out = cached game seconds since 17:00
+fn 0D5E:02E4 game_clock_update            game seconds = (accumulated + elapsed*speed) / 50; sets hour (17 + h, wrapped), minute 0x71EC, second 0x71EE
+fn 0D5E:03AD sprite_bank_fixup            set each sprite's data pointer in a sprite bank (count, then w/h/ptr entries; data size w*h*8)
+fn 0D5E:043A figure_sprite_stride         ?n * G16(0x838E) / 8 (+ G16(0x838A) when a1) - size of a figure sprite set in the figure buffer
+fn 0D5E:048D res_query_wait               resource packed size (return) and unpacked size (*out); missing -> "insert disk" message and wait for a click, retry
+fn 0D5E:050F res_cache_packed             keep a resource packed in cache slot (0x7C00, 6 bytes: ptr + unpacked size)
+fn 0D5E:0558 res_cache_unpack             decompress a cached resource into a new buffer
+fn 0D5E:05BC figures_load_sprites         load walking-figure sprite sets: players 17..19 (alien 24 for the human in alien mode), 20, 21, intruder 23 (terrorist) or 22 (bailiff / guardian)
+fn 0D5E:0664 figure_load_sprite_slot      load sprite set res into figure slot of buffer 0xF8 unless already there (0xD0E)
+fn 0D5E:073B game_clock_pause             nested pause: first call folds elapsed time in and sets 0x7A92
+fn 0D5E:0773 game_clock_resume            nested resume: last call clears 0x7A92 and restarts the timer
+fn 0D5E:0795 text_dup                     new 500-byte buffer holding a copy of text n of the language table
+fn 0DDD:0001 text_draw                    draw a string on the screen buffer at x,y
+fn 0DDD:002B text_draw_right_free         draw a string right-aligned at x into a buffer, then free it
+fn 0DDD:0071 text_draw_free               draw a string on the screen buffer, then free it
+fn 0DDD:00A8 text_draw_to                 draw a string into a buffer at x,y
+fn 0DDD:00D0 text_draw_wrap               draw a string on the screen wrapped at n columns with flags
+fn 0DDD:00FA text_draw_to_free            draw a string into a buffer, then free it
+fn 0DDD:012F text_draw_center_free        draw a string centred on x into a buffer, then free it
+fn 0DDD:017B text_draw_center             draw a string centred on x on the screen buffer
+fn 0DDD:01BC text_draw_center_to          draw a string centred on x into a buffer
+fn 0DDD:01FB text_draw_center_ex          draw centred with all options (columns, flags, buffer, max lines)
+fn 0DDD:0239 text_draw_ex_free            draw with columns/flags into a buffer, then free the string
+fn 0DDD:026E text_draw_full_free          draw with all options (columns, flags, buffer, max lines), then free the string
+fn 0DDD:02A2 text_draw_wrap_free          draw on the screen wrapped at n columns with flags, then free the string
+fn 0DDD:02D9 text_draw_full               draw text with word wrap: (x, y, str, columns (0 = 80), flags bit0 = break at space/'-', bit1 = draw style, dest, max lines); '~' = new line, line height 8 or 7 (0x8BA6)
+fn 0DDD:048D text_count_lines             number of lines a string wraps into at n columns
+fn 0E35:0000 str_format                   game sprintf into a new 1000-byte buffer with '#' codes: d int, l long, s string, z byte, v glyph (+0xC0), f bar gauge; width, '0'/'+'/'_' pad, '*n' pixel-width cut
+fn 0E35:04C0 str_digit_count              number of leading digits (-1 if more than 10)
+fn 0E35:0504 fmt_put_int                  str_format helper: itoa with sign and padding into the output
+fn 0E35:060D fmt_put_long                 str_format helper: ltoa with sign and padding into the output
+fn 0E35:0730 str_to_long                  parse leading decimal digits as a long (unused)
+fn 0E35:079A str_patch                    ?overwrite the start of dst with n chars of src followed by s2 (unused)
+fn 0E35:0873 mem_zero                     zero n bytes at a far pointer
+fn 0E35:08B1 far_strlen                   length of a far string
+fn 0E35:08D6 mem_fill_char                fill n bytes with the char *pc
+fn 0E35:0901 text_fit_chars               how many chars of a string fit into n 8-px columns (glyph widths 0x22E, space 3, 1 px gap)
+fn 0E35:0989 text_width_px                pixel width of a string in the game font
+fn 0E35:09F7 str_is_prefix                -1 if a0 is a prefix of a2 (unused)
+fn 0ED7:0004 game_frame                   one frame of the main loop: input_poll -> g_click; ease cursor toward pending mouse motion (instant while dragging), clamp to g_mouse_min/max, redraw cursor or drag image flicker-free on VGA; every 50/g_game_speed timer ticks: building (193D:0C1C + present + tvfam_tick) or room (room_anim_update, Madris in office screen 2, tvfam_tick) then tooltip_update; returns room id of the door the idle player figure stands at (building only), else 0
+fn 0ED7:0A8C panel_show_wipe              copy bottom panel bitmap (320x80) to VGA y=120 with box-wipe transition (0054:34BD), compositing the mouse cursor when it is over the panel
+fn 0ED7:0BBE mouse_bounds_full            mouse limits = x 0..303, y 0..189
+fn 0ED7:0BD7 ui_input_text                text entry field (x, y, width_cols, buf): letters (first upper case, rest lower), digits, space, backspace; redraws with cursor glyph (0xD35); returns 0 on Enter, -1 on Esc
+fn 0ED7:0DE2 cursor_shape_push            shape != 0: push g_cursor_shape and switch to shape (3 = busy, used while loading texts); 0: pop previous shape; ignored while dragging
+fn 0ED7:0E2E madris_step                  "Madris" Tetris clone on the office computer (res 0xB5 sprite 10): spawn next of 7 pieces (random_n(7)), apply input (1/2 rotate, 3/4 move, 5 drop) with collision tests on the 10x20 board, fall by arg rows; on landing score += piece_points[O10 S8 Z8 T6 J6 L6 I4] * (9 - delay), score >= 9999 or blocks in top row = game over, full lines removed, every 10 lines delay-- (min 1); keeps hiscore
+fn 0ED7:1752 ui_band                      ui_band_to into the screen buffer
+fn 0ED7:1775 ui_band_to                   draw a horizontal band (col, y, width_cols, height_px, style, dst): end caps from res 2 atlas (sprite style*3+0x13..) and filler tiles from res 7, repeated in 8px rows; used for info-card row backgrounds
+fn 105E:000E cursor_show                  ++g_cursor_shown; when it becomes 1 save the VGA background (24x11) under the mouse and draw the arrow g_cursor_shape directly on VGA; at 0 with a drag image: draw g_drag_image at mouse-hotspot (clamped to 320x120) instead
+fn 105E:01AE cursor_hide                  --g_cursor_shown; when the cursor (or drag image) disappears restore the saved VGA background at its last position
+fn 105E:0203 mouse_ease_step              move = *pending/5 (at least +-1); *pos += move; *pending -= move (smooth cursor movement)
+fn 105E:0266 text_draw_2                  draw a 0-terminated string at pixel x,y into a bitmap with the 8px glyph font g_font (char->glyph map 0x12E, advance widths 0x22E, space = 3px, unmapped chars -> '.'); flag 1 = digits right-aligned in fixed cells; uses the small font of room slot 0x108 when g_font_alt
+fn 105E:0386 ui_frame                     draw window frame + filled interior on a bitmap, rect in 8px cells (x0,y0,x1,y1,bmp,style)
+fn 105E:03DA ui_frame_px                  window frame in pixels: interior tile 0, edges top 0x30 bottom 0x28 left 0x40 right 0x38, corners 8/0x10/0x18/0x20 from tileset 0x7B0A (style 1) or 0x7B0E
+fn 105E:04DB ui_frame_tile                draw one 8px frame tile (atlas offset) at pixel x,y into g_frame_target via the glyph blitter 377A
+fn 105E:0526 ui_text_box                  style 1: draw framed box (cells x0..x1,y0..y1) into the screen buffer and print word-wrapped text inside (0DDD:0239)
+fn 105E:058C popup_open                   get popup slot (mode 1/3: first free slot >= 1, mode 2: slot 0), allocate and save the screen-buffer background under the cell rect; mode 1 also draws ui_text_box and presents; returns slot
+fn 105E:069A ui_message_window            window_create + print text + window_show (drawn directly on VGA)
+fn 105E:06EA popup_close                  put the saved background of popup slot back into the screen buffer, present, free the save buffer
+fn 105E:0778 popup_restore                ? redraw saved background of a popup slot into the screen buffer without freeing (unused)
+fn 105E:07D9 room_draw_border             draw the frame around the 320x120 room view from room-frame tiles (res 4) into the screen buffer
+fn 105E:08F1 room_draw_border_alt         clear the 320x120 view and draw its frame from the current room atlas (slot 0x104)
+fn 105E:0A44 figure_sprite_ofs            atlas offset of a figure sprite: (figure.look(+0xA) * 10 + frame) * 8 - 6
+fn 105E:0A72 drag_image_draw              draw a sprite into g_drag_image at 0,0 (icon of the item carried by the mouse)
+fn 105E:0AE4 blit_opaque_to               opaque copy of a whole sprite into bitmap dst at x,y (clipped)
+fn 105E:0B1C blit_opaque                  opaque copy of a whole sprite into the screen buffer at x,y
+fn 105E:0B56 grab_screen                  copy the screen-buffer area at x,y (size of dst) into bitmap dst (save background under an animation)
+fn 105E:0B90 tile_draw_opaque             opaque draw of tile (atlas offset) of g_tile_atlas into g_tile_target at x,y
+fn 105E:0C22 sprite_draw_target           transparent draw of a sprite into g_tile_target at x,y
+fn 105E:0C5C tile_draw_at_x               transparent atlas tile into g_tile_target at x, y = g_tile_fixed_y
+fn 105E:0CA6 tile_draw_at_y               transparent atlas tile at x = g_tile_fixed_x, y (unused)
+fn 105E:0CF0 tile_draw_fixed              transparent tile g_tile_fixed_n at x,y (unused)
+fn 105E:0D75 bitmap_put_screen            opaque copy of a whole bitmap into the screen buffer at x (multiple of 8), y
+fn 105E:0DB1 blit_transparent             blit (src,dst,x,y,sx,sy,w,h), colour 0 transparent, w rounded to 8; clips only vertically (g_clip_y1..y2 when g_clip_on) and sy<0; byte-aligned or shifted asm path (3786/37A2)
+fn 105E:0ED3 bitmap_put                   opaque copy of a whole bitmap into another at x (multiple of 8), y (375B)
+fn 105E:0F0E bitmap_copy                  bitmap_put(src, dst, 0, 0) taking split far pointers
+fn 105E:0F2B blit_opaque_rect             opaque blit (src,dst,x,y,sx,sy,w,h), vertical clipping only; asm 3762/376D
+fn 105E:1041 elevator_queue_add           append figure to the elevator call list (g_elevator_queue) unless already present
+fn 105E:1078 elevator_queue_remove        remove figure from the elevator call list, shifting the rest
+fn 105E:10CA floor_pick_door              step *door downward (wrapping 3..0) until it is a real door (type 1..3) on that floor and != exclude (-1 = none)
+fn 105E:114D floor_door_count             number of consecutive doors of type 1..3 on a floor (from door 0)
+fn 105E:1196 clip_cursor_cell             clip rect 0,0,24,11 (cursor save area)
+fn 105E:11D4 clip_panel                   clip rect 0,0,320,80 (bottom panel bitmap)
+fn 105E:1247 figure_unqueue_elevator      if figure +0x16 (queued) is set clear it and remove it from the elevator list (unused)
+fn 105E:1287 building_draw_sides          draw the strips left/right of the 208px building (x 0..56, 264..320, y 4..112) in variant g_daylight (1 day tiles 0xA/0xD/0xC, 2 night 0xB/0xF/0xE of res 13)
+fn 105E:1366 door_draw                    draw door (floor, door) open (1) or closed (2) into g_building_buf; sprite pair by door type 1..3 (res 6); x = door.x-56, y = 150-(floor-g_bld_top_floor+4)*30-26; building view only
+fn 105E:14CA panel_build                  compose the bottom panel bitmap (320x80): res 9 halves at x 0 and 120, res 15 sprite, res 10 parts at 201/305
+fn 105E:15B6 figure_draw                  draw a figure (person, 16x19) into the screen buffer if its floor is one of the 5 visible floors; y from floor and g_bld_scroll, 1px walking bob
+fn 105E:16EE input_poll                   mouse_poll, then keyboard: Enter = left click (1), Esc = right click (2), arrow keys move the pending cursor motion with acceleration 2..16 (+2 per repeat), other keys -> key handler 0054:085E; returns g_mouse_click
+fn 105E:17AB mouse_poll                   read mouse buttons and relative motion (int 33h, 373B), add motion to g_mouse_pending_dx/dy, latch a new button state into g_mouse_click
+fn 105E:17D1 room_anim_update             per-frame ambient animations of the current room (rooms 1,2,4,5,8,9,10,12 and -3): draws animated parts into room buffers (frame counter 0xD3C) and pushes them with room_anim_blit; sets 0x7A38
+fn 105E:2DD2 anim_div_tick                every n-th call increment *counter (divider 0xD9C)
+fn 105E:2DEF room_anim_blit               copy animated room area n (1,3..9: fixed rects from room buffers 0x10C..0x118) to VGA, hiding the cursor while it overlaps
+fn 105E:3002 window_create                build window bitmap for cell rect in g_popup_bmp[0] (or preallocated g_window_buf): grab VGA background of the border rows/columns, draw ui_frame over it
+fn 105E:3247 window_show                  put the window bitmap on VGA at col, row*8; free it unless preallocated
+fn 105E:3280 tvfam_update                 render the "TV family" view (tvfam_render) and put it on VGA at 208,127 unless g_tvfam_frozen; hides the cursor while it is over the view
+fn 105E:32ED tvfam_render                 build the 104x58 TV-family picture: copy g_tvfam_bg, animate up to 5 viewers (blinks, eating/drinking, mood reactions), then TV switch-on/off shutter bars by g_tvfam_state/g_tvfam_shutter; returns new bitmap
+fn 105E:3B14 tvfam_draw_room              draw the living-room/sofa background tiles into g_tvfam_bg
+fn 105E:3BAC tvfam_draw_viewer0           draw TV-family viewer 0 (rec 0x832E): base pose, mood face, stage +0xA (1..7) overlays
+fn 105E:3CE8 tvfam_draw_viewer1           draw TV-family viewer 1 (rec 0x833E)
+fn 105E:3D79 tvfam_draw_viewer2           draw TV-family viewer 2 (rec 0x834E)
+fn 105E:3E3B tvfam_draw_viewer3           draw TV-family viewer 3 (rec 0x835E)
+fn 105E:3EB5 tvfam_draw_viewer4           draw TV-family viewer 4 (rec 0x836E; ? the child: dropped after clock_hour 6)
+fn 105E:3F58 tvfam_tick                   tvfam_update when the view is not off (g_tvfam_state != 0)
+fn 105E:3F64 scriptagency_draw_scripts    screenplay agency (room 9): draw up to 5 script sprites (res 0xB9 #17..21) at x = word 0x7A1A[i] (if > 0), y 100
+fn 105E:3FB7 office_draw_paper_pile       office (room 1, own office): draw the pile g_office_papers (max 36): first item at 122,69, up to 6 single sheets from table 0xE2B, beyond that stacks at table 0xDAF
+fn 105E:40B0 office_draw_letter           office: draw a letter on the desk if g_player_letter[owner] != 0; text 0x29 (Betty's love letter) also draws the red seal
+fn 105E:4107 dealer_draw_pose             film agency (room 8): draw Mr. Jabble at his terminal in the pose res g_dealer_pose (0xBC..0xBF, changes every 2 game hours)
+fn 105E:415C estate_draw_wealth           estate agent (room 10): portrait by g_estate_wealth (0-2,3-4,5-7,8-10 -> 4 ever richer outfits, res 0xC2..) plus 4 banknote stacks (wealth*5/10 bundles) and 8 coin stacks (wealth*6/10 - i/2) with random jitter
+fn 105E:434D cursor_over_rect             -1 if the cursor box (24x10, or the drag image size) overlaps rect x0,y0,x1,y1 else 0
+fn 105E:43D8 tvfam_idle_anim              for a viewer whose mood == m: 1/50 chance per frame to start a 10-frame overlay (blink/mouth) drawn at viewer.x+dx, y
+fn 105E:4447 mouse_in_rect                1 if (cursor_x, cursor_y) lies inside the inclusive rect x0,y0,x1,y1
+fn 105E:447B ending_play                  game won: free room data, show the "Just Married" screen (res 0x7D/0xEF/0x4B + car animation res 0xF0, 105 frames of 3 ticks from table 0xE69), wait for key/click, wipe out and exit
+fn 105E:47DF panel_restore_strip          copy a 120x12 strip of panel sprite (res 9, from row 64) to VGA at 0,186 (clears the panel's lower-left line)
+fn 14E1:000E tooltip_update               hover info: by g_room/g_room_state/g_hotspot find the object under the mouse (panel money/rating/day/TV, film and script shelves, ads, contracts, schedule slots, studios on the estate board, actors/props, transmitters...), build info id (kind*1000 + index) and window rect/size, call tooltip_show
+fn 14E1:16BB tooltip_show                 draw info card for id unless already shown; kind = id/1000: 0 film, 1 series, 2 transmitter (new viewers/price), 3 ad offer, 4 ad contract (bonus/penalty/min viewers, spots done/left until deadline), 5 plain text, 6 screenplay, 7 channel status, 8-9 production, 10 episode, 11 actor (humor/appearance/skill, price), 12 prop/scene, 13 role, 14/15 schedule film/series slot (block x of y, viewers, share), 16 price entry, 17 money/credit, 18 rating overview (max viewers, rating, next advert)
+fn 14E1:3406 status_window_draw           building view: when g_redraw rebuild the 136x56 channel status window (titles via tvinfo_fetch_titles if stale, frame, channel_status_draw) and draw it at 64,48
+fn 14E1:348B money_box_show               text box "Money / Credit" (string 0x18E) for the visited room's owner at cells 17,9-25,13
+fn 14E1:34CF day_box_show                 text box "#d. day" (string 0x51, g_day) at cells 16,12-22,13
+fn 14E1:3502 channel_status_draw          draw status of channel g_tv_channel into a bitmap: channel name; minute 0-4 "News", 5-54 program (genre, title, block n, X-rated, or "Program cancelled"), 55-59 advert name with result of the hour's ad slot (1000+ad "#d/#d blown", 2000 "Done!", 3000+ad "#d/#d OK"); '>>'/'<<' from per-hour flags 0x5553; viewers "**** #s **** (share%) ****"
+fn 14E1:3B5B tvinfo_fetch_titles          find the program running now on g_tv_channel (walk back over 9999 continuation hours) and copy its title to 0x777C (series: series title + episode title to 0x7812), loading the text block with busy cursor if needed; clears 0x7A60
+fn 14E1:3D66 ad_audience_text             tooltip text for ad target genres: "#s, please." (positive codes) / "No #s, please." (negative) or empty
+fn 14E1:3E49 ad_genre_list                build "A, B or C" list from the ad's 3 genre codes (+0xC..0xE), sign selects required/forbidden; codes > 10 use the series genre names
+fn 14E1:4013 tooltip_text_window          ui_message_window at the tooltip rect with given text
+fn 14E1:403D tooltip_band                 draw a style 1..3 band (y, height) across the tooltip window bitmap
+fn 14E1:4061 tooltip_render               window_create at tooltip rect, then render a layout string of 4 chars per row: band style digit, text slot digit (0x8F6C[i]), align/colour digit; row heights 9 (first/last) or 8
+fn 14E1:4161 tooltip_present              window_show at the tooltip position
+fn 14E1:4172 tooltip_film                 film info card: genre, title, country/year with critics/box-office bars (cultural: Betty/critics, shows: Betty/critics; live: part x of y, "in N days" or "today/tomorrow, HH:00" with hour = +0x11 + 17), topicality % = +3*40/+1, length in blocks (+4), price; "(Full)" in the film agency when the player already holds 4 films of that genre; "X rated!!" flag
+fn 193D:000F bld_render_floors            render the building into g_building_buf for scroll y (a0): day/night sky switch, scroll the buffer by 30-px floors, draw walls, doors (kind sprite table 0x1180), owner flags, studio marks, floor numbers and elevator shafts
+fn 193D:077D bld_blit_view                copy the visible part of g_building_buf (208x109) to the screen buffer at x 56
+fn 193D:07BB bld_draw_elevator            draw elevator shaft/cabin on floor a0 (cabin floor g_elevator_floor, offset g_elevator_offset, doors g_elevator_door, figures riding)
+fn 193D:0AAF bld_draw_side_scenery        draw left/right parallax side backgrounds (sky/city, scroll / g_elevator_speed) and street-level sprites near the ground
+fn 193D:0C1C bld_update_frame             building tick: elevator, figure AI, render floors/sides/view, animate figures, overlays (scaffold, bomb marker)
+fn 193D:0D62 fig_animate                  move figures toward target x by their speed (fig+0x1A, x snapped to multiples), pick walk/elevator/door animation frames, draw visible ones
+fn 193D:12FA fig_think                    people logic for the 6 figures: NPC wanderers (figs 3-5) pick random floors/doors (type 0 same floor, type 1 other floor), open/close doors, elevator boarding; player figures blocked at locked own-type rooms of others without master key (msg 0x15C)
+fn 193D:1B63 elevator_update              move elevator cabin one step (speed g_elevator_speed px, 30 px per floor) toward the riding/calling figure, door open/close counter; camera follows the player's figure (scroll = floor*30-60, 0..321)
+fn 193D:1DF9 bld_draw_overlays            encounter bubbles when two figures meet on a floor, door name tooltip under mouse, status-bar message g_status_msg (incl. robbery texts 0x12A/0x12E), bottom-panel tooltips
+fn 193D:2424 door_label_text_2            allocated label for door a0 on floor a1: 'Office of <player>', '<name> <station>' for own-type rooms, 'Studio of <station>', plain room name; NULL if owner is out of the game
+fn 193D:257A player_fired_sequence        player g_fired_player is thrown out (falling animation); computer player: marked out of game, loses contracts, films, series, studios, Betty's love; human player: game over, back to title (load res 0x2B)
+fn 193D:2C8A fired_draw_background        draw the elevator-shaft background tiles used during the fired animation
+fn 1C18:000C data_load_tables             load films (res 0xC9 -> g_movies), series (0xCA), screenplays (0xCB), ads (0xCC -> 0x3F4F), news chain nodes (0xCD -> 0x2731), news topics (0xCE -> 0x5593), news templates (0x30 -> 0x3AA1); then the language strings (ad names/clients, 10 phrases per news topic) into a string pool; then script_init_episodes
+fn 1C18:02C6 strpool_add                  (len, far **dst) copy len bytes from the init-data buffer (g_initdata + g_initdata_pos) into the string pool, store the far pointer in *dst, advance both positions (+1 for the NUL)
+fn 1C18:0313 script_init_episodes         for single (non-series, +5 bit0 clear) screenplays with flag +5 bit2: copy episode block 0 (0x23 bytes at +8) to episodes 1..9
+fn 1C18:03A7 ledger_add                   (category, amount lo, hi) g_ledger[category] += amount (today's finance statistics of the human); returns lo
+fn 1C18:03C1 news_tick                    (hours, min_cat1) age the 7 running news stories by hours, emit every story that is due (news_advance_story(0)), start new stories, then force stories of category 1 until at least min_cat1 category-1 items exist today; finally news_distribute. Called hourly with (1,0), at day start with (5,3)
+fn 1C18:044F news_count_cat1              number of today's news items (g_news_pool) with category 1
+fn 1C18:0490 news_emit                    (story slot) append a news item to today's pool (20 max, oldest dropped): node, 5 (topic, phrase) parts, value = node value * (30 + 70*avg phrase value/10) / 100, price class = number of thresholds {15,30,40,50,60,100} below the value, category, day, hour
+fn 1C18:069A news_add_event               (node, topic, variant) append a special news item for a game event (e.g. node 0xA6..0xA8 about a player) with the node's base value, category 1
+fn 1C18:0755 news_advance_story           (limit) pick the running story with the smallest countdown <= limit (limit != 0: only category 1), emit its news, move it to one of the node's 4 random successors (9999 = story ends, slot freed); countdown += node delay (= delay when forced). Returns slot or -1
+fn 1C18:08A2 news_start_stories           fill free story slots: random unused template (start node > 0) of the slot's category, re-enabling all (+1000) when none is left; node = start, countdown 3, phrase variant per part random 1..10 (non-empty, not used by another running story) or same as previous part
+fn 1C18:0B21 news_variant_in_use          (topic, variant) 1 if a running story uses that phrase variant for that topic
+fn 1C18:0BCB news_rate_player             (player) g_news_score[player] = average value of the player's 3 news broadcast slots
+fn 1C18:0C1B auction_commit_bids          on leaving the movie agency: auction lots without bidder (< 0) become the human's bids (bid += auction_increment)
+fn 1C18:0C73 msg_count_new                (player) if it is the human: one more message in the office message list (max 4, oldest scrolled out of 0x60BF)
+fn 1C18:0CCD sched_end_of_hour            (unused arg) for every player whose program ends in the current hour: series -> record the aired episode in the slot (+0x1E), wear it and advance the next episode (wrap to 1 after the last existing one, max 10); film -> film_apply_wear
+fn 1C18:0E49 sched_new_day                copy all schedules to g_schedule_prev, move tomorrow's slots 8..14 (programs, episodes, ads) to today's 1..7 and clear 8..14; reset hour counter and door block
+fn 1C18:0F51 news_distribute              copy today's news items into the inbox (20 max, oldest dropped) of every player subscribed to the item's category; empty today's pool
+fn 1C18:1022 news_age                     (pct_inbox, pct_slots) news values in all inboxes *= pct_inbox/100 (price class recomputed), in the 3 broadcast slots *= pct_slots/100; hourly (85,85), at day start (0,0)
+fn 1C18:1116 series_episode_at            (player, series, hour) episode that airs at hour: next episode (+0x31) plus earlier same-day slots of this series without recorded episode, wrapped by the number of existing episodes
+fn 1C18:11F8 money_available              (player) cash minus unpaid new transmitters (state 1) minus the player's own auction bids; for the human also minus bid+increment of lots without bidder
+fn 1C18:12F2 program_withdraw             (id) remove film/series (id >= 1000) from every player's library; owner = 0 and flags |= 0x20 (back on the market); live films (genre 7) keep owner/flags
+fn 1C18:147E news_inbox_drop_oldest       (player) delete inbox item 0
+fn 1C18:14F0 news_inbox_delete            (player, idx) delete inbox item idx
+fn 1C18:1552 script_list_delete           (player, idx) delete owned screenplay idx (5-byte entries, count g_scripts_owned_count)
+fn 1C18:15C5 shoplist_delete              (player, idx) delete shopping list idx (0xF-byte entries at 0x734C)
+fn 1C18:1627 contract_delete              (player, idx) delete ad contract idx (and, for a computer player, its g_ai_ad_plan entry)
+fn 1C18:172F series_wear_episode          (series, ep) episode topicality -= quality * wear(+0x33) / 20, min 1 (after airing)
+fn 1C18:1794 film_apply_wear              (film) topicality(+3) -= quality(+1) * wear(+2) / 5, min 1 (after airing)
+fn 1C18:17E7 auction_increment            (lot) minimum raise: 10% of the current bid rounded down to its leading digit (100000s / 10000s / 1000s / 100s / 10s)
+fn 1DA8:0006 script_count_available       number of screenplays (0x715C records 1..50) with status +4 == 0 and flag bit1 (in pool) - used by the screenplay agency refresh
+fn 1DA8:004E sched_mark_scheduled         clear the "scheduled" flag (movie +7 bit1, series +0x26 bit1) of all programs, then set it for every program in each player's schedule from the current hour (clock_hour_round55) to slot 14
+fn 1DA8:0146 news_total_share             sum of news scores G8(0x3F4B+p) of players still in the game, capped at 95 (% of audience watching the news)
+fn 1DA8:0187 program_total_share          sum of program scores G16(0x24A1+2p) of players still in the game, capped at 95 (% of audience watching TV)
+fn 1DA8:01CB script_episode_count         episodes a screenplay produces: series flag (+5 bit0) -> episode count (+0x22) of its target series, else 1
+fn 1DA8:0217 programs_recover_topicality  every 2nd day: movie topicality (+3) rises to the next multiple of max(+1)/5 (20% steps); series episode topicality rises to the next multiple of max/20 (5% steps)
+fn 1DA8:034E studio_check_finished        for each of the 12 studios whose production finishes today at/after this hour: message 0x10E ("Studio No. %d reports ... completed"), movie/episode becomes available (+6|=0x20) and goes to the owner's archive at price 0, series episode marked produced; whole production done -> script status 99 and studio freed; refreshes planner/library if open
+fn 1DA8:06EA archive_genre_full           ?(player, id, genre; genre 0 = derive from id) counts archive entries of that genre + auction lots held by the player + running productions of that genre; >3 shows a "category full" message and returns -1, else 0 (max 4 programs per genre)
+fn 1DA8:085D prog_id_genre                split a program id: id <= 1000 -> genre = movie genre byte; else id -= 1000 and genre = 11 (series)
+fn 1DA8:0899 ad_spot_number               ?n of the "n/N" label for the ad planned (id+3000) in schedule slot: starts from the contract's spot counter (+4) or the ad's required spots, minus later planned spots of the same ad
+fn 1DA8:099C ad_check_deadlines           for every player contract whose deadline day (+5) is today: pay the ad's penalty (ledger 5), message 0x10F (liquidation damages) or 0x110 (cancelled) for the human, remove the ad from all ad slots and delete the contract
+fn 1DA8:0B53 betty_culture_check          daily check of movie 58 (Betty's cultural program): owner who aired it in slots 1..7 gets letter 0x29 (love letter); 3 days without airing -> movie taken away and put into the auction, Betty love (+0xC) halved, letter 0x111; unowned -> put into the auction
+fn 1DA8:0CB3 auction_add_lot              (slot, id, kind) put a movie (kind 0/-1) or series (other, id+1000) into auction slot: current value as price, lot code 4..10 random (or owner) also stored as the program's owner, clears "available" flag; live movies get a new date: #29 day+4 hour 4, #187 day+4 hour 3, others day+3..5 and a start hour that fits before 1 AM
+fn 1DA8:0E74 msg_post                     if the player is the human: store message (text id, 5 dword args, day, hour) in the message list 0x60BF[G8(0x7247)] and notify
+fn 1DA8:0F5B pay_credit_interest          daily interest on the human's credit: money -= credit/20 (5% per day), ledger 0xF
+fn 1DA8:0FB9 pay_daily_costs              per player: rent of every owned studio (ledger 8), transmitter fees = sum of transmitter fee values / 5 (ledger 9; AI pays from its budget), news agency subscriptions 1000 (agency 1) / 10000 (agencies 2,3) per day (ledger 0xA)
+fn 1DA8:1227 market_day_cleanup           end of day: untaken ad offers released, screenplay offers expire after 2 days unsold, film dealer offers returned to the pool (flag 0x20)
+fn 1DA8:135D live_check_missed            for each player's live programs (archive genre 7) dated today: movie 29/187 get rescheduled (recurring), others are lost with message 0x113 "You missed the %s live"
+fn 1DA8:1451 actors_daily_offer           pick today's 15 actors: slot i takes actor i of a random group (0..5, not 4) of the actor pool 0x5013, names unique; copied to 0x5493
+fn 1DA8:1538 newgame_starting_programs    new game: every player gets one free series (random of 18..20) and 3 free genre-6 movies with flag 0x20; the human's first evening (slots 1..7) is filled with random owned programs
+fn 1DA8:17E3 transmitter_reach            population inside a transmitter circle at map x,y (population map AND circle mask, weighted)
+fn 1DA8:18E0 map_density_at               density weight (table 0x1274: 0/1/10/100) of the 2-bit map pixel at x,y
+fn 1DA8:1918 map_sum_population           sum of density weights (0x127C: 0/1/10/100 per pixel) over a map rectangle, x step 8 px
+fn 1DA8:1A03 transmitters_recalc          rebuild player's coverage map, store covered population (all map) at +4 and total transmitter fee values at +0 of the player's transmitter block; returns fees
+fn 1DA8:1ACB coverage_build               clear coverage map 0x8BAA and OR in every active transmitter of the player: slot 1 = whole west half, slot 2 = whole east half (satellites?), others = circle; stores covered population per half in 0x7AD2/0x7AD6
+fn 1DA8:1CC2 door_board_pos               (floor, door, &x, &y) position of a door on the building directory board: y = (14-floor)*15+9, x from door x (0x50/0x74/0xB4/0xD8 -> 0x26/0x3D/0x6A/0x81); floors <= 7 in the right column
+fn 1DA8:1D4E door_label_text              new string with a door's label: text +0x28 (or +0x32) of the floor table, combined "%s %s" with the owner's player name (room type 1) or station name
+fn 1DA8:1EDE clock_hour_round05           clock_hour, +1 once minute >= 5 (news part of the hour is over)
+fn 1DA8:1EF3 clock_hour_round55           clock_hour, +1 once minute >= 55 (ad break started) - first schedule slot still open
+fn 1DA8:1F08 coverage_stamp               OR the 32x16 transmitter circle mask (0x11F4) of a player's transmitter slot onto the coverage map, limited to populated map pixels
+fn 1DA8:2036 transmitter_new_reach        extra population a transmitter at x,y would add to the current coverage (covered-after minus covered-before inside the circle)
+fn 1DA8:21E1 block_population             sum of density weights (0x1284) in a 16-row x 2-word (32x16 px) map block
+fn 1DA8:2293 script_count_scenes          number of entries with item id 17..41 (scene/set items) in a screenplay's first-episode item list
+fn 1DA8:22F6 prog_give_to_player          (id, player, price) set owner, money -= price (ledger 1 movie / 2 series), file it into the archive genre list if < 4 there; else human: into the bag (max 10), AI: purchase undone
+fn 1DA8:24EA script_items_bought          1 if every item of the episode's shopping list (+0xB) of the screenplay is bought
+fn 1DA8:2560 script_role_match_pct        (script, ep, item, actor) how well actor fits a role: sum(min(role requirement, actor attribute)) / sum(requirements) * 100 over attributes 0,2,3
+fn 1DA8:2653 round_to                     round a long to a multiple: ((v + m/2) / m) * m
+fn 1DA8:2682 viewers_to_pct               (player, viewers) viewers as % of the player's reach: (v + T/2) / T with T = reach * 2464 / 100
+fn 1DA8:26FC live29_reschedule            live movie 29 recurs: up to 3 more times dated day+3 hour 4, then removed from its owner
+fn 1DA8:2735 live187_reschedule           live movie 187 recurs: up to 5 more times dated day+2 hour 3, then removed from its owner
+fn 1DA8:276D npc_event_daily              choose today's intruder: human with money < -100000 -> bailiff for that player; else from day 3 a 1/3 chance each of terrorist 1, terrorist 2 (only if that event is enabled) or bailiff for the movie agency; sets up the NPC figure 0x7BD8
+fn 1DA8:2905 npc_event_update             per-frame state machine of the intruder (terrorist/bailiff/moral guardian): start walking at a random moment, pick target door of the right room type and owner, walk, plant bomb / act (npc_event_strike), bomb timer and door-closed states
+fn 1DA8:2D3B npc_event_strike             intruder acts at target door: consulate -> room destroyed; studio -> production lost (0x133/0x136); library -> random movie destroyed/seized; news room -> news wiped (bailiff); office -> seizure; moral guardian confiscates the airing movie (0x15B); terrorist damage costs the owner 50000 (0x135)
+fn 1DA8:3202 movie_destroy                (movie, msg, player) remove movie from owner and from the schedule (stops it if on air), message msg; bailiff (type 3) credits half its value to the owner (ledger 0xB)
+fn 1DA8:33A6 movie_title                  far pointer to a movie's title from the loaded text table 0x63E5 (49 entries), NULL if absent
+fn 1DA8:33FA movie_description            far pointer to a movie's description text (table 0x63E5 +6)
+fn 1DA8:344E series_title                 far pointer to a series title (table 0x65CF, 15 entries)
+fn 1DA8:34A2 series_description           far pointer to a series description (table 0x65CF +6)
+fn 1DA8:34F6 series_episode_title         (series, ep) far pointer to an episode title (table 0x65CF +0xA)
+fn 1DA8:3554 series_episode_description   (series, ep) far pointer to an episode description (table 0x65CF +0x32)
+fn 1DA8:35B2 script_title                 far pointer to a screenplay title (table 0x6B15, 10 entries)
+fn 1DA8:35F6 script_role_name             (script, role) far pointer to a role name of a screenplay (table 0x6B15 +6)
+fn 1DA8:3643 door_check_entry             (figure, npc) why a figure may not enter its door: bomb alarm texts 0x130..0x137, screenplay being written 0xF4, someone inside 0x12B, catching a rival in your own room 0x12E pays you a bounty that doubles each time (max 200000), empty room 0x12F, dead player's room 0x49; 0 = may enter
+fn 1DA8:395A rating_rank_hour             rank players by this hour's share (0x24AD); ties -> everybody 1st; ranks stored in 0x5553[p*8+hour]; image deltas +1 / 0 / -1 for 1st/2nd/3rd applied via image_apply_deltas
+fn 1DA8:3BE8 image_apply_deltas           apply int deltas[4] to player images (+0x15) zero-sum: gains and losses clamped to 0..100 and balanced (min), Betty love (+0xC) capped at image, rounding remainder to the leader so images total 100
+fn 1DA8:3F0D transmitter_fee_bracket      smallest of {50000, 100000, 250000, 500000} greater than the value (else 500000) - daily fee class of a transmitter from population*61.6
+fn 1DA8:3F48 news_price                   price of a news item by class: {1000, 2000, 3000, 4000, 6000, 8000}[class]
+fn 1DA8:3F5B movie_price                  current movie value: price/2 + price*topicality/(2*max topicality), rounded to 1000
+fn 1DA8:4035 series_price                 series value: n produced episodes * episode price (+0x2B), half fixed + half scaled by sum(topicality)/sum(max), rounded to 1000
+fn 1DA8:412F format_millions              new string with a viewer count in millions: mode 1 "%d,%d" (0.1 M), mode 2 "%d,%02d" (0.01 M), mode 3 = 1 if >= 1,000,000 else 2
+fn 1DA8:4258 ad_target_group_ok           (ad, group) 1 if the group satisfies the ad's target condition (+0xB..+0xD: negative = excluded group, positive = required groups, none = any)
+fn 1DA8:42E5 news_count_category          number of the human's news items (0x457F) with category (+0x1C) == c
+fn 1DA8:432D news_find_category           next news index after start with category c, -1 if none
+fn 1DA8:4384 player_image_at_least        -1 if player's image (+0x15) >= n, else 0
+fn 1DA8:43AD news_agency_image_check      news agency 1..3 cancels a player's subscription when image < {0,5,10,15}[agency] (message 0x152)
+fn 1DA8:4439 master_key                   (player, op) Betty's master key bit set 0x7A86: op 1 = give, 2 = take back, 0 = query; returns bit
+fn 1DA8:4481 sammy_daily_update           Sammy award: every 3 days a random category (only 1..2 before day 5); 2 days later the leader wins (image + {8,4,6,6}[cat], others lose all/half of it), tie -> 1-day extension or no award if nobody scored; returns day%3
+fn 1DA8:4694 sammy_score                  player's Sammy score: category points + Betty love/2 (news, series), + love (culture), + love/3 (shows); 0 for dead players
+fn 1DA8:4752 sammy_leader                 player with the highest Sammy score, 0 on a tie
+fn 1DA8:47E7 sammy_score_pct              player's Sammy score as % of all players' scores
+fn 222A:0001 money_ledger_new_day         copy today's 0x54-byte finance ledger to yesterday, clear it, opening balance = player's money
+fn 222A:004A rating_stats_new_day         shift per-player daily stats to 'yesterday', push today's average of 7 samples into the 7-day viewer history (0x6DA9), clear today's stats
+fn 222A:0206 studio_cancel_production     clear the script/episode of studio a0 and delete the renter's shopping lists for that script
+fn 222A:02A1 tx_commit_day                settle transmitter changes of player a0: scrapped (state 2) removed, newly bought (state 1) paid now (ledger cat 3), then recompute coverage
+fn 222A:03D1 shoplist_clear_first         ? zero the first shopping list record of player a0 (unused)
+fn 222A:03EE bag_remove                   remove bag slot a0 (shift down, count--)
+fn 222A:0424 shoplists_book_costs         book production purchases of player a0 into the ledger (cat 7, cost = multiplier x actor fee / prop price) for items changed since last booking; book a present bought today (cat 6)
+fn 222A:061E bag_unload_to_library        move films from the bag into the player's library shelves (owner set, max 4 per genre); special recurring live films 0x1D and 0xBB start their countdown events
+fn 229E:0007 news_slot_take_first         move the first item of a player's news inbox (g_news_inbox) into broadcast news slot a1 and remove it from the inbox
+fn 229E:004A news_toggle_subscription     toggle player a0's news-agency subscription flag for category a1 (player record +0x10+a1)
+fn 229E:0088 auction_toggle_bid           click on auction slot a0: own high bid -> msg "No returns"; else if money >= bid+increment, refund previous AI bidder's film budget and mark bidder byte -100 (bid pending); clicking a pending bid undoes it; returns 1 if changed
+fn 229E:01BB sched_place_ad               put the ad of contract slot a0 (g_contracts[a2]) after hour slot a1 of player a2's schedule; 0 if contract slot empty
+fn 229E:0225 sched_place_program          place library item (index a0, genre a1; 11 = series) at hour slot a2 for player a3. Rules: slot in the past -> "slot is over"; current hour after :05 -> "being shown"; live (genre 7) only on its day/slot; must end by slot 7/14 (1 AM); overlapping programs removed; continuation blocks = 9999; series stored as id+1000
+fn 229E:0465 sched_clear_slot_2           clear program word and +0x1E word of hour slot a1 for player a0
+fn 229E:04A3 sched_remove_program         remove the whole multi-block program covering hour slot a1 (walks back/forward over 9999 continuation blocks)
+fn 229E:051F library_check_can_sell       can library item (index a0, genre a1) of the player be sold/given away? series: not in schedule, not in production; film: price != 0 and id != 58 ("not for sale"), not scheduled, not live, not in a studio production or own script list; shows the reason text; returns 1 if ok
+fn 229E:0828 time_hour_tick               per-frame clock check: on a new hour runs hourly updates (g_last_hour++); within the hour fires broadcast phases: :00 news (phase 1), :05 program (phase 2), :55 ad block (phase 3) via broadcast_phase_eval; returns 1 if something happened
+fn 229E:0948 money_check_afford           (player, amount i32): returns 0 if player's available money >= amount, else shows "Not enough money!" and returns -1 (human: money minus pending transmitter costs)
+fn 229E:09AF studio_new_shopping_list     issue the next shopping list (episode) for the production in studio a0. Limits: max 5 lists per player ("too many shopping lists"), screenplay #24 only one episode, multi-production scripts max 10 ("Only 10 productions"); sets episode length from film/series
+fn 229E:0B98 studio_start_production      start shooting in studio a0. Rule: per cast slot k (10): actor roles score = actor_rating*weight/100, scene/equipment score = f(weight, equip quality table g_equip_quality); quality = base*sum(score)/sum(weight)*125/100; film price = price*quality/100 (0 if self-produced flag), film quality/topicality = quality; series: episode quality; adds quality to Sammy points if category 3/4 is running; end time = now + duration(+0x166, default 10); refuses if previous production of the title not yet shown
+fn 229E:100C studio_request_rent          (player, studio): rent now (studio_take_over) if no production is running, else queue player as pending renter (+0xF)
+fn 229E:104A studio_give_back             release studio a0 now, or mark it for release after the running production (+0xF = 0xFF)
+fn 229E:1080 studio_take_over             (studio, player): rent += rent/2, player pays 3x the new rent (human: ledger cat 8 "Studio rental"; AI: budget pots); sets owner, clears production, updates door signs ("Studio of")
+fn 229E:1264 studio_release               return studio a0: unfinished production goes back to the owner's script list (if < 5), studio cleared (owner 0xFF), door signs set to "Free studio"
+fn 229E:1386 game_load                    load savegame a0 (g_save_mode = 1) via game_save_load
+fn 229E:139A game_save_load               serialize/deserialize the whole game state (200 films, 50 series, 50 productions, 50 ad states, ~70 global tables) through savegame_io; direction from g_save_mode
+fn 229E:200D game_save                    save game to slot a0 (g_save_mode = 2) via game_save_load
+fn 229E:2020 savegame_io                  (buf far, n): save mode: n=0 alloc 40000-byte buffer, n>0 append n bytes, n<0 write buffer as resource -n (sets g_save_error); load mode: n<0 load resource -n, n>0 copy next n bytes out, n=0 free
+fn 229E:2140 library_contains             (player, genre, id): 0xFFFF if id is in the player's library for that genre, else 0
+fn 24B8:000C adagency_refill              refill the ad agency's 10 offers: ad states recomputed (offered/contracted), only ads whose minimum audience class <= 40% of the largest station reach, random pick if > 5 candidates
+fn 24B8:02C1 scriptagency_refill          recycle used screenplays and refill the 5 screenplay-agency offers with random available ones (screenplay #24 always offered first); count of new offers from a daily function
+fn 24B8:04B9 dealer_refill                refill the movie dealer's 10 slots with random available films/series (non-auction), 3..9 days on offer; while no station reaches 12M viewers up to 3 offers are forced to be cheap (<= $60000); live films get a date 2..4 days ahead and a slot
+fn 24B8:0905 auction_daily                daily auction update: sold items transferred to the high bidder, unsold items return to the market after 3 days, empty slots 1..8 refilled from the auction pool
+fn 24B8:0C4A broadcast_phase_eval         (phase 1 news / 2 program / 3 ads): hourly broadcast evaluation for all stations (news quality, ratings into g_ratings, Sammy points, ad contracts, studio hand-overs, messages)
+fn 24B8:1B5C trend_pick_new               shift the trend history and pick a new random trend genre 1..15 (not 10, 15 or one of the last three)
+fn 24B8:1BFD sched_program_at             (player, hour): program id covering hour slot (walks back over 9999 continuation blocks)
+fn 24B8:1C4C actor_text                   (actor_id, n): far ptr to actor string n (2 = name, 1 = second string) from the actor text bank, "<not set>" if missing
+fn 24B8:1C8C daily_boss_update            count empty program/ad slots today; weakest AI (lowest boss rating, days 2..39) gets +100000 budget; a player with boss rating < 5 is fired (g_fired_player); a fired AI's rating is given to the others (human half if 3 active, else all)
+fn 26A7:000D ui_warning_str               (far str) show "Warning: <str>" (text 89) in a modal message box (screen -1)
+fn 26A7:005D ui_warning                   (text id) ui_warning_str(g_text[id])
+fn 26A7:0077 ui_message_str               (far str) show a modal message box (screen -3)
+fn 26A7:0097 ui_message_box               (mode, far str) open (0/2) or close (1) the message window and draw the text
+fn 26A7:00E4 ui_draw_money                print money_available(human)/1000 into the status panel
+fn 26A7:013C ui_status_text               (far str, y) print a text into the status panel bitmap and blit it to the screen (hides the cursor if it overlaps)
+fn 26A7:01DF ui_draw_betty_meter          46-segment bar of the human's Betty love (percent) in the status panel
+fn 26A7:02A2 ui_draw_planner              (player) draw the program planner screen (frame, buttons, message icon) and its rows
+fn 26A7:03C6 ui_draw_planner_rows         (player) the 7 visible hours: "HH:00", program title, ad name with "spot n/total", "OK" (aired) or "---" (failed)
+fn 26A7:0723 ui_draw_planner_grid         (player) row boxes for time, program (width = blocks*16) and ad, styled by past/current/future hour
+fn 26A7:08B0 sched_slot_title             (hour, player) allocated title string of a schedule slot: film title, series "title: episode no: episode title", empty for 0/9999, "Fehler aufgetreten!" otherwise
+fn 26A7:0A02 library_item_title           (genre, idx, player) program_title of a library entry (genre 11 = series)
+fn 26A7:0A49 program_title                (id) allocated title of film / series (id >= 1000), "(Empty)" for 0
+fn 26A7:0AC0 ui_library_genre_popup       (x, y, mode, player) mode 0 save background and list the programs of the selected genre, mode 1 restore
+fn 26A7:0C7B ui_draw_transmitter_map      (sel) transmitter map screen: player legend, buy/sell buttons for the own map, transmitters of g_map_player (sel 0 = all, else only that one)
+fn 26A7:0FE5 ui_draw_dealer_shelf         (mode) movie agency: draw the tapes of the 10 offers still on the shelf (mode 0 saves the background first)
+fn 26A7:10B9 ui_draw_bag                  (mode, kind) case/bag window (geometry table 0x12E8): kind 1/2 carried programs, 3 ad contracts, 4 screenplays, 5 studio renter's screenplays, 6/7 Betty gift; mode 1 restores
+fn 26A7:14FB ui_draw_ad_offers            ad agency: draw the 10 contract folders still offered on 3 shelves
+fn 26A7:1613 ui_draw_library_shelf        (player) library: title of the selected genre and one tape per program
+fn 26A7:1742 ui_series_info               (mode) info window of series g_selected_series: episode list, title, description, blocks/genre/critics/press bars
+fn 26A7:19E9 ui_tile_box                  (x0, y0, x1, y1, style) ui_tile_box_to into the screen buffer
+fn 26A7:1A0C ui_tile_box_to               (x0, y0, x1, y1, style, far dst) 9-slice frame from atlas tiles; base tile from the style table at 0x1330
+fn 26A7:1B87 ui_drag_begin                (w, h, hot x, hot y, far label, style) create the floating image of a picked-up item (frame, tape icon or label), allocate save-under bitmaps, cursor = carrying
+fn 26A7:1DF8 ui_drag_end                  drop the carried image: restore background, free bitmaps, cursor shape 1
+fn 26A7:1E94 ui_contract_popup            (x, y, mode, player) "Adverts in stock:" window listing the player's 10 contract slots
+fn 26A7:2047 ui_draw_info_board           information board: 13 floors x 4 door signs (permuted by g_signs) coloured by owner
+fn 26A7:22BD ui_draw_news_agencies        (player) news room: subscription lamps of the 3 news agencies and the inbox indicator
+fn 26A7:2363 ui_draw_news_slots           (player, mode) the 3 news broadcast slots: text, time, "Today"/"(Old)", price class
+fn 26A7:25CD ui_draw_news_inbox           (mode) news room ticker: inbox items of the selected category with paging
+fn 26A7:292F news_text                    (far news item, node) allocated news text: cached template of the node with its '#' placeholders replaced by the topic phrases
+fn 26A7:2B9D ui_transmitter_info          (player, flag) recalculate coverage, redraw the map and show "Transmitters: n, Total viewers: x million" (reach*2464)
+fn 26A7:2F27 ui_draw_auction_board        (mode) 2 x 5 auction lots: title, current bid and bidder (mode >= 100: only lot mode-100; 1 restore)
+fn 26A7:31C3 ui_draw_script_offers        screenplay agency: draw the up to 5 screenplays on offer
+fn 26A7:32CA ui_draw_building_plan        estate agent: floor numbers and a door marker per room coloured by renter/owner/studio state
+fn 26A7:35D8 ui_yesno_box                 (far str, mode) dialog with text and two answer buttons
+fn 26A7:3654 ui_draw_viewers              status panel: current viewers of the human (blank when the clock is halted or before the first hour)
+fn 26A7:36C8 ui_draw_studio               studio room background objects (script marker if a production is set up)
+fn 26A7:3749 ui_draw_studio_items         icons of the bought cast/props of the studio's current episode, empty places for the rest
+fn 26A7:38EA ui_studio_menu               (mode) studio assistant menu (text 141: new shopping list / production info / start) with episode markers
+fn 26A7:3A31 ui_supermarket_menu          (mode) "What's your choice? Presents / Equipment"
+fn 26A7:3B04 ui_draw_actor_card           ?shopping list: actor of the selected role with fee and humor/appearance/skill bars
+fn 26A7:42B2 ui_gift_catalog              (mode) supermarket catalog: 10 Betty gifts with prices
+fn 26A7:43AD ui_draw_betty_office         Betty's office: player portraits at the height of their Betty love; Sammy standings while a Sammy runs
+fn 26A7:4611 ui_draw_stats_chart          statistics chart: viewers per hour (0 yesterday, 1 today, 2 last 7 days; programme and news bars, ad result marks) or the 3 players' image % bars
+fn 2B74:0006 ui_draw_shopping_lists       supermarket: draw the player's shopping-list numbers (complete/incomplete icon) and the title of the selected list ("#s~#s~No. #d" film / "#s~episode #d: #s~(#s)" series)
+fn 2B74:0267 ui_genre_count_popup         (x, y, mode): mode 0 saves background and shows the 11 genre names with the library count per genre (5 = category full); mode 1 restores
+fn 2B74:03EF betty_say                    (mode, str): Betty speech bubble box; mode 0 draws text, presents and waits for input; mode 1 closes
+fn 2B74:0447 boss_dialog_draw             (mode, text_id): boss office dialog: greeting by boss rating (<10 "You dare to show your face", <75 "Get to the point", else friendly), or reply/option text from g_boss_reply_table for the current page; -1 = repeat last
+fn 2B74:069E tetris_draw                  (mode): hidden Tetris on the office computer: draw 20x10 grid, next piece, score/level/lines/high score; game-over animation resets the grid and picks a random next piece (1..7); mode 1 restores background
+fn 2B74:09F1 save_slots_draw              draw the 10 savegame slot names (2 columns x 5) in the safe
+fn 2B74:0A6D save_insert_disk_box         (mode): "Please insert the disk ..." box
+fn 2B74:0AC8 ui_disk_prompt               (mode, text_id): mode 0 shows a 160x40 popup with text a1 (disk swap prompts), mode 1 restores the background
+fn 2B74:0BDD lang_prompt_box              (mode, str): 160x40 popup with the two language names (strings at +1 and +0x15 of resource 41); mode 1 restores background
+fn 2B74:0D03 boss_say                     (mode, str): boss speech box, draws str at 156,12
+fn 2B74:0D49 gossip_say                   (mode, str): right-side speech box (room 0x40 character: "Good afternoon, #s! I heard ... bailiff" gossip lines)
+fn 2B74:0D96 ui_box                       (mode, col, row, w, h, style) in 8-px cells: mode 0 save background on g_ui_box_stack + draw frame, 2 redraw frame only, 1 pop and restore background
+fn 2B74:0E17 porter_say                   (mode): small box with "You look for your junk yourself ..."
+fn 2B74:0E63 options_draw                 options panel: speed buttons 20/30/60 (g_game_speed) and On/Off switches "TV family", "TV picture", "Music"
+fn 2B74:10B8 options_draw_switch          draw an On/Off slider switch at offset a0 into the options switch bitmap
+fn 2B74:114F confirm_cancel_box           ?(mode): "You want to cancel? Are you serious?" with yes/no buttons (no callers found)
+fn 2B74:11D8 ui_draw_player_icons         ?draw the 3-station indicator strip (selected player highlighted, eliminated players greyed; first icon depends on g_opt_tv_picture)
+fn 2B74:12CC newgame_draw_setup           new-game screen: "Select a player", per station: station name, manager name (except the one being edited, a0), Computer/Player, difficulty Easy/Normal/Difficult (highlight g_difficulty), buttons New game/Load game/End
+fn 2B74:154F transmitter_sale_dialog      (mode, bids far): sell-transmitter dialog: "Transmitter: $" value, "Auction:" with each AI's offer ("Bid: $"), "Scrap:"/"Throw away"
+fn 2B74:1791 betty_greeting               Betty's greeting "Hello <name>, ...": text by Betty love (0 / <30 / >=30) or special text if player out flag set
+fn 2B74:1875 msg_show_next                "An important message for #s": format and show the first queued message (production complete, liquidation damages, contract cancelled, studio destroyed/seized, Sammy results, Trendy result, film confiscated, missed live...) and pop it from g_msg_queue
+fn 2B74:1E56 ui_player_event_text         ?show a framed text box with per-player event text id g_player_event_text[a0] formatted with the player's name
+fn 2B74:1F33 finance_report_draw          draw the balance sheet (today/yesterday ledger): Expenses (films bought incl. pending auction bids, transmitters, screenplays, actors/scene, liquidation damages, studio rent, news, transmitter fees, sundry), Income (films sold, ads, sundry), interest, previous/current balance
+fn 2B74:2496 ui_draw_hline                draw a horizontal line of 8-px tiles from x a0 to a1 at y a2
+fn 2B74:24E8 save_not_found_box           (mode): "Saved game not found. Quit?" with two buttons
+fn 2B74:2578 save_overlay_box             (mode): load/save selection overlay box with two buttons
+fn 2DD4:0007 util_min                     signed min(a, b)
+fn 2DD4:001E util_max                     signed max(a, b) (decompiler shows a 3rd, unused argument)
+fn 2DD4:0035 util_lmax                    signed 32-bit max of (a_lo,a_hi) and (b_lo,b_hi)
+fn 2DD9:000C ai_tick                      run one step of the current computer player (if not out): when ai_ready_at_target, act for its state (0 office: book contract spots, 1 ad agency: take contracts, 2 movie agency: plan/buy/auction rebid/sell in 4 sub-steps, 3 news room: buy news, 4 office: transmitter purchase or schedule tuning, 7 production errand, 8 office: ai_plan_programs x15, 9 buy gift, 10 give gift, 11 swap signs, others nothing) then ai_next_goal; finally switch to the other AI
+fn 2DD9:0349 ai_replace_weak_programs     from the next hour: a scheduled film (not live) whose topicality < player average quality, whose genre the AI's ads exclude, or whose estimated viewers < AI's min audience is replaced (once per call) by an unscheduled library film of the same length with topicality > average and allowed genre; its ad spots in those hours are removed (aborts if a spot belongs to a fully booked contract)
+fn 2DD9:0710 ai_upgrade_ads               from the next hour (:55 rule) every booked ad spot whose minimum audience exceeds the estimated viewers is removed; otherwise it is swapped for ai_find_better_ad if one exists
+fn 2DD9:08D1 ai_find_better_ad            (contract idx, hour) if the contract is over-booked in that half (today/tomorrow) and not complete: the not-complete contract with the highest minimum audience still <= estimated viewers and genre-compatible (stops at one still needing spots); returns its idx or 0
+fn 2DD9:0B13 ai_fill_ad_slots             from the next hour: every slot with a program but no ad gets the genre-compatible contract with the highest minimum audience <= estimated viewers (preferring contracts still short of their daily plan)
+fn 2DD9:0DD9 ai_fill_program_slot         one empty hour per call (cursor g_ai_cursor from the current hour to 14): pick the library program (genre allowed by the AI mask, est. viewers >= AI minimum, fits the free block, no live, no X-rated before 21h, one series episode per day) maximising g_genre_audience[genre][hour]*topicality; prefers topicality >= player average; limits odd-length programs per half day; done at 14 -> ai_next_goal. ?estimate is called with the category instead of the hour (original bug)
+fn 2DD9:1498 ai_office_book_spots         state 0 (own office): refresh scheduled flags, place live programs; if contracts are not all booked: for contract g_ai_step with a minimum audience, book programs (ai_book_programs_for_contract) when booked < planned spots; otherwise/afterwards fill empty slots (ai_fill_program_slot)
+fn 2DD9:162A ai_book_programs_for_contract (contract idx, spots) for each library category whose last program suits the ad's genre rule, place unscheduled programs (no live, no X-rated before 21h) into empty gaps whose estimated viewers reach the ad's minimum and book the ad after each of their hours, until spots are covered; sets g_ai_no_program if nothing was found. ?series category check adds (char)1000 = -24 to the id (original bug)
+fn 2DD9:1990 ai_book_contract_spots       (contract idx, from hour, to hour) put the contract's ad after every scheduled hour in the range while the contract is not fully booked
+fn 2DD9:1A3F ai_plan_film_purchases       build the AI shopping plan (up to g_ai_budget +0x2A entries): from the 10 dealer offers (then auction lots via ai_plan_auction_bid) pick the best score = blocks*topicality*20/(price/1000) with topicality >= player average quality, < 4 programs in that genre, not yet planned, price <= film budget; the budget is reserved immediately
+fn 2DD9:1DDA ai_execute_purchases         carry out the shopping plan: dealer items are paid (cash), removed from the shelf and added to the library genre list (max 4); auction items get a bid (bid += increment, refunding the other AI if it was the high bidder) and are remembered in the AI bid list; plan cleared
+fn 2DD9:20BA ai_plan_auction_bid          (plan idx) compare auction lots (not already led by this or the other AI) at bid+increment with the same score as ai_plan_film_purchases (genre must have < 3 programs) and put a better one into the plan entry as an auction item
+fn 2DD9:2386 ai_auction_rebid             if image >= 10: for each AI bid now led by the human: value = topicality*hours*20/(bid/1000) (series: episodes*blocks/2); if value > 2 and increment < film budget, outbid (bid += increment, budget charged), else give up (reserved money back to the film budget, bid removed)
+fn 2DD9:26EA ai_plan_budget               (player) daily ranking vs. the other AI and the human: image rank (+0x2B, also max deals = 2*rank), Betty love rank (gift priority), library quality/size need (film priority), reach share >28%/<20% (transmitter priority), rating rank (news/production priority, Sammy-dependent); pot percentages = base weights {5,28,14,18,35,0} * priority, normalised to 100
+fn 2DD9:2B8D ai_eval_yesterday            (mode, player) mode 0: average rating % of yesterday's 7 hours = viewers*100/(reach*2464); mode 1: average quality of yesterday's 7 scheduled programs (film quality, series episode quality); day 1: 10 / 15
+fn 2DD9:2D26 ai_sell_program              (genre, idx) sell a library item to the dealer at its current value (cash and film budget += value), program_withdraw, owner = 0
+fn 2DD9:2E72 ai_sell_weak_programs        sell unscheduled, priced films (not live/show) whose quality + 3 < the player's average quality (stops once 1-hour films are needed for odd gaps); with more than 3 series sell the unscheduled one with the lowest average topicality
+fn 2DD9:3085 series_avg_topicality        (id, +1000 allowed) average episode topicality of a series; ?sums episodes 2..n+1 (off by one in the original)
+fn 2DD9:311D ai_take_contracts            ad agency: up to g_ai_budget +0x2A times take the best-paying offer that ai_can_take_contract accepts and whose minimum audience <= reach*2464*avg rating/100; contract deadline = today + days, booking plan initialised, offer removed; agency refilled
+fn 2DD9:33CB ai_can_take_contract         (ad) 1 if today's planned spots + new spots/day < 6, next hour + all outstanding spots <= 14, fewer than 8 contracts, the ad has no required genre (only exclusions) and its minimum audience as % of reach <= the AI's image
+fn 2DD9:3576 library_total_blocks         (player) total length in hour blocks of all library programs (films + series episode length); AI sells only when >= 14
+fn 2DD9:362D library_genre_blocks         (genre) ?total blocks of the AI's programs of one genre (series: genre-10); result is lost, no callers
+fn 2DD9:3754 contract_spots_per_day       (contract idx, player) remaining spots / remaining days (deadline - today + 1, min 1); 0 when fully booked
+fn 2DD9:381E ad_genre_allowed             (hour or program, ad, is_program) 1 if the program's genre (series 10+genre) passes the ad's 3 genre bytes: a negative entry excludes |genre|, positive entries require one of them; 0 for no ad
+fn 2DD9:3985 ai_ready_at_target           1 when the AI figure stands at its target door, no other figure is there, the door is enterable and it waited 300 ticks (or was already flagged). If the human is caught in the AI's own room he pays g_catch_fine (doubles each time, max 200000) with message 0x12A; other occupants make the AI choose a new goal
+fn 2DD9:3C0D ai_next_goal                 advance the AI state 0..12 and walk to its room: 0/4/8 own office, 1 ad agency, 2 movie agency, 3 own news room, 5/6 news room/office/library of player 1 / of the other AI (every 3rd time, if Betty love >= 20), 7 production errand (skipped without task), 8 skipped on Easy, 9 supermarket (gift budget >= 30000), 10 Betty (with gift), 11 info board (day event 1..3, no blocked door), 12 porter (10%)
+fn 2DD9:4115 ai_switch                    toggle g_ai_cur between the two computer players
+fn 2DD9:4126 ai_walk_to                   (player, room type, owner, studio) set the AI figure's target floor/door (x = 0x99 elevator when on another floor); sets the arrived flag if already there
+fn 2DD9:41FF ai_production_status         (player) g_ai_studio[player]: status 5 studio production lacks shopping-list items (supermarket), 6 production ready to start (studio), else 1 screenplays but no studio (estate agent), 2/3 no screenplay (screenplay agency), 4 screenplay and studio (office)
+fn 2DD9:434F script_avg_quality           (screenplay) base quality (+8 of episode block), averaged over all episodes for series screenplays
+fn 2DD9:43D6 scripts_owned_avg_quality    (player) average script_avg_quality of the player's owned screenplays
+fn 2DD9:4460 ai_new_day                   reset both AIs: states -1, budget history, yesterday's avg rating/quality, odd-block counters, transmitter search, daily spot plans (spots per remaining day), ai_plan_budget, screenplay quality, news agencies (cat 1 if image >= 5, 2 if >= 10 and news budget > 20000, 3 if >= 15 and > 40000)
+fn 2DD9:4719 ai_place_live_programs       put each unscheduled live film (genre 7) of the AI into its fixed slot when its day is today or tomorrow (clearing what is there)
+fn 2DD9:4862 ai_scan_transmitter_site     scan 3 map points per call (grid step 3, 150 x 90): best = largest new reach whose fee <= transmitter budget; when the scan ends, buy it in a free slot 3..32 (cash and budget charged, coverage stamped and recalculated), then ai_next_goal
+fn 2DD9:4B84 ai_want_transmitter          1 if transmitter budget > 50000, time slot >= 18 and the other AI is not buying; 2 if the human is on the transmitter map (room 0x19); else 0
+fn 2DD9:4C06 ai_rebuild_coverage_step     rebuild the AI's coverage map one transmitter per call (step 0 clears it; slots 1/2 copy the west/east half of the population map, others stamp a circle); at step 32 sum the west/east coverage
+fn 2DD9:4D9F ai_avg_studio_budget         (player) g_ai_budget +0x2C = average of the 3 daily production budgets (+0x30..+0x38)
+fn 32BA:000A ai_transmitter_bid           (ai_idx, value i32): offer of an AI for a transmitter the human sells: -1 if no free transmitter slot or transmitter budget too small, else derived value * random pct (table 0x15F8)/100
+fn 32BA:0124 ai_buy_news                  AI news purchase: while news budget > 0, average slot quality below strategy threshold and < 3 swaps: replace the weakest of the 3 news slots by the best affordable inbox item (pays price), then recompute news quality
+fn 32BA:036D ai_news_good_enough          (player, threshold): 1 if average quality of the 3 broadcast news slots >= threshold
+fn 32BA:03BC ai_estimate_audience         (hour, program, mode) audience model: per station attract = film topicality (series: episode quality / repeats so far today); x trend bonus (g_trends mult/10 if genre in AI's known trends); stations sharing a genre split the genre audience g_genre_audience[g][h]; attract = attract*g_genre_audience/100 + news lead-in/5; total capped at 100%; viewers = share*reach/100*2464. mode 0 share%, 1 viewers, 2 rank (1..3); X-rated film counts 0 if hour%7<4; uses measured g_ratings for the running hour
+fn 32BA:0ABA ai_news_leadin               (station, hour): news quality decayed by 15% per hour from now to hour, times g_hour_audience[hour]/100
+fn 32BA:0AFD ai_optimize_ads              ?AI ad schedule pass: from the next hour, pull later ads forward into empty ad slots and swap ads so that each slot's estimated viewers meet the ad's minimum audience
+fn 32BA:0FB2 ai_book_ad_spots             (player, ad, from, to, mode, contract): book remaining spots (ad spots - booked) into hour slots whose estimated viewers exceed the ad's minimum; mode 1 empty slots only, mode 2 may displace another contract's spot
+fn 32BA:11AE ai_buy_betty_gift            if gift budget > 30000 pick the gift (3..9) with the highest price per love point that is affordable, pay it, remember it in g_ai_pending_gift
+fn 32BA:1331 ai_give_betty_gift           give the pending gift: Betty love += gift points (capped at the player's boss rating); gift points shrink to 70% and use count++
+fn 32BA:1432 ai_plan_programs             AI program planning from its start hour: blocks whose estimated rank is worse than the pass threshold get the library film/series of matching length (no live, no X-rated before 21h, no scheduled series) with the best rank; passes run for difficulty 2..g_difficulty (thresholds rank 2, 1) so on Easy the AI does no re-planning here
+fn 32BA:1800 ai_swap_signs_sabotage       AI sabotage: pick a victim room (50% random public room 0x10..0x18, 20% human's library, 20% human's studio with production, 10% human's news room) and swap its door sign with the sign of today's event target (bomb/bailiff) so the event hits the victim
+fn 32BA:1B17 event_find_target_sign       locate the door-sign position (floor, index) of the room targeted by today's event (g_event_type/g_event_target)
+fn 32BA:1C6B building_find_room           (type, owner, param, *floor, *door): find a door in g_floors with room type, owner (0 = any) and param/studio no. (0 = any)
+fn 348B:0003 ai_count_short_programs      count unscheduled 1-block films and series in the AI's library (?series check reads count bytes, likely original bug)
+fn 348B:0121 ai_find_schedule_gaps        (buf, minlen): write the start slots of empty schedule gaps >= minlen blocks (from the next hour) into buf, return count
+fn 348B:0203 ai_contracts_all_booked      1 if every AI ad contract is fully booked (flag bit2) or booked for today and tomorrow (bits 0,1)
+fn 348B:02A3 ai_ad_requirements           for unfinished contracts compute the average minimum audience and an OR of target-genre bitmasks into g_ai_ad_req[player]
+fn 348B:04CD ai_budget_distribute         (player, amount i32, contract): split income into the 7 AI budget pots by their percentages; nothing if contract >= 0 is not yet fulfilled
+fn 348B:059F ai_init_players              game start for both AIs: clear pots/percentages, strategy 3, film budget = money*4/5, transmitter budget = 49500, money = money/5 - 49500, then distribute
+fn 348B:070C ad_plan_book                 (hour, contract, add(1)/remove(0), player): adjust booked counters today/tomorrow/total of g_ai_ad_plan and update flags (bit0 today>=plan, bit1 tomorrow>=plan, bit2 total>=required spots)
+fn 348B:07FF ai_ad_plan_init              init the AI booking plan of contract slot a0 (spots per day from AI heuristics, counters cleared)
+fn 348B:0895 ai_library_avg_quality       average quality of a player's library films (+series rating); ?loops count+1 entries per genre
+fn 348B:098D ai_rent_studio               pick the free studio with the best size/rent ratio under 10% of the production budget; BUG: passes the loop counter (13) instead of the chosen studio to studio_request_rent
+fn 348B:0AAF ai_buy_script                buy the best-rated screenplay offer (rating >= threshold, price <= 30% of production budget, genre not over-full) into the AI's script list; pays, marks offer sold, refills the agency
+fn 348B:0DF7 ai_start_production          start production in the AI's studio if not running (films only if not already in the library)
+fn 348B:0F05 ai_next_shopping_list        put a waiting script into an own empty studio (if size fits) or continue the current one, then issue the next shopping list
+fn 348B:1087 ai_buy_cast                  for each cast slot of the current shopping list spend (weight% of 60% of the production budget): best-rated affordable actor of the role's category, or most expensive affordable scene/equipment level (1..3)
+fn 35F1:000A bit_set                      *(u16 far *)p |= 1 << n
+fn 35F1:0028 bit_clear                    *(u16 far *)p &= ~(1 << n)
+fn 35F1:0048 bit_test                     (w >> n) & 1 as a byte; used on the AI genre masks (g_ai_ad_req +0, bit genre-1)
+fn 35F8:0003 snd_init                     load detector resource 99 and probe hardware; if a device is found load driver resource 98 else 95; digital sound disabled when resource 300 (SOURCE2) is missing
+fn 35F8:024C snd_load_sample              load compressed sample resource a0 into a paragraph-aligned buffer and hand it to the driver
+fn 35F8:0330 snd_free_sample              free the sample buffer
+fn 35F8:0341 snd_play_sample              start playback of the loaded sample (driver calls)
+fn 35F8:035C snd_stop_sample              stop sample playback (driver calls)
+fn 35F8:037C snd_room_music_start         (room, owner): choose the room jingle sample (own rooms 1..5, rival room 0x5D, public rooms by id, building 0xFF) and play it; sub-screens 0x3D/0x3E/0x0D/0x40 keep the current one; skipped when Music option off
+fn 35F8:058F snd_room_music_stop          (room, owner): stop and free the current room sample unless moving into a sub-screen
+fn 35F8:0636 ptr_align_para               round a far pointer up to the next paragraph (offset & 0xFFF0, segment + 1)
+fn 365D:0000 timer_init                   ? timer/sound-driver init stub; returns -1
+fn 365D:0006 timer_reset                  g_timer_ticks = 0
+fn 365D:000D timer_stop                   no-op stub
+fn 365D:000E timer_read                   return g_timer_ticks (~50 Hz; used for frame pacing, random seeds, play-time clock)
+fn 365D:0014 timer_start                  g_timer_ticks = n and hand the tick block 0x902C to the sound driver (371E entry 3) so its timer interrupt counts ticks
+fn 365F:000B res_load_lzw                 load resource id: read 2-byte unpacked size from its header, alloc output and 8 KB dictionary, LZW-decode (36F4:0009, 9-bit codes growing, 0x100 reset, 0x101 widen); used for intro animations
+fn 365F:00A5 intro_scene_load             free previous intro scene, load background bank (scene table 0x161E: bg + up to 3 LZW delta clips per scene) into the 208x144 frame bitmap and put it on screen at 32,g_intro_row
+fn 365F:0229 intro_decode_frame           wait for vertical retrace, then apply the next delta frame from g_intro_anim_ptr to the frame bitmap (4456:0000; opcodes 'b' end, 'c' run/skip-run, 'd' skip pixel, else literal)
+fn 365F:0244 intro_scene_step             one intro tick: at clip start pick next clip slot (restoring background on slot 1) and count passes (scenes 3 and 9 play 3 passes, scene 5 two, others one -> g_intro_scene_done); else decode next frame (scene 2 holds 5 ticks at frame 35); put frame on VGA
+fn 37B4:0002 huff_read_byte               next byte of the compressed stream
+fn 37B4:0019 huff_put_pixel               store one decoded byte into the sprite bank: on a new sprite write its header {wcols=ceil(w/8), h, far ptr data} from the (w,h) table, then fill rows of stride wcols*8 left to right
+fn 37B4:013D huff_read_bit                next bit, LSB first
+fn 37B4:0166 huff_read_tree               read a prefix tree recursively: bit 1 = leaf (first leaf of each tree = escape symbol 0x100, else 8-bit literal), bit 0 = new internal node (ids from 0x101) with child-0 and child-1 subtrees
+fn 37B4:01FE huff_decode                  read order-0 tree + 256 context trees (one per previous byte), then decode g_huff_remaining bytes: symbol from tree of previous byte; escape -> order-0 tree; escape there -> raw 8-bit literal
+fn 37B4:04AC huff_unpack_bank             decompress a sprite bank (src: u8 count, count x (w,h) bytes, stream: BE u16 node count, BE u32 output size, LSB-first bitstream) into dst (u16 count, 8-byte headers, pixels); 3rd arg unused
+fn 37B4:05DD huff_unpack_bank_alloc       like huff_unpack_bank but computes the bank size, allocates it and frees src (unused)
+fn 3833:0001 bitmap_alloc2                identical copy of bitmap_alloc (w,h) used for the drag cursor image
+fn 3839:0004 bank_mem_size                in-memory size of a decoded sprite bank: 2 + count*8 + sum(w8*h*8)
+fn 3848:0002 res_bank_sizes               sprite bank resource a0: *a1 = packed size, *a3 = unpacked size (2 + n*8 + sum ceil(w/8)*8*h)
+fn 385D:0001 res_init_2                   init resource manager: info {1 drive, current 0}, no files open, allocate 600 x 8-byte index
+fn 385D:0037 res_select_drive             stub (returns 0): drive selection removed
+fn 385D:003E res_flush                    stub, called before res_close_all
+fn 385D:0043 res_close_all                close all open *.rsc handles
+fn 385D:0070 res_open_all                 find all *.rsc, open read/write, read each 600x6-byte header into the index (later files override)
+fn 385D:0200 res_list_present             write count + ids of all resources with nonzero size to buffer a0
+fn 385D:029A res_read                     read whole resource a0 into far buffer (a1 off, a2 seg)
+fn 385D:0336 res_write                    write a3 bytes from far buffer (a1,a2) over resource a0 in its RSC file (save games)
+fn 385D:03C3 res_read_part                read a4 bytes at offset a3 of resource a0 into (a1,a2)
+fn 385D:045B res_write_part               write a4 bytes at offset a3 of resource a0 from (a1,a2)
+fn 385D:04F3 res_create                   append a new resource a0 of a1 bytes at the end of the first RSC file and register it in the file header and index
+fn 38C6:0087 heap_allocate_partial_block  Borland far heap: split size a2:a3 off the end of free block a0, return data ptr
+fn 38C6:0137 heap_create_block            Borland far heap: grow heap by sbrk for a new used block of size a0:a1
+fn 38C6:01A5 heap_create_first_block      Borland far heap: first allocation, sets heap first/last
+fn 3985:000D rtl_free                     Borland free(ptr) (large model) -> farfree
+fn 3985:001F heap_insert_free_block       Borland far heap: link block into the circular free list (rover)
+fn 3985:00BE heap_join_free_blocks        Borland far heap: merge block a2 into preceding free block a0
+fn 3985:0136 heap_free_last_block         Borland far heap: release the last block (and a free predecessor) back to DOS via brk
+fn 3985:021B heap_free_inner_block        Borland far heap: mark block free, merge with free neighbours
+fn 3985:02E7 rtl_farfree                  Borland farfree(ptr): header = ptr-8; last block -> free_last_block else free_inner_block
+g 0094 16 g_trends                   audience trends [i*4]: +0 genre (1..15, series 10+g), +2 viewer multiplier x10 (13, 15, 13, 10, 10)
+g 00A8 32 g_ad_min_viewers           [class-1] minimum viewers per ad audience class: 0, 250k, 500k, 1M, 2.5M, 5M, 10M, 25M, 50M, 100M
+g 00F2 8 g_ai_player                [ai 0/1] player index of the two computer players
+g 00F4 32 g_building_bg              building background (day or night)
+g 00F8 32 g_figure_sprites           figure sprite buffer
+g 0100 32 g_room_gfx                 room graphics pointers 0x100..0x124
+g 0104 32 g_room_gfx1                room graphics pointer slot 1 (meaning depends on the room)
+g 0108 32 g_room_gfx2                room graphics pointer slot 2
+g 010C 32 g_room_gfx3                room graphics pointer slot 3
+g 0114 32 g_room_gfx5                room graphics pointer slot 5 (slot 4 = g_actor_txt)
+g 0118 32 g_room_gfx6                room graphics pointer slot 6
+g 011C 32 g_room_gfx7                room graphics pointer slot 7
+g 0120 32 g_room_gfx8                room graphics pointer slot 8
+g 0110 32 g_actor_txt                actor text bank (offset table + strings); also used as a bitmap by options_draw
+g 0124 32 g_window_buf               preallocated window bitmap used by window_create instead of allocating (null = allocate)
+g 0128 16 g_elevator_offset          cabin pixel offset between floors
+g 012A 16 g_elevator_door            door counter 0..2 (2 = open)
+g 012C 16 g_clock_halt               nonzero: game clock and AI stopped
+g 012E 8 g_font_map                 256-byte table char -> glyph index (0 = not in font)
+g 022E 8 g_glyph_width              font glyph widths by char
+g 032E 16 g_filmshelf_rects          film agency shelf slot rects (x1,y1,x2,y2), slots 1..10
+g 0386 16 g_clip_on                  clipping enabled
+g 0388 16 g_clip_x1                  clip rect left (stored but the blitters clip only vertically)
+g 038A 16 g_clip_y1                  clip rect top (used by blit_transparent/blit_opaque_rect)
+g 038C 16 g_clip_x2                  clip rect right (not used by the blitters)
+g 038E 16 g_clip_y2                  clip rect bottom (exclusive)
+g 0390 32 g_drag_image               drag cursor bitmap (non-null while something is carried)
+g 0394 16 g_drag_w                   width of g_drag_image in px
+g 0396 16 g_drag_h                   height of g_drag_image
+g 0398 16 g_drag_hot_x               hotspot x: drag image drawn at mouse_x - hot_x
+g 039A 16 g_drag_hot_y               hotspot y
+g 039C 8 g_madris_shapes            7 pieces x 4 rotations x 4x4 cells
+g 05A0 16 g_tv_cache                 4 x (picture resource, cache slot)
+g 05B0 16 g_tv_picture               last TV picture shown
+g 05B2 8 g_tv_family                5 flags: which TV family members watch
+g 05E6 16 g_boss_complained          boss already complained in this speech
+g 05E8 16 g_player_quit              set when the player quit / was fired by the boss
+g 0638 16 g_hotspots                 145 hotspot records of 12 bytes
+g 0D04 16 g_disk_idle                nesting counter of disk_access_begin/end (1 = idle)
+g 0D06 16 g_res_open_count           debug counter of resource file opens
+g 0D0A 16 g_clock_pause_depth        nesting of game_clock_pause
+g 0D0C 16 g_clock_seconds            game seconds since 17:00 (cached)
+g 0D0E 16 g_figure_sprite_res        sprite resource loaded in each figure slot
+g 0D26 16 g_madris_tick              frames since last fall step
+g 0D2A 16 g_cursor_shape_sp          depth of g_cursor_shape_stack
+g 0D2B 8 g_madris_points            points per piece (index 1..7: 10,8,8,6,6,6,4)
+g 0D33 16 g_madris_drawn_x           column of the piece stamped last frame (999 = none)
+g 0D38 16 g_key_dir                  last arrow key direction (1 up 2 down 3 left 4 right)
+g 0D3A 16 g_key_speed                keyboard cursor speed 2..16
+g 0D3C 16 g_room_anim_frame          room animation frame counter
+g 0D9C 16 g_anim_div                 counter of anim_div_tick
+g 0E69 8 g_ending_anim              ending animation script: 6 x {frame, sprite, x, y}
+g 0E82 16 g_tip_id                   id of the tooltip currently shown (0 = none)
+g 0E84 16 g_tip_shown_col            column of the shown tooltip
+g 0E86 16 g_tip_shown_row            row of the shown tooltip
+g 0E88 16 g_tip_room                 room in which the tooltip state was reset
+g 0E8A 16 g_tip_room_state           room state in which the tooltip state was reset
+g 117E 16 g_daylight                 building scenery variant: 1 = day (clock_hour < 4, skyline res 5), 2 = night (res 14)
+g 11A4 16 g_bld_drawn_top            top floor of the last render
+g 11A6 16 g_bld_drawn_scroll         scroll of the last side-scenery render
+g 11E4 16 g_initdata_pos             read position in the init-data blob
+g 11E6 16 g_strpool_pos              used bytes of the string pool
+g 11E8 8 g_news_price_steps         value thresholds of the news price classes {15,30,40,50,60,100} (second copy at 0x11EE)
+g 11F4 16 g_transmitter_mask         32x16 px circle mask of a transmitter
+g 127C 16 g_density_weight           population per density level {0,1,10,100}
+g 128C 32 g_transmitter_fees         fee brackets {50000,100000,250000,500000}
+g 12B0 16 g_sammy_image_bonus        image bonus per Sammy category {8,4,6,6}
+g 1492 16 g_boss_replies             15 x (page, option, text id) reply table
+g 14EC 16 g_boss_last_text           last boss text id
+g 14EE 16 g_boss_greeted             boss greeting already drawn
+g 14F0 16 g_ui_box_depth             depth of g_ui_box_stack
+g 14F1 8 g_player_color             [player] frame colour on the setup screen
+g 15EC 8 g_ai_debug_step            >0: wait for a key after every AI program placement (debug)
+g 15ED 8 g_ai_no_program            set when the AI found no program to book for a contract
+g 15EE 8 g_ai_pot_weights           [1..6] base budget weights: gifts 5, films 28, news 14, production 18, transmitters 35, other 0
+g 15F5 16 g_catch_busy               a catch scene is running (blocks re-entry while the room is left)
+g 15F8 8 g_ai_bid_pct               4 percentages for AI transmitter bids
+g 15FC 16 g_ai_news_threshold        [strategy] news quality the AI aims for
+g 1604 16 g_snd_digi                 digital sound available
+g 1606 16 g_snd_sample_res           resource id of the loaded room sample (0 none)
+g 1608 16 g_snd_room_on              last room passed to snd_room_music_start
+g 160A 16 g_snd_room_off             last room passed to snd_room_music_stop
+g 160C 32 g_intro_bg                 intro scene background sprite bank
+g 1610 32 g_intro_clip1              LZW-decoded delta animation clip 1 of the scene
+g 1614 32 g_intro_clip2              clip 2
+g 1618 32 g_intro_clip3              clip 3
+g 161E 16 g_intro_scenes             14 x {bg res, clip1 res, clip2 res, clip3 res}
+g 168E 16 g_intro_clip_slot          next clip slot 1..3
+g 16A4 16 g_mouse_rel_x              mouse motion since last poll (int 33h position - 200, recentred)
+g 16A6 16 g_mouse_rel_y              mouse motion since last poll
+g 16A8 16 g_vga_seg                  video segment (0xA000) used by the screen blit asm
+g 1824 32 g_heap_first               Borland far heap first block
+g 1828 32 g_heap_last                Borland far heap last block
+g 182C 32 g_heap_rover               Borland far heap free-list rover
+g 196A 16 g_script_offers            screenplay agency offers [9], 1..5: +0 screenplay, +2 taken, +3 days, +4 u32 price, +8 scenes
+g 196A 8 g_script_offers_2          screenplay agency offers 1..5 (9 bytes each)
+g 19A0 16 g_ad_offers                ad agency offers [7], 1..10: +0 ad id, +2 taken
+g 19A0 8 g_ad_offers_2              ad agency offers 1..10 (7 bytes each)
+g 19ED 16 g_film_offers              ?film dealer offers [8], 1..10: +0 id, returned to the pool at day end
+g 19ED 8 g_dealer                   movie dealer slots 1..10 (8 bytes each)
+g 1A45 16 g_scripts_owned            [player*0x32] 10 owned screenplays of 5 bytes
+g 1B0D 16 g_auction                  auction lots [9], 1..10: +0 id, +2 u32 bid, +6 bidder, +7 lot code, +8 days listed
+g 1B0D 8 g_auction_2                auction slots 1..10 (9 bytes each)
+g 1B70 16 g_player_ads               signed contracts per player [0x46] = 10 x 7: +0 ad id, +4 spot counter, +5 deadline day
+g 1D00 8 g_hour_audience            % of the population watching per hour slot (8)
+g 1D09 16 g_transmitters_2           per-player transmitters (stride 0x1CE, slots 1..32 of 0xE bytes)
+g 1D09 32 g_transmitters             per player [0x1CE]: +0 u32 total fees, +4 u32 reach; slots 1..32 [0xE]: +0 u32 fee, +4 u32 reach, +8 x, +0xA y, +0xC state
+g 2441 16 g_culture_missed_days      days in a row movie 58 was not aired
+g 2443 16 g_ai_tx_scan               [player*16] transmitter search: +0 x, +2 y, +4 best x, +6 best y, +8 u32 best fee, +0xC u32 best new reach
+g 2483 16 g_bag                      programs carried in the bag (10)
+g 24A1 16 g_program_score            program attractiveness per player this hour
+g 24A9 32 g_movies                   far ptr to movie table [0x17], 1..200: +0 genre, +1 max topicality, +3 topicality, +4 blocks, +5 owner, +6 flags (bits0-4 audience, 0x20 available), +8 u32 price, +0xC picture, +0xF live day, +0x11 live hour
+g 24AD 16 g_rating                   per player [10]: +0 audience share %, +8 no-program flag
+g 24E5 8 g_ai_state                 [ai] current goal state 0..12 (-1 = choose)
+g 24E7 16 g_ai_step                  [ai] sub-step within a state (contract index, movie agency phase 0..3, planning hour 0..14)
+g 24EB 16 g_ai_cursor                [ai] hour cursor of ai_fill_program_slot / step of ai_rebuild_coverage_step
+g 24EF 16 g_ai_wait_start            [ai] tick when the AI started waiting at its door (waits 300 ticks)
+g 24F3 8 g_ai_visit_p1              [ai*2] counter 0..9 for visits to player 1's rooms (state 5)
+g 24F4 8 g_ai_visit_rival           [ai*2] counter 0..9 for visits to the other AI's rooms (state 6)
+g 24F7 16 g_avg_rating               [player] yesterday's average rating % (ai_eval_yesterday 0)
+g 24FF 16 g_avg_quality              [player] yesterday's average program quality (ai_eval_yesterday 1), AI buying/selling threshold
+g 2507 8 g_ai_cur                   index (0/1) of the AI being processed
+g 2508 8 g_ai_arrived               [ai] AI is at its target and may act
+g 250A 8 g_ai_tx_busy               [player] AI is searching/buying a transmitter (blocks the other AI)
+g 250E 8 g_ai_script_quality        [player] average quality of the owned screenplays
+g 2512 16 g_ai_buy_plan              [player*0x4D] 7 purchase plan entries of 0xB bytes (see rec 2512)
+g 2646 32 g_series                   far ptr to series table [0x39], 1..50: episodes [3](max, cur, flags), +0x21 genre, +0x22 episodes, +0x23 blocks, +0x24 owner, +0x25 flags, +0x2B u32 episode price, +0x2F picture, +0x31 next episode
+g 264A 8 g_ai_studio                [player*3] +0 studio index, +1 count, +2 production status 1..6 (ai_production_status)
+g 268E 8 g_equip_quality            scene/equipment quality per (type-15)*4 + level
+g 2730 8 g_broadcast_phase          phase within the hour: 0 none, 1 news, 2 program, 3 ads done
+g 2731 16 g_news_nodes               news chain nodes [n*0xA]: +0 4 successor nodes (9999 = end), +8 value, +9 delay in hours
+g 36DB 16 g_news_pool                today's news items, 20 x 0x1E (count g_news_pool_count)
+g 3939 16 g_schedule_prev            [player*0x5A] yesterday's schedule (copy of g_schedule)
+g 3AA1 16 g_news_templates           50 news templates [t*0xE]: +0 5 parts (topic + 1000*mode: 1 = same phrase as previous), +0xA start node (+1000 when used), +0xD category
+g 3D6B 16 g_news_slots               [player*0x78] news broadcast slots 1..3 of 0x1E bytes
+g 3D6B 8 g_news_slots_2             per-player news broadcast slots 1..3 (stride 0x78, 0x1E-byte records)
+g 3F4B 8 g_news_score               news attractiveness per player this hour
+g 3F4F 32 g_ads                      ad table [0x18]: +0 far name, +9 spots, +0xA viewer class, +0xB..0xD target groups, +0xF taken, +0x14 u32 penalty
+g 3F4F 8 g_ads_2                    static array of 0x18-byte ad (advertiser) records (1..50)
+g 4417 16 g_schedule                 schedule per player [0x5A]: u16 program[15] (movie, series+1000, 9999 = continued), +0x1E episode[15], +0x3C ad[15] (+3000 planned, +2000 aired)
+g 457F 16 g_news_inbox               [player*0x258] 20 news items of 0x1E bytes
+g 457F 8 g_player_news              news items per player [0x258] = 20 x 0x1E: +0x1C category, +0x1D price class
+g 4EDF 8 g_ai_ad_plan               [player*0x4D] 11 x 7-byte AI booking counters per contract (see rec 4EDF)
+g 5013 16 g_actor_pool               actor pool, groups [0xC0] x 16 actors [12]: +0 name, +2 u32 fee, +6.. attributes
+g 5493 16 g_actor_offers             today's 15 actors [12]
+g 5553 8 g_hour_rank                per player [8]: rank for each hour of the day
+g 5593 32 g_news_topics              50 news topics [t*0x38]: +4*j far text of phrase j (1..10), +0x2C+j phrase value
+g 60BB 32 g_txt_index                far ptr to the loaded string index of a text resource
+g 60BF 16 g_messages                 message list [0x1A]: text id, 5 dword args, day, hour
+g 6141 16 g_frame_timer              timer value of the last animation frame
+g 6143 32 g_clock_acc                accumulated timer ticks * speed of the day (seconds = acc / 50)
+g 6147 16 g_news_drag                news item being dragged (0x1E bytes)
+g 6147 8 g_drag_news                copy (0x1E bytes) of the dragged news record
+g 6165 16 g_studios                  12 studios [16 bytes]: +0 screenplay, +2 size, +3 owner, +4 episode, +6 u32 rent, +0xA finish day, +0xC finish hour, +0xE writing
+g 6165 8 g_studios_2                static array of 16-byte studio records (1..12)
+g 6235 32 g_prop_prices              props: 24 scene types x 4 quality levels, u32 price
+g 63E5 16 g_film_txt_cache           49 x 10 bytes: film id, title, description
+g 65CF 16 g_series_txt_cache         15 x 0x5A bytes: series id + 22 strings
+g 6B15 16 g_script_txt_cache         10 x 0x42 bytes: screenplay id + 16 strings
+g 6DA9 32 g_viewer_history           per-player 7-day history of average viewers (stride 0x20, u32)
+g 6E29 32 g_ai_budget                AI player records [0x3C]: +0xC news, +0x10 studio, +0x14 transmitter budget
+g 6F19 16 g_archive                  library per player [0x6C]: u16 id[genre 1..11][4], +0x60+genre u8 count
+g 70C9 16 g_news_stories             7 running news stories [s*0x15]: +0 template, +2 last template, +4 node, +6 5 phrase variants, +0x12 countdown, +0x14 category
+g 715C 32 g_scripts                  far ptr to screenplay/production table [0x1B3], 1..50: +4 status (99 done), +5 flags (bit0 series), +6 target program, +9 item lists per episode [0x23], +0x168 role requirements, +0x1A4 role groups
+g 7160 8 g_genre_audience           [genre*8 + hour 1..7] audience % per genre and hour of the evening
+g 71E4 16 g_day                      day counter (incremented in new_day)
+g 71EC 16 g_minute                   game clock minute
+g 71EE 16 g_second                   game clock second
+g 71F1 32 g_ledger_today             today's finance ledger (0x54 bytes; [0] opening balance, then categories)
+g 71F5 32 g_ledger                   today's money per ledger category (u32 each)
+g 7245 8 g_ai_period                [ai] 1..3 index of today's production budget history slot
+g 7247 8 g_message_pos              current index in the message list
+g 7248 16 g_news_pool_count          number of items in g_news_pool
+g 724A 16 g_presents                 Betty gifts 1..10 of 8 bytes: +2 u32 price, +6 love points (x0.7 per use), +7 times given
+g 724C 32 g_gifts                    Betty gifts, 8 bytes each (price, love points, times given)
+g 72A2 16 g_game_speed               game seconds per timer tick unit (30)
+g 72A4 16 g_clock_timer              raw timer reading at the last clock update
+g 72A6 16 g_player_news_count        news items per player
+g 72B2 16 g_ai_buy_last              [player] index of the last purchase plan entry (-1 none)
+g 72BA 16 g_news_txt_cache           24 x 6 bytes: news id, far text
+g 734A 16 g_bag_count                number of programs in the bag
+g 734C 16 g_shoplists                [player*0x4B] 5 shopping lists of 0xF bytes
+g 7480 16 g_shoplist_count           [player]
+g 7488 16 g_sammy_category           current Sammy category 1..4 (0 = none); words at +2p = player points
+g 7490 16 g_sammy_day                Sammy cycle day counter (award every 3 days)
+g 7492 32 g_ledger_yesterday         yesterday's finance ledger
+g 74E6 8 g_player_present           per-player present carried (id, +100 if bought today)
+g 74EA 32 g_hour_viewers             per player [32]: viewers per hour
+g 756A 16 g_ai_bids                  [player*0x42] AI auction bids, 6-byte entries: +0 lot, +2 u32 money reserved
+g 7672 16 g_scripts_owned_count      [player]
+g 767A 16 g_last_hour                last hour processed by the hourly tick
+g 76A8 16 g_player_ad_count          number of contracts per player
+g 76B0 32 g_hour_newsviewers         [player*0x20 + hour*4] ?news-show viewers per hour today
+g 7730 16 g_ai_bid_count             [player] entries in g_ai_bids
+g 7764 16 g_ai_ad_req                [player*6] +0 genre mask (bit g-1) the AI's ads allow, +2 u32 minimum viewers of its ads
+g 777C 8 g_now_title                title of the program now on g_tv_channel
+g 7812 8 g_now_episode              episode title of the series now on g_tv_channel
+g 78A8 16 g_ai_trends                [ai*6] 3 genres the AI believes are trendy
+g 78B4 8 g_ai_odd_today             [player] odd-length programs placed today (+4: tomorrow)
+g 78BC 8 g_ai_pending_gift          [ai] gift bought for Betty, not yet given
+g 78BE 32 g_hour_viewers_yesterday   [player*0x20 + hour*4] program viewers per hour yesterday
+g 793E 32 g_hour_newsviewers_yesterday [player*0x20 + hour*4] ?news-show viewers per hour yesterday
+g 79BE 32 g_panel_atlas              res 10: bottom panel parts
+g 79C2 32 g_tvfam_atlas              res 15: TV-family sofa / shutter tiles
+g 79C6 16 g_planner_scroll           planner hour offset (0 today, 7 tomorrow)
+g 79C8 16 g_selected_index           archive position / list index of the selection
+g 79CA 16 g_selected_genre           archive genre of the selected program
+g 79CC 16 g_map_player               player whose transmitters are shown on the map
+g 79CE 16 g_redraw                   request redraw / refresh flag
+g 79D0 16 g_genre_popup_open         genre count popup visible
+g 79D2 16 g_cursor_shape             cursor shape index (2 = carrying an item, 3 = busy)
+g 79D4 16 g_selected_series          series shown by ui_series_info
+g 79D6 16 g_selected_program         program picked up in the planner
+g 79DE 16 g_cur_studio               studio index of the visited studio
+g 79E0 16 g_shop_list                shopping list index being filled
+g 79E2 16 g_shop_category            actor role 1..7 or scene type >=16 shown in the shop
+g 79E4 16 g_shop_actor_scroll        actor list scroll (step 5)
+g 79E6 16 g_shop_slot_scroll         shopping list slot scroll (step 3)
+g 79EA 16 g_status_msg               text id of the pending status message (0x12A = caught in a rival's room)
+g 79EC 16 g_mouse_min_x              mouse limits
+g 79EE 16 g_mouse_min_y              mouse limits
+g 79F0 16 g_mouse_max_x              mouse limits
+g 79F2 16 g_mouse_max_y              mouse limits
+g 79F4 16 g_tvfam_shutter            number of shutter bars covering the view (0..6)
+g 79F6 16 g_tvfam_state              TV-family view: 0 off, 1 switching off, 2 switching on, 3 on
+g 79F8 16 g_chart_mode               statistics chart: 0 yesterday, 1 today, 2 last 7 days
+g 79FA 16 g_chart_player             player shown in the statistics chart
+g 79FC 16 g_chart_scale              viewer axis step of the chart
+g 79FE 16 g_tv_channel               channel shown on the office TV
+g 7A02 16 g_boss_cancelled_hours     hours of cancelled programs yesterday (boss complains)
+g 7A04 16 g_boss_missed_ads          commercials not run yesterday (boss complains)
+g 7A06 16 g_sammy_winner             player who won a Sammy today
+g 7A0E 16 g_boss_talk_step           step of the boss's morning speech
+g 7A10 16 g_tv_off                   TV cover position 0 (on) .. 30 (off)
+g 7A12 16 g_opt_music                options switch "Music" (0 = on; room jingles skipped otherwise)
+g 7A14 16 g_tv_program_quality       topicality of the human's current program (TV family mood)
+g 7A16 16 g_caught_figure            figure caught in the human's room (+1)
+g 7A18 16 g_tip_visible              a tooltip is on screen
+g 7A24 16 g_office_papers            papers piling up in the player's office (+1 per day, cleared by an event in 1DA8:2D3B)
+g 7A26 16 g_dealer_pose              res id 0xBC..0xBF of the film dealer's pose by hour
+g 7A2E 16 g_estate_wealth            estate agent's room decoration level 0..10 from total studio rent
+g 7A30 16 g_opt_tv_family            options switch "TV family"
+g 7A34 16 g_alien_mode               human figure drawn as alien (hotkey)
+g 7A36 16 g_room_owner               player owning the room being visited
+g 7A38 16 g_room_anim_dirty          set by room_anim_update when something was redrawn
+g 7A3A 16 g_betty_letter             per player: pending letter text id (0x29 love letter, 0x111 angry)
+g 7A3C 16 g_player_letter            pending letter text id per player (array at 7A3A+2*p, p=1..3), shown in the office (2B74_1E56)
+g 7A42 16 g_live29_left              remaining reruns of live movie 29
+g 7A48 16 g_mouse_pending_dx         accumulated mouse/keyboard motion not yet applied
+g 7A4A 16 g_mouse_pending_dy         accumulated vertical motion not yet applied
+g 7A4C 16 g_mouse_click              latched button state (1 left, 2 right), consumed by game_frame
+g 7A4E 16 g_elevator_speed           cabin speed in px per tick (also scenery parallax divisor)
+g 7A50 16 g_frame_divisor            animation frame interval = 50 / this ticks
+g 7A52 16 g_estate_portrait          estate agent portrait index 0..3 from g_estate_wealth (also res id while loading)
+g 7A54 16 g_fired_player             player to be thrown out
+g 7A5C 16 g_npc_type                 intruder: 1/2 terrorist (from either Duban consulate), 3 bailiff, 4 moral guardian
+g 7A5E 16 g_npc_target_player        player the intruder goes after (8 = movie agency)
+g 7A60 16 g_now_title_stale          tvinfo_fetch_titles must reload the titles
+g 7A62 16 g_bomb_timer               frames since the bomb was planted
+g 7A64 16 g_npc_target_door          door the intruder acts at
+g 7A66 16 g_npc_target_floor         floor the intruder acts at
+g 7A68 16 g_door_block               door message: 1 bomb alarm, 2 crazy, 3 work in progress, 4 closed due to bereavement
+g 7A6C 16 g_tvfam_frozen             skip TV-family redraw
+g 7A6E 16 g_chart_image              statistics chart shows image % instead of viewers
+g 7A70 16 g_news_scroll              news list scroll offset
+g 7A72 16 g_news_category            news category shown in the inbox (1..3)
+g 7A74 16 g_madris_state             Madris: < 42 start countdown, 42 playing, 43 game over
+g 7A76 16 g_madris_score             Madris score (max 9999)
+g 7A78 16 g_madris_piece             falling piece 1..7 (0 = spawn next)
+g 7A7A 16 g_madris_next              next piece
+g 7A7C 16 g_madris_rot               rotation 0..3
+g 7A7E 16 g_madris_delay             frames per fall step (level = 9 - delay; -1 every 10 lines, min 1)
+g 7A80 16 g_madris_lines             cleared lines
+g 7A82 16 g_madris_input             pending input: 1/2 rotate, 3 left, 4 right, 5 drop
+g 7A84 16 g_madris_hiscore           Madris high score
+g 7A86 16 g_master_key               bit set of players holding Betty's master key
+g 7A8E 16 g_boss_menu                boss dialog menu level (-1 close, -2 done)
+g 7A90 16 g_boss_choice              selected option in the boss dialog
+g 7A92 16 g_clock_paused             game clock paused
+g 7A94 16 g_difficulty               1 easy, 2 normal, 3 difficult
+g 7A98 16 g_save_error               disk write error during save
+g 7A9A 16 g_pause_request            set by the pause key: next click opens pause screen (room -5)
+g 7A9C 16 g_live187_left             remaining reruns of live movie 187
+g 7AD2 32 g_coverage_west            covered population, west half of the map
+g 7AD6 32 g_coverage_east            covered population, east half of the map
+g 7ADA 32 g_estate_base_rent         reference total studio rent for g_estate_wealth
+g 7ADE 32 g_credit                   credit taken by the human player
+g 7AE2 32 g_catch_fine               money the human pays when caught in an AI's room (doubles, max 200000)
+g 7AE6 32 g_catch_bounty             per figure: money paid when caught in another player's room (doubles, max 200000)
+g 7AF2 32 g_status_amount            money shown in the status message
+g 7AFE 32 g_credit_2                 bank credit of the human player
+g 7B0A 32 g_frame_tiles1             window frame tileset (style 1)
+g 7B0E 32 g_frame_tiles2             window frame tileset (other styles)
+g 7B12 16 g_player_figure            figure index of the human player
+g 7B14 16 g_click                    click of the current frame (result of input_poll)
+g 7B26 16 g_cursor_drawn_x           x of the cursor currently on VGA (-1 = none)
+g 7B28 16 g_popup_col                popup slot column (array)
+g 7B36 16 g_cursor_drawn_y           y of the cursor currently on VGA
+g 7B38 16 g_popup_row                popup slot row (array)
+g 7B42 16 g_figures                  walking figures [0x1E], 0..2 players, 5 intruder: +0 x, +2 floor, +4 target x, +6 target floor, +0xE walking, +0x10 entering, +0x12 target door, +0x1A look
+g 7BFC 32 g_tvfam_bg                 TV-family background bitmap (sofa + seated viewers)
+g 7C00 32 g_res_cache                packed resource cache [6]: far ptr + u16 unpacked size
+g 7C78 16 g_game_mode                1 title/new-game screen, 2 new game started, 3 running after load
+g 7C7E 32 g_population_map           far ptr, 168x108 map of 2-bit population density
+g 7C82 8 g_floors                   floor table, 14 floors x 0x7A: door x[10], +0x14 kind, +0x1E room type, +0x28 name text, +0x32 "of" text, +0x46 owner, +0x6E studio index
+g 832E 32 g_tvfam_viewers            5 viewer records x 16 bytes {atlas, x, mood, state, counter, counter2, idle timer}
+g 8382 32 g_bld_side_tiles           res 13: building side strips
+g 8386 32 g_font_2                   main font glyph bank (res 3)
+g 838C 16 g_room                     current room / screen (0 = building, 1 office, 2 news, 3 boss, 4 library, 5 studio, 8 movie agency, 0x19 transmitter map, 0x1F planner, 0x3A save room)
+g 838E 16 g_figure_sprite_cols       ?figure sprite set width factor (from sprite bank size)
+g 8390 32 g_text                     far pointers to the 430 texts of the language
+g 8A48 16 g_room_stack               rooms entered before the current one
+g 8A5C 16 g_bld_top_floor            floor shown at the top of the view (scroll/30+5)
+g 8A60 8 g_door_index               13 floors x 4 doors x (floor, door)
+g 8AC8 32 g_strpool                  string pool of ad names and news phrases
+g 8ACC 16 g_cursor_shown             cursor show counter: cursor_show ++, cursor_hide --; arrow drawn when 1 (with drag image at 0)
+g 8AD4 8 g_madris_board             10 x 20 board (row * 10 + col), nonzero = block colour
+g 8B9C 32 g_roomframe_tiles          room view frame tiles (res 4)
+g 8BA0 32 g_band_tiles               res 7: band filler tiles
+g 8BA4 16 g_room_mode                sub-screen / dialog state inside the current room
+g 8BA6 16 g_font                     font selector (line height 8 / 7)
+g 8BA8 16 g_player                   human player index (1..3)
+g 8BAA 32 g_coverage_map             far ptr, coverage map of the player being computed
+g 8BAE 32 g_text_buf                 buffer holding the text resource
+g 8BB2 32 g_save_names               10 save-slot name buffers
+g 8BDA 16 g_elevator_floor           floor of the elevator cabin
+g 8BDC 32 g_player_name              player records [p*0x17], p = 1..3: +0 far name
+g 8BDC 8 g_players                  player records 4 x 0x17 (index 0 unused, see rec 8BDC)
+g 8BE0 32 g_player_station           player +4: far station name (Mad-TV, Fun-TV, Sun-TV)
+g 8BE4 32 g_player_money             player +8: money (signed)
+g 8BE8 16 g_player_betty_love        ?player +0xC: Betty's affection (halved when her program is dropped, capped at image, < 20 takes the master key)
+g 8BED 8 g_player_news_agency       player +0x11..0x13: news agency 1..3 subscribed
+g 8BF0 8 g_player_out               player +0x14: player is out of the game
+g 8BF1 16 g_player_image             player +0x15: image / market share in %, all players sum to 100
+g 8C3A 16 g_popup_w                  popup slot width in cells (array)
+g 8C44 16 g_popup_h                  popup slot height in cells (array)
+g 8C4E 16 g_bld_scroll               building view vertical scroll (0..321)
+g 8C50 32 g_tv_family_gfx            TV family sprite buffer
+g 8C54 16 g_elevator_calls           number of entries in g_elevator_queue
+g 8C56 32 g_bld_tiles                res 6: building tiles (doors of 3 types open/closed)
+g 8C5A 16 g_tv_family_gfx_pos        fill position in the TV family buffer
+g 8C5C 32 g_ui_atlas                 res 2: cursor shapes, band end caps
+g 8C60 16 g_popup_used               popup slot in use (array)
+g 8C6A 16 g_bld_full_redraw          force full building redraw
+g 8C6C 16 g_elevator_queue           list of figures waiting for the elevator (length g_elevator_calls)
+g 8C78 32 g_panel_sprites            res 9: the two halves of the bottom panel
+g 8C7C 16 g_res_present              count + list of resource ids present
+g 8E8A 32 g_status_win_bmp           136x56 channel status window bitmap (status_window_draw)
+g 8E8E 16 g_room_stack_top           room stack depth
+g 8E90 32 g_cursor_comp              background + cursor composite put on VGA
+g 8E94 32 g_cursor_sprites           far ptrs to the cursor shape sprites (by g_cursor_shape)
+g 8EB0 16 g_res_drives               resource drive info {count, current}
+g 8ED2 32 g_panel_bmp                bottom panel bitmap 320x80
+g 8ED6 32 g_cursor_tmp               scratch background copy for cursor moves
+g 8EDA 32 g_building_buf             208x150 building bitmap
+g 8EDE 32 g_cursor_bg                saved VGA background under the cursor
+g 8EE2 32 g_popup_bmp                popup save buffers, 4 bytes per slot; slot 0 = current window/tooltip bitmap
+g 8EF8 16 g_txt_res                  resource id of the text resource being cached
+g 8EFA 16 g_drag_news_new            dragged news comes from the pool and must be paid
+g 8EFC 16 g_drag_ad                  dragged ad id
+g 8F03 16 g_hotspot                  hotspot id under cursor at the last click (ui_hotspot_at_cursor)
+g 8F05 16 g_drag_aux                 extra value of the dragged item (episodes / byte)
+g 8F09 16 g_drag_film                dragged film id (<1000 film, >=1000 series+1000, +10000 = bought now)
+g 8F0B 16 g_drag_item                dragged generic item (script, present, actor, prop, transmitter...)
+g 8F0D 32 g_tx_bids                  2 opponents' bids for the transmitter being sold
+g 8F15 16 g_estate_studio            studio selected at the estate agent
+g 8F19 32 g_cur_player_rec           far ptr to players[g_player]
+g 8F1E 16 g_drag_draw_x              top-left x where the drag image is drawn
+g 8F20 16 g_drag_draw_y              top-left y where the drag image is drawn
+g 8F22 16 g_cursor_shape_stack       stack of saved cursor shapes
+g 8F2C 16 g_madris_x                 piece column
+g 8F2E 16 g_madris_y                 piece row
+g 8F30 16 g_madris_drawn_y           row of the piece stamped last frame
+g 8F32 16 g_madris_drawn_piece       piece stamped last frame
+g 8F34 16 g_madris_drawn_rot         rotation stamped last frame
+g 8F36 32 g_glyph_blit               14-byte param block for the 377A glyph blitter {tile, xoff, dst, col, row}
+g 8F44 16 g_tile_fixed_x             x for tile_draw_at_y
+g 8F46 16 g_tile_fixed_y             y for tile_draw_at_x
+g 8F48 16 g_tile_fixed_n             tile for tile_draw_fixed
+g 8F4A 32 g_tile_target              destination bitmap of the atlas tile helpers
+g 8F52 32 g_frame_target             bitmap ui_frame draws into
+g 8F56 32 g_frame_tileset            tileset used by ui_frame
+g 8F68 16 g_tip_col                  tooltip window column
+g 8F6A 16 g_tip_row                  tooltip window row
+g 8F6C 32 g_tip_text                 tooltip text slots (far ptrs, 4 bytes each, referenced by layout digits)
+g 8F88 32 g_tip_plain                template/text for kind 5 tooltips
+g 8F9A 16 g_tip_cursor_hidden        tooltip_show hid the cursor
+g 8F9C 16 g_tip_replace              force present before showing a new tooltip
+g 8FA6 16 g_tip_h                    tooltip height in rows
+g 8FA8 16 g_tip_contract             contract slot index for ad tooltips (-1 none)
+g 8FAA 16 g_tip_w                    tooltip width in cells
+g 8FAC 16 g_tmp_b                    scratch global
+g 8FAE 16 g_tmp_a                    scratch global
+g 8FB0 32 g_initdata                 init-data blob (resource 0xD0) while loading
+g 8FB4 16 g_image_delta              int[4] image changes passed to image_apply_deltas
+g 8FBC 16 g_rank_share               int[4] shares being ranked
+g 8FC4 16 g_rank_order               int[3] players by rank
+g 8FCA 32 g_save_buf                 savegame buffer (40000 bytes)
+g 8FCE 16 g_save_pos                 read/write position in g_save_buf
+g 8FD0 16 g_save_mode                1 load, 2 save (savegame_io direction)
+g 8FE0 16 g_genre_popup_bg           saved background handle of ui_genre_count_popup
+g 8FE2 16 g_lib_genre_count          [genre 1..11] library counts (5 = full) for ui_genre_count_popup
+g 8FFA 16 g_tetris_bg                saved background handle of tetris_draw
+g 8FFC 32 g_ui_popup_bmp             ui_disk_prompt work bitmap
+g 9000 32 g_ui_popup_bg              ui_disk_prompt saved background
+g 9004 32 g_lang_prompt_bg           lang_prompt_box saved background
+g 9008 16 g_ui_box_stack             saved-background handles of nested ui_box calls
+g 9012 16 g_tx_dialog_bg             saved background of transmitter_sale_dialog
+g 9014 32 g_snd_drv                  paragraph-aligned driver code
+g 9018 32 g_snd_sample               paragraph-aligned sample data
+g 901C 32 g_snd_detect               paragraph-aligned detector code
+g 9020 32 g_snd_sample_mem           sample allocation
+g 9024 32 g_snd_drv_mem              driver allocation
+g 9028 32 g_snd_detect_mem           detector allocation
+g 902C 16 g_timer_block              ? tick block handed to the sound driver (counter at +8 = 0x9034)
+g 9034 16 g_timer_ticks              timer tick counter (~50 Hz)
+g 904C 16 g_intro_passes             passes over all clips of the scene
+g 904E 16 g_intro_row                screen y of the intro frame
+g 9050 16 g_intro_scene_done         current scene finished
+g 9052 16 g_intro_scene              current intro scene 1..14
+g 9054 16 g_intro_frame              frame index in the current clip (0 = start next clip)
+g 9056 32 g_intro_frame_bmp          208x144 intro frame bitmap
+g 905A 32 g_intro_clip               current clip (byte 0 = frame count)
+g 905E 16 g_intro_hold               hold counter (1005 -> 1000 = 5 frame pause)
+g 9060 16 g_intro_frame_ticks        timer ticks per intro frame
+g 9062 32 g_intro_anim_ptr           read pointer into the current delta stream
+g 9066 16 g_intro_clip_count         number of clips in the scene (1..3)
+g A438 32 g_huff_dst                 current pixel write pointer
+g A43C 16 g_huff_new_sprite          next byte starts a new sprite
+g A43E 32 g_huff_child0              child-0 table, biased by -0x202 so it is indexed by node id
+g A442 16 g_huff_pixels              pixels written (sum of w*h)
+g A444 16 g_huff_size_lo             low word of the output size
+g A446 16 g_huff_h                   current sprite height
+g A448 16 g_huff_bitcnt              bits left in g_huff_bitbuf
+g A44A 16 g_huff_ctx_root            256 roots of the order-1 context trees (by previous byte)
+g A64A 16 g_huff_w                   current sprite width in px
+g A64C 16 g_huff_y                   current row
+g A650 16 g_huff_escape_done         escape leaf of the current tree already assigned
+g A652 32 g_huff_remaining           bytes still to decode (BE u32 from stream)
+g A656 16 g_huff_src_pos             read position in g_huff_src
+g A658 16 g_huff_nodes               node table size (BE u16 from stream)
+g A65A 16 g_huff_bitbuf              current bit buffer
+g A65C 32 g_huff_out                 output sprite bank
+g A660 16 g_huff_wcols               current sprite width in 8px columns
+g A662 16 g_huff_count               number of sprites in the bank
+g A664 32 g_huff_src                 compressed bitstream (after the w,h table)
+g A668 32 g_huff_child0_mem          unbiased child-0 allocation (freed)
+g A66C 16 g_huff_out_ofs             offset of the next sprite's pixel data in the bank
+g A66E 32 g_huff_hdr                 start of compressed bank (u8 count, (w,h) pairs)
+g A672 16 g_huff_x                   x in the current row
+g A674 32 g_huff_child1_mem          unbiased child-1 allocation (freed)
+g A678 16 g_huff_next_node           next internal node id (from 0x101)
+g A67E 32 g_huff_child1              child-1 table, biased by -0x202
+g A682 16 g_huff_root                root of the order-0 tree
+g A684 16 g_huff_sprite              index of the sprite being written
+g A686 32 g_res_index                resource index: 600 x {u16 handle, u16 size, u32 offset}
+g A68A 16 g_res_open                 rsc files are open
+g A68C 16 g_res_nfiles               number of open rsc files
+g A68E 16 g_res_handles              handles of the open rsc files
+rec 0094 4 0 16 genre                    trend genre
+rec 0094 4 2 16 mult                     audience multiplier x10
+rec 0638 C 0 16 x1                       hotspot rect (x1,y1,x2,y2 at +0..+6)
+rec 0638 C 8 8 room                     room id
+rec 0638 C 9 8 state                    required g_room_state (0xFF any)
+rec 0638 C A 8 owner_only               only in own rooms
+rec 0638 C B 8 id                       hotspot id
+rec 1492 6 0 16 page                     boss dialog page
+rec 1492 6 2 16 option                   option number
+rec 1492 6 4 16 text                     reply text id
+rec 196A 9 0 16 script                   screenplay id
+rec 196A 9 2 8 status                   <0 taken
+rec 196A 9 4 32 price_2                  price
+rec 196A 9 8 8 aux                      ? byte copied to the player's script (+2)
+rec 19A0 7 0 16 adoffer_ad               ad id offered
+rec 19A0 7 2 8 adoffer_shelf            >= 0 on the shelf (-100 when taken)
+rec 19ED 8 0 16 offer_program            film id or series id+1000
+rec 19ED 8 2 32 price                    price
+rec 19ED 8 7 8 offer_shelf              >= 0 on the shelf (-100 when taken)
+rec 1A45 5 0 16 script_2                 screenplay id (per player stride 0x32)
+rec 1A45 5 2 8 aux_2                    ? byte from shelf
+rec 1A45 5 3 16 episode                  next episode to produce
+rec 1B0D 9 0 16 lot_program              film id or series id+1000
+rec 1B0D 9 2 32 lot_bid                  current bid
+rec 1B0D 9 6 8 lot_bidder               high bidder (< 0 none / human's provisional bid)
+rec 1B0D 9 7 8 seller                   player who put it in
+rec 1B0D 9 8 8 idle_days                days without a bid (3 = withdrawn)
+rec 1B70 7 0 16 contract_ad              ad id (per player stride 0x46)
+rec 1B70 7 4 8 contract_aired           spots aired so far
+rec 1B70 7 5 16 contract_deadline        last day (today + ad_days when signed)
+rec 1D09 E 0 32 tx_fee                   transmitter fee
+rec 1D09 E 4 32 tx_reach                 viewers in range (entry 0 = total reach of the player; viewers = reach*2464)
+rec 1D09 E 8 16 tx_x                     map x
+rec 1D09 E 8 32 value                    value used for resale bids
+rec 1D09 E A 16 tx_y                     map y
+rec 1D09 E C 16 tx_state                 1 bought today (unpaid), 2 removed
+rec 24A9 17 0 8 film_genre               1 love, 2 action, 3 epic, 4 comedy, 5 whodunit, 6 culture, 7 live, 8 show, 9 SF, 10 sundry
+rec 24A9 17 1 8 film_quality             base quality = maximum topicality
+rec 24A9 17 11 16 film_live_slot           hour slot 1..7 of a live broadcast
+rec 24A9 17 2 8 film_wear_rate           wear factor: topicality -= quality*wear/5 per airing
+rec 24A9 17 3 8 film_topicality          current topicality (min 1), drives audience and value
+rec 24A9 17 4 8 film_blocks              length in hour blocks
+rec 24A9 17 5 8 film_owner               owning player (0 = market)
+rec 24A9 17 6 16 film_flags               bit5 on the market (set when withdrawn/sold)
+rec 24A9 17 6 8 flags                    bit5 on market, bit6 auction pool, bit7 ?
+rec 24A9 17 7 16 film_flags2              bit1 scheduled from now on, bit2 own production, bit3 X-rated (only hour slot%7 >= 4, i.e. from 21:00)
+rec 24A9 17 7 8 flags2                   bit1 scheduled (not sellable), bit2 self-produced (price 0), bit3 X-rated
+rec 24A9 17 8 16 film_price_lo            price (u32, low word)
+rec 24A9 17 8 32 price_4                  price (i32)
+rec 24A9 17 A 16 film_price_hi            price (u32, high word)
+rec 24A9 17 C 16 jingle                   sound id when broadcast (0 = by genre)
+rec 24A9 17 F 16 film_live_day            day of a live broadcast (genre 7)
+rec 24AD A 0 16 share                    audience share %
+rec 24AD A 2 32 viewers                  viewers
+rec 2512 B 0 16 aibuy_slot               dealer shelf slot or auction lot (per player stride 0x4D)
+rec 2512 B 2 16 aibuy_score              hours*topicality*20/(price/1000)
+rec 2512 B 4 16 aibuy_program            film id or series id+1000
+rec 2512 B 6 32 aibuy_price              price / planned bid (reserved from the film budget)
+rec 2512 B A 8 aibuy_auction            1 = auction bid, 0 = dealer purchase
+rec 2646 39 0 8 ep_quality               per episode n: quality bytes at n*3, n*3+1
+rec 2646 39 21 8 series_genre             1 family, 2 SF, 3 western, 4 whodunit, 5 sundry (ad/trend genre = 10 + value)
+rec 2646 39 22 8 series_episodes          number of episodes; episode e at e*3: +0 quality, +1 topicality, +2 bit0 exists
+rec 2646 39 23 8 series_blocks            episode length in hour blocks
+rec 2646 39 24 8 series_owner             owning player
+rec 2646 39 25 16 series_flags             bit5 on the market
+rec 2646 39 25 8 flags_2                  bit5 on market, bit6 auction pool
+rec 2646 39 26 16 series_flags2            bit1 scheduled from now on
+rec 2646 39 26 8 flags2_2                 bit1 scheduled
+rec 2646 39 27 32 price_5                  price (i32)
+rec 2646 39 2B 16 series_ep_price_lo       price per episode (u32, low word)
+rec 2646 39 2D 16 series_ep_price_hi       price per episode (u32, high word)
+rec 2646 39 2F 16 jingle_2                 sound id
+rec 2646 39 31 16 series_next_ep           next episode to air (1-based)
+rec 2646 39 33 8 series_wear_rate         episode wear: topicality -= quality*wear/20 per airing
+rec 2646 39 35 8 series_critics           critics rating (x4 = bar length)
+rec 2646 39 36 8 series_press             press rating (x4 = bar length)
+rec 36DB 1E 0 16 news_node                chain node (per player inbox/slots: same layout)
+rec 36DB 1E 16 16 news_value               value / quality (aged 85% per hour)
+rec 36DB 1E 18 16 news_hour                hour of the news
+rec 36DB 1E 1A 16 news_day                 day of the news
+rec 36DB 1E 1C 8 news_category            agency/category 1..3
+rec 36DB 1E 1D 8 news_price_class         price class
+rec 36DB 1E 2 16 news_parts               5 x (topic, phrase variant) u16 pairs at +2+4k
+rec 3F4F 18 0 32 ad_name                  advertiser name (far text)
+rec 3F4F 18 10 32 ad_fee                   payment
+rec 3F4F 18 14 32 ad_penalty               penalty when not fulfilled
+rec 3F4F 18 4 32 ad_client                second text (far)
+rec 3F4F 18 8 8 ad_days                  days allowed to fulfil
+rec 3F4F 18 9 8 ad_spots                 spots required
+rec 3F4F 18 A 8 ad_min_class             minimum audience class (g_ad_min_viewers)
+rec 3F4F 18 B 8 target                   3 target genre bytes (negative = excluded)
+rec 3F4F 18 C 8 ad_genre_rule            3 bytes +0xC..0xE: negative = genre excluded, positive = genre required (series 10+g)
+rec 3F4F 18 F 8 ad_holder                player holding the contract
+rec 4417 5A 0 16 program                  [15] program per hour slot (1..7 today, 8..14 tomorrow): film id, series id+1000, 9999 = continuation
+rec 4417 5A 1E 16 slot_info                [15] cleared when a program is placed
+rec 4417 5A 3C 16 ad                       [15] ad id aired after the hour
+rec 457F 1E 0 16 headline                 news text (per player stride 0x258)
+rec 457F 1E 16 16 quality                  news quality
+rec 457F 1E 18 16 hour                     hour of the news
+rec 457F 1E 1A 16 day                      day of the news
+rec 457F 1E 1C 8 category                 news category / colour
+rec 457F 1E 1D 8 price_class              price class (1DA8_3F48)
+rec 4EDF 7 0 8 adplan_today             spots planned per day for today (remaining spots / remaining days)
+rec 4EDF 7 1 8 adplan_tomorrow          spots planned for tomorrow
+rec 4EDF 7 2 8 adplan_booked_today      spots booked in slots 1..7
+rec 4EDF 7 3 8 adplan_booked_tomorrow   spots booked in slots 8..14
+rec 4EDF 7 4 8 adplan_booked_total      spots booked in total
+rec 4EDF 7 6 16 adplan_flags             bit0 today ok, bit1 tomorrow ok, bit2 total >= spots required
+rec 4EDF 7 6 8 flags_4                  bit0 today ok, bit1 tomorrow ok, bit2 total >= spots
+rec 5013 C 0 16 name                     actor name id (role stride 0xC0)
+rec 5013 C 2 32 fee                      fee per block
+rec 5013 C A 16 icon                     portrait sprite
+rec 60BF 1A 0 16 text_id                  message text id (0x10E production complete, 0x10F damages, 0x110 cancelled, 0x113 missed live, 0x133/0x136 studio lost, 0x152, 0x158/0x159 Sammy, 0x15B confiscated, 0x15F Trendy)
+rec 60BF 1A 2 16 arg                      first argument (player, studio, ad...)
+rec 6165 10 0 16 studio_script            screenplay in production
+rec 6165 10 2 8 studio_size              studio size 1..3
+rec 6165 10 3 8 studio_renter            renting player
+rec 6165 10 4 8 studio_episode           first/current episode of the production
+rec 6165 10 5 8 studio_episode_last      last episode of the production
+rec 6165 10 6 32 rent                     rent per day
+rec 6165 10 A 16 end_day                  production end day
+rec 6165 10 C 16 end_hour                 production end hour
+rec 6165 10 E 8 running                  production running
+rec 6165 10 F 8 reserved                 ? pending renter (0xFF none)
+rec 63E5 A 0 16 film                     cached film id
+rec 63E5 A 2 32 title                    
+rec 63E5 A 6 32 desc                     
+rec 6E29 3C 0 32 pot0                     ?budget pot 0
+rec 6E29 3C 10 32 aibudget_production      screenplays, studio rent, cast (pot 4)
+rec 6E29 3C 14 32 aibudget_transmitters    transmitter budget (pot 5; 49500 at start)
+rec 6E29 3C 18 32 aibudget_other           pot 6 (weight 0)
+rec 6E29 3C 1C 8 aibudget_pct             +0x1C bonus, +0x1D..0x22 pot percentages 1..6
+rec 6E29 3C 23 8 aibudget_prio            +0x24..0x29 priority 1..3 per pot (from ai_plan_budget)
+rec 6E29 3C 2A 8 aibudget_max_deals       contracts per ad agency visit / films per shopping plan (= 2 * image rank)
+rec 6E29 3C 2B 8 aibudget_image_rank      1 best .. 3 worst image of the 3 players
+rec 6E29 3C 2C 32 aibudget_studio_avg      3-day average production budget
+rec 6E29 3C 30 32 aibudget_studio_hist     [3] production budget per day (g_ai_period)
+rec 6E29 3C 4 32 aibudget_gifts           Betty gift budget (pot 1)
+rec 6E29 3C 8 32 aibudget_films           film/auction budget (pot 2; 80% of the start money)
+rec 6E29 3C C 32 aibudget_news            news budget (pot 3)
+rec 6F19 6C 0 16 items                    [genre 1..11][4] ids at genre*8 + i*2 (11 = series)
+rec 6F19 6C 60 8 count                    [genre] number of items
+rec 715C 1B3 0 32 price_6                  screenplay price
+rec 715C 1B3 166 16 duration                 production time in hours (0 = 10)
+rec 715C 1B3 1A3 8 role_category            per role type: actor category 1..7
+rec 715C 1B3 1A4 8 role_category_2          per role type: actor category (>=8 any)
+rec 715C 1B3 4 8 state_2                  ? 0x63 = screenplay thrown away
+rec 715C 1B3 5 16 script_flags             bit0 series screenplay, bit2 all episodes share episode block 0
+rec 715C 1B3 5 8 flags_3                  bit0 series, bit1 available, bit2 multi-production (max 10)
+rec 715C 1B3 6 16 script_target            film / series produced
+rec 715C 1B3 8 8 script_quality           base quality of episode block 0 (blocks of 0x23 bytes, items at +9+3k type / +0xB+3k bought)
+rec 715C 1B3 A 8 ep_mult                  episode block: cost multiplier for actors/props
+rec 715C 1B3 C 8 slot_type                episode slots 1..10 at +8+3*i: +1 type (1-15 role, >=16 scene), +2 weight, +3 chosen item
+rec 71F1 54 0 32 prev_balance             balance before the day
+rec 71F1 54 10 32 transmitters             category 3
+rec 71F1 54 14 32 scripts                  category 4
+rec 71F1 54 18 32 damages                  category 5 liquidation damages
+rec 71F1 54 1C 32 sundry                   category 6
+rec 71F1 54 20 32 cast                     category 7 actors/scene
+rec 71F1 54 24 32 studio_rent              category 8
+rec 71F1 54 28 32 tx_fees                  category 9 transmitter fees
+rec 71F1 54 2C 32 news                     category 10
+rec 71F1 54 30 32 films_sold               category 11
+rec 71F1 54 34 32 films_sold2              category 12
+rec 71F1 54 38 32 sundry_income            category 13
+rec 71F1 54 3C 32 ad_income                category 14
+rec 71F1 54 40 32 interest                 category 15
+rec 71F1 54 44 32 sundry2                  category 16 (counted as sundry costs)
+rec 71F1 54 8 32 films_bought             ledger category 1
+rec 71F1 54 C 32 films_bought2            category 2
+rec 724A 8 2 32 price_3                  present price
+rec 724A 8 6 8 love                     love points (decays to 70% after each gift)
+rec 724A 8 7 8 given                    times given
+rec 724C 8 0 32 price_7                  gift price
+rec 724C 8 4 8 love_2                   love points (shrink to 70% on each use)
+rec 724C 8 5 8 used                     times given
+rec 734C F 0 16 script_3                 shopping list for screenplay (per player stride 0x4B)
+rec 734C F 2 16 episode_2                episode
+rec 734C F 4 8 booked                   items already booked to the ledger (+4+i, i 1..10)
+rec 7B42 1E 0 16 fig_x                    current x
+rec 7B42 1E 10 16 fig_task                 nonzero = busy / inside
+rec 7B42 1E 12 16 fig_target_door          target door
+rec 7B42 1E 14 16 fig_last_door            previous target door
+rec 7B42 1E 16 16 lift_phase               elevator boarding phase 0..4
+rec 7B42 1E 18 16 kind                     0/1 NPC walker types, 2 player figure
+rec 7B42 1E 1A 16 speed                    px per step (human 4, computer 3)
+rec 7B42 1E 1C 16 in_room                  inside a room
+rec 7B42 1E 2 16 fig_floor                current floor
+rec 7B42 1E 4 16 fig_target_x             walk target x (0x99 = elevator)
+rec 7B42 1E 6 16 fig_target_floor         walk target floor
+rec 7B42 1E 8 16 final_x                  x to walk to after the elevator ride
+rec 7B42 1E C 16 anim                     animation frame / facing
+rec 7B42 1E E 16 motion                   motion state (3 = in elevator, 5 = entering door)
+rec 7C82 7A 0 8 door_x                   x position of door i (+i, up to 10 doors)
+rec 7C82 7A 14 8 door_kind                door sprite kind (1-3 room doors, 6 info board, 10 porter, others decoration; 0 ends list)
+rec 7C82 7A 1E 8 door_room                room id behind the door (1 office,2 news,3 boss,4 library,5 studio,8 film agency,...)
+rec 7C82 7A 28 8 door_name                text id of the sign
+rec 7C82 7A 32 8 door_name_alt            alternate (short) text id
+rec 7C82 7A 3C 8 door_open                door currently open
+rec 7C82 7A 46 8 door_owner               owning player (0 = public)
+rec 7C82 7A 50 8 door_tip_w               tooltip width (cells)
+rec 7C82 7A 5A 8 door_tip_h               tooltip height (cells)
+rec 7C82 7A 64 8 door_icon                tooltip icon
+rec 7C82 7A 6E 8 door_studio              studio index (1..12) for studio doors
+rec 7C82 7A 78 16 wall_style               floor wall style
+rec 7C82 7A A 8 door_y_ofs               y offset of door sprite
+rec 8BDC 17 0 32 pl_name                  far ptr: manager name
+rec 8BDC 17 10 8 pl_news_agency           +0x11..0x13: news agency 1..3 subscribed
+rec 8BDC 17 11 8 news_sub                 news agency subscriptions +0x11..+0x13 (1 political, 2 show, 3 sundry)
+rec 8BDC 17 14 8 pl_out                   player out of the game
+rec 8BDC 17 15 16 pl_image                 image %, the 3 players sum to 100 (< 5 fired)
+rec 8BDC 17 4 32 pl_station               far ptr: station name
+rec 8BDC 17 8 32 pl_money                 cash
+rec 8BDC 17 C 16 pl_betty_love            Betty's affection (0..100, capped at image)
+
+# ---- merged from names/proposals/*.txt
+g 0D08 16 g_timer_run_count          debug counter: game-clock timer starts minus stops (game_clock_reset/start ++, game_clock_stop --; never read)
+g 0D3E 16 g_room_anim_sub            room animation helper next to g_room_anim_frame: random overlay variant kept between re-rolls (studio, film agency, room -3 from studio), loop count in the library (> 10 -> frame 18); 0 on reset
+g 0D42 16 g_news_anim_pick           room -3 newsroom cut-in animation: random overlay sprite 0..6, re-rolled every 4th frame and never the same twice; 0xFFFF after reset
+g 0D44 32 g_sa_fly1_bg               screenplay agency animation: saved screen under flying object 1 (24x12, frames 812..830, tumbling sprites 10..17, ?thrown paper); 3 records {bitmap, x, y} at 0xD44 freed by room_anim_update(2)
+g 0D48 16 g_sa_fly1_x                x (multiple of 8) where g_sa_fly1_bg was grabbed
+g 0D4A 16 g_sa_fly1_y                y where g_sa_fly1_bg was grabbed
+g 0D4C 32 g_sa_fly2_bg               screenplay agency animation: saved screen under flying object 2 (32x20, frames 824..841, sprites 18..22, ?thrown screenplay); on landing a hidden script sprite is made visible
+g 0D50 16 g_sa_fly2_x                x (multiple of 8) where g_sa_fly2_bg was grabbed
+g 0D52 16 g_sa_fly2_y                y where g_sa_fly2_bg was grabbed
+g 12D4 16 g_trendy_player            player whose film 138 "Trendy" (Im Trend) ended this hour; in the ad phase an AI copies the current g_trends into g_ai_trends, the human gets message 0x15F; then cleared (24B8:0C4A)
+g 7A44 16 g_present_bld_only         present_frame mode: 1 = copy only the building view to VGA (set by game_frame around building frames), 0 = full screen; 9999 set by bld_render_floors on the day/night switch forces a full copy
+g 7A6A 16 g_terror_retire_idx        terrorist event retired once the intruder has left: word index from 0x79C6 into the intruder event flags 0x7A54+2*type (0x48 = terrorist 1 after consulate room 0x13 was bombed, 0x49 = terrorist 2 after room 0x12); 0 = none
+g 7A88 16 g_guardian_state           moral guardian (intruder 4) event: 0 not today, 1 waiting, 2 triggered when a station airs an X-rated film (flags2 bit3) before 21:00 (target = that player); same 0/1/2 states as the flags 0x7A56..0x7A5A
+g 7A96 16 g_news_placed              1 after the human dropped a news item into a broadcast slot (0 on entering the news room / taking one out); leaving the news room then shows the room -3 newsroom cut-in
+g 7B32 32 g_bld_sprites              res 11: building sprite bank (elevator cabin/door parts, street-level overlays at the sides, door tooltip icons; also used by 26A7)
+g 8356 16 g_tvfam_v2_state           TV-family viewer 2 (rec 0x834E) +8 state: 1 watching, 2 bored (quality <= 7), 3 ?dozing (from 21:00 with quality <= 5)
+g 8358 16 g_tvfam_v2_counter         TV-family viewer 2 (rec 0x834E) +0xA animation counter (wraps at 100 / 135 / 285 by state)
+g 838A 16 g_figure_sprite_cols_adj   ?1 when g_figure_sprite_cols < 8 (set at startup from the figure sprite bank size); added to the column factor by figure_sprite_stride(n, 1)
+g 8E7E 32 g_bg_half_bmp              far ptr to the room background half just loaded by room_draw_background (res n-50 / n), freed right after drawing; zeroed by the room setup
+g 8F05 8 g_drag_aux_b               low byte of g_drag_aux, stored into byte fields (owned_script.aux, studio.episode / episode_last)
+g 8F0B 8 g_drag_item_b              low byte of g_drag_item, stored into byte fields (shopping-list slot, g_player_present)
+g 8F17 16 g_swap_script              studio_swap_script: script that was in the studio, put into the hand after the dropped one is inserted (0 = studio was empty; its episode goes via 0x8F07)
+g 8F5E 32 g_tip_viewers              viewer number for the tooltip: viewers of the hovered schedule/chart hour (g_hour_viewers[_yesterday]), transmitter reach*2464; screenplay card reuses it for the block count
+g 8F62 32 g_tip_viewers2             second number for the tooltip: share % of the hovered chart hour (from 0x1C88, sign-extended), reach before the transmitter (gain = g_tip_viewers - this), min viewers of the ad running now (rating overview, 0 = none)
+g 8F66 16 g_tip_j                    14E1 second counter/index: inner loop (column, door), contract index of the hovered ad, start hour of the programme block under the cursor / on air (channel_status_draw, tvinfo_fetch_titles); role card: episode byte +0xA multiplying the actor fee
+g 8F68 32 g_tip_pos                  g_tip_col (low) and g_tip_row (high) set together as one dword (MK32(row, col))
+g 8F70 32 g_tip_text1                tooltip text slot 1 (= g_tip_text[1]): description/genre/viewers string etc.; ad_genre_list part 1
+g 8F74 32 g_tip_text2                tooltip text slot 2 (= g_tip_text[2]): genre/client/episode-count string etc.; ad_genre_list part 2
+g 8F78 32 g_tip_text3                tooltip text slot 3 (= g_tip_text[3]): critics/fee/penalty or script title string; ad_genre_list part 3
+g 8F7C 32 g_tip_text4                tooltip text slot 4 (= g_tip_text[4]): episodes/spots/deadline string; ad_genre_list result "A, B or C"
+g 8F80 32 g_tip_text5                tooltip text slot 5 (= g_tip_text[5]): X-rated flag text (series) / live date line (film)
+g 8F84 32 g_tip_text6                tooltip text slot 6 (= g_tip_text[6]): film length "n blocks" / live part x of y
+g 8F8C 16 g_tip_block                block number (hour - start + 1) of the programme in the hovered chart hour (schedule-slot tooltip "block x of y"); reused as gift index (kind 16) and role index (kind 11)
+g 8F8E 16 g_tip_episode              episode number of the series in the hovered chart hour; reused as prop quality icon (kind 12: contract 1->3, 2->1, 3->2)
+g 8F90 16 g_tip_prev_block           g_tip_block of the last drawn slot tooltip; a change forces a redraw
+g 8F92 16 g_tip_prev_episode         g_tip_episode of the last drawn slot tooltip; a change forces a redraw
+g 8F94 16 g_tip_genre                genre of the film/series in the schedule-slot tooltip (kinds 14/15)
+g 8F96 16 g_tip_shop_script          shop: script of the selected shopping list (shoplists(g_player, g_shop_list).script) for role/prop/actor tooltips
+g 8F98 16 g_tip_shop_episode         shop: episode of the selected shopping list (shoplists(...).episode)
+g 8F9E 16 g_tip_k                    14E1 scratch index/id: planner hour, shelf/bag/library index, studio on the estate board, series id (kind 10), actor id, role group, genre on air (kind 18), programme on air (tvinfo_fetch_titles), next text slot in production cards
+g 8FA0 16 g_tip_i                    14E1 loop counter i: chart hour 1..7, dealer shelf, auction/supermarket row, floor, shop slot, owned-script index, episode number (kinds 9/10), contract index

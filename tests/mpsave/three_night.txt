@@ -1,0 +1,54 @@
+# Three humans saved at night (src/mpsave.c; tools/mpsavetest.py): a new game with a human
+# on every station (no computer player); each human's own data gets values of its own
+# (credit: seat 0 $200 000, seat 1 $300 000, seat 2 $350 000; Madris high scores 1,
+# 2, 3), then the first day's end and the save (tag-002.mtvmp).
+# humans 1,2,3
+# options --new-game --names Anna,Ben,Cleo --seed 4321
+3300 key esc
+3350 seat 1 key esc
+3400 seat 2 key esc
+3600 key esc
+3650 seat 1 key esc
+3700 seat 2 key esc
+3900 key esc
+3950 seat 1 key esc
+4000 seat 2 key esc
+4200 key esc
+4250 seat 1 key esc
+4300 seat 2 key esc
+4500 key esc
+4550 seat 1 key esc
+4600 seat 2 key esc
+4800 key esc
+4850 seat 1 key esc
+4900 seat 2 key esc
+5100 key esc
+5150 seat 1 key esc
+5200 seat 2 key esc
+5400 key esc
+5450 seat 1 key esc
+5500 seat 2 key esc
+5700 key esc
+5750 seat 1 key esc
+5800 seat 2 key esc
+6000 key esc
+6050 seat 1 key esc
+6100 seat 2 key esc
+10000 poke16 39D4:7A84 1
+10000 seat 1 poke16 39D4:7A84 2
+10000 seat 2 poke16 39D4:7A84 3
+10000 seat 1 poke16 39D4:7ADE 37856
+10000 seat 1 poke16 39D4:7AE0 4
+10000 seat 2 poke16 39D4:7ADE 22320
+10000 seat 2 poke16 39D4:7AE0 5
+10100 peek32 39D4:7ADE
+10100 seat 1 peek32 39D4:7ADE
+10100 seat 2 peek32 39D4:7ADE
+73000 peek16 39D4:71E4
+73000 peek32 39D4:8BFB
+73000 peek32 39D4:8C12
+73000 peek32 39D4:8C29
+73000 hash
+73001 seat 1 hash
+73002 seat 2 hash
+73010 quit

@@ -1,0 +1,90 @@
+# Knocking (multiplayer, --knock, tools/seattest.py): the start of ad_agency (two humans, a new
+# game, --seed 29): seat 1 (station 2) walks into the ad agency (floor 10, door 0) and stays.
+# Seat 0 leaves its boss and is walked to the same door (test pokes of figure 0): the agency is
+# occupied (0x12B, "[notice] Knocked: Player 2 has to leave in 5 min."), and with --knock 5
+# seat 1 has 5 game minutes (300 game seconds, DS:0D0C): out of the agency at 6500 ("[notice]
+# Player 2 is out, it is your turn."), and seat 0, still at the door, walks in by itself (in the
+# agency at 6600).  Seat 1, walked to the door again (6550), finds it occupied (its target door
+# 0xFFFF at 6700, still in the building) and knocks in turn: after 5 more game minutes seat 0
+# is out and seat 1, still at the door, walks in by itself (7700).
+# Without --knock seat 0 would find the agency occupied for as long as seat 1 stayed.
+# humans 1,2
+# options --new-game --seed 29 --knock 5
+3300 key esc
+3350 seat 1 key esc
+3600 seat 1 click 30 60
+3600 key esc
+3800 seat 1 click 30 60
+3900 poke16 39D4:7B66 10
+3900 poke16 39D4:7B72 0
+3900 poke16 39D4:7B68 0
+3900 poke16 39D4:7B64 153
+3900 key esc
+4200 key esc
+4500 key esc
+4800 key esc
+4900 peek16 39D4:838C
+4900 seat 1 peek16 39D4:838C
+4900 peek16 39D4:7B44
+4900 peek16 39D4:7B62
+4900 peek16 39D4:7B72
+4900 peek16 39D4:0D0C
+5000 poke16 39D4:7B48 10
+5000 poke16 39D4:7B54 0
+5000 poke16 39D4:7B4A 0
+5000 poke16 39D4:7B46 153
+5900 peek16 39D4:838C
+5900 seat 1 peek16 39D4:838C
+5900 peek16 39D4:7B44
+5900 peek16 39D4:7B62
+5900 peek16 39D4:7B72
+5900 peek16 39D4:0D0C
+5900 hash
+5901 seat 1 hash
+6400 peek16 39D4:838C
+6400 seat 1 peek16 39D4:838C
+6400 peek16 39D4:7B44
+6400 peek16 39D4:7B62
+6400 peek16 39D4:7B72
+6400 peek16 39D4:0D0C
+6550 poke16 39D4:7B66 10
+6550 poke16 39D4:7B72 0
+6550 poke16 39D4:7B68 0
+6550 poke16 39D4:7B64 153
+6600 peek16 39D4:838C
+6600 seat 1 peek16 39D4:838C
+6600 peek16 39D4:7B44
+6600 peek16 39D4:7B62
+6600 peek16 39D4:7B72
+6600 peek16 39D4:0D0C
+6600 hash
+6601 seat 1 hash
+6700 peek16 39D4:838C
+6700 seat 1 peek16 39D4:838C
+6700 peek16 39D4:7B44
+6700 peek16 39D4:7B62
+6700 peek16 39D4:7B72
+6700 peek16 39D4:0D0C
+6900 peek16 39D4:838C
+6900 seat 1 peek16 39D4:838C
+6900 peek16 39D4:7B44
+6900 peek16 39D4:7B62
+6900 peek16 39D4:7B72
+6900 peek16 39D4:0D0C
+7300 peek16 39D4:838C
+7300 seat 1 peek16 39D4:838C
+7300 peek16 39D4:7B44
+7300 peek16 39D4:7B62
+7300 peek16 39D4:7B72
+7300 peek16 39D4:0D0C
+7300 hash
+7301 seat 1 hash
+7700 peek16 39D4:838C
+7700 seat 1 peek16 39D4:838C
+7700 peek16 39D4:7B44
+7700 peek16 39D4:7B62
+7700 peek16 39D4:7B72
+7700 peek16 39D4:0D0C
+7700 hash
+7701 seat 1 hash
+7800 quit

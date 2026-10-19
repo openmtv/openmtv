@@ -1,0 +1,53 @@
+# option: --sammy-prize=300000
+# args: --humans 1,2
+# The Sammy in a network game: two humans (stations 1 and 2, seat 0 plays station 1), both dismiss
+# their first morning's dialogs; 4500 a news Sammy deciding at the next day change, station 2 leads
+# (500 points to 50 and 20); 5000 the clock at 00:58.  Both runs (with and without prize): every
+# human hears the result -- seat 0 "the Sammy goes to ..." (0x158 = 344), seat 1 its own 0x159 (345;
+# before, only g_player heard the Sammy).  The option (300 000 in every category): station 2's cash
+# (DS:8C12) 167 000 -> 467 000, seat 1's message carries it and its ledger's sundry income
+# (DS:74CA) has it; station 1's cash stays.
+# expect classic 8000 word 39D4:7A06 == 2
+# expect classic 8000 word 39D4:60BF == 344
+# expect classic 8000 seat 1 word 39D4:60BF == 345
+# expect classic 8000 seat 1 word 39D4:60C5 == 0
+# expect classic 8000 word 39D4:8C12 == 35928
+# expect classic 8000 word 39D4:8C14 == 2
+# expect option  8000 word 39D4:7A06 == 2
+# expect option  8000 word 39D4:60BF == 344
+# expect option  8000 seat 1 word 39D4:60BF == 345
+# expect option  8000 seat 1 word 39D4:60C5 == 37856
+# expect option  8000 seat 1 word 39D4:60C7 == 4
+# expect option  8000 seat 1 word 39D4:74CA == 37856
+# expect option  8000 seat 1 word 39D4:74CC == 4
+# expect option  8000 word 39D4:8C12 == 8248
+# expect option  8000 word 39D4:8C14 == 7
+# expect option  8000 word 39D4:8BFB == 35928
+# expect option  8000 word 39D4:8BFD == 2
+400 key esc
+1000 click 64 100
+1300 click 172 185
+2000 key esc
+2050 seat 1 key esc
+2300 key esc
+2350 seat 1 key esc
+2600 key esc
+2650 seat 1 key esc
+2900 key esc
+2950 seat 1 key esc
+3200 key esc
+3250 seat 1 key esc
+3500 key esc
+3550 seat 1 key esc
+3800 key esc
+3850 seat 1 key esc
+4100 key esc
+4150 seat 1 key esc
+4500 poke16 39D4:7490 1
+4500 poke16 39D4:7488 1
+4500 poke16 39D4:748A 50
+4500 poke16 39D4:748C 500
+4500 poke16 39D4:748E 20
+5000 poke16 39D4:748C 500
+5000 poke16 39D4:6143 58840
+5000 poke16 39D4:6145 21

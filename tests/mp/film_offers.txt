@@ -1,0 +1,34 @@
+# The film agency with 17 offers in a network game (the option --film-offers, tools/seattest.py):
+# two humans, a new game (--seed 29) as tests/mp/ad_agency; seat 1 (station 2) is walked to the
+# film agency (test pokes of figure 1: floor 7, door 0) and is there from about frame 4500.  The
+# new game's first refill (new_day) filled slots 11..17 (segment EE10 = EC60 relative to the load
+# segment, 8 bytes each).  4700 seat 1 buys the tape of slot 15 (47 90, left of the original's
+# row), 4900 puts it into the case, 5100 Esc leaves the agency: the case goes into station 2's
+# library, the dealer's refill puts another film into slot 15.  Every machine the same: the slots,
+# station 2's cash (DS:8C12) and the screens as recorded.
+# humans 1,2
+# options --new-game --seed 29 --film-offers=17
+3300 key esc
+3350 seat 1 key esc
+3600 seat 1 click 30 60
+3800 seat 1 click 30 60
+3900 poke16 39D4:7B66 7
+3900 poke16 39D4:7B72 0
+3900 poke16 39D4:7B68 0
+3900 poke16 39D4:7B64 153
+4600 seat 1 peek16 39D4:838C
+4600 peek16 EC60:0020
+4600 peek32 39D4:8C12
+4700 seat 1 click 47 90
+4800 seat 1 peek16 39D4:8BA4
+4800 seat 1 peek32 39D4:8C12
+4900 seat 1 click 251 63
+5100 seat 1 key esc
+5400 peek16 EC60:0000
+5400 peek16 EC60:0020
+5400 peek16 EC60:0030
+5400 seat 1 peek16 EC60:0020
+5400 peek32 39D4:8C12
+5400 hash
+5401 seat 1 hash
+5500 quit

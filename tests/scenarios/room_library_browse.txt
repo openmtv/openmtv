@@ -1,0 +1,68 @@
+# room_library_browse: the human's library / archive (room 4, floor 5 door 3): genre list, programme
+# info, refusals for scheduled programmes, a film taken off the shelf into the case and back onto the
+# shelf, series episode list.  English.
+# Steps: new game; dismiss the boss's two messages; 2600 click the library door (x 224 on floor 5).
+#   2900 click the archivist (hotspot 0x22) -> genre list with counts; 3100 "Cultural program" (genre 6)
+#   -> shelf 69, 66, 70; 3250 hover tape 0 -> info "The everchanging ethics"; 3400 click it -> refused,
+#   "Movie currently being shown!" (scheduled today); 3600 Esc; 3700 take tape 1 (film 66) off the shelf;
+#   3900 drop it into the case; 4000 hover it; 4100 take it out of the case; 4300 drop it on the shelf
+#   (now last); 4500/4600 genre list -> "Series"; 4700 click the lamp (hotspot 0x1F) -> magnifier
+#   cursor; 4800 click the series tape -> episode list of "NOVA"; 5000 right click closes it; 5100 hover
+#   and 5200 click the series tape -> refused, "Series currently being shown!"; 5400 Esc; 5500 Esc leaves.
+# Observable (frame 5800, PEEK lines): genre 6 of player 1's library DS:6FB5/6FB7/6FB9 = 69, 70, 66
+#   (was 69, 66, 70), count DS:6FEB = 3, case empty (g_bag_count DS:734A = 0), room DS:838C = 0.
+#   Film 66's owner byte (film table 4DA5:0008 + 66*0x17 + 5) is 0 afterwards: taking a programme off
+#   the shelf clears its owner (program_withdraw) and putting it back on the shelf does not restore it
+#   (library_film_to_shelf; the original's behaviour).
+# Content pokes (values the machine-level run already has, so its hashes do not change): the
+#   difftest run (--interp --difftest) plays another game, because random_n() reseeds from the PIT
+#   timer and the tests freeze the timers; the pokes give it the same library.  2550: genre 6 of
+#   player 1 = 69, 66, 70 (DS:6FB5.., count DS:6FEB = 3), owner 1 / flags 0x24 / flags2 (bit 1 =
+#   scheduled) 2, 0, 2 of films 69, 66, 70 (film table 4DA5:0008 + id*0x17 + 5..7).
+# end 6000
+400 key esc
+1000 click 64 100
+1300 click 172 185
+2000 hash
+2100 click 230 60
+2500 click 230 60
+2550 poke16 39D4:6FB5 69
+2550 poke16 39D4:6FB7 66
+2550 poke16 39D4:6FB9 70
+2550 poke16 39D4:6FEA 768
+2550 poke16 4DA5:05FB 9217
+2550 poke16 4DA5:05FC 36
+2550 poke16 4DA5:0640 9217
+2550 poke16 4DA5:0641 548
+2550 poke16 4DA5:0657 9217
+2550 poke16 4DA5:0658 548
+2600 click 224 68
+2900 click 255 35
+3100 click 180 56
+3250 goto 164 60
+3400 click 164 60
+3600 key esc
+3700 click 173 60
+3900 click 40 60
+4000 goto 28 60
+4000 hash
+4100 click 28 60
+4300 click 178 72
+4500 click 255 35
+4600 click 180 96
+4700 click 230 20
+4800 click 158 60
+5000 rclick 300 110
+5100 goto 164 60
+5200 click 164 60
+5400 key esc
+5500 key esc
+5800 peek16 39D4:838C
+5800 peek16 39D4:6FB5
+5800 peek16 39D4:6FB7
+5800 peek16 39D4:6FB9
+5800 peek8 39D4:6FEB
+5800 peek16 39D4:734A
+5800 peek8 4DA5:05FB
+6000 hash
+6001 quit

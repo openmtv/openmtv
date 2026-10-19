@@ -1,0 +1,10 @@
+100 hash
+200 hash
+300 hash
+400 hash
+500 hash
+600 hash
+800 hash
+1000 hash
+1200 hash
+1201 quit

@@ -1,0 +1,20 @@
+# fix: ai-arrived (2DD9:4126)
+# When a computer player's next goal is the door its figure already stands
+# at, ai_walk_to sets "arrived" so it acts at once instead of waiting 300
+# ticks at the door again -- but it checks the walker against AI index 0
+# only.  Here: human = player 1, computer players 2 (AI index 0) and 3
+# (index 1); g_ai_cur = 1, player 3's figure (figure 2) already targets its
+# own office (floor 11, door 0), arrived flag cleared; then
+# ai_walk_to(3, office, 3, 0).  Classic: the flag (DS:2509) stays 0 -- it
+# waits again; fixed: 1.
+# expect classic 3000 call 2DD9:4126,3,1,3,0 >= 0
+# expect classic 3000 byte 39D4:2509 == 0
+# expect fixed   3000 call 2DD9:4126,3,1,3,0 >= 0
+# expect fixed   3000 byte 39D4:2509 == 1
+400 key esc
+1000 click 64 100
+1300 click 172 185
+3000 poke16 39D4:2507 1
+3000 poke16 39D4:2509 0
+3000 poke16 39D4:7B84 11
+3000 poke16 39D4:7B90 0

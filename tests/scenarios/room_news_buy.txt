@@ -1,0 +1,55 @@
+# room "news studio" (room 2, floor 5 door 1): subscribe to an agency, buy news, put them on air (English).
+# New game; dismiss the boss; click the news-room door in the building view.  Player 1 starts
+# subscribed to agency 1 (political) with three items in its inbox (DS:457F + 0x258*player):
+# Estonia $6000, Nicaragua $3000, Moscow $8000.
+#  3400 agency 2 button (show business, $10000, needs image >= 10) -> subscribed, money 190000
+#  3600 the news desk (0x3E) -> inbox and broadcast slots (mode 1); 3700 scroll down (0x31,
+#       g_news_scroll DS:7A70 = 1), 3900 scroll up (= 0)
+#  4100/4300 first inbox item -> slot 1, 4500/4700 -> slot 2, 4900/5100 -> slot 3 (each paid on drop)
+#  5300 pick up slot 1 (no charge), 5500 drop on slot 3 -> swapped, the old slot-3 item is dragged,
+#  5700 drop it on slot 1.  While dragging, the click point is the card's corner (cursor - hotspot).
+#  5900 category 2 button (no show-business news yet: nothing), 6000/6200 right clicks: back to the
+#  room, leave -> news_rate_player, its message about new programs (room 0xFFFD),
+#  6500 click closes it.  The clock runs on to 18:01: the 18:00 news block is evaluated.
+# Observable at the end: player 1 broadcast slots g_news_pool[4*1 + slot + 0x38].node:
+# slot 1 DS:3E01 = 318 (Moscow), slot 2 DS:3E1F = 19, slot 3 DS:3E3D = 203; money (u32 DS:8BFB)
+# = 173000; subscription byte DS:8C05 = 1; news viewers at 18:00 (u32 DS:76D4) = 1357664.
+# end 10600
+400 key esc
+1000 click 64 100
+1300 click 172 185
+2000 hash
+2100 click 230 60
+2500 click 230 60
+2700 click 124 70
+3400 click 31 84
+3600 click 107 92
+3700 click 127 15
+3900 click 107 15
+4000 hash
+4100 click 84 55
+4300 click 242 26
+4500 click 84 55
+4700 click 242 60
+4900 click 84 55
+5100 click 242 94
+5300 click 236 20
+5500 click 242 86
+5700 click 256 28
+5900 click 46 18
+6000 rclick 200 60
+6000 hash
+6200 rclick 200 60
+6500 click 200 60
+8000 hash
+10000 hash
+10500 peek16 39D4:3E01
+10500 peek16 39D4:3E1F
+10500 peek16 39D4:3E3D
+10500 peek16 39D4:8BFB
+10500 peek16 39D4:8BFD
+10500 peek8 39D4:8C05
+10500 peek16 39D4:76D4
+10500 peek16 39D4:76D6
+10600 hash
+10601 quit

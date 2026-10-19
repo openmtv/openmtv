@@ -1,0 +1,32 @@
+# fix: credit-repay (0AA4:000E room_boss_click, menu 5: repaying the boss's credit with a negative cash lends the debt)
+# The repayment is the smaller of the choice ($100k / $200k / all) and the cash, rounded toward zero to $50 000: with
+# a negative cash a negative repayment -- cash up, credit up, past every credit line (here image 34: $300 000 at most).
+# Steps (the visits of tests/scenarios/room_boss_credit): new game (credit $200 000, image 34); 2600 test poke: cash
+# -$230 000 (players(1).money DS:8BFB, u32); 2700 the boss's door; "repay credit" (the up arrow wraps 1 -> 3), amount
+# "all" (again up); 4750 the answer closed.  Reproduced with build/mtv: the same (and with -$1 000 000: cash 0, credit
+# $1 200 000, "There! And now back to work").
+# Classic: 4700 cash -30 000 (0xFFFF8AD0), credit g_credit (DS:7ADE) 400 000 -- the boss "was repaid" -$200 000.
+# Fixed: nothing repaid ("You haven't got enough money!", text 0x3C): cash -230 000 (0xFFFC7D50), credit 200 000.
+# expect classic 2650 word 39D4:8BFD == 65532
+# expect classic 4700 word 39D4:8BFB == 35536
+# expect classic 4700 word 39D4:8BFD == 65535
+# expect classic 4700 word 39D4:7ADE == 6784
+# expect classic 4700 word 39D4:7AE0 == 6
+# expect fixed   4700 word 39D4:8BFB == 32144
+# expect fixed   4700 word 39D4:8BFD == 65532
+# expect fixed   4700 word 39D4:7ADE == 3392
+# expect fixed   4700 word 39D4:7AE0 == 3
+400 key esc
+1000 click 64 100
+1300 click 172 185
+2100 click 230 60
+2500 click 230 60
+2600 poke16 39D4:8BFB 32144
+2600 poke16 39D4:8BFD 65532
+2700 click 188 70
+3200 click 230 92
+3550 click 163 83
+3800 click 230 92
+4150 click 163 83
+4350 click 230 92
+4750 click 230 92

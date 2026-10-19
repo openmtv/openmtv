@@ -1,0 +1,101 @@
+# fix: ai-fill-genre (2DD9:0DD9 ai_fill_program_slot, instruction 2DD9:12C1 mov al,[bp-7])
+# The genre-mask test bit_test(g_ai_ad_req[player], [bp-7]-1) uses the category of the current best
+# candidate ([bp-7]), not the candidate's own genre ([bp-8]).  The first programme that fits the gap
+# becomes the best before any test (2DD9:11FC), so its genre decides for all others: allowed -> the
+# mask is ignored, excluded -> nothing can replace it and the excluded programme is placed.
+# New game, the human only presses Esc.  Day 1 ~19:15 (frame 21000), before computer player 2 fills
+# its evening (library: love 88 (3 h), action 104 (X) / 129, comedy 198 / 155, culture 71 / 62 (1 h),
+# series 20 already on at 18:00): its three contracts (ads 13, 27, 29) get the rule "no love films"
+# (ad +0Ch = -1, +0Dh = 0), g_ai_cur = 0 (poke of 2506/2507: 2506 is the high byte of g_avg_quality[3], 0),
+# 348B:02A3 computes the mask (FFFE) and minimum (83333), hour cursor = slot 5 (22:00; 5-7 free),
+# 2DD9:0DD9 fills it, 2DD9:0B13 books the ads.
+# Classic: love film 88 (the first fitting candidate) fails the mask, and so does everybody after it
+# (tested against 88's category) -> 88 at 22:00-01:00, and no contract may run after it: slots 5-7
+# get no ad.  Fixed (candidate's genre): 88 out; 129 wins (aud[2][5] 75 x 24 = 1800 >= love 70 x 21
+# = 1470; comedies 80 x 20 = 1600) -> 129 at 22:00-24:00, ad 13 after both hours (checked by placing
+# 129 with 229E:0225,1,2,5,2 instead of the fill call).
+# Check: player 2 slot h = 39D4:44CB + 2h, its ad = 39D4:4507 + 2h.
+# expect classic 21000 word 39D4:7770 == 0xFFFE
+# expect classic 21000 word 39D4:44D5 == 88
+# expect classic 21000 word 39D4:44D7 == 9999
+# expect classic 21000 word 39D4:4511 == 0
+# expect classic 21000 word 39D4:4513 == 0
+# expect fixed   21000 word 39D4:44D5 == 129
+# expect fixed   21000 word 39D4:44D7 == 9999
+# expect fixed   21000 word 39D4:4511 == 13
+# expect fixed   21000 word 39D4:4513 == 13
+400 key esc
+1000 click 64 100
+1300 click 172 185
+2000 key esc
+2300 key esc
+2600 key esc
+2900 key esc
+3200 key esc
+3500 key esc
+3800 key esc
+4100 key esc
+4400 key esc
+4700 key esc
+5000 key esc
+5300 key esc
+5600 key esc
+5900 key esc
+6200 key esc
+6500 key esc
+6800 key esc
+7100 key esc
+7400 key esc
+7700 key esc
+8000 key esc
+8300 key esc
+8600 key esc
+8900 key esc
+9200 key esc
+9500 key esc
+9800 key esc
+10100 key esc
+10400 key esc
+10700 key esc
+11000 key esc
+11300 key esc
+11600 key esc
+11900 key esc
+12200 key esc
+12500 key esc
+12800 key esc
+13100 key esc
+13400 key esc
+13700 key esc
+14000 key esc
+14300 key esc
+14600 key esc
+14900 key esc
+15200 key esc
+15500 key esc
+15800 key esc
+16100 key esc
+16400 key esc
+16700 key esc
+17000 key esc
+17300 key esc
+17600 key esc
+17900 key esc
+18200 key esc
+18500 key esc
+18800 key esc
+19100 key esc
+19400 key esc
+19700 key esc
+20000 key esc
+20300 key esc
+20600 key esc
+20900 key esc
+21000 poke16 39D4:4093 255
+21000 poke16 39D4:41E3 255
+21000 poke16 39D4:4213 255
+21000 poke16 39D4:2506 0
+21000 call 348B:02A3
+21000 poke16 39D4:24EB 5
+21000 call 2DD9:0DD9
+21000 call 2DD9:0B13

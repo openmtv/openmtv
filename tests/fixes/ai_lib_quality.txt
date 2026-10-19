@@ -1,0 +1,53 @@
+# fix: ai-lib-quality (348B:0895 ai_library_avg_quality, 348B:0918 / 348B:0961 jge)
+# The average runs over genres 0..11 and slots 0..count, so every call adds 12 phantom entries:
+# sum / (n + 12) instead of sum / n.  A1: player 2 holds the best films (true average 29) but
+# scores 9, below player 1 (10) and player 3 (11); its daily budget plan (2DD9:26EA) then flags
+# "worst quality": film priority DS:6EC6 = 3, film pot DS:6EBF = 44 %.  Fixed: 29, film priority 2,
+# film pot 35 %.
+# expect classic 2020 call 348B:0895,2 == 9
+# expect classic 2030 byte 39D4:6EC6 == 3
+# expect classic 2030 byte 39D4:6EBF == 44
+# expect fixed   2020 call 348B:0895,2 == 29
+# expect fixed   2030 byte 39D4:6EC6 == 2
+# expect fixed   2030 byte 39D4:6EBF == 35
+# New game as in tests/fixes/ai_studio.txt; day 1, g_ai_cur = 0, AIs = 2, 3.
+# Library of player p: DS:6F19 + p*0x6C, id[genre][slot] at +genre*8+slot*2,
+# count[genre] at +0x60+genre (poke16 writes two counts at once; decimal values).
+400 key esc
+1000 click 64 100
+1300 click 172 185
+# A0: starting libraries (3 films of genre 6 + 1 series each)
+2000 call 348B:0895,1
+2000 call 348B:0895,2
+2000 call 348B:0895,3
+# A1: player 2 adds films 169 (topicality 80, genre 1) and 3 (75, genre 2)
+2010 poke16 39D4:6FF9 169
+2010 poke16 39D4:7001 3
+2010 poke16 39D4:7052 257
+# player 3 adds 8, 159, 167 (genre 1) and 107, 197, 193 (genre 10), all 31..35
+2010 poke16 39D4:7065 8
+2010 poke16 39D4:7067 159
+2010 poke16 39D4:7069 167
+2010 poke16 39D4:70BE 3
+2010 poke16 39D4:70AD 107
+2010 poke16 39D4:70AF 197
+2010 poke16 39D4:70B1 193
+2010 poke16 39D4:70C7 259
+# player 1 (human) adds 44, 91, 25 (genre 3) and 90, 154, 77 (genre 10), all 28..35
+2010 poke16 39D4:6F9D 44
+2010 poke16 39D4:6F9F 91
+2010 poke16 39D4:6FA1 25
+2010 poke16 39D4:6FE8 3
+2010 poke16 39D4:6FD5 90
+2010 poke16 39D4:6FD7 154
+2010 poke16 39D4:6FD9 77
+2010 poke16 39D4:6FEF 259
+2020 call 348B:0895,1
+2020 call 348B:0895,2
+2020 call 348B:0895,3
+# player 2's daily budget plan (rival = player 3 as g_ai_cur = 0): +0x25 film
+# priority = 1 + quality need + size need, +0x1E film pot percentage
+2030 peek8 39D4:2507
+2030 call 2DD9:26EA,2
+2030 peek8 39D4:6EC6
+2030 peek8 39D4:6EBF

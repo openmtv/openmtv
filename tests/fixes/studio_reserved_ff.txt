@@ -1,0 +1,54 @@
+# fix: studio-reserved (229E:1080 studio_take_over / 229E:1264 studio_release leave +0xF)
+# New game, at the estate agent's plan as in studio_takeover.txt.  At 6300 episode 1 of
+# "Love boat" (screenplay 8, series 1) runs in the human's studio 6 until 18:00 today.  He gives
+# the studio up (6400 marker, text 116, 6800 "yes"): deferred, reserved DS:61D4 = 0xFF.  At
+# 18:00 1DA8:034E releases it (renter DS:61C8 = 0xFF, door "Free studio" DS:7F7C = 0x36) and
+# leaves the byte at 0xFF.  [Side bug: the unfinished screenplay is written to his list slot 0
+# (DS:1A77 = 8) but the count DS:7674 stays 0.]  He rents studio 6 again (12100 marker, text
+# 118, 12500 "yes": renter 1, rent 3000, $9000) and episode 2 runs until 19:00.  At 19:00
+# classic releases studio 6 again although he never gave it up.
+# expect classic 7200 byte 39D4:61D4 == 255
+# expect classic 12000 byte 39D4:61C8 == 255
+# expect classic 12000 byte 39D4:61D4 == 255
+# expect classic 12000 word 39D4:7674 == 0
+# expect classic 12000 word 39D4:1A77 == 8
+# expect classic 13000 byte 39D4:61C8 == 1
+# expect classic 13000 byte 39D4:61D4 == 255
+# expect classic 21500 byte 39D4:61C8 == 255
+# expect classic 21500 byte 39D4:7F7C == 54
+# Fixed: the release clears the byte (0), the studio stays his after episode 2 (renter 1, door
+#   "Studio of" room 5).  13100 sets up episode 2 (script, episode, end, running via the high byte
+#   of 61D2) and leaves the reserved byte DS:61D4 as the game left it.
+# expect fixed   12000 byte 39D4:61C8 == 255
+# expect fixed   12000 byte 39D4:61D4 == 0
+# expect fixed   13000 byte 39D4:61C8 == 1
+# expect fixed   13000 byte 39D4:61D4 == 0
+# expect fixed   21500 byte 39D4:61C8 == 1
+# expect fixed   21500 byte 39D4:7F7C == 5
+400 key esc
+1000 click 64 100
+1300 click 172 185
+2100 click 230 60
+2500 click 230 60
+2600 poke16 39D4:7B48 12
+2600 poke16 39D4:7B54 0
+2600 poke16 39D4:7B4A 0
+2600 poke16 39D4:7B46 153
+3600 poke16 39D4:7B54 0
+3600 poke16 39D4:7B46 120
+6000 click 50 60
+6300 poke16 39D4:61C5 8
+6300 poke16 39D4:61C9 2
+6300 poke16 39D4:61CF 1
+6300 poke16 39D4:61D1 18
+6300 poke16 39D4:61D3 1
+6400 click 225 29
+6800 click 124 87
+7300 click 160 100
+12100 click 225 29
+12500 click 124 87
+13100 poke16 39D4:61C5 8
+13100 poke16 39D4:61C9 3
+13100 poke16 39D4:61CF 1
+13100 poke16 39D4:61D1 19
+13100 poke16 39D4:61D2 256

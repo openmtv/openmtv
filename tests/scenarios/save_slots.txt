@@ -1,0 +1,84 @@
+# save_slots: the slot list -- load the shipped slot from the setup screen, an empty slot does
+# nothing, a slot saved twice (each save appends a new copy to SOURCE1.RSC).  English.
+# The shipped SOURCE1.RSC has the slot index 0xD1 (10 names x 40 bytes: slot 1 = " ", the rest empty)
+# and one savegame, slot 1 = resource 0xD2 (day 1, g_clock_acc 10200 = 17:03:24, 37605 bytes); res 0x2B,
+# which main() loads as the new-game state, has the same layout.  Slot n is resource 0xD1 + n.
+# Steps: 1000 setup screen "Load game" (hotspot 0x4B) -> room 58 directly in load mode (g_game_mode 1:
+#   no overlay, g_room_mode 4); 1300 right click -> back to the setup screen (room 65); 1600 "Load
+#   game" again; 1800 slot 3 (empty name: strlen 0 -> nothing); 2100 slot 1 -> game_load(0xD2),
+#   g_game_mode 1 -> 3, room_escape -> the human's office.
+#   2600 the picture -> safe (overlay), 2800 save, 3000 slot 3 (res 0xD4: not in the file) ->
+#   3100 "One", 3250 Enter -> res_create appends it at the end of SOURCE1.RSC (offset 706783).
+#   5000/5200/5400 save into slot 3 again: the name entry starts with "One"; 5500 3 x backspace,
+#   "Two"; 5650 Enter -> res_create appends a second copy (offset 744388) and points the index at
+#   it; the first copy stays in the file as dead space (the file grows by 37605 bytes per save).
+#   6000/6200/6400 load slot 3 -> the second save; 6800/7000 right clicks leave the safe.
+# Observable (PEEK lines): 1200 room 58, g_room_mode DS:8BA4 4, g_game_mode DS:7C78 1; 1500 room 65;
+#   2000 room 58, mode 4 (the empty slot did nothing).  2160 (loaded, clock still paused): room 1, day
+#   DS:71E4 1, g_clock_acc DS:6143 10200, money DS:8BFB 200000, g_player DS:8BA8 1, random seed offset
+#   g_cursor_sprites[6] DS:8EAC 0 (set only by "New game"; not in the savegame); 2300 g_game_mode 3.
+#   Save times: g_clock_acc 19440 (3200) and 55620 (5600).  Resource index g_res_index (far, 454A:0008,
+#   8 bytes per id: handle, size, u32 offset): 3400 slot 2 (0xD3) size 454A:06A2 = 0 (no file entry),
+#   slot 3 (0xD4) size 454A:06AA = 37605, offset 454A:06AC = 706783; 5800 slot 3 offset 744388, slot 1
+#   (0xD2) unchanged (size 37605 at 669178).  6600: g_clock_acc 55620 (the second save), room 58;
+#   7100 room 1.
+# end 7200
+400 key esc
+1000 click 160 100
+1200 peek16 39D4:838C
+1200 peek16 39D4:8BA4
+1200 peek16 39D4:7C78
+1300 rclick 200 60
+1500 peek16 39D4:838C
+1600 click 160 100
+1800 click 100 62
+2000 peek16 39D4:838C
+2000 peek16 39D4:8BA4
+2000 hash
+2100 click 100 28
+2160 peek16 39D4:838C
+2160 peek16 39D4:71E4
+2160 peek32 39D4:6143
+2160 peek32 39D4:8BFB
+2160 peek16 39D4:8BA8
+2160 peek32 39D4:8EAC
+2300 peek16 39D4:7C78
+2600 click 76 35
+2800 click 134 75
+3000 click 100 62
+3100 key O
+3110 key n
+3120 key e
+3200 peek32 39D4:6143
+3250 key enter
+3400 peek16 39D4:838C
+3400 peek16 454A:06A2
+3400 peek16 454A:06AA
+3400 peek32 454A:06AC
+4000 hash
+5000 click 76 35
+5200 click 134 75
+5400 click 100 62
+5500 key bksp
+5510 key bksp
+5520 key bksp
+5530 key T
+5540 key w
+5550 key o
+5600 peek32 39D4:6143
+5650 key enter
+5800 peek16 454A:06AA
+5800 peek32 454A:06AC
+5800 peek16 454A:069A
+5800 peek32 454A:069C
+6000 click 76 35
+6000 hash
+6200 click 192 75
+6400 click 100 62
+6600 peek32 39D4:6143
+6600 peek16 39D4:838C
+6800 rclick 200 60
+7000 rclick 200 60
+7100 peek16 39D4:838C
+7200 hash
+7201 quit

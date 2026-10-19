@@ -1,0 +1,187 @@
+# Both humans fired (multiplayer stage 3, tools/seattest.py): two humans as in
+# two_humans; both images set to 3 before the first day's end.  The next morning
+# each boss fires its human; seat 0 (which runs the world) first, it watches on,
+# then seat 1 -- and with every human out the game ends.
+# humans 1,2
+# play tests/mp/two_humans.txt until 69000
+69000 poke16 39D4:8C08 3
+69000 poke16 39D4:8C1F 3
+69000 key esc
+69050 seat 1 key esc
+69300 key esc
+69350 seat 1 key esc
+69600 key esc
+69650 seat 1 key esc
+69900 key esc
+69950 seat 1 key esc
+70000 hash
+70000 peek16 39D4:8C08
+70000 peek8 39D4:8C07
+70000 peek16 39D4:8C1F
+70000 peek8 39D4:8C1E
+70000 peek16 39D4:8C36
+70000 peek8 39D4:8C35
+70001 seat 1 hash
+70200 key esc
+70250 seat 1 key esc
+70500 key esc
+70550 seat 1 key esc
+70800 key esc
+70850 seat 1 key esc
+71100 key esc
+71150 seat 1 key esc
+71400 key esc
+71450 seat 1 key esc
+71700 key esc
+71750 seat 1 key esc
+72000 key esc
+72000 hash
+72000 peek16 39D4:8C08
+72000 peek8 39D4:8C07
+72000 peek16 39D4:8C1F
+72000 peek8 39D4:8C1E
+72000 peek16 39D4:8C36
+72000 peek8 39D4:8C35
+72001 seat 1 hash
+72050 seat 1 key esc
+72300 key esc
+72350 seat 1 key esc
+72600 key esc
+72650 seat 1 key esc
+72900 key esc
+72950 seat 1 key esc
+73200 key esc
+73250 seat 1 key esc
+73500 key esc
+73550 seat 1 key esc
+73800 key esc
+73850 seat 1 key esc
+74000 hash
+74000 peek16 39D4:8C08
+74000 peek8 39D4:8C07
+74000 peek16 39D4:8C1F
+74000 peek8 39D4:8C1E
+74000 peek16 39D4:8C36
+74000 peek8 39D4:8C35
+74001 seat 1 hash
+74100 key esc
+74150 seat 1 key esc
+74400 key esc
+74450 seat 1 key esc
+74700 key esc
+74750 seat 1 key esc
+75000 key esc
+75050 seat 1 key esc
+75300 key esc
+75350 seat 1 key esc
+75600 key esc
+75650 seat 1 key esc
+75900 key esc
+75950 seat 1 key esc
+76000 hash
+76000 peek16 39D4:8C08
+76000 peek8 39D4:8C07
+76000 peek16 39D4:8C1F
+76000 peek8 39D4:8C1E
+76000 peek16 39D4:8C36
+76000 peek8 39D4:8C35
+76001 seat 1 hash
+76200 key esc
+76250 seat 1 key esc
+76500 key esc
+76550 seat 1 key esc
+76800 key esc
+76850 seat 1 key esc
+77100 key esc
+77150 seat 1 key esc
+77400 key esc
+77450 seat 1 key esc
+77700 key esc
+77750 seat 1 key esc
+78000 key esc
+78000 hash
+78000 peek16 39D4:8C08
+78000 peek8 39D4:8C07
+78000 peek16 39D4:8C1F
+78000 peek8 39D4:8C1E
+78000 peek16 39D4:8C36
+78000 peek8 39D4:8C35
+78001 seat 1 hash
+78050 seat 1 key esc
+78300 key esc
+78350 seat 1 key esc
+78600 key esc
+78650 seat 1 key esc
+78900 key esc
+78950 seat 1 key esc
+79200 key esc
+79250 seat 1 key esc
+79500 key esc
+79550 seat 1 key esc
+79800 key esc
+79850 seat 1 key esc
+80000 hash
+80000 peek16 39D4:8C08
+80000 peek8 39D4:8C07
+80000 peek16 39D4:8C1F
+80000 peek8 39D4:8C1E
+80000 peek16 39D4:8C36
+80000 peek8 39D4:8C35
+80001 seat 1 hash
+80100 key esc
+80150 seat 1 key esc
+80400 key esc
+80450 seat 1 key esc
+80700 key esc
+80750 seat 1 key esc
+81000 key esc
+81050 seat 1 key esc
+81300 key esc
+81350 seat 1 key esc
+81600 key esc
+81650 seat 1 key esc
+81900 key esc
+81950 seat 1 key esc
+82000 hash
+82000 peek16 39D4:8C08
+82000 peek8 39D4:8C07
+82000 peek16 39D4:8C1F
+82000 peek8 39D4:8C1E
+82000 peek16 39D4:8C36
+82000 peek8 39D4:8C35
+82001 seat 1 hash
+82200 key esc
+82250 seat 1 key esc
+82500 key esc
+82550 seat 1 key esc
+82800 key esc
+82850 seat 1 key esc
+83100 key esc
+83150 seat 1 key esc
+83400 key esc
+83450 seat 1 key esc
+83700 key esc
+83750 seat 1 key esc
+84000 key esc
+84000 hash
+84000 peek16 39D4:8C08
+84000 peek8 39D4:8C07
+84000 peek16 39D4:8C1F
+84000 peek8 39D4:8C1E
+84000 peek16 39D4:8C36
+84000 peek8 39D4:8C35
+84001 seat 1 hash
+84050 seat 1 key esc
+84300 key esc
+84350 seat 1 key esc
+84600 key esc
+84650 seat 1 key esc
+84900 key esc
+84950 seat 1 key esc
+85200 key esc
+85250 seat 1 key esc
+85500 key esc
+85550 seat 1 key esc
+85800 key esc
+85850 seat 1 key esc
+86000 quit

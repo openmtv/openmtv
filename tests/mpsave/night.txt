@@ -1,0 +1,59 @@
+# Saving a network game at night (src/mpsave.c; tools/mpsavetest.py): a new game of
+# two humans as in tests/mp/new_game; during the first day each human's own data
+# gets values of its own -- seat 0 (station 1): Madris high score 1234, 3 papers in
+# the office; seat 1 (station 2): credit $250 000, Madris high score 777, the alien
+# look.  At the first day's end every human goes home, the new day is made, and the
+# game is saved (--mp-save: tag-002.mtvmp).  tools/mpsavetest.py plays this with and
+# without --mp-save -- the same lines, saving changes nothing -- and against
+# night.seats.
+# humans 1,2
+# options --new-game --names Anna,Ben --seed 1234
+3300 key esc
+3350 seat 1 key esc
+3600 key esc
+3650 seat 1 key esc
+3900 key esc
+3950 seat 1 key esc
+4200 key esc
+4250 seat 1 key esc
+4500 key esc
+4550 seat 1 key esc
+4800 key esc
+4850 seat 1 key esc
+5100 key esc
+5150 seat 1 key esc
+5400 key esc
+5450 seat 1 key esc
+5700 key esc
+5750 seat 1 key esc
+6000 key esc
+6050 seat 1 key esc
+10000 poke16 39D4:7A84 1234
+10000 poke16 39D4:7A24 3
+10000 seat 1 poke16 39D4:7ADE 53392
+10000 seat 1 poke16 39D4:7AE0 3
+10000 seat 1 poke16 39D4:7A84 777
+10000 seat 1 poke16 39D4:7A34 1
+10100 peek16 39D4:7A84
+10100 peek16 39D4:7A24
+10100 peek32 39D4:7ADE
+10100 seat 1 peek16 39D4:7A84
+10100 seat 1 peek32 39D4:7ADE
+10100 seat 1 peek16 39D4:7A34
+10100 hash
+10101 seat 1 hash
+68000 peek16 39D4:7A84
+68000 peek16 39D4:7A24
+68000 peek32 39D4:7ADE
+68000 seat 1 peek16 39D4:7A84
+68000 seat 1 peek32 39D4:7ADE
+68000 seat 1 peek16 39D4:7A34
+68000 hash
+68001 seat 1 hash
+71000 peek16 39D4:71E4
+71000 peek32 39D4:8BFB
+71000 peek32 39D4:8C12
+71000 peek32 39D4:8C29
+71000 hash
+71001 seat 1 hash
+71010 quit

@@ -1,0 +1,26 @@
+# option: --fast-rooms
+# args: --logical-time
+# Not a fix: the player's choice "fast room changes" (settings [game] fast_rooms, --fast-rooms),
+# on the logical clock as the launcher plays.  New game as player 1; the office door clicked
+# from the building view (2700), Esc leaves the office (3400).
+# Classic the way in takes 57 frames (the room change 2876..2933: g_room 39D4:838C already 1,
+# the game's clock paused, 39D4:7A92 = 1, the cursor 39D4:8ACC hidden), the way out 39
+# (3401..3440).  With the option the office stands at 2879, its clock running and the cursor
+# shown; the way out takes 3 frames (3401..3404).
+# expect classic 2900 word 39D4:838C == 1
+# expect classic 2900 word 39D4:7A92 == 1
+# expect option  2900 word 39D4:838C == 1
+# expect option  2900 word 39D4:7A92 == 0
+# expect option  2900 word 39D4:8ACC == 1
+# expect classic 3420 word 39D4:838C == 0
+# expect classic 3420 word 39D4:7A92 == 1
+# expect option  3420 word 39D4:838C == 0
+# expect option  3420 word 39D4:7A92 == 0
+# expect option  3420 word 39D4:8ACC == 1
+400 key esc
+1000 click 64 100
+1300 click 172 185
+2100 click 230 60
+2500 click 230 60
+2700 click 88 70
+3400 key esc

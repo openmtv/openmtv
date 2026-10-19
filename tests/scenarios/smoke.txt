@@ -1,0 +1,10 @@
+# recorded session; replay with: --script out/rec_test.txt --args "e" on fresh game files
+313 kcode 011B
+885 move 2 1
+904 move 2 1
+923 move 2 2
+942 down 1
+943 up 1
+1076 kcode 011B
+1276 hash
+1277 quit

@@ -1,0 +1,31 @@
+# fix: ai-rating (2DD9:2B8D)
+# A computer player's average rating of yesterday (ai_eval_yesterday mode 0,
+# g_avg_rating: the budget plan's rating rank, ai_take_contracts' audience) is
+# the mean of viewers x 100 / (reach x 2464) over the 7 hours, the product in
+# 32 bits.  Here: day 2, player 2's reach 115 000 units (283.4 M viewers: both
+# satellites), 30 M viewers in each of yesterday's hours (DS:7902..791A).
+# Classic: 3 000 000 000 overflows to -1 294 967 296, -4 an hour, the mean
+# -4 (0xFFFC); fixed: 10 % (10.6 truncated).
+# expect classic 3000 call 2DD9:2B8D,0,2 == 0xFFFC
+# expect fixed   3000 call 2DD9:2B8D,0,2 == 10
+400 key esc
+1000 click 64 100
+1300 click 172 185
+3000 poke16 39D4:71E4 2
+3000 poke16 39D4:20A9 49464
+3000 poke16 39D4:20AB 1
+3000 poke16 39D4:7902 50048
+3000 poke16 39D4:7904 457
+3000 poke16 39D4:7906 50048
+3000 poke16 39D4:7908 457
+3000 poke16 39D4:790A 50048
+3000 poke16 39D4:790C 457
+3000 poke16 39D4:790E 50048
+3000 poke16 39D4:7910 457
+3000 poke16 39D4:7912 50048
+3000 poke16 39D4:7914 457
+3000 poke16 39D4:7916 50048
+3000 poke16 39D4:7918 457
+3000 poke16 39D4:791A 50048
+3000 poke16 39D4:791C 457
+3100 quit

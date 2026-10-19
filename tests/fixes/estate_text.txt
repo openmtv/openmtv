@@ -1,0 +1,35 @@
+# fix: estate-text (05FF:3AB7 room_estateagent_click: ui_warning(0x77) at 05FF:3CAA)
+# Give up a studio while a production runs in it.  New game (human = player 1, rents studio 6
+# = floor 6 door 0).  Test pokes: walk to the estate agent (figures(0): 7B48 target floor 12,
+# 7B54 target door 0, 7B4A final x, 7B46 target x; re-poked at 3600 because the decompiled build
+# handles the 2500 click later); studios(6) running = 1 (39D4:61D3), end day 2 (61CF), end
+# hour 20 (61D1).  6000 click (50,60) = hotspot 0x27 (studio plan), 6400 click (225,29) =
+# studio 6 marker, 6800 click (124,87) = "yes".
+# Classic: reserved = 0xFF (release after the production), then "Warning: Psychiatrist"
+#   (g_text[0x77] is the short door sign of floor 3 door 0).  Fixed: "Warning: Production in
+#   progress. It'll end tomorrow at 20:00 o'clock" (text 242 with 207 = "tomorrow").
+# Check: box open (g_room 39D4:838C = 0xFFFF), studio 6 reserved byte 39D4:61D4 = 0xFF, and the
+#   VRAM pixel (185,44) in the box's second text line (A000:37B9 = 9E50:37B9 relative): colour 5
+#   (background, "Psychiatrist" is short) classic, 31 (text) fixed.
+# expect classic 7200 word 39D4:838C == 65535
+# expect classic 7200 byte 39D4:61D4 == 255
+# expect classic 7200 byte 9E50:37B9 == 5
+# expect fixed   7200 word 39D4:838C == 65535
+# expect fixed   7200 byte 9E50:37B9 == 31
+400 key esc
+1000 click 64 100
+1300 click 172 185
+2100 click 230 60
+2500 click 230 60
+2600 poke16 39D4:7B48 12
+2600 poke16 39D4:7B54 0
+2600 poke16 39D4:7B4A 0
+2600 poke16 39D4:7B46 153
+3600 poke16 39D4:7B54 0
+3600 poke16 39D4:7B46 120
+6000 click 50 60
+6300 poke16 39D4:61D3 1
+6300 poke16 39D4:61CF 2
+6300 poke16 39D4:61D1 20
+6400 click 225 29
+6800 click 124 87

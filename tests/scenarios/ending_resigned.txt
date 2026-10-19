@@ -1,0 +1,18 @@
+# ending "resigned": new game, walk to the boss (floor 5, door at x 188), test poke: image 80
+# (quitting is accepted with image >= 75), reply, choose "I quit", confirm -> THE END
+400 key esc
+1000 click 64 100
+1300 click 172 185
+2000 hash
+2100 click 230 60
+2500 click 230 60
+2600 poke16 39D4:8C08 80
+2700 click 188 70
+3200 click 230 92
+3600 click 230 90
+4000 hash
+4050 click 230 90
+4500 click 230 90
+6000 hash
+6500 hash
+6501 quit

@@ -1,0 +1,35 @@
+# option: --sammy-prize=300000,1,2,3
+# args: --logical-time
+# The Sammy's prize money (option, src/fixes.c sammy_pay): the human wins the news Sammy
+# (tests/scenarios/sammy_win.txt, its first day).  Classic: no money -- cash 167 000 on day 2
+# (DS:8BFB), yesterday's sundry income (DS:7492 + 0x38) 0, the winner's message 0x159 (345, DS:60BF)
+# with nothing in its second argument (DS:60C5).  Option (news 300 000, the other categories 1, 2,
+# 3): cash 467 000, the sundry income 300 000, the message carries the 300 000 (its text: "It comes
+# with prize money of $300.000!"); the computer players' cash (player 2, DS:8C12) unchanged.
+# expect classic 3400 word 39D4:71E4 == 2
+# expect classic 3400 word 39D4:8BFB == 35928
+# expect classic 3400 word 39D4:8BFD == 2
+# expect classic 3400 word 39D4:74CA == 0
+# expect classic 3400 word 39D4:60BF == 345
+# expect classic 3400 word 39D4:60C5 == 0
+# expect option  3400 word 39D4:71E4 == 2
+# expect option  3400 word 39D4:8BFB == 8248
+# expect option  3400 word 39D4:8BFD == 7
+# expect option  3400 word 39D4:74CA == 37856
+# expect option  3400 word 39D4:74CC == 4
+# expect option  3400 word 39D4:60BF == 345
+# expect option  3400 word 39D4:60C5 == 37856
+# expect option  3400 word 39D4:60C7 == 4
+# expect option  3400 word 39D4:8C12 == 53036
+# expect option  3400 word 39D4:8C14 == 65535
+400 key esc
+1000 click 64 100
+1300 click 172 185
+1500 poke16 39D4:7490 1
+1500 poke16 39D4:7488 1
+1500 poke16 39D4:748A 500
+1500 poke16 39D4:748C 50
+1500 poke16 39D4:748E 20
+2000 poke16 39D4:748A 500
+2000 poke16 39D4:6143 58840
+2000 poke16 39D4:6145 21

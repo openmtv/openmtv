@@ -1,0 +1,30 @@
+# fix: live-aid (data)
+# Film 164, "Live Aid" (live, quality 50, $700 000, in the auction pool), has length 0
+# hours (blocks, film table 4DA5:0008 + 164*0x17 + 4 = 4DA5:0EC8); the fix makes it 2
+# after the start savegame.  Here the human gets it (prog_give_to_player 1DA8:22F6, price
+# 0: archive genre 7, count DS:6FEC), its date is set to today 18:00 (live_day 4DA5:0ED3,
+# live_slot 4DA5:0ED5), the starting programme at 18:00/19:00 is taken out of the
+# planner (DS:4473, DS:4475) and it is placed at 18:00 (sched_place_program 229E:0225).
+# Classic: it fills no hour after its first (19:00 stays empty), and aired it is never at
+# its last hour -- at 19:00 it is still in the archive (it goes at night, "missed").
+# Fixed: 19:00 is its second hour (9999), and after it the tape is used up (count 0).
+# expect classic 1500 byte 4DA5:0EC8 == 0
+# expect fixed   1500 byte 4DA5:0EC8 == 2
+# expect classic 1640 word 39D4:4473 == 164
+# expect classic 1640 word 39D4:4475 == 0
+# expect fixed   1640 word 39D4:4473 == 164
+# expect fixed   1640 word 39D4:4475 == 9999
+# expect classic 20000 word 39D4:71EA == 19
+# expect classic 20000 byte 39D4:6FEC == 1
+# expect fixed   20000 word 39D4:71EA == 19
+# expect fixed   20000 byte 39D4:6FEC == 0
+400 key esc
+1000 click 64 100
+1300 click 172 185
+1600 call 1DA8:22F6,164,1,0,0
+1620 poke16 4DA5:0ED3 1
+1620 poke16 4DA5:0ED5 1
+1620 poke16 39D4:4473 0
+1620 poke16 39D4:4475 0
+1630 call 229E:0225,0,7,1,1
+20100 quit

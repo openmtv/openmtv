@@ -1,0 +1,45 @@
+# fix: tx-price (05FF:2C02 room_txmap_click, placing a transmitter)
+# Buy a transmitter with less money than its price.  New game, the steps of
+# tests/scenarios/room_txmap_buy: the human's office (floor 5 door 0), the wall map (room 25),
+# Brian's legend and info panel, "Buy" (287,28), place it at map (90,55) (the mouse is
+# clamped to the map while carrying it, so "goto 90 55" lands at map (90,55)).  The tooltip
+# there says "New viewers: 4.8 million, price: $250 000": all viewers in the circle x 61.6
+# give price class $250 000 (slot .fee), the new viewers alone 1954 x 61.6 = $120 000.
+# Test poke at 4200: money (u32 39D4:8BFB) = $150 000, between the two.
+# Classic: the check asks for $120 000 -> bought: slot 4 reach (39D4:1F13) 1954, state
+#   (39D4:1F1B) 1 = paid at the settlement, room mode (39D4:8BA4) 0; the money display shows
+#   150 000 - 250 000 = -100 000.
+# Fixed: the check asks for the $250 000 -> "Not enough money!", nothing bought: slot 4 reach
+#   0, state 0, still carrying the transmitter (mode 1).
+# expect classic 4700 word 39D4:1F13 == 1954
+# expect classic 4700 byte 39D4:1F1B == 1
+# expect classic 4700 word 39D4:8BA4 == 0
+# expect fixed   4700 word 39D4:1F13 == 0
+# expect fixed   4700 byte 39D4:1F1B == 0
+# expect fixed   4700 word 39D4:8BA4 == 1
+400 key esc
+1000 click 64 100
+1300 click 172 185
+2100 click 230 60
+2500 click 230 60
+2700 click 88 70
+3400 goto 300 40
+3440 down 1
+3460 up 1
+3700 goto 274 86
+3740 down 1
+3760 up 1
+3900 goto 302 86
+3940 down 1
+3960 up 1
+4100 goto 302 86
+4140 down 1
+4160 up 1
+4200 poke16 39D4:8BFB 18928
+4200 poke16 39D4:8BFD 2
+4300 goto 287 28
+4340 down 1
+4360 up 1
+4500 goto 90 55
+4540 down 1
+4560 up 1

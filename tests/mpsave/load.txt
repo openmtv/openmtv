@@ -1,0 +1,57 @@
+# Loading it (src/mpsave.c; tools/mpsavetest.py): the save of night.txt with
+# --mp-load -- no intro, no setup: day 2's morning (17:00), both humans walk to
+# their bosses, seat 1 joins at once.  Each human has its own data back (seat 0:
+# Madris 1234, papers 3 + 1 from the night; seat 1: credit $250 000, Madris 777,
+# the alien look), the stations' money as saved.  Played locally and over the
+# network (every machine the same game), the lines against load.seats.
+# humans 1,2
+# options --mp-load {night} --seed 77
+300 peek16 39D4:71E4
+300 peek16 39D4:838C
+1500 peek16 39D4:838C
+1500 seat 1 peek16 39D4:838C
+1500 peek16 39D4:7A84
+1500 peek16 39D4:7A24
+1500 peek32 39D4:7ADE
+1500 peek16 39D4:7A34
+1500 seat 1 peek16 39D4:7A84
+1500 seat 1 peek32 39D4:7ADE
+1500 seat 1 peek16 39D4:7A34
+1500 peek32 39D4:8BFB
+1500 peek32 39D4:8C12
+1500 peek32 39D4:8C29
+1500 hash
+1501 seat 1 hash
+3300 key esc
+3350 seat 1 key esc
+3600 key esc
+3650 seat 1 key esc
+3900 key esc
+3950 seat 1 key esc
+4200 key esc
+4250 seat 1 key esc
+4500 key esc
+4550 seat 1 key esc
+4800 key esc
+4850 seat 1 key esc
+5100 key esc
+5150 seat 1 key esc
+5400 key esc
+5450 seat 1 key esc
+5700 key esc
+5750 seat 1 key esc
+6100 peek16 39D4:838C
+6100 seat 1 peek16 39D4:838C
+6100 peek16 39D4:7A84
+6100 peek16 39D4:7A24
+6100 peek32 39D4:7ADE
+6100 peek16 39D4:7A34
+6100 seat 1 peek16 39D4:7A84
+6100 seat 1 peek32 39D4:7ADE
+6100 seat 1 peek16 39D4:7A34
+6100 peek32 39D4:8BFB
+6100 peek32 39D4:8C12
+6100 peek32 39D4:8C29
+6100 hash
+6101 seat 1 hash
+6110 quit

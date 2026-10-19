@@ -1,0 +1,89 @@
+# fix: ai-fill-genre (2DD9:0DD9, instruction 2DD9:12C1 mov al,[bp-7]) -- the other way round
+# As ai_fill_genre_mask, but the contracts exclude comedies (ad +0Ch = -4, +0Dh = 0, mask FFF7) and player 2
+# fills 21:00 (slot 4, slots 4-7 free: no programme fills the gap exactly, the search runs on).
+# Classic: 88 (love) is the first, best; 129 (action) beats it (aud[2][4] 70 x 24 = 1680 >= 80 x 21);
+# 198 (comedy) is tested against action's bit, passes and wins (85 x 20 = 1700); 155 (comedy) is
+# then tested against comedy's bit and fails -> comedy 198 at 21:00-23:00, no ad in slots 4-5.
+# Fixed: both comedies fail -> 129 at 21:00-23:00, ad 13 after both hours.
+# expect classic 21000 word 39D4:7770 == 0xFFF7
+# expect classic 21000 word 39D4:44D3 == 198
+# expect classic 21000 word 39D4:450F == 0
+# expect classic 21000 word 39D4:4511 == 0
+# expect fixed   21000 word 39D4:44D3 == 129
+# expect fixed   21000 word 39D4:450F == 13
+# expect fixed   21000 word 39D4:4511 == 13
+400 key esc
+1000 click 64 100
+1300 click 172 185
+2000 key esc
+2300 key esc
+2600 key esc
+2900 key esc
+3200 key esc
+3500 key esc
+3800 key esc
+4100 key esc
+4400 key esc
+4700 key esc
+5000 key esc
+5300 key esc
+5600 key esc
+5900 key esc
+6200 key esc
+6500 key esc
+6800 key esc
+7100 key esc
+7400 key esc
+7700 key esc
+8000 key esc
+8300 key esc
+8600 key esc
+8900 key esc
+9200 key esc
+9500 key esc
+9800 key esc
+10100 key esc
+10400 key esc
+10700 key esc
+11000 key esc
+11300 key esc
+11600 key esc
+11900 key esc
+12200 key esc
+12500 key esc
+12800 key esc
+13100 key esc
+13400 key esc
+13700 key esc
+14000 key esc
+14300 key esc
+14600 key esc
+14900 key esc
+15200 key esc
+15500 key esc
+15800 key esc
+16100 key esc
+16400 key esc
+16700 key esc
+17000 key esc
+17300 key esc
+17600 key esc
+17900 key esc
+18200 key esc
+18500 key esc
+18800 key esc
+19100 key esc
+19400 key esc
+19700 key esc
+20000 key esc
+20300 key esc
+20600 key esc
+20900 key esc
+21000 poke16 39D4:4093 252
+21000 poke16 39D4:41E3 252
+21000 poke16 39D4:4213 252
+21000 poke16 39D4:2506 0
+21000 call 348B:02A3
+21000 poke16 39D4:24EB 4
+21000 call 2DD9:0DD9
+21000 call 2DD9:0B13

@@ -1,0 +1,51 @@
+# How the 4x cells of each sprite bank are made (docs/hochaufloesend.md,
+# section 3c; first proposal from the survey of stage 1, 2026-10-16, see
+# docs/hochaufloesend-messung.md).  Read by the HR display from stage 2 on.
+#
+#   RES  RULE  [SPRITES=RULE ...]
+#
+# RES: the resource number of the sprite bank; SPRITES: sprite indices in the
+# bank, counted from 0 (as tools/rsc.py and tools/hrsurvey.py count them), a
+# single one or a range A-B.  Rules:
+#   nearest    every pixel 4x4 of its own colour: bars, frames, lines, tiles,
+#              flat colour swatches stay exact rectangles
+#   mmpx       MMPX of the sprite on its own, colour 0 transparent: pictures,
+#              figures, icons
+#   mmpx-wrap  MMPX in the sprite's own repetition: tiles laid side by side
+#   font       from the 4x font (stage 3)
+#   thin       a line one pixel thick, drawn see-through: only its middle two
+#              sub-pixels opaque, the picture under it shows on both sides
+#              (stage 5; a sprite one pixel high, or one with ink in column 0 only).
+#              Only for lines drawn over a finished picture: a sprite that
+#              paints an area line by line (bank 13: the building's sky) would
+#              leave the old sub-pixels between its lines
+# A bank not listed here: mmpx.
+
+# fonts: the main font (g_font_2) and the small one (room slot 2, g_font = 1:
+# planner rows, genre lists, carried labels, information board).  Sprites
+# 88-90 and 93-96 are the 1-pixel cells of str_format's #f gauge (chars
+# 1..7: the critics/box-office/topicality bars on the cards; in font003.txt
+# with a frame and marks half as thick, stage 5), 98-102 and 111 the boxes of
+# #v (chars C0..C5); the small font's are empty
+3    font     98-102=nearest 111=nearest
+152  font     88-90=nearest 93-96=nearest 98-102=nearest 111=nearest
+
+# frames, bars, lines: the atlas banks
+2    nearest  0-2=mmpx                     # 0-2 the game's cursors, 3-29 frame tiles
+4    nearest                               # room border (room_draw_border)
+150  nearest  0-10=mmpx 32=mmpx 87=mmpx    # planner icons and buttons; 11-86 block bars
+153  mmpx     7-22=nearest                 # transmitter map: buttons, bars, 12 = coverage dot
+154  nearest                               # briefcase slots (ui_draw_bag)
+158  nearest                               # planner border (room_draw_border_alt)
+161  nearest                               # information board: owner bars
+175  nearest  19=thin 20=mmpx 25-27=mmpx 32-33=mmpx  # Control-Center: chart bars; 19 ui_draw_hline's line; title, cars, arrows
+
+# building view: pictures with tiles and flat swatches
+6    mmpx     0-5=nearest 6=mmpx-wrap 7=nearest 18=nearest 28=nearest   # 6 brick wall
+7    mmpx     0-5=nearest 6=mmpx-wrap 7-8=nearest 11-16=nearest         # 6 brick wall
+13   mmpx     9-14=nearest                 # 9-14 one-pixel lines: they paint the sky line by line
+15   mmpx     4-7=nearest 11-15=nearest    # 11-12 the Betty meter's segments
+16   mmpx     1=nearest                    # tower sign (OpenMTV patches sprite 0)
+160  mmpx     0-7=nearest 9-14=nearest     # estate agent: swatches and patterns
+181  mmpx     13-20=nearest
+182  mmpx     4=nearest

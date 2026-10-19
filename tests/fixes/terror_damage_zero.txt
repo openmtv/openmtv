@@ -1,0 +1,30 @@
+# option: --terror-damage=0
+# args: --logical-time
+# The terror damage 0: steps as tests/fixes/terror_damage.txt.  The studio is lost as in the original
+# (message 0x134 = 308), but no repair costs and no message 0x135: cash stays 167 000, the ledger 0,
+# one message.
+# expect option  9200 word 39D4:8BFB == 35928
+# expect option  9200 word 39D4:8BFD == 2
+# expect option  9200 word 39D4:7235 == 0
+# expect option  9200 byte 39D4:7247 == 1
+# expect option  9200 word 39D4:60BF == 308
+# expect option  9200 word 39D4:60D9 == 0
+400 key esc
+1000 click 64 100
+1300 click 172 185
+2000 poke16 39D4:6143 58840
+2000 poke16 39D4:6145 21
+3500 key esc
+3800 key esc
+4100 key esc
+4400 key esc
+4600 poke16 39D4:7A5C 1
+4600 poke16 39D4:7A56 2
+4600 poke16 39D4:7A88 0
+4800 call 32BA:1800
+4900 poke16 39D4:7B48 5
+4900 poke16 39D4:7B54 0
+4900 poke16 39D4:7B4A 0
+4900 poke16 39D4:7B46 153
+6100 poke16 39D4:6143 31424
+6100 poke16 39D4:6145 16

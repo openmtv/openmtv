@@ -1,0 +1,103 @@
+# rooms "supermarket" (room 12, floor 2 door 1) and "Betty" (room 14, floor 13 door 0):
+# buy a present and give it to Betty.
+# New game; the human figure's walk target is set by test pokes like a click on a door
+# (DS:7B48 target floor, 7B54 target door, 7B4A final x, 7B46 target x = 153 elevator).
+# Clicks are 'goto X Y' + 'down'/'up' 40/60 frames later: the catalogue screen runs the
+# game loop slowly enough that a plain 'click' (press and release 5 frames apart) is lost.
+# Supermarket: shopkeeper (hotspot 0x23) -> menu; "presents" (0x2C) -> catalogue (mode 3);
+#  - take present 4 ($60 000) -> money 140000 at once; drop it on the counter (0x35)
+#    -> refunded, money 200000 (present_return_to_shop);
+#  - take present 6 (fur coat, $100 000, love 10) -> money 100000 (DS:8BFB u32); drop it on the bag
+#    (0x21) -> g_player_present[1] (DS:74E7) = 106 (id + 100 = bought today);
+#  - right click closes the catalogue, right click leaves; leaving books the present
+#    (shoplists_book_costs) -> DS:74E7 = 6.
+# Betty: click her (0x36) -> greeting (love < 20, mode 1), click -> closed; take the
+#  present from the bag (0x21, mode 2) and give it to her (0x36) -> "Betty is speechless.",
+#  love (player 1 +0xC, DS:8BFF) 0 -> 10, present 6's love value (DS:7280) 10 -> 7,
+#  times given (DS:7281) 0 -> 1, DS:74E7 = 0.  Her reply waits in room -6 (DS:838C =
+#  0xFFFA); a right click returns to her office.
+# Then test poke love = 20 and click her -> she hands over the master key (text 0x15D),
+#  g_master_key (DS:7A86) bit 1 set.  English.
+# end 10000
+400 key esc
+1000 click 64 100
+1300 click 172 185
+2000 hash
+2100 click 230 60
+2500 click 230 60
+2700 poke16 39D4:7B48 2
+2700 poke16 39D4:7B54 1
+2700 poke16 39D4:7B4A 0
+2700 poke16 39D4:7B46 153
+3800 peek16 39D4:838C
+4000 goto 24 67
+4000 hash
+4040 down 1
+4060 up 1
+4500 goto 130 43
+4540 down 1
+4560 up 1
+4900 goto 231 27
+4940 down 1
+4960 up 1
+5000 peek16 39D4:8BFB
+5000 peek16 39D4:8BFD
+5100 goto 196 48
+5140 down 1
+5160 up 1
+5200 peek16 39D4:8BFB
+5200 peek16 39D4:8BFD
+5300 goto 111 63
+5340 down 1
+5360 up 1
+5400 peek16 39D4:8BFB
+5400 peek16 39D4:8BFD
+5500 goto 39 83
+5540 down 1
+5560 up 1
+5600 peek8 39D4:74E7
+5700 goto 200 60
+5740 down 2
+5760 up 2
+6000 goto 200 60
+6000 hash
+6040 down 2
+6060 up 2
+6400 peek16 39D4:838C
+6400 peek8 39D4:74E7
+6500 poke16 39D4:7B48 13
+6500 poke16 39D4:7B54 0
+6500 poke16 39D4:7B4A 0
+6500 poke16 39D4:7B46 153
+8000 peek16 39D4:838C
+8000 hash
+8100 goto 140 58
+8140 down 1
+8160 up 1
+8300 peek16 39D4:8BA4
+8400 goto 140 58
+8440 down 1
+8460 up 1
+8600 peek16 39D4:8BA4
+8700 goto 39 83
+8740 down 1
+8760 up 1
+8800 peek16 39D4:8BA4
+8900 goto 140 58
+8940 down 1
+8960 up 1
+9100 peek16 39D4:8BFF
+9100 peek8 39D4:74E7
+9100 peek8 39D4:7280
+9100 peek8 39D4:7281
+9200 goto 140 58
+9240 down 2
+9260 up 2
+9400 poke16 39D4:8BFF 20
+9500 goto 140 58
+9540 down 1
+9560 up 1
+9700 peek16 39D4:7A86
+9700 peek16 39D4:8BA4
+10000 hash
+10001 quit

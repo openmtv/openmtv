@@ -1,0 +1,12 @@
+# No safe in a multiplayer game (tools/seattest.py): two humans as in two_humans; seat 1 in its
+# office (4900) clicks the picture that opens the safe (the save room, 0x3A) when alone -- with
+# several humans it stays shut: every machine has saved games of its own (the original files'
+# hash leaves the save slots out), and a load would part the games.  Seat 1 stays in its office
+# (g_room, DS:838C: 1, not 58).
+# humans 1,2
+# play tests/mp/two_humans.txt until 4950
+5000 seat 1 click 76 35
+5300 seat 1 peek16 39D4:838C
+5300 seat 1 hash
+5301 hash
+5400 quit

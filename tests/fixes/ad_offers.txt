@@ -1,0 +1,74 @@
+# option: --ad-offers=17
+# Not a fix: the player's choice "ad offers" (settings [game] ad_offers, --ad-offers=N, 10..17).
+# The ad agency (room 11) as in tests/scenarios/room_adagency_sign: new game, the human walks there
+# (test pokes 7B48/7B54/7B4A/7B46).  2700 test pokes: offers 1 and 4 emptied (DS:19A7, DS:19BC);
+# offer 12 = ad 27 and offer 15 = ad 14, on the shelf (offers 11..: segment EE00 = EC50 relative
+# to the load segment, 7 bytes each: +0 ad, +2 shelf).  Classic those are not offers: at the new
+# places nothing or the original's stacks answer (no tip of ad 10, no contract of ad 14).  With 17 offers the front row holds 1..13 (y 66, x 68 + 8 per
+# offer), the back row 14..17 (y 43, x 148 + 8 per offer); a folder at X answers for x X+5..X+12.
+#  3200 the pointer at 171 70, where the rows overlap: offer 13 (front) is emptied (EC50:000E), so
+#       offer 16 behind it (back row, ad 10: EC50:0023) shows through -- its tip, 10 + 3000
+#  3600 the pointer over offer 12 (front row, 165 85): its tip, g_tip_id DS:0E82 = 27 + 3000
+#  3800 click it: carried (g_room_mode DS:8BA4 = 1, g_drag_ad DS:8EFC = 27)
+#  4000 put it back at 100 100 -- left of the original's desk (105..), the rows' new one: mode 0,
+#       its shelf byte EC50:0009 = 0 again
+#  4200 offer 15 (back row, 165 50): carried, ad 14; 4400 into the briefcase: contract 0 = ad 14
+#       (DS:1BB6), g_player_ad_count(1) DS:76AA = 1
+#  4600 the contract in the briefcase back out (its offer found: 15, past the original's 10): mode 2
+#  4800 put it back at 183 60 (the carried folder's corner: 183 45) -- right of the original's back
+#       desk (..181): mode 0, no contract,
+#       offer 15's shelf EC50:001E = 0
+#  5000 offer 15 again, 5200 into the briefcase, 5400 the agent signs: ads(14).holder DS:40AE = 1,
+#       one contract; the agency refills offer 15 (here with ad 26)
+# expect classic 3560 word 39D4:0E82 != 3010
+# expect option  3560 word 39D4:0E82 == 3010
+# expect classic 3780 word 39D4:0E82 == 0
+# expect option  3780 word 39D4:0E82 == 3027
+# expect classic 3900 word 39D4:8BA4 == 0
+# expect option  3900 word 39D4:8BA4 == 1
+# expect option  3900 word 39D4:8EFC == 27
+# expect option  4100 word 39D4:8BA4 == 0
+# expect option  4100 byte EC50:0009 == 0
+# expect option  4300 word 39D4:8EFC == 14
+# expect option  4500 word 39D4:1BB6 == 14
+# expect option  4500 word 39D4:76AA == 1
+# expect option  4700 word 39D4:8BA4 == 2
+# expect option  4900 word 39D4:8BA4 == 0
+# expect option  4900 word 39D4:76AA == 0
+# expect option  4900 byte EC50:001E == 0
+# expect classic 6000 word 39D4:1BB6 != 14
+# expect option  6000 word 39D4:76AA == 1
+# expect option  6000 word 39D4:1BB6 == 14
+# expect option  6000 byte 39D4:40AE == 1
+# expect option  6000 word EC50:001C != 0
+# expect option  6000 word EC50:001C != 14
+400 key esc
+1000 click 64 100
+1300 click 172 185
+2100 click 230 60
+2500 click 230 60
+2700 poke16 39D4:7B48 10
+2700 poke16 39D4:7B54 0
+2700 poke16 39D4:7B4A 0
+2700 poke16 39D4:7B46 153
+2700 poke16 39D4:19A7 0
+2700 poke16 39D4:19BC 0
+2700 poke16 EC50:0007 27
+2700 poke16 EC50:0009 0
+2700 poke16 EC50:001C 14
+2700 poke16 EC50:001E 0
+2700 poke16 EC50:000E 0
+2700 poke16 EC50:0023 10
+2700 poke16 EC50:0025 0
+3200 goto 171 70
+3600 goto 165 85
+3800 click 165 85
+4000 click 100 100
+4200 click 165 50
+4400 click 251 63
+4600 click 232 48
+4800 click 183 60
+5000 click 165 50
+5200 click 251 63
+5400 click 116 37
+5700 rclick 200 60

@@ -1,0 +1,246 @@
+{
+ "four-players": {
+  "error": "full",
+  "fourth": null,
+  "players": [
+   "Anna",
+   "Ben",
+   "Cleo"
+  ],
+  "third": null
+ },
+ "garbage": {
+  "connected": false,
+  "end": "closed",
+  "hello": [
+   "files",
+   "key",
+   "name",
+   "platform",
+   "t",
+   "version"
+  ],
+  "hello_files": 16,
+  "joined": "guest",
+  "noted_error": true,
+  "state": "lobby"
+ },
+ "guest-leaves": {
+  "guest_role": null,
+  "guest_state": null,
+  "host_phase": "lobby",
+  "host_players": [
+   "Anna"
+  ]
+ },
+ "host-leaves": {
+  "guest_connected": false,
+  "guest_phase": "closed",
+  "host_role": null,
+  "host_state": null,
+  "why": true
+ },
+ "internet-down": {
+  "host": [
+   400,
+   "no connection to 127.0.0.1"
+  ],
+  "join": [
+   400,
+   "no connection to 127.0.0.1"
+  ]
+ },
+ "join-nowhere": {
+  "answer": [
+   400,
+   "no game at 127.0.0.1:PORT"
+  ],
+  "connected": false,
+  "role": null
+ },
+ "many-at-once": {
+  "errors": [],
+  "players": [
+   "Anna",
+   "Ben"
+  ],
+  "settled": true
+ },
+ "not-a-server": {
+  "plain": [
+   400,
+   "ws://127.0.0.1:PORT/lobby: no game server there (HTTP/1.0 200 OK)"
+  ],
+  "tls": [
+   400,
+   "no secure connection to 127.0.0.1"
+  ]
+ },
+ "other-copy": {
+  "bak_is_old": true,
+  "files": [
+   "game.json",
+   "tag-003.mtvmp",
+   "BAK"
+  ],
+  "guest": "ok",
+  "host": "ok",
+  "same": true
+ },
+ "packs-back": {
+  "back": [
+   "none",
+   null
+  ],
+  "built": [
+   "ok",
+   true
+  ],
+  "host": [
+   "none",
+   null
+  ],
+  "server_mods": null
+ },
+ "packs-refused": {
+  "gibtsnicht/de": [
+   400,
+   "kein Mod gibtsnicht"
+  ],
+  "gibtsnicht/en": [
+   400,
+   "no mod gibtsnicht"
+  ],
+  "mods": "none",
+  "test-filme+test-filme/de": [
+   400,
+   "ein Mod doppelt in test-filme+test-filme"
+  ],
+  "test-filme+test-filme/en": [
+   400,
+   "a mod twice in test-filme+test-filme"
+  ],
+  "test-filme+zz-edge-halb/de": [
+   400,
+   "noch nicht spielbar -- Film 326: deutscher Titel, Genre"
+  ],
+  "test-filme+zz-edge-halb/en": [
+   400,
+   "not playable yet -- film 326: German title, genre"
+  ],
+  "zz-edge-halb/de": [
+   400,
+   "noch nicht spielbar -- Film 201: deutscher Titel, Genre"
+  ],
+  "zz-edge-halb/en": [
+   400,
+   "not playable yet -- film 201: German title, genre"
+  ]
+ },
+ "port-taken": {
+  "answer": [
+   400,
+   "no game opened on port PORT"
+  ],
+  "connected": false,
+  "role": null
+ },
+ "quit-hosting": {
+  "answer": {
+   "quit": true
+  },
+  "launcher_ended": true,
+  "server_before": 1,
+  "server_gone": true
+ },
+ "rooms-down": {
+  "answer": [
+   400,
+   "the server ws://127.0.0.1:PORT does not answer"
+  ]
+ },
+ "saves-refused": {
+  "damaged/de": [
+   400,
+   "dieser Spielstand lässt sich nicht lesen"
+  ],
+  "damaged/en": [
+   400,
+   "this savegame cannot be read"
+  ],
+  "files/de": [
+   400,
+   "dieses Spiel lief mit anderen Spieldateien (0123456789abcdef, hier 47dc0e40e493445b)"
+  ],
+  "files/en": [
+   400,
+   "this saved game was played with other game files (0123456789abcdef, here 47dc0e40e493445b)"
+  ],
+  "good/de": [
+   "ok",
+   "ok",
+   3
+  ],
+  "good/en": [
+   "ok",
+   "ok",
+   3
+  ],
+  "list": [
+   [
+    "edge",
+    1
+   ],
+   [
+    "files",
+    1
+   ],
+   [
+    "packs",
+    1
+   ]
+  ],
+  "missing/de": [
+   400,
+   "dieser Spielstand lässt sich nicht lesen"
+  ],
+  "missing/en": [
+   400,
+   "this savegame cannot be read"
+  ],
+  "not-one/de": [
+   400,
+   "no savegame: 'x.txt'"
+  ],
+  "not-one/en": [
+   400,
+   "no savegame: 'x.txt'"
+  ],
+  "packs/de": [
+   400,
+   "dieses Spiel lief mit Paketen, deren Tabellen hier nicht aufgehoben sind"
+  ],
+  "packs/en": [
+   400,
+   "this saved game was played with packs whose tables are not kept here"
+  ]
+ },
+ "server-dies": {
+  "guest": [
+   "closed",
+   false
+  ],
+  "host": [
+   "closed",
+   false
+  ],
+  "killed": 1,
+  "why": "the connection to the game is gone"
+ },
+ "unknown-room": {
+  "answer": null,
+  "error": "room",
+  "phase": null,
+  "room": "nix-da"
+ }
+}

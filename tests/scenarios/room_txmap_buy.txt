@@ -1,0 +1,102 @@
+# room "transmitter map" (room 25, from the human's office: floor 5 door 0, wall map
+# hotspot 0x1C): buy a transmitter, sell the old one to a computer player.
+# New game: the human has one transmitter (slot 3, reach 2044 units of 2464 viewers).
+# Clicks are 'goto X Y' + 'down'/'up' 40/60 frames later (robust while the game loop is
+# slow); while a transmitter is carried the mouse is clamped to the map (48,4)-(200,97), so
+# the 'goto' there lands at (48+X, 4+Y) = map position (X, Y).
+#  - legend "Brian" (hotspot 5) shows player 2's transmitters (DS:79CC = 2); his "i"
+#    (hotspot 8) opens the info panel (mode 2), a second click closes it;
+#  - "Buy" (0x16) picks up a transmitter (mode 1); placed at map (90,55) (hotspot 3):
+#    slot 4 (DS:1F0F) = reach 1954 (+4), fee bracket 250000, state 1 (+0xC, paid at the
+#    day's settlement);
+#    player 1 reach (DS:1EDB, u32 = g_transmitters[1] +4) 2044 -> 3998;
+#  - "Sell" (0x11, mode 3, slot 3 selected, DS:79C8), ">" (0x13) -> slot 4, "<" (0x12)
+#    -> slot 3; test poke: player 2's AI transmitter budget (DS:6EB5, u32) = 500000 so
+#    that he bids; "OK" (0x14) opens the sale dialog (mode 4) with the AI bids
+#    (DS:8F0D: Brian 37500, Churchill -1); accept Brian's bid (hotspot 4):
+#    money (DS:8BFB) 200000 -> 237500, slot 3 (DS:1F01) state 2 / reach 0, the
+#    transmitter is copied into player 2's slot 4 (DS:20DD: reach 2044, x 81), player 1
+#    reach 1954;
+#  - right click ends sell mode, right click returns to the office (DS:838C = 1).  English.
+# end 7000
+400 key esc
+1000 click 64 100
+1300 click 172 185
+2000 hash
+2100 click 230 60
+2500 click 230 60
+2700 click 88 70
+3300 peek16 39D4:838C
+3400 goto 300 40
+3440 down 1
+3460 up 1
+3650 peek16 39D4:838C
+3650 peek16 39D4:1EDB
+3700 goto 274 86
+3740 down 1
+3760 up 1
+3850 peek16 39D4:79CC
+3900 goto 302 86
+3940 down 1
+3960 up 1
+4000 hash
+4050 peek16 39D4:8BA4
+4100 goto 302 86
+4140 down 1
+4160 up 1
+4250 peek16 39D4:8BA4
+4300 goto 287 28
+4340 down 1
+4360 up 1
+4450 peek16 39D4:8BA4
+4500 goto 90 55
+4540 down 1
+4560 up 1
+4700 peek16 39D4:8BA4
+4700 peek16 39D4:1EDB
+4700 peek16 39D4:1F13
+4700 peek16 39D4:1F1B
+4800 goto 287 41
+4840 down 1
+4860 up 1
+4950 peek16 39D4:79C8
+5000 goto 283 54
+5040 down 1
+5060 up 1
+5150 peek16 39D4:79C8
+5200 goto 270 54
+5240 down 1
+5260 up 1
+5350 peek16 39D4:79C8
+5350 poke16 39D4:6EB5 41248
+5350 poke16 39D4:6EB7 7
+5400 goto 301 54
+5440 down 1
+5460 up 1
+5600 peek16 39D4:8BA4
+5600 peek16 39D4:8F0D
+5600 peek16 39D4:8F0F
+5600 peek16 39D4:8F11
+5600 peek16 39D4:8F13
+5700 goto 106 55
+5740 down 1
+5760 up 1
+5900 peek16 39D4:8BA4
+5900 peek16 39D4:8BFB
+5900 peek16 39D4:8BFD
+5900 peek16 39D4:1EDB
+5900 peek16 39D4:1F05
+5900 peek16 39D4:1F0D
+5900 peek16 39D4:20E1
+5900 peek16 39D4:20E5
+6000 goto 200 60
+6000 hash
+6040 down 2
+6060 up 2
+6300 peek16 39D4:838C
+6300 goto 200 60
+6340 down 2
+6360 up 2
+6700 peek16 39D4:838C
+7000 hash
+7001 quit

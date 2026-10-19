@@ -1,0 +1,71 @@
+# sammy_win: the human wins the Sammy (news category) and uses it with the boss: a credit he
+# refuses otherwise, and quitting with image < 75.  English.
+# Steps: new game (image 34; the computer players 33 each, credit line $200 000 taken).
+#   1500 test pokes: a news Sammy is running (g_sammy_category DS:7488 = 1) and decides at the next
+#   day change (g_sammy_day DS:7490 = 1; new_day increments it to 2 = award day); points
+#   (DS:7488 + 2p) human 500, players 2/3 50 and 20.  2000 again human 500, then the game clock
+#   g_clock_acc (DS:6143, u32) = 1 435 000 (00:58) -> the day ends: sammy_daily_update gives the
+#   human +8 image (g_sammy_image_bonus[news]) and takes half of it from each other player, sets
+#   g_sammy_winner (DS:7A06) = 1 and queues message 0x159.
+#   Day 2 morning: the boss's remarks end with "At least we got the Sammy." (text 0xA3); 3500..4400
+#   Esc x4.  4700 click the boss's door; 5300 reply; 5700 down arrow: "I... I need more money.";
+#   6000 confirm -> "Another $200.000 credit? Never!" (image 10..49 with a credit: haggling menu 3);
+#   6400 "But I need the money!" -> yes, the Sammy won today (credit +$200 000,
+#   otherwise refused); 6800 leave.  7100 the boss again; 7600 reply; 8000 "I've had enough. I quit."
+#   -> "But Archie, we don't want to be so hasty..." (a Sammy winner may quit, as with image >= 75);
+#   8450 "On the contrary!" -> "After all I've done for you ..."; 8900 -> THE END.
+# Observable (PEEK lines): frame 1900 day DS:71E4 = 1, image DS:8C08 = 34.  Frame 3500 day 2,
+#   g_sammy_winner 1, images DS:8C08 / 8C1F / 8C36 = 42 / 29 / 29, category 0 (decided).
+#   Frame 6100 credit g_credit DS:7ADE/7AE0 = 200000, money DS:8BFB/8BFD = 167000; frame 6700
+#   credit 400000, money 367000.
+# end 10500
+400 key esc
+1000 click 64 100
+1300 click 172 185
+1500 poke16 39D4:7490 1
+1500 poke16 39D4:7488 1
+1500 poke16 39D4:748A 500
+1500 poke16 39D4:748C 50
+1500 poke16 39D4:748E 20
+1900 peek16 39D4:71E4
+1900 peek16 39D4:8C08
+2000 poke16 39D4:748A 500
+2000 poke16 39D4:6143 58840
+2000 poke16 39D4:6145 21
+2000 hash
+3500 peek16 39D4:71E4
+3500 peek16 39D4:7A06
+3500 peek16 39D4:8C08
+3500 peek16 39D4:8C1F
+3500 peek16 39D4:8C36
+3500 peek16 39D4:7488
+3500 key esc
+3800 key esc
+4000 hash
+4100 key esc
+4400 key esc
+4700 click 188 70
+5300 click 230 92
+5700 click 163 99
+6000 click 230 92
+6000 hash
+6100 peek16 39D4:7ADE
+6100 peek16 39D4:7AE0
+6100 peek16 39D4:8BFB
+6100 peek16 39D4:8BFD
+6400 click 230 92
+6700 peek16 39D4:7ADE
+6700 peek16 39D4:7AE0
+6700 peek16 39D4:8BFB
+6700 peek16 39D4:8BFD
+6800 click 230 92
+7100 click 188 70
+7600 click 230 92
+8000 click 230 90
+8000 hash
+8450 click 230 90
+8900 click 230 90
+10000 hash
+10500 quit
+10500 hash
+10501 quit

@@ -1,0 +1,41 @@
+# The game speed set by a human who does not run the world (multiplayer, tools/seattest.py):
+# two humans as in two_humans; seat 1 goes from its office to the planner (5100) and its
+# Control-Center (5700) and sets the speed fast (60, at 6300) and slow (20, at 6900).  The
+# speed is the world's (DS:72A2), the same for everyone; the change folds the time so far
+# into the clock at the old speed first, as the original does -- in a multiplayer game too
+# (the clock's calls are the world's there): no jump.  Before, the time since the clock's
+# last hourly restart was counted again at the new speed, and the world's clock (DS:0D0C,
+# game seconds) jumped by up to an hour, backwards at a slower speed.  And the change restarts
+# the world's timer: seat 0's frame timer (DS:6141, its own) must follow it (DS:9034, the ticks)
+# -- it stayed at the tick of its last frame before, and the world's animation (the elevator,
+# the figures) stood for a minute (seat_frame_timer_fresh).
+# humans 1,2
+# play tests/mp/two_humans.txt until 5000
+5100 seat 1 click 264 67
+5700 seat 1 click 303 15
+6000 peek16 39D4:72A2
+6000 peek16 39D4:0D0C
+6100 peek16 39D4:0D0C
+6200 peek16 39D4:0D0C
+6290 peek16 39D4:0D0C
+6300 seat 1 click 175 102
+6400 peek16 39D4:72A2
+6400 peek16 39D4:6141
+6400 peek16 39D4:9034
+6310 peek16 39D4:0D0C
+6400 peek16 39D4:0D0C
+6500 peek16 39D4:0D0C
+6600 peek16 39D4:0D0C
+6700 peek16 39D4:0D0C
+6800 peek16 39D4:0D0C
+6890 peek16 39D4:0D0C
+6900 seat 1 click 110 102
+7000 peek16 39D4:72A2
+6910 peek16 39D4:0D0C
+7000 peek16 39D4:0D0C
+7100 peek16 39D4:0D0C
+7200 peek16 39D4:0D0C
+7300 peek16 39D4:0D0C
+7300 hash
+7301 seat 1 hash
+7400 quit

@@ -1,0 +1,156 @@
+# save_continue: save, play 4000 frames, load, replay the same input for 4000 frames (B), load again
+# and replay once more with the state the savegame lacks poked back (C).  Does a loaded game continue
+# like the saved one?  English.
+# Steps: new game; dismiss the boss; 2700 office door; 3200 the picture -> safe (room 58); 3400 save
+#   button; 3600 slot 2 (res 0xD3); 3700 "A"; 3800 Enter -> game_save, back in the office at 3806 (A).
+#   Continuation (frames relative to the first office frame O): O+200 Esc leaves the office; O+300 test
+#   poke: walk to the film agency (7B48 floor 7, 7B54 door 0, 7B4A 0, 7B46 0x99); O+1300 buy shelf
+#   tape 10 (film 94, $25 000), O+1500 into the case, O+1700 Esc; O+1800 test poke: walk to the office
+#   (floor 5 door 0); O+4000 peeks.  A: O = 3806, peeks 7806.
+#   7906 picture, 8106 load button, 8306 slot 2 -> game_load(0xD3); 8606 Esc (overlay), 8806 Esc
+#   leaves the safe -> office at O = 8808 (B), peeks 12808.
+#   12908..13808 the same load again -> office at O = 13810 (C); 13810 test pokes: the state that is
+#   different at O although the load restored the savegame -- the wandering figures 3 and 4 (g_figures
+#   DS:7B42 + 0x1E*n: x, floor, target, door ...; they keep walking while the clock is paused in the
+#   safe) and the elevator cabin (g_elevator_floor DS:8BDA = 3, g_elevator_door DS:012A = 0: not in the
+#   savegame at all) set to their values at A's O; peeks 17810.
+# Observable (PEEK lines) at the end of A / B / C:
+#   player 1 (only input-driven): room 1, money DS:8BFB 175000, genre 3 count DS:6FE8 1, hour DS:71EA
+#   17, minute DS:71EC 35 in all three; g_clock_seconds DS:0D0C 2151 / 2150 / 2151 (17:35:51 / :50 /
+#   :51: the timer tick phase).  Computer players: money of player 2 DS:8C12 -194500 / -207500 /
+#   -220500, player 3 DS:8C29 -142500 / -183500 / -142500; g_ai_state DS:24E5 0x0403 / 0x0303 / 0x0403;
+#   player 3 contracts DS:76AC 4; AI figures 1/2 x, floor (DS:7B60/7B62, 7B7E/7B80) 153,7 / 120,11;
+#   elevator floor DS:8BDA 7 / 8 / 7; film agency shelf slot 10 (g_dealer DS:1A3D) 122 / 173 / 122.
+# So: B diverges from A within minutes (the computer players act differently).  With the figures and
+#   the elevator poked (C) everything matches A except one random draw: player 2's purchase at the film
+#   agency (another programme; the shelf is refilled at random) -- random_n() seeds srand() from the PIT tick
+#   counter (timer_read() + g_cursor_sprites[6], the new-game clock), whose phase is not part of the
+#   game state; the dealer refill 24B8:04B9 and others draw from it.  Poking only the elevator or only
+#   the figures is not enough (both diverge like B).
+# end 17910
+400 key esc
+1000 click 64 100
+1300 click 172 185
+2000 hash
+2100 click 230 60
+2500 click 230 60
+2700 click 88 70
+3200 click 76 35
+3400 click 134 75
+3600 click 100 45
+3700 key A
+3800 key enter
+4000 hash
+4006 key esc
+4106 poke16 39D4:7B48 7
+4106 poke16 39D4:7B54 0
+4106 poke16 39D4:7B4A 0
+4106 poke16 39D4:7B46 153
+5106 click 168 75
+5306 click 240 60
+5506 key esc
+5606 poke16 39D4:7B48 5
+5606 poke16 39D4:7B54 0
+5606 poke16 39D4:7B4A 0
+5606 poke16 39D4:7B46 153
+6000 hash
+7806 peek16 39D4:838C
+7806 peek32 39D4:8BFB
+7806 peek8 39D4:6FE8
+7806 peek16 39D4:71EA
+7806 peek16 39D4:71EC
+7806 peek16 39D4:0D0C
+7806 peek32 39D4:8C12
+7806 peek32 39D4:8C29
+7806 peek16 39D4:24E5
+7806 peek16 39D4:76AC
+7806 peek16 39D4:7B60
+7806 peek16 39D4:7B62
+7806 peek16 39D4:7B7E
+7806 peek16 39D4:7B80
+7806 peek8 39D4:8BDA
+7806 peek16 39D4:1A3D
+7906 click 76 35
+8000 hash
+8106 click 192 75
+8306 click 100 45
+8606 key esc
+8806 key esc
+9008 key esc
+9108 poke16 39D4:7B48 7
+9108 poke16 39D4:7B54 0
+9108 poke16 39D4:7B4A 0
+9108 poke16 39D4:7B46 153
+10000 hash
+10108 click 168 75
+10308 click 240 60
+10508 key esc
+10608 poke16 39D4:7B48 5
+10608 poke16 39D4:7B54 0
+10608 poke16 39D4:7B4A 0
+10608 poke16 39D4:7B46 153
+12000 hash
+12808 peek16 39D4:838C
+12808 peek32 39D4:8BFB
+12808 peek8 39D4:6FE8
+12808 peek16 39D4:71EA
+12808 peek16 39D4:71EC
+12808 peek16 39D4:0D0C
+12808 peek32 39D4:8C12
+12808 peek32 39D4:8C29
+12808 peek16 39D4:24E5
+12808 peek16 39D4:76AC
+12808 peek16 39D4:7B60
+12808 peek16 39D4:7B62
+12808 peek16 39D4:7B7E
+12808 peek16 39D4:7B80
+12808 peek8 39D4:8BDA
+12808 peek16 39D4:1A3D
+12908 click 76 35
+13108 click 192 75
+13308 click 100 45
+13608 key esc
+13808 key esc
+13810 poke16 39D4:7B9C 96
+13810 poke16 39D4:7B9E 2
+13810 poke16 39D4:7BA2 2
+13810 poke16 39D4:7BBA 162
+13810 poke16 39D4:7BBC 10
+13810 poke16 39D4:7BBE 120
+13810 poke16 39D4:7BC0 10
+13810 poke16 39D4:7BCC 1
+13810 poke16 39D4:7BCE 2
+13810 poke16 39D4:012A 0
+13810 poke16 39D4:8BDA 3
+14000 hash
+14010 key esc
+14110 poke16 39D4:7B48 7
+14110 poke16 39D4:7B54 0
+14110 poke16 39D4:7B4A 0
+14110 poke16 39D4:7B46 153
+15110 click 168 75
+15310 click 240 60
+15510 key esc
+15610 poke16 39D4:7B48 5
+15610 poke16 39D4:7B54 0
+15610 poke16 39D4:7B4A 0
+15610 poke16 39D4:7B46 153
+16000 hash
+17810 peek16 39D4:838C
+17810 peek32 39D4:8BFB
+17810 peek8 39D4:6FE8
+17810 peek16 39D4:71EA
+17810 peek16 39D4:71EC
+17810 peek16 39D4:0D0C
+17810 peek32 39D4:8C12
+17810 peek32 39D4:8C29
+17810 peek16 39D4:24E5
+17810 peek16 39D4:76AC
+17810 peek16 39D4:7B60
+17810 peek16 39D4:7B62
+17810 peek16 39D4:7B7E
+17810 peek16 39D4:7B80
+17810 peek8 39D4:8BDA
+17810 peek16 39D4:1A3D
+17910 hash
+17911 quit

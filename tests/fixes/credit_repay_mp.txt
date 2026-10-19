@@ -1,0 +1,22 @@
+# option: --seats 2 --humans 1,2
+# credit-repay in a network game (fixes.h FIX_MP_ALWAYS): two human seats (stations 1 and 2, seat 0 plays the script),
+# no --fixes, and still the boss lends nothing through a negative repayment.  Steps and values as
+# tests/fixes/credit_repay.txt; the expectations are its "fixed" ones.
+# expect option 4700 word 39D4:8BFB == 32144
+# expect option 4700 word 39D4:8BFD == 65532
+# expect option 4700 word 39D4:7ADE == 3392
+# expect option 4700 word 39D4:7AE0 == 3
+400 key esc
+1000 click 64 100
+1300 click 172 185
+2100 click 230 60
+2500 click 230 60
+2600 poke16 39D4:8BFB 32144
+2600 poke16 39D4:8BFD 65532
+2700 click 188 70
+3200 click 230 92
+3550 click 163 83
+3800 click 230 92
+4150 click 163 83
+4350 click 230 92
+4750 click 230 92

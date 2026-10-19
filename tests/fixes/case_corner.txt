@@ -1,0 +1,54 @@
+# fix: case-corner (05FF:0359 room_filmagency_click, 14E1:000E tooltip_update: the film agency's case hands out slots past the carried tapes)
+# The case's hotspot (216,24)-(279,103) is its whole frame; a click takes slot (x-224)/9 + 5*((y-28)/30) = 0..16
+# whenever the word g_bag + 2*slot (DS:2483) is non-zero.  Slot 16 (x 278..279, y 88..103: the lower right corner of
+# the frame) is g_program_score(1) DS:24A3, the human's programme score of the hour -- taken as a film id.
+# Steps: new game; dismiss the boss's two messages; 2900 test poke: the human walks to the film agency (floor 7 door 0;
+#   inside by 4000); 4300 test poke: the human's score this hour = 4 (what the starting schedule's series gets at 20:00,
+#   reproduced with build/mtv: tooltip "Action movie, USA 1988, $160 000" without a title); 4400 buy shelf tape 1;
+#   4600 into the case; 4800 take it out of the case (slot 0); 5000 right click puts it back; 5200 hover the corner;
+#   5400 click it; 5600 drop on Mr. Jabble (hotspot 0x23; the drag image's corner is the hit point).
+# Both: 4000 in the agency (DS:838C = 8); 4700 one tape in the case (count DS:734A); 4900 it is carried ("bought now":
+#   g_drag_film DS:8F09 = id + 10000), the case empty; 5100 back in the case.
+# Classic: 5300 a tooltip is up (DS:7A18); 5500 film 4 is carried, the count drops to 0 -- the bought tape still in
+#   g_bag[0] (DS:2483) but no longer counted (lost: the unload files nothing); 5700 film 4 sold for $160 000
+#   (ledger "films sold" today, u32 DS:7221 = 0x27100, the auction or the dealer).
+# Fixed: no tooltip, nothing taken (the bought tape stays counted), nothing sold (the click on Mr. Jabble with empty
+#   hands opens the auction or warns, as always).
+# expect classic 4000 word 39D4:838C == 8
+# expect classic 4700 word 39D4:734A == 1
+# expect classic 4900 word 39D4:8F09 > 10000
+# expect classic 4900 word 39D4:734A == 0
+# expect classic 5100 word 39D4:734A == 1
+# expect classic 5300 word 39D4:7A18 != 0
+# expect classic 5500 word 39D4:8F09 == 4
+# expect classic 5500 word 39D4:734A == 0
+# expect classic 5500 word 39D4:2483 != 0
+# expect classic 5700 word 39D4:7221 == 28928
+# expect classic 5700 word 39D4:7223 == 2
+# expect fixed   4000 word 39D4:838C == 8
+# expect fixed   4700 word 39D4:734A == 1
+# expect fixed   4900 word 39D4:8F09 > 10000
+# expect fixed   4900 word 39D4:734A == 0
+# expect fixed   5100 word 39D4:734A == 1
+# expect fixed   5300 word 39D4:7A18 == 0
+# expect fixed   5500 word 39D4:8F09 != 4
+# expect fixed   5500 word 39D4:734A == 1
+# expect fixed   5700 word 39D4:7221 == 0
+# expect fixed   5700 word 39D4:7223 == 0
+400 key esc
+1000 click 64 100
+1300 click 172 185
+2100 click 230 60
+2500 click 230 60
+2900 poke16 39D4:7B48 7
+2900 poke16 39D4:7B54 0
+2900 poke16 39D4:7B4A 0
+2900 poke16 39D4:7B46 153
+4300 poke16 39D4:24A3 4
+4400 click 85 90
+4600 click 240 60
+4800 click 228 45
+5000 rclick 200 110
+5200 goto 278 95
+5400 click 278 95
+5600 click 40 55

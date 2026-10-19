@@ -1,0 +1,22 @@
+# option: --ad-offers=17
+# Not a fix: the player's choice "ad offers" -- offers 11..17 in a savegame.  New game; at 3000
+# test pokes: offer 11 = ad 31, offer 17 = ad 37 (segment EE00 = EC50 relative to the load
+# segment, 7 bytes each), the game saved to slot 0xD1 (game_save 229E:200D, the harness's call),
+# both offers emptied, the slot loaded again (game_load 229E:1386): with the option the savegame
+# brings them back ("MTVX" with a fifth count, src/actions.c); classic they are no offers -- the
+# savegame has no extension and the load leaves what the pokes left.
+# expect classic 3000 word EC50:0000 == 0
+# expect option  3000 word EC50:0000 == 31
+# expect option  3000 word EC50:002A == 37
+# expect option  3000 byte EC50:002C == 0
+400 key esc
+1000 click 64 100
+1300 click 172 185
+3000 poke16 EC50:0000 31
+3000 poke16 EC50:0002 0
+3000 poke16 EC50:002A 37
+3000 poke16 EC50:002C 0
+3000 call 229E:200D,209
+3000 poke16 EC50:0000 0
+3000 poke16 EC50:002A 0
+3000 call 229E:1386,209

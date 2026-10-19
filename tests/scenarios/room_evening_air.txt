@@ -1,0 +1,85 @@
+# rooms "ad agency" + "programme planner", then the evening runs: the hourly evaluation counts the
+# audience and airs the ad (English).
+# New game; dismiss the boss; test pokes walk figure 0 (7B48 target_floor, 7B54 target_door,
+# 7B4A final_x, 7B46 target_x 0x99 = via the elevator) to the ad agency (floor 10 door 0) and later
+# to the office (floor 5 door 0).  While something is dragged in the planner, the click point is
+# the drag image's corner (cursor - drag hotspot); in waste-bin mode it is the cursor + 5.
+#  3600 ad agency: offer slot 2 (ad 10 "BikeShop": 1 spot, 3 days, minimum class 1, fee $5000)
+#       -> 3800 briefcase -> 4000 agent signs; 4200 right click leaves
+#  5500 office -> planner; 5800 pick film 70 (2 h) up at 23:00, 6000 drop on 18:00 (replaces 69,
+#       now dragged), 6200 drop 69 on 23:00
+#  6400 contracts button (0x0D, mode 5), 6600 contract 0 (ad 10) -> drag (mode 6), 6800 drop in the
+#       ad column after 20:00 (sched_place_ad); 7000 pick it up there (0x10), 7200 drop after 18:00
+#  7400/7600/7800 a second copy after 21:00 ("2/1"); 8000 waste bin, 8200 remove it, 8400 right click
+#  8600 options (0x45), 8800 fastest speed (g_game_speed DS:72A2 = 60), 9000 right click
+#  the clock runs: 18:00 news, 18:05 film 70 (ratings), 18:55 ad block (ad 10 aired, $5000 paid,
+#  contract done), 19:00 hour change, 19:05 second hour
+#  14600 statistics (0x33): 14800 mode button, 15000 player 2, 15200 image/ratings; 15400 back
+#  15600 finance report (0x38, "Advertising income 5000 $"): 15800 toggle; 16000 back
+# Observable at the end: player 1 ad slots (DS:44AD + 2*slot): slot 1 DS:44AF = 2010 (2000 + ad:
+# aired, contract done), slot 3 DS:44B3 = 0, slot 4 DS:44B5 = 0; g_player_ad_count(1) DS:76AA = 0;
+# viewers 18:00 g_hour_viewers(1, 1) (u32 DS:750E) = 150304; money (u32 DS:8BFB) = 205000;
+# ledger "advertising income" (u32 DS:722D) = 5000.
+# end 16500
+400 key esc
+1000 click 64 100
+1300 click 172 185
+2000 hash
+2100 click 230 60
+2500 click 230 60
+2700 poke16 39D4:7B48 10
+2700 poke16 39D4:7B54 0
+2700 poke16 39D4:7B4A 0
+2700 poke16 39D4:7B46 153
+3600 click 124 92
+3800 click 251 63
+4000 click 116 37
+4000 hash
+4200 rclick 200 60
+4400 poke16 39D4:7B48 5
+4400 poke16 39D4:7B54 0
+4400 poke16 39D4:7B4A 0
+4400 poke16 39D4:7B46 153
+5500 click 264 67
+5800 click 140 90
+6000 click 140 14
+6000 hash
+6200 click 140 98
+6400 click 303 32
+6600 click 245 23
+6800 click 289 45
+7000 click 247 44
+7200 click 251 16
+7400 click 303 32
+7600 click 245 23
+7800 click 289 61
+8000 click 19 100
+8000 hash
+8200 click 242 55
+8400 rclick 200 60
+8600 click 303 15
+8800 click 176 104
+9000 rclick 200 60
+10000 hash
+12000 hash
+14000 hash
+14600 click 303 66
+14800 click 35 61
+15000 click 35 27
+15200 click 35 75
+15400 rclick 200 60
+15600 click 303 83
+15800 click 159 109
+16000 rclick 200 60
+16000 hash
+16400 peek16 39D4:44AF
+16400 peek16 39D4:44B3
+16400 peek16 39D4:44B5
+16400 peek16 39D4:76AA
+16400 peek16 39D4:750E
+16400 peek16 39D4:7510
+16400 peek16 39D4:8BFB
+16400 peek16 39D4:8BFD
+16400 peek16 39D4:722D
+16500 hash
+16501 quit

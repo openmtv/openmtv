@@ -1,0 +1,332 @@
+fn 2DD4:0007 util_min  signed min(a, b)
+fn 2DD4:001E util_max  signed max(a, b) (decompiler shows a 3rd, unused argument)
+fn 2DD4:0035 util_lmax  signed 32-bit max of (a_lo,a_hi) and (b_lo,b_hi)
+fn 35F1:000A bit_set  *(u16 far *)p |= 1 << n
+fn 35F1:0028 bit_clear  *(u16 far *)p &= ~(1 << n)
+fn 35F1:0048 bit_test  (w >> n) & 1 as a byte; used on the AI genre masks (g_ai_ad_req +0, bit genre-1)
+fn 1C18:000C data_load_tables  load films (res 0xC9 -> g_movies), series (0xCA), screenplays (0xCB), ads (0xCC -> 0x3F4F), news chain nodes (0xCD -> 0x2731), news topics (0xCE -> 0x5593), news templates (0x30 -> 0x3AA1); then the language strings (ad names/clients, 10 phrases per news topic) into a string pool; then script_init_episodes
+fn 1C18:02C6 strpool_add  (len, far **dst) copy len bytes from the init-data buffer (g_initdata + g_initdata_pos) into the string pool, store the far pointer in *dst, advance both positions (+1 for the NUL)
+fn 1C18:0313 script_init_episodes  for single (non-series, +5 bit0 clear) screenplays with flag +5 bit2: copy episode block 0 (0x23 bytes at +8) to episodes 1..9
+fn 1C18:03A7 ledger_add  (category, amount lo, hi) g_ledger[category] += amount (today's finance statistics of the human); returns lo
+fn 1C18:03C1 news_tick  (hours, min_cat1) age the 7 running news stories by hours, emit every story that is due (news_advance_story(0)), start new stories, then force stories of category 1 until at least min_cat1 category-1 items exist today; finally news_distribute. Called hourly with (1,0), at day start with (5,3)
+fn 1C18:044F news_count_cat1  number of today's news items (g_news_pool) with category 1
+fn 1C18:0490 news_emit  (story slot) append a news item to today's pool (20 max, oldest dropped): node, 5 (topic, phrase) parts, value = node value * (30 + 70*avg phrase value/10) / 100, price class = number of thresholds {15,30,40,50,60,100} below the value, category, day, hour
+fn 1C18:069A news_add_event  (node, topic, variant) append a special news item for a game event (e.g. node 0xA6..0xA8 about a player) with the node's base value, category 1
+fn 1C18:0755 news_advance_story  (limit) pick the running story with the smallest countdown <= limit (limit != 0: only category 1), emit its news, move it to one of the node's 4 random successors (9999 = story ends, slot freed); countdown += node delay (= delay when forced). Returns slot or -1
+fn 1C18:08A2 news_start_stories  fill free story slots: random unused template (start node > 0) of the slot's category, re-enabling all (+1000) when none is left; node = start, countdown 3, phrase variant per part random 1..10 (non-empty, not used by another running story) or same as previous part
+fn 1C18:0B21 news_variant_in_use  (topic, variant) 1 if a running story uses that phrase variant for that topic
+fn 1C18:0BCB news_rate_player  (player) g_news_score[player] = average value of the player's 3 news broadcast slots
+fn 1C18:0C1B auction_commit_bids  on leaving the movie agency: auction lots without bidder (< 0) become the human's bids (bid += auction_increment)
+fn 1C18:0C73 msg_count_new  (player) if it is the human: one more message in the office message list (max 4, oldest scrolled out of 0x60BF)
+fn 1C18:0CCD sched_end_of_hour  (unused arg) for every player whose program ends in the current hour: series -> record the aired episode in the slot (+0x1E), wear it and advance the next episode (wrap to 1 after the last existing one, max 10); film -> film_apply_wear
+fn 1C18:0E49 sched_new_day  copy all schedules to g_schedule_prev, move tomorrow's slots 8..14 (programs, episodes, ads) to today's 1..7 and clear 8..14; reset hour counter and door block
+fn 1C18:0F51 news_distribute  copy today's news items into the inbox (20 max, oldest dropped) of every player subscribed to the item's category; empty today's pool
+fn 1C18:1022 news_age  (pct_inbox, pct_slots) news values in all inboxes *= pct_inbox/100 (price class recomputed), in the 3 broadcast slots *= pct_slots/100; hourly (85,85), at day start (0,0)
+fn 1C18:1116 series_episode_at  (player, series, hour) episode that airs at hour: next episode (+0x31) plus earlier same-day slots of this series without recorded episode, wrapped by the number of existing episodes
+fn 1C18:11F8 money_available  (player) cash minus unpaid new transmitters (state 1) minus the player's own auction bids; for the human also minus bid+increment of lots without bidder
+fn 1C18:12F2 program_withdraw  (id) remove film/series (id >= 1000) from every player's library; owner = 0 and flags |= 0x20 (back on the market); live films (genre 7) keep owner/flags
+fn 1C18:147E news_inbox_drop_oldest  (player) delete inbox item 0
+fn 1C18:14F0 news_inbox_delete  (player, idx) delete inbox item idx
+fn 1C18:1552 script_list_delete  (player, idx) delete owned screenplay idx (5-byte entries, count g_scripts_owned_count)
+fn 1C18:15C5 shoplist_delete  (player, idx) delete shopping list idx (0xF-byte entries at 0x734C)
+fn 1C18:1627 contract_delete  (player, idx) delete ad contract idx (and, for a computer player, its g_ai_ad_plan entry)
+fn 1C18:172F series_wear_episode  (series, ep) episode topicality -= quality * wear(+0x33) / 20, min 1 (after airing)
+fn 1C18:1794 film_apply_wear  (film) topicality(+3) -= quality(+1) * wear(+2) / 5, min 1 (after airing)
+fn 1C18:17E7 auction_increment  (lot) minimum raise: 10% of the current bid rounded down to its leading digit (100000s / 10000s / 1000s / 100s / 10s)
+fn 2DD9:000C ai_tick  run one step of the current computer player (if not out): when ai_ready_at_target, act for its state (0 office: book contract spots, 1 ad agency: take contracts, 2 movie agency: plan/buy/auction rebid/sell in 4 sub-steps, 3 news room: buy news, 4 office: transmitter purchase or schedule tuning, 7 production errand, 8 office: ai_plan_programs x15, 9 buy gift, 10 give gift, 11 swap signs, others nothing) then ai_next_goal; finally switch to the other AI
+fn 2DD9:0349 ai_replace_weak_programs  from the next hour: a scheduled film (not live) whose topicality < player average quality, whose genre the AI's ads exclude, or whose estimated viewers < AI's min audience is replaced (once per call) by an unscheduled library film of the same length with topicality > average and allowed genre; its ad spots in those hours are removed (aborts if a spot belongs to a fully booked contract)
+fn 2DD9:0710 ai_upgrade_ads  from the next hour (:55 rule) every booked ad spot whose minimum audience exceeds the estimated viewers is removed; otherwise it is swapped for ai_find_better_ad if one exists
+fn 2DD9:08D1 ai_find_better_ad  (contract idx, hour) if the contract is over-booked in that half (today/tomorrow) and not complete: the not-complete contract with the highest minimum audience still <= estimated viewers and genre-compatible (stops at one still needing spots); returns its idx or 0
+fn 2DD9:0B13 ai_fill_ad_slots  from the next hour: every slot with a program but no ad gets the genre-compatible contract with the highest minimum audience <= estimated viewers (preferring contracts still short of their daily plan)
+fn 2DD9:0DD9 ai_fill_program_slot  one empty hour per call (cursor g_ai_cursor from the current hour to 14): pick the library program (genre allowed by the AI mask, est. viewers >= AI minimum, fits the free block, no live, no X-rated before 21h, one series episode per day) maximising g_genre_audience[genre][hour]*topicality; prefers topicality >= player average; limits odd-length programs per half day; done at 14 -> ai_next_goal. ?estimate is called with the category instead of the hour (original bug)
+fn 2DD9:1498 ai_office_book_spots  state 0 (own office): refresh scheduled flags, place live programs; if contracts are not all booked: for contract g_ai_step with a minimum audience, book programs (ai_book_programs_for_contract) when booked < planned spots; otherwise/afterwards fill empty slots (ai_fill_program_slot)
+fn 2DD9:162A ai_book_programs_for_contract  (contract idx, spots) for each library category whose last program suits the ad's genre rule, place unscheduled programs (no live, no X-rated before 21h) into empty gaps whose estimated viewers reach the ad's minimum and book the ad after each of their hours, until spots are covered; sets g_ai_no_program if nothing was found. ?series category check adds (char)1000 = -24 to the id (original bug)
+fn 2DD9:1990 ai_book_contract_spots  (contract idx, from hour, to hour) put the contract's ad after every scheduled hour in the range while the contract is not fully booked
+fn 2DD9:1A3F ai_plan_film_purchases  build the AI shopping plan (up to g_ai_budget +0x2A entries): from the 10 dealer offers (then auction lots via ai_plan_auction_bid) pick the best score = blocks*topicality*20/(price/1000) with topicality >= player average quality, < 4 programs in that genre, not yet planned, price <= film budget; the budget is reserved immediately
+fn 2DD9:1DDA ai_execute_purchases  carry out the shopping plan: dealer items are paid (cash), removed from the shelf and added to the library genre list (max 4); auction items get a bid (bid += increment, refunding the other AI if it was the high bidder) and are remembered in the AI bid list; plan cleared
+fn 2DD9:20BA ai_plan_auction_bid  (plan idx) compare auction lots (not already led by this or the other AI) at bid+increment with the same score as ai_plan_film_purchases (genre must have < 3 programs) and put a better one into the plan entry as an auction item
+fn 2DD9:2386 ai_auction_rebid  if image >= 10: for each AI bid now led by the human: value = topicality*hours*20/(bid/1000) (series: episodes*blocks/2); if value > 2 and increment < film budget, outbid (bid += increment, budget charged), else give up (reserved money back to the film budget, bid removed)
+fn 2DD9:26EA ai_plan_budget  (player) daily ranking vs. the other AI and the human: image rank (+0x2B, also max deals = 2*rank), Betty love rank (gift priority), library quality/size need (film priority), reach share >28%/<20% (transmitter priority), rating rank (news/production priority, Sammy-dependent); pot percentages = base weights {5,28,14,18,35,0} * priority, normalised to 100
+fn 2DD9:2B8D ai_eval_yesterday  (mode, player) mode 0: average rating % of yesterday's 7 hours = viewers*100/(reach*2464); mode 1: average quality of yesterday's 7 scheduled programs (film quality, series episode quality); day 1: 10 / 15
+fn 2DD9:2D26 ai_sell_program  (genre, idx) sell a library item to the dealer at its current value (cash and film budget += value), program_withdraw, owner = 0
+fn 2DD9:2E72 ai_sell_weak_programs  sell unscheduled, priced films (not live/show) whose quality + 3 < the player's average quality (stops once 1-hour films are needed for odd gaps); with more than 3 series sell the unscheduled one with the lowest average topicality
+fn 2DD9:3085 series_avg_topicality  (id, +1000 allowed) average episode topicality of a series; ?sums episodes 2..n+1 (off by one in the original)
+fn 2DD9:311D ai_take_contracts  ad agency: up to g_ai_budget +0x2A times take the best-paying offer that ai_can_take_contract accepts and whose minimum audience <= reach*2464*avg rating/100; contract deadline = today + days, booking plan initialised, offer removed; agency refilled
+fn 2DD9:33CB ai_can_take_contract  (ad) 1 if today's planned spots + new spots/day < 6, next hour + all outstanding spots <= 14, fewer than 8 contracts, the ad has no required genre (only exclusions) and its minimum audience as % of reach <= the AI's image
+fn 2DD9:3576 library_total_blocks  (player) total length in hour blocks of all library programs (films + series episode length); AI sells only when >= 14
+fn 2DD9:362D library_genre_blocks  (genre) ?total blocks of the AI's programs of one genre (series: genre-10); result is lost, no callers
+fn 2DD9:3754 contract_spots_per_day  (contract idx, player) remaining spots / remaining days (deadline - today + 1, min 1); 0 when fully booked
+fn 2DD9:381E ad_genre_allowed  (hour or program, ad, is_program) 1 if the program's genre (series 10+genre) passes the ad's 3 genre bytes: a negative entry excludes |genre|, positive entries require one of them; 0 for no ad
+fn 2DD9:3985 ai_ready_at_target  1 when the AI figure stands at its target door, no other figure is there, the door is enterable and it waited 300 ticks (or was already flagged). If the human is caught in the AI's own room he pays g_catch_fine (doubles each time, max 200000) with message 0x12A; other occupants make the AI choose a new goal
+fn 2DD9:3C0D ai_next_goal  advance the AI state 0..12 and walk to its room: 0/4/8 own office, 1 ad agency, 2 movie agency, 3 own news room, 5/6 news room/office/library of player 1 / of the other AI (every 3rd time, if Betty love >= 20), 7 production errand (skipped without task), 8 skipped on Easy, 9 supermarket (gift budget >= 30000), 10 Betty (with gift), 11 info board (day event 1..3, no blocked door), 12 porter (10%)
+fn 2DD9:4115 ai_switch  toggle g_ai_cur between the two computer players
+fn 2DD9:4126 ai_walk_to  (player, room type, owner, studio) set the AI figure's target floor/door (x = 0x99 elevator when on another floor); sets the arrived flag if already there
+fn 2DD9:41FF ai_production_status  (player) g_ai_studio[player]: status 5 studio production lacks shopping-list items (supermarket), 6 production ready to start (studio), else 1 screenplays but no studio (estate agent), 2/3 no screenplay (screenplay agency), 4 screenplay and studio (office)
+fn 2DD9:434F script_avg_quality  (screenplay) base quality (+8 of episode block), averaged over all episodes for series screenplays
+fn 2DD9:43D6 scripts_owned_avg_quality  (player) average script_avg_quality of the player's owned screenplays
+fn 2DD9:4460 ai_new_day  reset both AIs: states -1, budget history, yesterday's avg rating/quality, odd-block counters, transmitter search, daily spot plans (spots per remaining day), ai_plan_budget, screenplay quality, news agencies (cat 1 if image >= 5, 2 if >= 10 and news budget > 20000, 3 if >= 15 and > 40000)
+fn 2DD9:4719 ai_place_live_programs  put each unscheduled live film (genre 7) of the AI into its fixed slot when its day is today or tomorrow (clearing what is there)
+fn 2DD9:4862 ai_scan_transmitter_site  scan 3 map points per call (grid step 3, 150 x 90): best = largest new reach whose fee <= transmitter budget; when the scan ends, buy it in a free slot 3..32 (cash and budget charged, coverage stamped and recalculated), then ai_next_goal
+fn 2DD9:4B84 ai_want_transmitter  1 if transmitter budget > 50000, time slot >= 18 and the other AI is not buying; 2 if the human is on the transmitter map (room 0x19); else 0
+fn 2DD9:4C06 ai_rebuild_coverage_step  rebuild the AI's coverage map one transmitter per call (step 0 clears it; slots 1/2 copy the west/east half of the population map, others stamp a circle); at step 32 sum the west/east coverage
+fn 2DD9:4D9F ai_avg_studio_budget  (player) g_ai_budget +0x2C = average of the 3 daily production budgets (+0x30..+0x38)
+fn 26A7:000D ui_warning_str  (far str) show "Warning: <str>" (text 89) in a modal message box (screen -1)
+fn 26A7:005D ui_warning  (text id) ui_warning_str(g_text[id])
+fn 26A7:0077 ui_message_str  (far str) show a modal message box (screen -3)
+fn 26A7:0097 ui_message_box  (mode, far str) open (0/2) or close (1) the message window and draw the text
+fn 26A7:00E4 ui_draw_money  print money_available(human)/1000 into the status panel
+fn 26A7:013C ui_status_text  (far str, y) print a text into the status panel bitmap and blit it to the screen (hides the cursor if it overlaps)
+fn 26A7:01DF ui_draw_betty_meter  46-segment bar of the human's Betty love (percent) in the status panel
+fn 26A7:02A2 ui_draw_planner  (player) draw the program planner screen (frame, buttons, message icon) and its rows
+fn 26A7:03C6 ui_draw_planner_rows  (player) the 7 visible hours: "HH:00", program title, ad name with "spot n/total", "OK" (aired) or "---" (failed)
+fn 26A7:0723 ui_draw_planner_grid  (player) row boxes for time, program (width = blocks*16) and ad, styled by past/current/future hour
+fn 26A7:08B0 sched_slot_title  (hour, player) allocated title string of a schedule slot: film title, series "title: episode no: episode title", empty for 0/9999, "Fehler aufgetreten!" otherwise
+fn 26A7:0A02 library_item_title  (genre, idx, player) program_title of a library entry (genre 11 = series)
+fn 26A7:0A49 program_title  (id) allocated title of film / series (id >= 1000), "(Empty)" for 0
+fn 26A7:0AC0 ui_library_genre_popup  (x, y, mode, player) mode 0 save background and list the programs of the selected genre, mode 1 restore
+fn 26A7:0C7B ui_draw_transmitter_map  (sel) transmitter map screen: player legend, buy/sell buttons for the own map, transmitters of g_map_player (sel 0 = all, else only that one)
+fn 26A7:0FE5 ui_draw_dealer_shelf  (mode) movie agency: draw the tapes of the 10 offers still on the shelf (mode 0 saves the background first)
+fn 26A7:10B9 ui_draw_bag  (mode, kind) case/bag window (geometry table 0x12E8): kind 1/2 carried programs, 3 ad contracts, 4 screenplays, 5 studio renter's screenplays, 6/7 Betty gift; mode 1 restores
+fn 26A7:14FB ui_draw_ad_offers  ad agency: draw the 10 contract folders still offered on 3 shelves
+fn 26A7:1613 ui_draw_library_shelf  (player) library: title of the selected genre and one tape per program
+fn 26A7:1742 ui_series_info  (mode) info window of series g_selected_series: episode list, title, description, blocks/genre/critics/press bars
+fn 26A7:19E9 ui_tile_box  (x0, y0, x1, y1, style) ui_tile_box_to into the screen buffer
+fn 26A7:1A0C ui_tile_box_to  (x0, y0, x1, y1, style, far dst) 9-slice frame from atlas tiles; base tile from the style table at 0x1330
+fn 26A7:1B87 ui_drag_begin  (w, h, hot x, hot y, far label, style) create the floating image of a picked-up item (frame, tape icon or label), allocate save-under bitmaps, cursor = carrying
+fn 26A7:1DF8 ui_drag_end  drop the carried image: restore background, free bitmaps, cursor shape 1
+fn 26A7:1E94 ui_contract_popup  (x, y, mode, player) "Adverts in stock:" window listing the player's 10 contract slots
+fn 26A7:2047 ui_draw_info_board  information board: 13 floors x 4 door signs (permuted by g_signs) coloured by owner
+fn 26A7:22BD ui_draw_news_agencies  (player) news room: subscription lamps of the 3 news agencies and the inbox indicator
+fn 26A7:2363 ui_draw_news_slots  (player, mode) the 3 news broadcast slots: text, time, "Today"/"(Old)", price class
+fn 26A7:25CD ui_draw_news_inbox  (mode) news room ticker: inbox items of the selected category with paging
+fn 26A7:292F news_text  (far news item, node) allocated news text: cached template of the node with its '#' placeholders replaced by the topic phrases
+fn 26A7:2B9D ui_transmitter_info  (player, flag) recalculate coverage, redraw the map and show "Transmitters: n, Total viewers: x million" (reach*2464)
+fn 26A7:2F27 ui_draw_auction_board  (mode) 2 x 5 auction lots: title, current bid and bidder (mode >= 100: only lot mode-100; 1 restore)
+fn 26A7:31C3 ui_draw_script_offers  screenplay agency: draw the up to 5 screenplays on offer
+fn 26A7:32CA ui_draw_building_plan  estate agent: floor numbers and a door marker per room coloured by renter/owner/studio state
+fn 26A7:35D8 ui_yesno_box  (far str, mode) dialog with text and two answer buttons
+fn 26A7:3654 ui_draw_viewers  status panel: current viewers of the human (blank when the clock is halted or before the first hour)
+fn 26A7:36C8 ui_draw_studio  studio room background objects (script marker if a production is set up)
+fn 26A7:3749 ui_draw_studio_items  icons of the bought cast/props of the studio's current episode, empty places for the rest
+fn 26A7:38EA ui_studio_menu  (mode) studio assistant menu (text 141: new shopping list / production info / start) with episode markers
+fn 26A7:3A31 ui_supermarket_menu  (mode) "What's your choice? Presents / Equipment"
+fn 26A7:3B04 ui_draw_actor_card  ?shopping list: actor of the selected role with fee and humor/appearance/skill bars
+fn 26A7:42B2 ui_gift_catalog  (mode) supermarket catalog: 10 Betty gifts with prices
+fn 26A7:43AD ui_draw_betty_office  Betty's office: player portraits at the height of their Betty love; Sammy standings while a Sammy runs
+fn 26A7:4611 ui_draw_stats_chart  statistics chart: viewers per hour (0 yesterday, 1 today, 2 last 7 days; programme and news bars, ad result marks) or the 3 players' image % bars
+g 00F2 8 g_ai_player  [ai 0/1] player index of the two computer players
+g 0094 16 g_trends  audience trends [i*4]: +0 genre (1..15, series 10+g), +2 viewer multiplier x10 (13, 15, 13, 10, 10)
+g 00A8 32 g_ad_min_viewers  [class-1] minimum viewers per ad audience class: 0, 250k, 500k, 1M, 2.5M, 5M, 10M, 25M, 50M, 100M
+g 11E4 16 g_initdata_pos  read position in the init-data / text buffer while loading
+g 11E6 16 g_strpool_pos  used bytes of the string pool
+g 11E8 8 g_news_price_steps  value thresholds of the news price classes {15,30,40,50,60,100} (second copy at 0x11EE)
+g 15EC 8 g_ai_debug_step  >0: wait for a key after every AI program placement (debug)
+g 15ED 8 g_ai_no_program  set when the AI found no program to book for a contract
+g 15EE 8 g_ai_pot_weights  [1..6] base budget weights: gifts 5, films 28, news 14, production 18, transmitters 35, other 0
+g 15F5 16 g_catch_busy  a catch scene is running (blocks re-entry while the room is left)
+g 2443 16 g_ai_tx_scan  [player*16] transmitter search: +0 x, +2 y, +4 best x, +6 best y, +8 u32 best fee, +0xC u32 best new reach
+g 24E5 8 g_ai_state  [ai] current goal state 0..12 (-1 = choose)
+g 24E7 16 g_ai_step  [ai] sub-step within a state (contract index, movie agency phase 0..3, planning hour 0..14)
+g 24EB 16 g_ai_cursor  [ai] hour cursor of ai_fill_program_slot / step of ai_rebuild_coverage_step
+g 24EF 16 g_ai_wait_start  [ai] tick when the AI started waiting at its door (waits 300 ticks)
+g 24F3 8 g_ai_visit_p1  [ai*2] counter 0..9 for visits to player 1's rooms (state 5)
+g 24F4 8 g_ai_visit_rival  [ai*2] counter 0..9 for visits to the other AI's rooms (state 6)
+g 24F7 16 g_avg_rating  [player] yesterday's average rating % (ai_eval_yesterday 0)
+g 24FF 16 g_avg_quality  [player] yesterday's average program quality (ai_eval_yesterday 1), AI buying/selling threshold
+g 2507 8 g_ai_cur  index (0/1) of the AI being processed
+g 2508 8 g_ai_arrived  [ai] AI is at its target and may act
+g 250A 8 g_ai_tx_busy  [player] AI is searching/buying a transmitter (blocks the other AI)
+g 250E 8 g_ai_script_quality  [player] average quality of the owned screenplays
+g 2512 16 g_ai_buy_plan  [player*0x4D] 7 purchase plan entries of 0xB bytes (see rec 2512)
+g 264A 8 g_ai_studio  [player*3] +0 studio index, +1 count, +2 production status 1..6 (ai_production_status)
+g 2731 16 g_news_nodes  news chain nodes [n*0xA]: +0 4 successor nodes (9999 = end), +8 value, +9 delay in hours
+g 36DB 16 g_news_pool  today's news items, 20 x 0x1E (count g_news_pool_count)
+g 3939 16 g_schedule_prev  [player*0x5A] yesterday's schedule (copy of g_schedule)
+g 3AA1 16 g_news_templates  50 news templates [t*0xE]: +0 5 parts (topic + 1000*mode: 1 = same phrase as previous), +0xA start node (+1000 when used), +0xD category
+g 3D6B 16 g_news_slots  [player*0x78] news broadcast slots 1..3 of 0x1E bytes
+g 3F4B 8 g_news_score  [player] average value of the 3 news broadcast slots
+g 3F4F 32 g_ads  50 ad (contract) records of 0x18 bytes (see rec 3F4F)
+g 4417 16 g_schedule  [player*0x5A] program[15] (hour slots 1..7 today, 8..14 tomorrow; film id, series id+1000, 9999 continuation), +0x1E episode[15], +0x3C ad[15]
+g 4EDF 8 g_ai_ad_plan  [player*0x4D] 11 x 7-byte AI booking counters per contract (see rec 4EDF)
+g 5593 32 g_news_topics  50 news topics [t*0x38]: +4*j far text of phrase j (1..10), +0x2C+j phrase value
+g 60BF 16 g_messages  office message list 5 x 0x1A
+g 6E29 32 g_ai_budget  [player*0x3C] AI budget record (see rec 6E29)
+g 6F19 16 g_archive  [player*0x6C] program ids [genre 1..11][4], +0x60+genre count (genre 11 = series)
+g 70C9 16 g_news_stories  7 running news stories [s*0x15]: +0 template, +2 last template, +4 node, +6 5 phrase variants, +0x12 countdown, +0x14 category
+g 7160 8 g_genre_audience  [genre*8 + hour 1..7] audience % per genre and hour of the evening
+g 71E4 16 g_day  day counter (1 = first day)
+g 71EC 16 g_minute  minute of the current hour (:05 news over, :55 ads)
+g 71F5 32 g_ledger  [category*4] today's money per finance category (human)
+g 7245 8 g_ai_period  [ai] 1..3 index of today's production budget history slot
+g 7247 8 g_message_pos  number of messages in g_messages (max 4)
+g 7248 16 g_news_pool_count  number of items in g_news_pool
+g 72A6 16 g_player_news_count  [player]
+g 72B2 16 g_ai_buy_last  [player] index of the last purchase plan entry (-1 none)
+g 74EA 32 g_hour_viewers  [player*0x20 + hour*4] program viewers per hour today
+g 756A 16 g_ai_bids  [player*0x42] AI auction bids, 6-byte entries: +0 lot, +2 u32 money reserved
+g 7672 16 g_scripts_owned_count  [player]
+g 767A 16 g_last_hour  last hour processed by the hourly tick
+g 76A8 16 g_player_ad_count  [player] number of ad contracts
+g 76B0 32 g_hour_newsviewers  [player*0x20 + hour*4] ?news-show viewers per hour today
+g 7730 16 g_ai_bid_count  [player] entries in g_ai_bids
+g 7764 16 g_ai_ad_req  [player*6] +0 genre mask (bit g-1) the AI's ads allow, +2 u32 minimum viewers of its ads
+g 78A8 16 g_ai_trends  [ai*6] 3 genres the AI believes are trendy
+g 78B4 8 g_ai_odd_today  [player] odd-length programs placed today (+4: tomorrow)
+g 78BC 8 g_ai_pending_gift  [ai] gift bought for Betty, not yet given
+g 78BE 32 g_hour_viewers_yesterday  [player*0x20 + hour*4] program viewers per hour yesterday
+g 793E 32 g_hour_newsviewers_yesterday  [player*0x20 + hour*4] ?news-show viewers per hour yesterday
+g 79C6 16 g_planner_scroll  planner hour offset (0 today, 7 tomorrow)
+g 79CA 16 g_selected_genre  library genre selected in the planner/library
+g 79CC 16 g_map_player  player whose transmitters are shown on the map
+g 79D4 16 g_selected_series  series shown by ui_series_info
+g 79DE 16 g_cur_studio  studio index of the visited studio
+g 79EA 16 g_status_msg  text id of the pending status message (0x12A = caught in a rival's room)
+g 79F8 16 g_chart_mode  statistics chart: 0 yesterday, 1 today, 2 last 7 days
+g 79FA 16 g_chart_player  player shown in the statistics chart
+g 79FC 16 g_chart_scale  viewer axis step of the chart
+g 7A16 16 g_caught_figure  player named in the status message
+g 7A36 16 g_room_owner  player owning the room being visited
+g 7A5C 16 g_npc_type  ?today's intruder event type (1..3 active, 4 none); AI swaps signs only while 1..3
+g 7A66 16 g_npc_target_floor  floor of the door blocked by the intruder (0 = none)
+g 7A68 16 g_door_block  blocked door message: 1 bomb alarm, 2 crazy, 3 work in progress, 4 bereavement
+g 7A6E 16 g_chart_image  statistics chart shows image % instead of viewers
+g 7A72 16 g_news_category  news category shown in the inbox (1..3)
+g 7A94 16 g_difficulty  1 easy, 2 normal, 3 difficult
+g 7AD2 32 g_coverage_west  covered population, west half of the map
+g 7AD6 32 g_coverage_east  covered population, east half of the map
+g 7AE2 32 g_catch_fine  money the human pays when caught in an AI's room (doubles, max 200000)
+g 7AF2 32 g_status_amount  money shown in the status message
+g 7B12 16 g_player_figure  figure index of the human player
+g 7B42 16 g_figures  6 walking figures of 0x1E bytes (0..2 players)
+g 7C7E 32 g_population_map  far ptr, population map (108 rows x 42 words)
+g 838C 16 g_room  current room / screen id (0 building, 4 library, 0x19 transmitter map)
+g 8390 32 g_text  far ptrs to the 430 texts of the language (res 199 German / 253 English)
+g 8AC8 32 g_strpool  string pool of ad names and news phrases
+g 8BA8 16 g_player  index (1..3) of the human player
+g 8BAA 32 g_coverage_map  far ptr, coverage map of the player being computed
+g 8BDC 8 g_players  player records 4 x 0x17 (index 0 unused, see rec 8BDC)
+g 8FB0 32 g_initdata  temporary buffer of the resource being loaded
+g 24A9 32 g_movies  far ptr to the film table (0x17-byte records, 1..200)
+g 2646 32 g_series  far ptr to the series table (0x39-byte records, 1..50)
+g 715C 32 g_scripts  far ptr to the screenplay table (0x1B3-byte records, 1..50)
+g 196A 16 g_script_offers  screenplay agency offers 1..5 of 9 bytes
+g 19A0 16 g_ad_offers  ad agency offers 1..10 of 7 bytes
+g 19ED 16 g_film_offers  movie dealer shelf 1..10 of 8 bytes
+g 1A45 16 g_scripts_owned  [player*0x32] 10 owned screenplays of 5 bytes
+g 1B0D 16 g_auction  auction lots 1..10 of 9 bytes
+g 1B70 16 g_player_ads  [player*0x46] 10 ad contracts of 7 bytes
+g 1D09 32 g_transmitters  [player*0x1CE] 33 transmitter entries of 0xE bytes (entry 0 +4 = total reach)
+g 24AD 16 g_rating  [player*0xA] running hour: +0 rating %, +2 u32 viewers
+g 457F 16 g_news_inbox  [player*0x258] 20 news items of 0x1E bytes
+g 6165 16 g_studios  12 studios of 16 bytes (index 1..12)
+g 724A 16 g_presents  Betty gifts 1..10 of 8 bytes: +2 u32 price, +6 love points (x0.7 per use), +7 times given
+g 734C 16 g_shoplists  [player*0x4B] 5 shopping lists of 0xF bytes
+g 7480 16 g_shoplist_count  [player]
+g 7C82 8 g_floors  14 floors x 0x7A bytes: doors (x, kind, room type +0x1E, sign texts, owner +0x46, studio +0x6E)
+g 012C 16 g_clock_halt  nonzero: game clock and AI stopped
+g 0386 16 g_clip_on  clipping enabled
+g 0390 32 g_drag_image  image of the carried item (null = nothing carried)
+g 79D2 16 g_cursor_shape  cursor shape (1 normal, 2 carrying)
+g 8BA6 16 g_font  text output uses the small font / list mode
+g 8F46 16 g_tile_fixed_y  y used by the row tile helper
+g 8F4A 32 g_tile_target  destination bitmap of the atlas tile helpers
+rec 24A9 17 0 8 film_genre  1 love, 2 action, 3 epic, 4 comedy, 5 whodunit, 6 culture, 7 live, 8 show, 9 SF, 10 sundry
+rec 24A9 17 1 8 film_quality  base quality = maximum topicality
+rec 24A9 17 2 8 film_wear_rate  wear factor: topicality -= quality*wear/5 per airing
+rec 24A9 17 3 8 film_topicality  current topicality (min 1), drives audience and value
+rec 24A9 17 4 8 film_blocks  length in hour blocks
+rec 24A9 17 5 8 film_owner  owning player (0 = market)
+rec 24A9 17 6 16 film_flags  bit5 on the market (set when withdrawn/sold)
+rec 24A9 17 7 16 film_flags2  bit1 scheduled from now on, bit2 own production, bit3 X-rated (only hour slot%7 >= 4, i.e. from 21:00)
+rec 24A9 17 8 16 film_price_lo  price (u32, low word)
+rec 24A9 17 A 16 film_price_hi  price (u32, high word)
+rec 24A9 17 F 16 film_live_day  day of a live broadcast (genre 7)
+rec 24A9 17 11 16 film_live_slot  hour slot 1..7 of a live broadcast
+rec 2646 39 21 8 series_genre  1 family, 2 SF, 3 western, 4 whodunit, 5 sundry (ad/trend genre = 10 + value)
+rec 2646 39 22 8 series_episodes  number of episodes; episode e at e*3: +0 quality, +1 topicality, +2 bit0 exists
+rec 2646 39 23 8 series_blocks  episode length in hour blocks
+rec 2646 39 24 8 series_owner  owning player
+rec 2646 39 25 16 series_flags  bit5 on the market
+rec 2646 39 26 16 series_flags2  bit1 scheduled from now on
+rec 2646 39 2B 16 series_ep_price_lo  price per episode (u32, low word)
+rec 2646 39 2D 16 series_ep_price_hi  price per episode (u32, high word)
+rec 2646 39 31 16 series_next_ep  next episode to air (1-based)
+rec 2646 39 33 8 series_wear_rate  episode wear: topicality -= quality*wear/20 per airing
+rec 2646 39 35 8 series_critics  critics rating (x4 = bar length)
+rec 2646 39 36 8 series_press  press rating (x4 = bar length)
+rec 715C 1B3 5 16 script_flags  bit0 series screenplay, bit2 all episodes share episode block 0
+rec 715C 1B3 6 16 script_target  film / series produced
+rec 715C 1B3 8 8 script_quality  base quality of episode block 0 (blocks of 0x23 bytes, items at +9+3k type / +0xB+3k bought)
+rec 3F4F 18 0 32 ad_name  advertiser name (far text)
+rec 3F4F 18 4 32 ad_client  second text (far)
+rec 3F4F 18 8 8 ad_days  days allowed to fulfil
+rec 3F4F 18 9 8 ad_spots  spots required
+rec 3F4F 18 A 8 ad_min_class  minimum audience class (g_ad_min_viewers)
+rec 3F4F 18 C 8 ad_genre_rule  3 bytes +0xC..0xE: negative = genre excluded, positive = genre required (series 10+g)
+rec 3F4F 18 F 8 ad_holder  player holding the contract
+rec 3F4F 18 10 32 ad_fee  payment
+rec 3F4F 18 14 32 ad_penalty  penalty when not fulfilled
+rec 1B70 7 0 16 contract_ad  ad id (per player stride 0x46)
+rec 1B70 7 4 8 contract_aired  spots aired so far
+rec 1B70 7 5 16 contract_deadline  last day (today + ad_days when signed)
+rec 4EDF 7 0 8 adplan_today  spots planned per day for today (remaining spots / remaining days)
+rec 4EDF 7 1 8 adplan_tomorrow  spots planned for tomorrow
+rec 4EDF 7 2 8 adplan_booked_today  spots booked in slots 1..7
+rec 4EDF 7 3 8 adplan_booked_tomorrow  spots booked in slots 8..14
+rec 4EDF 7 4 8 adplan_booked_total  spots booked in total
+rec 4EDF 7 6 16 adplan_flags  bit0 today ok, bit1 tomorrow ok, bit2 total >= spots required
+rec 2512 B 0 16 aibuy_slot  dealer shelf slot or auction lot (per player stride 0x4D)
+rec 2512 B 2 16 aibuy_score  hours*topicality*20/(price/1000)
+rec 2512 B 4 16 aibuy_program  film id or series id+1000
+rec 2512 B 6 32 aibuy_price  price / planned bid (reserved from the film budget)
+rec 2512 B A 8 aibuy_auction  1 = auction bid, 0 = dealer purchase
+rec 6E29 3C 4 32 aibudget_gifts  Betty gift budget (pot 1)
+rec 6E29 3C 8 32 aibudget_films  film/auction budget (pot 2; 80% of the start money)
+rec 6E29 3C C 32 aibudget_news  news budget (pot 3)
+rec 6E29 3C 10 32 aibudget_production  screenplays, studio rent, cast (pot 4)
+rec 6E29 3C 14 32 aibudget_transmitters  transmitter budget (pot 5; 49500 at start)
+rec 6E29 3C 18 32 aibudget_other  pot 6 (weight 0)
+rec 6E29 3C 1C 8 aibudget_pct  +0x1C bonus, +0x1D..0x22 pot percentages 1..6
+rec 6E29 3C 23 8 aibudget_prio  +0x24..0x29 priority 1..3 per pot (from ai_plan_budget)
+rec 6E29 3C 2A 8 aibudget_max_deals  contracts per ad agency visit / films per shopping plan (= 2 * image rank)
+rec 6E29 3C 2B 8 aibudget_image_rank  1 best .. 3 worst image of the 3 players
+rec 6E29 3C 2C 32 aibudget_studio_avg  3-day average production budget
+rec 6E29 3C 30 32 aibudget_studio_hist  [3] production budget per day (g_ai_period)
+rec 8BDC 17 0 32 pl_name  far ptr: manager name
+rec 8BDC 17 4 32 pl_station  far ptr: station name
+rec 8BDC 17 8 32 pl_money  cash
+rec 8BDC 17 C 16 pl_betty_love  Betty's affection (0..100, capped at image)
+rec 8BDC 17 10 8 pl_news_agency  +0x11..0x13: news agency 1..3 subscribed
+rec 8BDC 17 14 8 pl_out  player out of the game
+rec 8BDC 17 15 16 pl_image  image %, the 3 players sum to 100 (< 5 fired)
+rec 1B0D 9 0 16 lot_program  film id or series id+1000
+rec 1B0D 9 2 32 lot_bid  current bid
+rec 1B0D 9 6 8 lot_bidder  high bidder (< 0 none / human's provisional bid)
+rec 19ED 8 0 16 offer_program  film id or series id+1000
+rec 19ED 8 7 8 offer_shelf  >= 0 on the shelf (-100 when taken)
+rec 19A0 7 0 16 adoffer_ad  ad id offered
+rec 19A0 7 2 8 adoffer_shelf  >= 0 on the shelf (-100 when taken)
+rec 1D09 E 0 32 tx_fee  transmitter fee
+rec 1D09 E 4 32 tx_reach  viewers in range (entry 0 = total reach of the player; viewers = reach*2464)
+rec 1D09 E 8 16 tx_x  map x
+rec 1D09 E A 16 tx_y  map y
+rec 1D09 E C 16 tx_state  1 bought today (unpaid), 2 removed
+rec 6165 10 0 16 studio_script  screenplay in production
+rec 6165 10 2 8 studio_size  studio size 1..3
+rec 6165 10 3 8 studio_renter  renting player
+rec 6165 10 4 8 studio_episode  first/current episode of the production
+rec 6165 10 5 8 studio_episode_last  last episode of the production
+rec 7B42 1E 0 16 fig_x  current x
+rec 7B42 1E 2 16 fig_floor  current floor
+rec 7B42 1E 4 16 fig_target_x  walk target x (0x99 = elevator)
+rec 7B42 1E 6 16 fig_target_floor  walk target floor
+rec 7B42 1E 10 16 fig_task  nonzero = busy / inside
+rec 7B42 1E 12 16 fig_target_door  target door
+rec 7B42 1E 14 16 fig_last_door  previous target door
+rec 36DB 1E 0 16 news_node  chain node (per player inbox/slots: same layout)
+rec 36DB 1E 2 16 news_parts  5 x (topic, phrase variant) u16 pairs at +2+4k
+rec 36DB 1E 16 16 news_value  value / quality (aged 85% per hour)
+rec 36DB 1E 18 16 news_hour  hour of the news
+rec 36DB 1E 1A 16 news_day  day of the news
+rec 36DB 1E 1C 8 news_category  agency/category 1..3
+rec 36DB 1E 1D 8 news_price_class  price class

@@ -1,0 +1,25 @@
+# The absolute pointer (multiplayer stage 4, tools/mptest.py): two humans as in two_humans.
+# Both move by "pointer x y" -- the game pixel under the system pointer, as --mouse free
+# and --mouse system send it over the network: each machine turns it into motion when the
+# input is applied, from that seat's own cursor.  Seat 1 hovers its doors and clicks one
+# (down, up) to enter its office; seat 0 moves about the building.  Seat 1's key at frame
+# 800, before it joins, is dropped -- in a script and over the network alike.
+# humans 1,2
+# play tests/mp/two_humans.txt until 5900
+800 seat 1 key esc
+6000 seat 1 pointer 88 70
+6050 seat 1 hash
+6100 seat 1 pointer 122 70
+6150 seat 1 hash
+6200 pointer 200 120
+6250 hash
+6300 pointer 40 150
+6350 hash
+6400 seat 1 pointer 88 70
+6440 seat 1 down 1
+6446 seat 1 up 1
+6700 seat 1 hash
+6700 seat 1 peek16 39D4:838C
+6800 seat 1 pointer 150 100
+6850 seat 1 hash
+7000 quit

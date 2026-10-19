@@ -1,0 +1,29 @@
+# build output and generated machine-level C (make setup regenerates gen*/)
+/build/
+/gen/
+/gen_intro/
+/src_new/
+# working copies of the original game files -- never commit them
+/run/
+/run_intro/
+*.RSC
+*.rsc
+*.EXE
+*.exe
+*.BIN
+*.PCK
+# scratch output of test runs
+/shots/
+/out/
+*.ppm
+*.wav
+# Turbo C 2.01 libraries used once by tools/tcsig.py (Borland copyright)
+/third_party/tc201_dl/
+__pycache__/
+/out/
+mods/
+# the pages built into build/openmtv (make copies tools/editor/ there)
+/launcher/web/*
+!/launcher/web/.keep
+# the window build's Windows resources (make: from the game's pictures, never kept)
+/launcher/winres/*.syso

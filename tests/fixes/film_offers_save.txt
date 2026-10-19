@@ -1,0 +1,23 @@
+# option: --film-offers=17
+# Not a fix: the player's choice "film offers" -- the film dealer's slots 11..17 in a savegame.  New
+# game; at 3000 test pokes: slot 11 = film 31, slot 17 = film 37, both on the shelf (segment EE10 =
+# EC60 relative to the load segment, 8 bytes each: +0 programme, +7 shelf), the game saved to slot
+# 0xD1 (game_save 229E:200D, the harness's call), both slots emptied, the slot loaded again
+# (game_load 229E:1386): with the option the savegame brings them back ("MTVX" with a sixth count,
+# after the ad offers' place, src/actions.c); classic they are no slots -- the savegame has no
+# extension and the load leaves what the pokes left.
+# expect classic 3000 word EC60:0000 == 0
+# expect option  3000 word EC60:0000 == 31
+# expect option  3000 word EC60:0030 == 37
+# expect option  3000 byte EC60:0037 == 3
+400 key esc
+1000 click 64 100
+1300 click 172 185
+3000 poke16 EC60:0000 31
+3000 poke16 EC60:0006 768
+3000 poke16 EC60:0030 37
+3000 poke16 EC60:0036 768
+3000 call 229E:200D,209
+3000 poke16 EC60:0000 0
+3000 poke16 EC60:0030 0
+3000 call 229E:1386,209

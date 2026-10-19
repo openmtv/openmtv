@@ -1,0 +1,29 @@
+# Two pauses at once (multiplayer, tools/seattest.py): two humans as in two_humans.  Seat 1
+# pauses (its clock field, 6000); while it lasts seat 0 presses Space (6400, the pause key) --
+# one pause at a time: that key does nothing.  Before, it paused too and kept the clock
+# once more in the place both share (DS:72AE): after both pauses the clock had jumped by
+# the overlap (found by the review of 2026-10-11).  Seat 1 resumes at 8000; seat 0 is never
+# in the pause room (g_room 0xFFFB), the clock (minute, DS:71EC) goes on as in the pause test.
+# humans 1,2
+# play tests/mp/two_humans.txt until 5900
+5800 peek16 39D4:71EC
+6000 seat 1 click 170 185
+6200 peek16 39D4:71EC
+6400 key space
+6600 peek16 39D4:71EC
+6600 peek16 39D4:838C
+6600 seat 1 peek16 39D4:838C
+7400 peek16 39D4:71EC
+7400 peek16 39D4:838C
+8000 seat 1 click 170 185
+8200 peek16 39D4:71EC
+8200 peek16 39D4:838C
+8600 peek16 39D4:71EC
+9000 peek16 39D4:71EC
+9000 peek16 39D4:838C
+9000 hash
+9001 seat 1 hash
+9400 peek16 39D4:71EC
+9400 peek16 39D4:838C
+9800 peek16 39D4:71EC
+10000 quit

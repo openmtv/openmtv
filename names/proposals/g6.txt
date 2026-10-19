@@ -1,0 +1,29 @@
+g 8E7E 32 g_bg_half_bmp  far ptr to the room background half just loaded by room_draw_background (res n-50 / n), freed right after drawing; zeroed by the room setup
+g 8F05 8 g_drag_aux_b  low byte of g_drag_aux, stored into byte fields (owned_script.aux, studio.episode / episode_last)
+g 8F0B 8 g_drag_item_b  low byte of g_drag_item, stored into byte fields (shopping-list slot, g_player_present)
+g 8F17 16 g_swap_script  studio_swap_script: script that was in the studio, put into the hand after the dropped one is inserted (0 = studio was empty; its episode goes via 0x8F07)
+g 8F5E 32 g_tip_viewers  viewer number for the tooltip: viewers of the hovered schedule/chart hour (g_hour_viewers[_yesterday]), transmitter reach*2464; screenplay card reuses it for the block count
+g 8F62 32 g_tip_viewers2  second number for the tooltip: share % of the hovered chart hour (from 0x1C88, sign-extended), reach before the transmitter (gain = g_tip_viewers - this), min viewers of the ad running now (rating overview, 0 = none)
+g 8F66 16 g_tip_j  14E1 second counter/index: inner loop (column, door), contract index of the hovered ad, start hour of the programme block under the cursor / on air (channel_status_draw, tvinfo_fetch_titles); role card: episode byte +0xA multiplying the actor fee
+g 8F68 32 g_tip_pos  g_tip_col (low) and g_tip_row (high) set together as one dword (MK32(row, col))
+g 8F70 32 g_tip_text1  tooltip text slot 1 (= g_tip_text[1]): description/genre/viewers string etc.; ad_genre_list part 1
+g 8F74 32 g_tip_text2  tooltip text slot 2 (= g_tip_text[2]): genre/client/episode-count string etc.; ad_genre_list part 2
+g 8F78 32 g_tip_text3  tooltip text slot 3 (= g_tip_text[3]): critics/fee/penalty or script title string; ad_genre_list part 3
+g 8F7C 32 g_tip_text4  tooltip text slot 4 (= g_tip_text[4]): episodes/spots/deadline string; ad_genre_list result "A, B or C"
+g 8F80 32 g_tip_text5  tooltip text slot 5 (= g_tip_text[5]): X-rated flag text (series) / live date line (film)
+g 8F84 32 g_tip_text6  tooltip text slot 6 (= g_tip_text[6]): film length "n blocks" / live part x of y
+g 8F8C 16 g_tip_block  block number (hour - start + 1) of the programme in the hovered chart hour (schedule-slot tooltip "block x of y"); reused as gift index (kind 16) and role index (kind 11)
+g 8F8E 16 g_tip_episode  episode number of the series in the hovered chart hour; reused as prop quality icon (kind 12: contract 1->3, 2->1, 3->2)
+g 8F90 16 g_tip_prev_block  g_tip_block of the last drawn slot tooltip; a change forces a redraw
+g 8F92 16 g_tip_prev_episode  g_tip_episode of the last drawn slot tooltip; a change forces a redraw
+g 8F94 16 g_tip_genre  genre of the film/series in the schedule-slot tooltip (kinds 14/15)
+g 8F96 16 g_tip_shop_script  shop: script of the selected shopping list (shoplists(g_player, g_shop_list).script) for role/prop/actor tooltips
+g 8F98 16 g_tip_shop_episode  shop: episode of the selected shopping list (shoplists(...).episode)
+g 8F9E 16 g_tip_k  14E1 scratch index/id: planner hour, shelf/bag/library index, studio on the estate board, series id (kind 10), actor id, role group, genre on air (kind 18), programme on air (tvinfo_fetch_titles), next text slot in production cards
+g 8FA0 16 g_tip_i  14E1 loop counter i: chart hour 1..7, dealer shelf, auction/supermarket row, floor, shop slot, owned-script index, episode number (kinds 9/10), contract index
+# not named (16-bit halves of a 32-bit value that is named above or already in symbols.txt):
+#   8E7E 16, 8E80 16      halves of g_bg_half_bmp
+#   8EE2 16, 8EE4 16      halves of g_popup_bmp[0] (array, so no auto _lo/_hi)
+#   8F62 16               low word of g_tip_viewers2 (used as the 16-bit share %)
+#   8F6C 16, 8F6E 16      halves of g_tip_text[0] (array, so no auto _lo/_hi)
+#   8F70/8F72, 8F74/8F76, 8F78/8F7A, 8F7C/8F7E, 8F84/8F86 16   halves of g_tip_text1..6 (mem_free args)

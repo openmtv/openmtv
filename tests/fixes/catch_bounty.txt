@@ -1,0 +1,24 @@
+# fix: catch-bounty (1DA8:3643)
+# The human plays station 2 (figure 1; its office is floor 8, door 0).
+# Computer player 1's figure (figure 0) is made to stand in that office
+# (target floor 8, target door 0, task 0) and the human's figure is sent to
+# the same door; then the human's door check door_check_entry(1, 0) runs.
+# It finds the rival in the human's own room in both modes (0x12E).
+# Classic: the bounty is paid only for figure 0, so the human gets nothing
+# and the bounty stays $10 000; fixed: the human gets $10 000 (money
+# 200 000 -> 210 000: low word 0x3450) and the bounty doubles to $20 000.
+# expect classic 3000 call 1DA8:3643,1,0 == 302
+# expect classic 3001 word 39D4:8C12 == 3392
+# expect classic 3001 word 39D4:7AE6 == 10000
+# expect fixed   3000 call 1DA8:3643,1,0 == 302
+# expect fixed   3001 word 39D4:8C12 == 13392
+# expect fixed   3001 word 39D4:8C14 == 3
+# expect fixed   3001 word 39D4:7AE6 == 20000
+400 key esc
+900 click 160 64
+1000 click 64 100
+1300 click 172 185
+3000 poke16 39D4:7B72 0
+3000 poke16 39D4:7B48 8
+3000 poke16 39D4:7B54 0
+3000 poke16 39D4:7B52 0

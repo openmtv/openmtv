@@ -1,0 +1,867 @@
+{
+ "classic, run 1: --print e --classic": [
+  0,
+  "ROOT/build/mtv-dec --game ROOT/run --args e --classic --logical-time --settings\n",
+  ""
+ ],
+ "classic: the files": {
+  "build/": null,
+  "build/mtv": [
+   "504fff67792dbbace1df1f0f6306bf07b397262e",
+   true
+  ],
+  "build/mtv-dec": [
+   "6522b62731673b0c26792d1ee67a6686ef869c04",
+   true
+  ],
+  "build/mtv-intro": [
+   "cec5724d5570ee09172bad48e007eb8954089f15",
+   true
+  ],
+  "run/": null,
+  "run/SOURCE1.RSC": [
+   "f3636d61236570511aaa7d19ee7f71772bb61078",
+   false
+  ],
+  "run/SOURCE2.RSC": [
+   "a0c0a0819c86c5fa6b537b391cb87f32657dc042",
+   false
+  ]
+ },
+ "direct, run 1: --print --direct": [
+  0,
+  "ROOT/build/mtv-dec --game ROOT/run --logical-time --settings\n",
+  ""
+ ],
+ "direct: the files": {
+  "build/": null,
+  "build/mtv": [
+   "504fff67792dbbace1df1f0f6306bf07b397262e",
+   true
+  ],
+  "build/mtv-dec": [
+   "6522b62731673b0c26792d1ee67a6686ef869c04",
+   true
+  ],
+  "build/mtv-intro": [
+   "cec5724d5570ee09172bad48e007eb8954089f15",
+   true
+  ],
+  "run/": null,
+  "run/SOURCE1.RSC": [
+   "f3636d61236570511aaa7d19ee7f71772bb61078",
+   false
+  ],
+  "run/SOURCE2.RSC": [
+   "a0c0a0819c86c5fa6b537b391cb87f32657dc042",
+   false
+  ]
+ },
+ "display, run 1: --print --scale 4 --aspect square --filter mmpx --fullscreen --integer --mouse system": [
+  0,
+  "ROOT/build/mtv-dec --game ROOT/run --logical-time --settings --scale 4 --aspect square --filter mmpx --fullscreen --integer --mouse system\n",
+  ""
+ ],
+ "display, run 2: --print --scale=2 --aspect=4:3": [
+  0,
+  "ROOT/build/mtv-dec --game ROOT/run --logical-time --settings --scale=2 --aspect=4:3\n",
+  ""
+ ],
+ "display: the files": {
+  "build/": null,
+  "build/mtv": [
+   "504fff67792dbbace1df1f0f6306bf07b397262e",
+   true
+  ],
+  "build/mtv-dec": [
+   "6522b62731673b0c26792d1ee67a6686ef869c04",
+   true
+  ],
+  "build/mtv-intro": [
+   "cec5724d5570ee09172bad48e007eb8954089f15",
+   true
+  ],
+  "run/": null,
+  "run/SOURCE1.RSC": [
+   "f3636d61236570511aaa7d19ee7f71772bb61078",
+   false
+  ],
+  "run/SOURCE2.RSC": [
+   "a0c0a0819c86c5fa6b537b391cb87f32657dc042",
+   false
+  ]
+ },
+ "fixes, run 1: --print --fixes=title-cache,case-corner": [
+  0,
+  "ROOT/build/mtv-dec --game ROOT/run --fixes=title-cache,case-corner --logical-time --settings\n",
+  ""
+ ],
+ "fixes, run 2: --print --fixes": [
+  0,
+  "ROOT/build/mtv-dec --game ROOT/run --fixes --logical-time --settings\n",
+  ""
+ ],
+ "fixes, run 3: --print --classic --fixes=a": [
+  0,
+  "ROOT/build/mtv-dec --game ROOT/run --fixes=a --logical-time --settings\n",
+  ""
+ ],
+ "fixes: the files": {
+  "build/": null,
+  "build/mtv": [
+   "504fff67792dbbace1df1f0f6306bf07b397262e",
+   true
+  ],
+  "build/mtv-dec": [
+   "6522b62731673b0c26792d1ee67a6686ef869c04",
+   true
+  ],
+  "build/mtv-intro": [
+   "cec5724d5570ee09172bad48e007eb8954089f15",
+   true
+  ],
+  "run/": null,
+  "run/SOURCE1.RSC": [
+   "f3636d61236570511aaa7d19ee7f71772bb61078",
+   false
+  ],
+  "run/SOURCE2.RSC": [
+   "a0c0a0819c86c5fa6b537b391cb87f32657dc042",
+   false
+  ]
+ },
+ "game-files, run 1: --print --game-files build/mp/abc": [
+  0,
+  "ROOT/build/mtv-dec --game ROOT/build/mp/abc --logical-time --settings\n",
+  ""
+ ],
+ "game-files, run 2: --print --game-files /elsewhere/g/ d": [
+  0,
+  "ROOT/build/mtv-dec --game /elsewhere/g --args d --logical-time --settings\n",
+  ""
+ ],
+ "game-files: the files": {
+  "build/": null,
+  "build/mtv": [
+   "504fff67792dbbace1df1f0f6306bf07b397262e",
+   true
+  ],
+  "build/mtv-dec": [
+   "6522b62731673b0c26792d1ee67a6686ef869c04",
+   true
+  ],
+  "build/mtv-intro": [
+   "cec5724d5570ee09172bad48e007eb8954089f15",
+   true
+  ],
+  "run/": null
+ },
+ "game-unset, run 1: --print": [
+  2,
+  "",
+  "play: SOURCE1.RSC not found in BASE/game-unset (set GAME to the directory with the original game files)\n"
+ ],
+ "game-unset: the files": {
+  "build/": null,
+  "build/mtv": [
+   "504fff67792dbbace1df1f0f6306bf07b397262e",
+   true
+  ],
+  "build/mtv-dec": [
+   "6522b62731673b0c26792d1ee67a6686ef869c04",
+   true
+  ],
+  "build/mtv-intro": [
+   "cec5724d5570ee09172bad48e007eb8954089f15",
+   true
+  ],
+  "run/": null
+ },
+ "intro-print, run 1: --print intro d": [
+  0,
+  "ROOT/build/mtv-dec --game ROOT/run --args d --logical-time --settings\n",
+  ""
+ ],
+ "intro-print: the files": {
+  "build/": null,
+  "build/mtv": [
+   "504fff67792dbbace1df1f0f6306bf07b397262e",
+   true
+  ],
+  "build/mtv-dec": [
+   "6522b62731673b0c26792d1ee67a6686ef869c04",
+   true
+  ],
+  "build/mtv-intro": [
+   "cec5724d5570ee09172bad48e007eb8954089f15",
+   true
+  ],
+  "run/": null,
+  "run/SOURCE1.RSC": [
+   "f3636d61236570511aaa7d19ee7f71772bb61078",
+   false
+  ],
+  "run/SOURCE2.RSC": [
+   "a0c0a0819c86c5fa6b537b391cb87f32657dc042",
+   false
+  ]
+ },
+ "intro-start, run 1: intro e": [
+  3,
+  "mtv-intro in ROOT: --game ROOT/run_intro --exe ROOT/run_intro/INTRO_U.EXE\nmtv-dec in ROOT: --game ROOT/run --args e --logical-time --settings\n",
+  ""
+ ],
+ "intro-start: the files": {
+  "build/": null,
+  "build/mtv": [
+   "504fff67792dbbace1df1f0f6306bf07b397262e",
+   true
+  ],
+  "build/mtv-dec": [
+   "6522b62731673b0c26792d1ee67a6686ef869c04",
+   true
+  ],
+  "build/mtv-intro": [
+   "cec5724d5570ee09172bad48e007eb8954089f15",
+   true
+  ],
+  "run/": null,
+  "run/SOURCE1.RSC": [
+   "f3636d61236570511aaa7d19ee7f71772bb61078",
+   false
+  ],
+  "run/SOURCE2.RSC": [
+   "a0c0a0819c86c5fa6b537b391cb87f32657dc042",
+   false
+  ]
+ },
+ "languages, run 1: --print d": [
+  0,
+  "ROOT/build/mtv-dec --game ROOT/run --args d --logical-time --settings\n",
+  ""
+ ],
+ "languages, run 2: --print e d": [
+  0,
+  "ROOT/build/mtv-dec --game ROOT/run --args d --logical-time --settings\n",
+  ""
+ ],
+ "languages: the files": {
+  "build/": null,
+  "build/mtv": [
+   "504fff67792dbbace1df1f0f6306bf07b397262e",
+   true
+  ],
+  "build/mtv-dec": [
+   "6522b62731673b0c26792d1ee67a6686ef869c04",
+   true
+  ],
+  "build/mtv-intro": [
+   "cec5724d5570ee09172bad48e007eb8954089f15",
+   true
+  ],
+  "run/": null,
+  "run/SOURCE1.RSC": [
+   "f3636d61236570511aaa7d19ee7f71772bb61078",
+   false
+  ],
+  "run/SOURCE2.RSC": [
+   "a0c0a0819c86c5fa6b537b391cb87f32657dc042",
+   false
+  ]
+ },
+ "lifted, run 1: --print --lifted": [
+  0,
+  "ROOT/build/mtv --game ROOT/run --settings\n",
+  ""
+ ],
+ "lifted, run 2: --print --lifted d --scale 2 --classic": [
+  0,
+  "ROOT/build/mtv --game ROOT/run --args d --settings --scale 2\n",
+  ""
+ ],
+ "lifted-missing, run 1: --print --lifted": [
+  2,
+  "",
+  "play: --lifted: build/mtv is not built yet (make)\n"
+ ],
+ "lifted-missing: the files": {
+  "build/": null,
+  "build/mtv-dec": [
+   "6522b62731673b0c26792d1ee67a6686ef869c04",
+   true
+  ],
+  "run/": null,
+  "run/SOURCE1.RSC": [
+   "f3636d61236570511aaa7d19ee7f71772bb61078",
+   false
+  ],
+  "run/SOURCE2.RSC": [
+   "a0c0a0819c86c5fa6b537b391cb87f32657dc042",
+   false
+  ]
+ },
+ "lifted-start, run 1: --lifted d": [
+  3,
+  "mtv in ROOT: --game ROOT/run --args d --settings\n",
+  ""
+ ],
+ "lifted-start: the files": {
+  "build/": null,
+  "build/mtv": [
+   "504fff67792dbbace1df1f0f6306bf07b397262e",
+   true
+  ],
+  "build/mtv-dec": [
+   "6522b62731673b0c26792d1ee67a6686ef869c04",
+   true
+  ],
+  "build/mtv-intro": [
+   "cec5724d5570ee09172bad48e007eb8954089f15",
+   true
+  ],
+  "run/": null,
+  "run/SOURCE1.RSC": [
+   "f3636d61236570511aaa7d19ee7f71772bb61078",
+   false
+  ],
+  "run/SOURCE2.RSC": [
+   "a0c0a0819c86c5fa6b537b391cb87f32657dc042",
+   false
+  ]
+ },
+ "lifted: the files": {
+  "build/": null,
+  "build/mtv": [
+   "504fff67792dbbace1df1f0f6306bf07b397262e",
+   true
+  ],
+  "build/mtv-dec": [
+   "6522b62731673b0c26792d1ee67a6686ef869c04",
+   true
+  ],
+  "build/mtv-intro": [
+   "cec5724d5570ee09172bad48e007eb8954089f15",
+   true
+  ],
+  "run/": null,
+  "run/SOURCE1.RSC": [
+   "f3636d61236570511aaa7d19ee7f71772bb61078",
+   false
+  ],
+  "run/SOURCE2.RSC": [
+   "a0c0a0819c86c5fa6b537b391cb87f32657dc042",
+   false
+  ]
+ },
+ "mod, run 1: --print --mod test-filme": [
+  0,
+  "ROOT/build/mtv-dec --game ROOT/build/mods/test-filme --logical-time --settings\n",
+  ""
+ ],
+ "mod, run 2: --print --mod=test-filme+test-serien d": [
+  0,
+  "ROOT/build/mtv-dec --game ROOT/build/mods/test-filme+test-serien --args d --logical-time --settings\n",
+  ""
+ ],
+ "mod-path, run 1: --print --game-files x --mod test-filme": [
+  0,
+  "ROOT/build/mtv-dec --game ROOT/x --logical-time --settings\n",
+  ""
+ ],
+ "mod-path: the files": {
+  "build/": null,
+  "build/mtv": [
+   "504fff67792dbbace1df1f0f6306bf07b397262e",
+   true
+  ],
+  "build/mtv-dec": [
+   "6522b62731673b0c26792d1ee67a6686ef869c04",
+   true
+  ],
+  "build/mtv-intro": [
+   "cec5724d5570ee09172bad48e007eb8954089f15",
+   true
+  ],
+  "run/": null
+ },
+ "mod-start, run 1: --mod test-werbung e": [
+  3,
+  "mtv-dec in ROOT: --game ROOT/build/mods/test-werbung --args e --logical-time --settings\n",
+  ""
+ ],
+ "mod-start: the files": {
+  "build/": null,
+  "build/mods/": null,
+  "build/mods/test-werbung/": null,
+  "build/mods/test-werbung/SOURCE1.RSC": [
+   "b43a2a2d20f9e4fdf41d702bf44de67fdbdea1ef",
+   false
+  ],
+  "build/mods/test-werbung/SOURCE2.RSC": [
+   "a0c0a0819c86c5fa6b537b391cb87f32657dc042",
+   false
+  ],
+  "build/mtv": [
+   "504fff67792dbbace1df1f0f6306bf07b397262e",
+   true
+  ],
+  "build/mtv-dec": [
+   "6522b62731673b0c26792d1ee67a6686ef869c04",
+   true
+  ],
+  "build/mtv-intro": [
+   "cec5724d5570ee09172bad48e007eb8954089f15",
+   true
+  ],
+  "run/": null,
+  "run/SOURCE1.RSC": [
+   "f3636d61236570511aaa7d19ee7f71772bb61078",
+   false
+  ],
+  "run/SOURCE2.RSC": [
+   "a0c0a0819c86c5fa6b537b391cb87f32657dc042",
+   false
+  ]
+ },
+ "mod-unknown, run 1: --print --mod gibtsnicht": [
+  2,
+  "",
+  "play: the mod gibtsnicht was not built: no mod gibtsnicht\n"
+ ],
+ "mod-unknown, run 2: --print --mod test-filme+test-filme": [
+  2,
+  "",
+  "play: the mod test-filme+test-filme was not built: a mod twice in test-filme+test-filme\n"
+ ],
+ "mod-unknown, run 3: --print --mod=bad name": [
+  2,
+  "",
+  "play: the mod bad name was not built: a mod name is 1-40 letters, digits, - or _\n"
+ ],
+ "mod-unknown: the files": {
+  "build/": null,
+  "build/mtv": [
+   "504fff67792dbbace1df1f0f6306bf07b397262e",
+   true
+  ],
+  "build/mtv-dec": [
+   "6522b62731673b0c26792d1ee67a6686ef869c04",
+   true
+  ],
+  "build/mtv-intro": [
+   "cec5724d5570ee09172bad48e007eb8954089f15",
+   true
+  ],
+  "run/": null,
+  "run/SOURCE1.RSC": [
+   "f3636d61236570511aaa7d19ee7f71772bb61078",
+   false
+  ],
+  "run/SOURCE2.RSC": [
+   "a0c0a0819c86c5fa6b537b391cb87f32657dc042",
+   false
+  ]
+ },
+ "mod: the files": {
+  "build/": null,
+  "build/mods/": null,
+  "build/mods/test-filme+test-serien/": null,
+  "build/mods/test-filme+test-serien/SOURCE1.RSC": [
+   "669765649559b68bdfa6b2799fadab191a8f4aa5",
+   false
+  ],
+  "build/mods/test-filme+test-serien/SOURCE2.RSC": [
+   "a0c0a0819c86c5fa6b537b391cb87f32657dc042",
+   false
+  ],
+  "build/mods/test-filme/": null,
+  "build/mods/test-filme/SOURCE1.RSC": [
+   "2184511c1ad0b0f359d81e73e65ca528b64a796e",
+   false
+  ],
+  "build/mods/test-filme/SOURCE2.RSC": [
+   "a0c0a0819c86c5fa6b537b391cb87f32657dc042",
+   false
+  ],
+  "build/mtv": [
+   "504fff67792dbbace1df1f0f6306bf07b397262e",
+   true
+  ],
+  "build/mtv-dec": [
+   "6522b62731673b0c26792d1ee67a6686ef869c04",
+   true
+  ],
+  "build/mtv-intro": [
+   "cec5724d5570ee09172bad48e007eb8954089f15",
+   true
+  ],
+  "run/": null,
+  "run/SOURCE1.RSC": [
+   "f3636d61236570511aaa7d19ee7f71772bb61078",
+   false
+  ],
+  "run/SOURCE2.RSC": [
+   "a0c0a0819c86c5fa6b537b391cb87f32657dc042",
+   false
+  ]
+ },
+ "network, run 1: --print --mp 127.0.0.1:7641 --seat 1 --humans 2 --difficulty 1 --names Ann,Bo --seed 5 --new-game --mp-save=s --mp-load x/y": [
+  0,
+  "ROOT/build/mtv-dec --game ROOT/run --logical-time --settings --mp 127.0.0.1:7641 --seat 1 --humans 2 --difficulty 1 --names Ann,Bo --seed 5 --new-game --mp-save=s --mp-load x/y\n",
+  ""
+ ],
+ "network: the files": {
+  "build/": null,
+  "build/mtv": [
+   "504fff67792dbbace1df1f0f6306bf07b397262e",
+   true
+  ],
+  "build/mtv-dec": [
+   "6522b62731673b0c26792d1ee67a6686ef869c04",
+   true
+  ],
+  "build/mtv-intro": [
+   "cec5724d5570ee09172bad48e007eb8954089f15",
+   true
+  ],
+  "run/": null,
+  "run/SOURCE1.RSC": [
+   "f3636d61236570511aaa7d19ee7f71772bb61078",
+   false
+  ],
+  "run/SOURCE2.RSC": [
+   "a0c0a0819c86c5fa6b537b391cb87f32657dc042",
+   false
+  ]
+ },
+ "no-source2, run 1: --print": [
+  2,
+  "",
+  "play: SOURCE2.RSC not found in BASE/game-no-source2 (set GAME to the directory with the original game files)\n"
+ ],
+ "no-source2, run 2: --print --game-files x": [
+  0,
+  "ROOT/build/mtv-dec --game ROOT/x --logical-time --settings\n",
+  ""
+ ],
+ "no-source2: the files": {
+  "build/": null,
+  "build/mtv": [
+   "504fff67792dbbace1df1f0f6306bf07b397262e",
+   true
+  ],
+  "build/mtv-dec": [
+   "6522b62731673b0c26792d1ee67a6686ef869c04",
+   true
+  ],
+  "build/mtv-intro": [
+   "cec5724d5570ee09172bad48e007eb8954089f15",
+   true
+  ],
+  "run/": null,
+  "run/SOURCE1.RSC": [
+   "f3636d61236570511aaa7d19ee7f71772bb61078",
+   false
+  ]
+ },
+ "options, run 1: --print --fourth-speed --fast-rooms=no --fourth-speed=yes --start-money=500000 --credit-line 900000 --terror-damage 0 --sammy-prize=1,2,3,4 --ai-improve strong --ad-offers 14 --film-offers=16": [
+  0,
+  "ROOT/build/mtv-dec --game ROOT/run --logical-time --settings --fourth-speed --fast-rooms=no --fourth-speed=yes --start-money=500000 --credit-line 900000 --terror-damage 0 --sammy-prize=1,2,3,4 --ai-improve strong --ad-offers 14 --film-offers=16\n",
+  ""
+ ],
+ "options: the files": {
+  "build/": null,
+  "build/mtv": [
+   "504fff67792dbbace1df1f0f6306bf07b397262e",
+   true
+  ],
+  "build/mtv-dec": [
+   "6522b62731673b0c26792d1ee67a6686ef869c04",
+   true
+  ],
+  "build/mtv-intro": [
+   "cec5724d5570ee09172bad48e007eb8954089f15",
+   true
+  ],
+  "run/": null,
+  "run/SOURCE1.RSC": [
+   "f3636d61236570511aaa7d19ee7f71772bb61078",
+   false
+  ],
+  "run/SOURCE2.RSC": [
+   "a0c0a0819c86c5fa6b537b391cb87f32657dc042",
+   false
+  ]
+ },
+ "plain, run 1: --print": [
+  0,
+  "ROOT/build/mtv-dec --game ROOT/run --logical-time --settings\n",
+  ""
+ ],
+ "plain: the files": {
+  "build/": null,
+  "build/mtv": [
+   "504fff67792dbbace1df1f0f6306bf07b397262e",
+   true
+  ],
+  "build/mtv-dec": [
+   "6522b62731673b0c26792d1ee67a6686ef869c04",
+   true
+  ],
+  "build/mtv-intro": [
+   "cec5724d5570ee09172bad48e007eb8954089f15",
+   true
+  ],
+  "run/": null,
+  "run/SOURCE1.RSC": [
+   "f3636d61236570511aaa7d19ee7f71772bb61078",
+   false
+  ],
+  "run/SOURCE2.RSC": [
+   "a0c0a0819c86c5fa6b537b391cb87f32657dc042",
+   false
+  ]
+ },
+ "record, run 1: --print --record session.txt e": [
+  0,
+  "recording to session.txt (machine-level build)\nreplay: mkdir -p /tmp/g && cp BASE/game-full/SOURCE*.RSC build/MTV_U.EXE /tmp/g && build/mtv --headless --game /tmp/g --script session.txt --args <language from its first line>\nROOT/build/mtv --game ROOT/build/record_game --args e --record session.txt --settings\n",
+  ""
+ ],
+ "record-mod, run 1: --print --record x.txt --mod test-filme": [
+  2,
+  "",
+  "play: --record plays the original game files, not a mod\n"
+ ],
+ "record-mod: the files": {
+  "build/": null,
+  "build/mtv": [
+   "504fff67792dbbace1df1f0f6306bf07b397262e",
+   true
+  ],
+  "build/mtv-dec": [
+   "6522b62731673b0c26792d1ee67a6686ef869c04",
+   true
+  ],
+  "build/mtv-intro": [
+   "cec5724d5570ee09172bad48e007eb8954089f15",
+   true
+  ],
+  "run/": null,
+  "run/SOURCE1.RSC": [
+   "f3636d61236570511aaa7d19ee7f71772bb61078",
+   false
+  ],
+  "run/SOURCE2.RSC": [
+   "a0c0a0819c86c5fa6b537b391cb87f32657dc042",
+   false
+  ]
+ },
+ "record: the files": {
+  "build/": null,
+  "build/mtv": [
+   "504fff67792dbbace1df1f0f6306bf07b397262e",
+   true
+  ],
+  "build/mtv-dec": [
+   "6522b62731673b0c26792d1ee67a6686ef869c04",
+   true
+  ],
+  "build/mtv-intro": [
+   "cec5724d5570ee09172bad48e007eb8954089f15",
+   true
+  ],
+  "build/record_game/": null,
+  "build/record_game/SOURCE1.RSC": [
+   "f3636d61236570511aaa7d19ee7f71772bb61078",
+   false
+  ],
+  "build/record_game/SOURCE2.RSC": [
+   "a0c0a0819c86c5fa6b537b391cb87f32657dc042",
+   false
+  ],
+  "run/": null,
+  "run/SOURCE1.RSC": [
+   "f3636d61236570511aaa7d19ee7f71772bb61078",
+   false
+  ],
+  "run/SOURCE2.RSC": [
+   "a0c0a0819c86c5fa6b537b391cb87f32657dc042",
+   false
+  ]
+ },
+ "settings, run 1: --print --settings=/x/other.ini e": [
+  0,
+  "ROOT/build/mtv-dec --game ROOT/run --args e --logical-time --settings=/x/other.ini\n",
+  ""
+ ],
+ "settings: the files": {
+  "build/": null,
+  "build/mtv": [
+   "504fff67792dbbace1df1f0f6306bf07b397262e",
+   true
+  ],
+  "build/mtv-dec": [
+   "6522b62731673b0c26792d1ee67a6686ef869c04",
+   true
+  ],
+  "build/mtv-intro": [
+   "cec5724d5570ee09172bad48e007eb8954089f15",
+   true
+  ],
+  "run/": null,
+  "run/SOURCE1.RSC": [
+   "f3636d61236570511aaa7d19ee7f71772bb61078",
+   false
+  ],
+  "run/SOURCE2.RSC": [
+   "a0c0a0819c86c5fa6b537b391cb87f32657dc042",
+   false
+  ]
+ },
+ "start, run 1: d --scale 2": [
+  3,
+  "mtv-dec in ROOT: --game ROOT/run --args d --logical-time --settings --scale 2\n",
+  ""
+ ],
+ "start-classic, run 1: --classic e": [
+  3,
+  "mtv-dec in ROOT: --game ROOT/run --args e --classic --logical-time --settings\n",
+  ""
+ ],
+ "start-classic: the files": {
+  "build/": null,
+  "build/mtv": [
+   "504fff67792dbbace1df1f0f6306bf07b397262e",
+   true
+  ],
+  "build/mtv-dec": [
+   "6522b62731673b0c26792d1ee67a6686ef869c04",
+   true
+  ],
+  "build/mtv-intro": [
+   "cec5724d5570ee09172bad48e007eb8954089f15",
+   true
+  ],
+  "run/": null,
+  "run/SOURCE1.RSC": [
+   "f3636d61236570511aaa7d19ee7f71772bb61078",
+   false
+  ],
+  "run/SOURCE2.RSC": [
+   "a0c0a0819c86c5fa6b537b391cb87f32657dc042",
+   false
+  ]
+ },
+ "start-direct, run 1: --direct": [
+  3,
+  "mtv-dec in ROOT: --game ROOT/run --logical-time --settings\n",
+  ""
+ ],
+ "start-direct: the files": {
+  "build/": null,
+  "build/mtv": [
+   "504fff67792dbbace1df1f0f6306bf07b397262e",
+   true
+  ],
+  "build/mtv-dec": [
+   "6522b62731673b0c26792d1ee67a6686ef869c04",
+   true
+  ],
+  "build/mtv-intro": [
+   "cec5724d5570ee09172bad48e007eb8954089f15",
+   true
+  ],
+  "run/": null,
+  "run/SOURCE1.RSC": [
+   "f3636d61236570511aaa7d19ee7f71772bb61078",
+   false
+  ],
+  "run/SOURCE2.RSC": [
+   "a0c0a0819c86c5fa6b537b391cb87f32657dc042",
+   false
+  ]
+ },
+ "start-error, run 1: d": [
+  2,
+  "",
+  "play: SOURCE2.RSC not found in BASE/game-no-source2 (set GAME to the directory with the original game files)\n"
+ ],
+ "start-error: the files": {
+  "build/": null,
+  "build/mtv": [
+   "504fff67792dbbace1df1f0f6306bf07b397262e",
+   true
+  ],
+  "build/mtv-dec": [
+   "6522b62731673b0c26792d1ee67a6686ef869c04",
+   true
+  ],
+  "build/mtv-intro": [
+   "cec5724d5570ee09172bad48e007eb8954089f15",
+   true
+  ],
+  "run/": null,
+  "run/SOURCE1.RSC": [
+   "f3636d61236570511aaa7d19ee7f71772bb61078",
+   false
+  ]
+ },
+ "start: the files": {
+  "build/": null,
+  "build/mtv": [
+   "504fff67792dbbace1df1f0f6306bf07b397262e",
+   true
+  ],
+  "build/mtv-dec": [
+   "6522b62731673b0c26792d1ee67a6686ef869c04",
+   true
+  ],
+  "build/mtv-intro": [
+   "cec5724d5570ee09172bad48e007eb8954089f15",
+   true
+  ],
+  "run/": null,
+  "run/SOURCE1.RSC": [
+   "f3636d61236570511aaa7d19ee7f71772bb61078",
+   false
+  ],
+  "run/SOURCE2.RSC": [
+   "a0c0a0819c86c5fa6b537b391cb87f32657dc042",
+   false
+  ]
+ },
+ "twice, run 1: --print": [
+  0,
+  "ROOT/build/mtv-dec --game ROOT/run --logical-time --settings\n",
+  ""
+ ],
+ "twice, run 2: --print d": [
+  0,
+  "ROOT/build/mtv-dec --game ROOT/run --args d --logical-time --settings\n",
+  ""
+ ],
+ "twice: the files": {
+  "build/": null,
+  "build/mtv": [
+   "504fff67792dbbace1df1f0f6306bf07b397262e",
+   true
+  ],
+  "build/mtv-dec": [
+   "6522b62731673b0c26792d1ee67a6686ef869c04",
+   true
+  ],
+  "build/mtv-intro": [
+   "cec5724d5570ee09172bad48e007eb8954089f15",
+   true
+  ],
+  "run/": null,
+  "run/SOURCE1.RSC": [
+   "f3636d61236570511aaa7d19ee7f71772bb61078",
+   false
+  ],
+  "run/SOURCE2.RSC": [
+   "a0c0a0819c86c5fa6b537b391cb87f32657dc042",
+   false
+  ]
+ }
+}

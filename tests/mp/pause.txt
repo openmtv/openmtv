@@ -1,0 +1,35 @@
+# The pause (multiplayer stage 3, tools/seattest.py): two humans as in two_humans.  Seat 1
+# clicks its clock field (the original's pause: room -5) and later again.  A human's pause
+# stops the world for all: the clock stands (17:31) for both, both clock fields say
+# "Pause", the other human's clicks wait; after it the clock goes on without a jump.
+# humans 1,2
+# play tests/mp/two_humans.txt until 5900
+5800 peek16 39D4:71EC
+5800 seat 1 peek16 39D4:838C
+6000 seat 1 click 170 185
+6200 peek16 39D4:71EC
+6200 seat 1 peek16 39D4:838C
+6600 peek16 39D4:71EC
+6600 seat 1 peek16 39D4:838C
+7000 peek16 39D4:71EC
+7000 seat 1 peek16 39D4:838C
+7000 hash
+7001 seat 1 hash
+7400 peek16 39D4:71EC
+7400 seat 1 peek16 39D4:838C
+7800 peek16 39D4:71EC
+7800 seat 1 peek16 39D4:838C
+8000 seat 1 click 170 185
+8200 peek16 39D4:71EC
+8200 seat 1 peek16 39D4:838C
+8600 peek16 39D4:71EC
+8600 seat 1 peek16 39D4:838C
+8600 hash
+8601 seat 1 hash
+9000 peek16 39D4:71EC
+9000 seat 1 peek16 39D4:838C
+9400 peek16 39D4:71EC
+9400 seat 1 peek16 39D4:838C
+9800 peek16 39D4:71EC
+9800 seat 1 peek16 39D4:838C
+10010 quit

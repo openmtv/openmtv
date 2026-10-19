@@ -1,0 +1,67 @@
+# fix: news-cache (26A7:292F news_text: the cache lookup stops at entry 20, `cmp di, 0x14` at 26A7:294E)
+# The news text cache g_news_txt_cache (DS:72BA, 24 entries of 6 bytes: node word, far text) is
+# filled by txt_news_cache_load (048C:0007, player) with the player's inbox items (up to 20), then
+# the non-empty broadcast slots, then (news room, dragging) the dragged item.  news_text looks the
+# node up in entries 0..19 only and, not finding it, uses entry 20 (the loop's end value): with a
+# full inbox the slot entries 20..22 are never reached and slots 2 and 3 get slot 1's headline
+# (unless their node is also in the inbox).  ui_draw_news_slots (26A7:2363) draws the slots that way.
+# Test pokes, 1500 (new game, building view): player 1's inbox count DS:72A8 = 20; inbox(1, j)
+#   headline (DS:47D7 + j*0x1E, j = 0..19) = node j+1; player 1's broadcast slots news_pool(61..63)
+#   node (DS:36DB + i*0x1E: DS:3E01, 3E1F, 3E3D) = 177, 174, 178 (three whale
+#   headlines
+#   without '#' placeholders, so the text does not depend on the records' phrase parts, all 0).
+# 1500 call 048C:0007,1 (cache: entries 0..19 = nodes 1..20, entries 20/21/22 = 177/174/178 at
+#   DS:7332/7338/733E), then news_text (record far pointer = offset, absolute DGROUP 3B84 = load
+#   segment 01B0 + 39D4; node) for slot 2, slot 3 and slot 1.  Each returns a fresh 1000-byte
+#   str_format buffer, AX = 8 always, DX = 86D8 / 8717 / 8756, i.e. 8528:0008 / 8567:0008 /
+#   85A6:0008 relative to the load segment.  The template copy goes into a free hole lower in the
+#   heap, so these places do not depend on which template is used and are the same classic and
+#   fixed (if the heap layout ever changes, read DX from the CALL lines).
+# Classic: slot 2's and slot 3's texts are slot 1's headline: first byte 'W' (87, "Whale swimms
+#   back to sea.") at 8528:0008 and 8567:0008; slot 1 (control) 'W' at 85A6:0008.
+# Fixed: 8528:0008 = 'G' = 71 (its headline's first letter), 8567:0008 = 'B'
+#   = 66 (its headline's first letter), 85A6:0008 = 'W' = 87; the cache words unchanged.
+#   (Checked with the classic build by pointing the searched entries 19/18 at the texts of entries
+#   21/22: same buffers, those texts.)
+# expect classic 1500 word 39D4:72A8 == 20
+# expect classic 1500 word 39D4:7332 == 177
+# expect classic 1500 word 39D4:7338 == 174
+# expect classic 1500 word 39D4:733E == 178
+# expect classic 1500 byte 8528:0008 == 87
+# expect classic 1500 byte 8567:0008 == 87
+# expect classic 1500 byte 85A6:0008 == 87
+# expect fixed   1500 word 39D4:7338 == 174
+# expect fixed   1500 byte 8528:0008 == 71
+# expect fixed   1500 byte 8567:0008 == 66
+# expect fixed   1500 byte 85A6:0008 == 87
+400 key esc
+1000 click 64 100
+1300 click 172 185
+1500 poke16 39D4:72A8 20
+1500 poke16 39D4:47D7 1
+1500 poke16 39D4:47F5 2
+1500 poke16 39D4:4813 3
+1500 poke16 39D4:4831 4
+1500 poke16 39D4:484F 5
+1500 poke16 39D4:486D 6
+1500 poke16 39D4:488B 7
+1500 poke16 39D4:48A9 8
+1500 poke16 39D4:48C7 9
+1500 poke16 39D4:48E5 10
+1500 poke16 39D4:4903 11
+1500 poke16 39D4:4921 12
+1500 poke16 39D4:493F 13
+1500 poke16 39D4:495D 14
+1500 poke16 39D4:497B 15
+1500 poke16 39D4:4999 16
+1500 poke16 39D4:49B7 17
+1500 poke16 39D4:49D5 18
+1500 poke16 39D4:49F3 19
+1500 poke16 39D4:4A11 20
+1500 poke16 39D4:3E01 177
+1500 poke16 39D4:3E1F 174
+1500 poke16 39D4:3E3D 178
+1500 call 048C:0007,1
+1500 call 26A7:292F,0x3E1F,0x3B84,174
+1500 call 26A7:292F,0x3E3D,0x3B84,178
+1500 call 26A7:292F,0x3E01,0x3B84,177

@@ -1,0 +1,203 @@
+# fix: library-owner (0AA4:24C3 library_film_to_shelf; the take-off at 05FF:090A room_library_click calls 1C18:12F2 program_withdraw)
+# Taking a tape off the library shelf withdraws the programme (program_withdraw: removed from every
+# library, owner 0, flags |= 0x20 "on the market" -- the state a sale to the dealer needs).  Putting
+# it back on the shelf (library_film_to_shelf, straight from the drag or from the case) files it into
+# the library again but leaves owner 0: the film sits in the player's library while dealer_refill
+# (24B8:04B9, every film with owner 0 or > 3, flag 0x20, not in the auction pool, price != 0) can put
+# it on the film dealer's shelf for anyone to buy.
+# Film 66 (film table 4DA5:0008 + 66*0x17 = 4DA5:05F6: +5 owner, +6 flags, +7 flags2).
+# Test pokes, 2550 (new game, English; the decompiled build's random new game differs from the
+#   original's, so the library is set by poke): player 1's library (DS:6F85 = 0x6F19 + 1*0x6C)
+#   genre 6 "Cultural program" slot 0 (DS:6FB5) = film 66; counts DS:6FEA/6FEB (genre 5/6) = 0/1
+#   (genre 5 is empty in every new game); film 66 owner = 1, flags = 0x04 (bit 5 clear, as for a
+#   film bought from the dealer: dealer_refill clears it when it offers a film), flags2 = 0 (not
+#   scheduled, so the archivist lets it go).  (In the current random game film 66 also starts in
+#   player 3's library; the take-off's program_withdraw removes it from there.)
+# 3000-3100 drain the market: eleven times empty the 10 dealer slots (DS:19ED + i*8: program +0,
+#   price +2, days on offer +7; poke16 +6 = 0x9C00 -> days -100, so dealer_refill clears the slot)
+#   and call dealer_refill.  Each offered programme loses flag 0x20, so after ~9 refills nothing is
+#   left on the market (about 85 films/series in a new game); check: the 11th refill offers nothing.
+# Steps: 2900 click the library door (floor 5); 3200 archivist (hotspot 0x22) -> genre list; 3400
+#   "Cultural program" -> shelf [66]; 3600 take tape 0 off the shelf; 3800 drop it back on the shelf.
+#   3960 re-poke owner 1 / flags 0x04 (the start state, so that the second trip shows the bug on its
+#   own); 4000 take it off again, 4200 drop it into the case (DS:2483 bag[0] = 66), 4400 take it out
+#   of the case, 4600 drop it on the shelf.  4800: empty the 10 dealer slots, call dealer_refill.
+# Classic: after each put-back film 66 is on the shelf (DS:6FB5 = 66, count DS:6FEB = 1) but its
+#   owner is 0 and flags 0x24 (on the market); dealer_refill then offers it: dealer slot 1
+#   (DS:19F5) = 66, slot 2 (DS:19FD) = 0 (film 66 is the only programme on the market).
+# Fixed: same shelf/case/drain values; owner (4DA5:05FB) = 1 at 3950 and 4750 (the fix sets
+#   only the owner, as bag_unload_to_library 222A:061E does for the case: flags stay 0x24, the
+#   owner alone keeps it off the market); at 4800 dealer slot 1 (DS:19F5) = 0 (nothing on the
+#   market).
+# expect classic 3100 word 39D4:19F5 == 0
+# expect classic 3550 byte 4DA5:05FB == 1
+# expect classic 3950 word 39D4:6FB5 == 66
+# expect classic 3950 byte 39D4:6FEB == 1
+# expect classic 3950 byte 4DA5:05FB == 0
+# expect classic 3950 byte 4DA5:05FC == 36
+# expect classic 4300 word 39D4:2483 == 66
+# expect classic 4750 word 39D4:6FB5 == 66
+# expect classic 4750 byte 39D4:6FEB == 1
+# expect classic 4750 byte 4DA5:05FB == 0
+# expect classic 4750 byte 4DA5:05FC == 36
+# expect classic 4800 word 39D4:19F5 == 66
+# expect classic 4800 word 39D4:19FD == 0
+# expect fixed   3100 word 39D4:19F5 == 0
+# expect fixed   3950 word 39D4:6FB5 == 66
+# expect fixed   3950 byte 4DA5:05FB == 1
+# expect fixed   4300 word 39D4:2483 == 66
+# expect fixed   4750 word 39D4:6FB5 == 66
+# expect fixed   4750 byte 4DA5:05FB == 1
+# expect fixed   4800 word 39D4:19F5 == 0
+400 key esc
+1000 click 64 100
+1300 click 172 185
+2100 click 230 60
+2500 click 230 60
+2550 poke16 39D4:6FB5 66
+2550 poke16 39D4:6FEA 256
+2550 poke16 4DA5:05FB 1025
+2550 poke16 4DA5:05FC 4
+2900 click 224 68
+3000 poke16 39D4:19FB 39936
+3000 poke16 39D4:1A03 39936
+3000 poke16 39D4:1A0B 39936
+3000 poke16 39D4:1A13 39936
+3000 poke16 39D4:1A1B 39936
+3000 poke16 39D4:1A23 39936
+3000 poke16 39D4:1A2B 39936
+3000 poke16 39D4:1A33 39936
+3000 poke16 39D4:1A3B 39936
+3000 poke16 39D4:1A43 39936
+3000 call 24B8:04B9
+3010 poke16 39D4:19FB 39936
+3010 poke16 39D4:1A03 39936
+3010 poke16 39D4:1A0B 39936
+3010 poke16 39D4:1A13 39936
+3010 poke16 39D4:1A1B 39936
+3010 poke16 39D4:1A23 39936
+3010 poke16 39D4:1A2B 39936
+3010 poke16 39D4:1A33 39936
+3010 poke16 39D4:1A3B 39936
+3010 poke16 39D4:1A43 39936
+3010 call 24B8:04B9
+3020 poke16 39D4:19FB 39936
+3020 poke16 39D4:1A03 39936
+3020 poke16 39D4:1A0B 39936
+3020 poke16 39D4:1A13 39936
+3020 poke16 39D4:1A1B 39936
+3020 poke16 39D4:1A23 39936
+3020 poke16 39D4:1A2B 39936
+3020 poke16 39D4:1A33 39936
+3020 poke16 39D4:1A3B 39936
+3020 poke16 39D4:1A43 39936
+3020 call 24B8:04B9
+3030 poke16 39D4:19FB 39936
+3030 poke16 39D4:1A03 39936
+3030 poke16 39D4:1A0B 39936
+3030 poke16 39D4:1A13 39936
+3030 poke16 39D4:1A1B 39936
+3030 poke16 39D4:1A23 39936
+3030 poke16 39D4:1A2B 39936
+3030 poke16 39D4:1A33 39936
+3030 poke16 39D4:1A3B 39936
+3030 poke16 39D4:1A43 39936
+3030 call 24B8:04B9
+3040 poke16 39D4:19FB 39936
+3040 poke16 39D4:1A03 39936
+3040 poke16 39D4:1A0B 39936
+3040 poke16 39D4:1A13 39936
+3040 poke16 39D4:1A1B 39936
+3040 poke16 39D4:1A23 39936
+3040 poke16 39D4:1A2B 39936
+3040 poke16 39D4:1A33 39936
+3040 poke16 39D4:1A3B 39936
+3040 poke16 39D4:1A43 39936
+3040 call 24B8:04B9
+3050 poke16 39D4:19FB 39936
+3050 poke16 39D4:1A03 39936
+3050 poke16 39D4:1A0B 39936
+3050 poke16 39D4:1A13 39936
+3050 poke16 39D4:1A1B 39936
+3050 poke16 39D4:1A23 39936
+3050 poke16 39D4:1A2B 39936
+3050 poke16 39D4:1A33 39936
+3050 poke16 39D4:1A3B 39936
+3050 poke16 39D4:1A43 39936
+3050 call 24B8:04B9
+3060 poke16 39D4:19FB 39936
+3060 poke16 39D4:1A03 39936
+3060 poke16 39D4:1A0B 39936
+3060 poke16 39D4:1A13 39936
+3060 poke16 39D4:1A1B 39936
+3060 poke16 39D4:1A23 39936
+3060 poke16 39D4:1A2B 39936
+3060 poke16 39D4:1A33 39936
+3060 poke16 39D4:1A3B 39936
+3060 poke16 39D4:1A43 39936
+3060 call 24B8:04B9
+3070 poke16 39D4:19FB 39936
+3070 poke16 39D4:1A03 39936
+3070 poke16 39D4:1A0B 39936
+3070 poke16 39D4:1A13 39936
+3070 poke16 39D4:1A1B 39936
+3070 poke16 39D4:1A23 39936
+3070 poke16 39D4:1A2B 39936
+3070 poke16 39D4:1A33 39936
+3070 poke16 39D4:1A3B 39936
+3070 poke16 39D4:1A43 39936
+3070 call 24B8:04B9
+3080 poke16 39D4:19FB 39936
+3080 poke16 39D4:1A03 39936
+3080 poke16 39D4:1A0B 39936
+3080 poke16 39D4:1A13 39936
+3080 poke16 39D4:1A1B 39936
+3080 poke16 39D4:1A23 39936
+3080 poke16 39D4:1A2B 39936
+3080 poke16 39D4:1A33 39936
+3080 poke16 39D4:1A3B 39936
+3080 poke16 39D4:1A43 39936
+3080 call 24B8:04B9
+3090 poke16 39D4:19FB 39936
+3090 poke16 39D4:1A03 39936
+3090 poke16 39D4:1A0B 39936
+3090 poke16 39D4:1A13 39936
+3090 poke16 39D4:1A1B 39936
+3090 poke16 39D4:1A23 39936
+3090 poke16 39D4:1A2B 39936
+3090 poke16 39D4:1A33 39936
+3090 poke16 39D4:1A3B 39936
+3090 poke16 39D4:1A43 39936
+3090 call 24B8:04B9
+3100 poke16 39D4:19FB 39936
+3100 poke16 39D4:1A03 39936
+3100 poke16 39D4:1A0B 39936
+3100 poke16 39D4:1A13 39936
+3100 poke16 39D4:1A1B 39936
+3100 poke16 39D4:1A23 39936
+3100 poke16 39D4:1A2B 39936
+3100 poke16 39D4:1A33 39936
+3100 poke16 39D4:1A3B 39936
+3100 poke16 39D4:1A43 39936
+3100 call 24B8:04B9
+3200 click 255 35
+3400 click 180 56
+3600 click 164 60
+3800 click 178 72
+3960 poke16 4DA5:05FB 1025
+3960 poke16 4DA5:05FC 4
+4000 click 164 60
+4200 click 40 60
+4400 click 28 60
+4600 click 178 72
+4800 poke16 39D4:19FB 39936
+4800 poke16 39D4:1A03 39936
+4800 poke16 39D4:1A0B 39936
+4800 poke16 39D4:1A13 39936
+4800 poke16 39D4:1A1B 39936
+4800 poke16 39D4:1A23 39936
+4800 poke16 39D4:1A2B 39936
+4800 poke16 39D4:1A33 39936
+4800 poke16 39D4:1A3B 39936
+4800 poke16 39D4:1A43 39936
+4800 call 24B8:04B9

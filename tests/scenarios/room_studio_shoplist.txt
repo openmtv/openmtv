@@ -1,0 +1,83 @@
+# room_studio_shoplist: the human's studio (room 5 = studio 6, floor 6 door 0, size 1).
+# New game.  Test pokes: player 1 owns three screenplays (g_scripts_owned_count(1) 39D4:7674 = 3;
+# owned_scripts(1,i) at 39D4:1A77 + 5i: +0 id, +2 aux = scene count, +3 next episode 1):
+# 23 (1 scene), 13 (2 scenes), 16 (1 scene), each marked taken (screenplay state byte 4:
+# far table g_scripts = 4F7E:0008 + id*0x1B3, +4; word = state | flags << 8); figures(0) walk
+# target = floor 6 door 0 (7B48, 7B54, 7B4A, 7B46 = 0x99 elevator).  Case slots at x 250 + 9i.
+#   3400 take screenplay 13 -> 3800 drop it on the studio slot (0x29; drag hot spot (4,5)):
+#        "Warning: This studio is too small!" -> 4200 close -> 4600 back into the case (0x21)
+#   5000 take screenplay 16 -> 5400 put it into the studio (studio_insert_script)
+#   5800 take screenplay 23 -> 6200 drop it on the occupied studio: 23 goes in, 16 comes out
+#        (studio_swap_script) -> 6600 throw 16 into the bin (0x0A): screenplay state 0x63
+#   7000 take screenplay 23 out of the studio (0x29: studio_take_script, cancels the production
+#        set-up) -> 7400 put it back (drag hot spot (4,15))
+#   7800 assistant (0x28): menu "New shopping list / Production info / Start production"
+#   8200 new shopping list (0x2A, studio_new_shopping_list): list for 23 episode 1
+#   8600 production info (0x4B): "Without the complete cast ...
+#        anything at all!" -> 9000 close
+#   9400 start production (0x2B): "Warning: Everything needed ..." -> 9800 close
+#   10200 cancel the last list (0x24): shoplist_delete -> 10600 new shopping list again
+#   11000 close the menu, 11400 leave the studio
+# Observable (end): studios(6).script 39D4:61C5 = 23, .episode 39D4:61C9 = 1, .episode_last
+#   39D4:61CA = 1; g_shoplist_count(1) 39D4:7482 = 1 (0 at 10400), shoplists(1,0) 39D4:7397 =
+#   23, episode 39D4:7399 = 1; case: 39D4:7674 = 1, 39D4:1A77 = 13; screenplay 16 state
+#   (byte 4F7E:1B3C) = 0x63; screenplay 23 episode 1 cost multiplier (byte 4F7E:2727) = 1.
+# end 11800
+400 key esc
+1000 click 64 100
+1300 click 172 185
+2000 hash
+2100 click 230 60
+2500 click 230 60
+2600 poke16 39D4:7674 3
+2600 poke16 39D4:1A77 23
+2600 poke16 39D4:1A79 257
+2600 poke16 39D4:1A7C 13
+2600 poke16 39D4:1A7E 258
+2600 poke16 39D4:1A81 16
+2600 poke16 39D4:1A83 257
+2600 poke16 4F7E:2721 1540
+2600 poke16 4F7E:1623 772
+2600 poke16 4F7E:1B3C 1540
+2600 poke16 39D4:7B48 6
+2600 poke16 39D4:7B54 0
+2600 poke16 39D4:7B4A 0
+2600 poke16 39D4:7B46 153
+3400 click 263 30
+3800 click 268 95
+4000 hash
+4200 rclick 160 60
+4600 click 274 35
+5000 click 263 30
+5400 click 268 95
+5800 click 254 30
+6000 hash
+6200 click 268 95
+6600 click 64 110
+7000 click 264 90
+7400 click 268 105
+7800 click 26 40
+8000 hash
+8200 click 150 47
+8600 click 150 55
+9000 rclick 160 60
+9400 click 150 63
+9800 rclick 160 60
+10000 hash
+10200 click 234 55
+10400 peek16 39D4:7482
+10600 click 150 47
+11000 rclick 160 60
+11400 rclick 160 60
+11799 peek16 39D4:61C5
+11799 peek8 39D4:61C9
+11799 peek8 39D4:61CA
+11799 peek16 39D4:7482
+11799 peek16 39D4:7397
+11799 peek8 39D4:7399
+11799 peek16 39D4:7674
+11799 peek16 39D4:1A77
+11799 peek8 4F7E:1B3C
+11799 peek8 4F7E:2727
+11800 hash
+11801 quit
