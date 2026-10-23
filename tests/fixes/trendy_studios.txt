@@ -1,0 +1,63 @@
+# fix: trendy-studios (24B8:16D5 cmp 8Ah: film 138 "Trendy" matches every running studio)
+# New game, human = player 1, at the estate agent's plan as in studio_reserved_ff.txt.  At 6300
+# episode 1 of "Love boat" (screenplay 8, series 1) runs in the human's studio 6 until 20:00
+# today; he gives the studio up (6400 marker, 6800 "yes"): deferred, reserved DS:61D4 = 0xFF.
+# Computer player 2's studio 8 holds a finished "Trendy" (screenplay 24 -> film 138, running
+# DS:61F3 = 1, end day 0) waiting for its show, and player 2 airs film 138 at 18:00..20:00.
+# At 18:00 the programme phase (24B8:0C4A) lets studio 8 go (its own show) -- and studio 6 too:
+# released mid-production (renter DS:61C8 = 0xFF, script 0, running 0); the screenplay goes to
+# his list slot 0 (DS:1A77 = 8) with the count DS:7674 left at 0 [side bug, studio_release].  The
+# end day stays: at 20:00 1DA8:034E "finishes" screenplay 0 for renter 0xFF, i.e. into player
+# -1's library: computer player 2's news budget DS:6EAD 1470 -> 0, DS:6F0D 0 -> 1.  Love boat
+# never reaches his archive (series count DS:6FF0 stays 1).
+# expect classic 7200 byte 39D4:61D4 == 255
+# expect classic 7200 byte 39D4:61F3 == 1
+# expect classic 12000 byte 39D4:61F3 == 0
+# expect classic 12000 byte 39D4:61C8 == 255
+# expect classic 12000 word 39D4:61C5 == 0
+# expect classic 12000 byte 39D4:61D3 == 0
+# expect classic 12000 word 39D4:1A77 == 8
+# expect classic 12000 word 39D4:7674 == 0
+# expect classic 12000 word 39D4:6EAD == 1470
+# expect classic 30500 word 39D4:6EAD == 0
+# expect classic 30500 word 39D4:6F0D == 1
+# expect classic 30500 byte 39D4:6FF0 == 1
+# Fixed: "Trendy" lets only its own studio 8 go (running 0, still player 2's); studio 6 stays his
+#   and keeps shooting (script 8, running 1) until 20:00, then episode 1 reaches his archive
+#   (series count 2, slot 1 = series 1) and the deferred give-up frees the studio.
+# expect fixed   12000 byte 39D4:61F3 == 0
+# expect fixed   12000 byte 39D4:61E8 == 2
+# expect fixed   12000 byte 39D4:61C8 == 1
+# expect fixed   12000 word 39D4:61C5 == 8
+# expect fixed   12000 byte 39D4:61D3 == 1
+# expect fixed   21500 byte 39D4:61C8 == 1
+# expect fixed   30500 byte 39D4:6FF0 == 2
+# expect fixed   30500 word 39D4:6FDF == 1
+# expect fixed   30500 byte 39D4:61C8 == 255
+# expect fixed   30500 word 39D4:6F0D == 0
+400 key esc
+1000 click 64 100
+1300 click 172 185
+2100 click 230 60
+2500 click 230 60
+2600 poke16 39D4:7B48 12
+2600 poke16 39D4:7B54 0
+2600 poke16 39D4:7B4A 0
+2600 poke16 39D4:7B46 153
+3600 poke16 39D4:7B54 0
+3600 poke16 39D4:7B46 120
+6000 click 50 60
+6300 poke16 39D4:61C5 8
+6300 poke16 39D4:61C9 2
+6300 poke16 39D4:61CF 1
+6300 poke16 39D4:61D1 20
+6300 poke16 39D4:61D3 1
+6300 poke16 39D4:61E5 24
+6300 poke16 39D4:61E9 2
+6300 poke16 39D4:61F3 1
+6400 click 225 29
+6800 click 124 87
+7300 click 160 100
+7300 poke16 39D4:44CD 138
+7300 poke16 39D4:44CF 138
+7300 poke16 39D4:44D1 138

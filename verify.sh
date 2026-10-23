@@ -39,8 +39,8 @@ GO_BUILT=
 if [ "$1" != "--quick" ] && command -v "${GO:-go}" >/dev/null 2>&1 && make -s launcher; then GO_BUILT=1; fi
 # steps 4-8 use their own temporary game directories: start them now
 # (and stop them if an earlier step fails)
-P4= P5= P6= P7= P8= P9= P10= P11= P12= P13= P14= P15= P17= P18=
-trap '[ -n "$P4$P5$P6$P7$P8$P9$P10$P11$P12$P13$P14$P15$P17$P18" ] && kill $P4 $P5 $P6 $P7 $P8 $P9 $P10 $P11 $P12 $P13 $P14 $P15 $P17 $P18 2>/dev/null; true' EXIT
+P4= P5= P6= P7= P8= P9= P10= P11= P12= P13= P14= P15= P17= P18= P19=
+trap '[ -n "$P4$P5$P6$P7$P8$P9$P10$P11$P12$P13$P14$P15$P17$P18$P19" ] && kill $P4 $P5 $P6 $P7 $P8 $P9 $P10 $P11 $P12 $P13 $P14 $P15 $P17 $P18 $P19 2>/dev/null; true' EXIT
 if [ "$1" != "--quick" ]; then
   if [ -d tests/scenarios ] && ls tests/scenarios/*.txt >/dev/null 2>&1; then
     python3 tools/scenario.py check > build/v_scenarios.log 2>&1 & P4=$!
@@ -58,6 +58,7 @@ if [ "$1" != "--quick" ]; then
   python3 tools/castfittest.py > build/v_castfit.log 2>&1 & P14=$!
   python3 tools/sertoptest.py > build/v_sertop.log 2>&1 & P15=$!
   python3 tools/hrtest.py > build/v_hr.log 2>&1 & P17=$!
+  python3 tools/loadslottest.py > build/v_loadslot.log 2>&1 & P19=$!
   if python3 -c 'import numpy, PIL' 2>/dev/null; then python3 tools/kitest.py > build/v_ki.log 2>&1 & P18=$!; fi
   if [ -n "$GO_BUILT" ]; then
     sh -c 'python3 tools/playtest.py && python3 tools/buildtest.py && python3 tools/launchertest.py && python3 tools/lobbytest.py && python3 tools/mpedgetest.py' > build/v_launcher.log 2>&1 & P13=$!
@@ -145,5 +146,9 @@ if [ -n "$P18" ]; then
   if wait $P18; then cat build/v_ki.log; echo "[18] the AI pictures are made as tools/hrai.py makes them (the picture only)"
   else cat build/v_ki.log; echo "[18] FAIL"; RC=1; fi
 fi
-P4= P5= P6= P7= P8= P9= P10= P11= P12= P13= P14= P15= P17= P18=
+if [ -n "$P19" ]; then
+  if wait $P19; then tail -1 build/v_loadslot.log; echo "[19] a saved game of the safe straight from the start (--load-slot), as the setup loads it"
+  else cat build/v_loadslot.log; echo "[19] FAIL"; RC=1; fi
+fi
+P4= P5= P6= P7= P8= P9= P10= P11= P12= P13= P14= P15= P17= P18= P19=
 exit $RC

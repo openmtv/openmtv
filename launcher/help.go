@@ -46,6 +46,7 @@ var helpText = map[string]string{
                              (the original: 10)
     --film-offers=N          the films and series the film dealer offers at a time,
                              10 to 17 (the original: 10)
+    --load-slot N            straight into the game saved in slot N of the safe (1 to 10)
     --settings=FILE          another settings file
     --print                  the game's command line, printed instead of started
     -h, --help               this help
@@ -90,6 +91,7 @@ The original game files (SOURCE1.RSC, SOURCE2.RSC): {files}
                              10 bis 17 (Original: 10)
     --film-offers=N          so viele Filme und Serien bietet der Filmhändler auf einmal an,
                              10 bis 17 (Original: 10)
+    --load-slot N            sofort der Spielstand auf Kassette N des Tresors (1 bis 10)
     --settings=FILE          eine andere Einstellungsdatei
     --print                  die Befehlszeile des Spiels nur ausgeben, nicht starten
     -h, --help               diese Hilfe

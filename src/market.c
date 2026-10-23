@@ -790,7 +790,14 @@ L_16DC:
                                 studio_release(FR16(fr_, 58, 0x32));
                             }
                         } else {
-                            if ((FRX16(fr_, 58, 0x20, (FR16(fr_, 58, 0x34) << 1) + 0)) == 0x8A) goto L_16DC;
+                            /* ORIGINAL BUG (fix "trendy-studios", 24B8:16D5 cmp 8Ah): a live show
+                             * lets its own studio go when it has aired (the match above), but
+                             * film 138 "Trendy" matches every running studio, whoever airs it:
+                             * a deferred give-up or a queued renter takes a studio mid-production
+                             * (the production is lost, the end day stays and later "finishes"
+                             * screenplay 0 for renter 0xFF).  Trendy's own studio is the match
+                             * above: screenplay 24 makes film 138. */
+                            if ((FRX16(fr_, 58, 0x20, (FR16(fr_, 58, 0x34) << 1) + 0)) == 0x8A && !fix_on(FIX_TRENDY_STUDIOS)) goto L_16DC;
                         }
                     }
                     FR16(fr_, 58, 0x32) = FR16(fr_, 58, 0x32) + 1;

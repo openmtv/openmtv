@@ -127,7 +127,7 @@ u16 game_main(u16 argc, u32 argv) {
     T += 4;
     framed(0x01F2, 1, 0x12C); r = res_exists(0x12C, 0x12C); framed_pop(1);
     T += 4;
-    if (new_game_opt) timer_start(0);   /* --new-game, no intro: the tick block to the sound driver, as the intro hands it */
+    if (new_game_opt || load_slot_opt) timer_start(0);   /* --new-game, --load-slot, no intro: the tick block to the sound driver, as the intro hands it */
     else if ((u16)r != 0xFFFF) {         /* the intro, if its resource is there */
         T += 5;
         framed(0x0205, 2, 0, 0x1F4); snd_room_music_start(0x1F4, 0, 0x1F4); framed_pop(2);
@@ -319,6 +319,20 @@ u16 game_main(u16 argc, u32 argv) {
                 /* the human's player record, as a click sets it (ui_on_left_click): without one the
                  * host's boss read the image from a null record the next morning -- and fired them */
                 g_cur_player_rec = players_at(g_player);
+            } else if (load_slot_opt) {      /* --load-slot N: the setup's "Load game", then a click on slot N -- the original's load */
+                u16 n = (u16)load_slot_opt, mx = g_mouse_x, my = g_mouse_y;
+                load_slot_opt = 0;           /* (once: after the game, the setup is the setup) */
+                g_hotspot = 0x4B;
+                room_newgame_click();        /* the safe in load mode (g_room_mode 4); with no saves at all its "not found" box */
+                if (g_room == ROOM_SAVE_ROOM && g_room_mode == 4) {
+                    g_mouse_x = (u16)(0x40 + 0x76 * ((n - 1) / 5) + 0x20);   /* inside the slot's label (room_saveload_click) */
+                    g_mouse_y = (u16)(0x11 * ((n - 1) % 5 + 1) + 9);
+                    ui_on_left_click();
+                    g_mouse_x = mx;
+                    g_mouse_y = my;
+                }
+                if (g_game_mode == 3) fprintf(stderr, "[load-slot] slot %u loaded: day %u\n", n, g_day);
+                else fprintf(stderr, "[load-slot] slot %u not loaded: empty, or refused (the safe says why)\n", n);
             }
         } else if (T += 2, g_game_mode == 2) {   /* a new game started: the first morning */
             g_clock_halt = 1;

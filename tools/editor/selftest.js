@@ -318,6 +318,7 @@ async function selftestPacks({ ok, wait, typeInto, go2, W, confirmDialog }) {
     'the first change on the original made a new complete pack (' + a + ')');
   ok(await save() && (await api('GET', `/api/mods/${a}/films`)).records.find((r) => r.id === 31).quality === 71, 'the change saved into the new pack');
   await go2('#launcher');
+  setTab('launcher', 'packs');   /* (the packs: in their tab) */
   await wait(300);
   ok($('#work [data-play="original"]').getAttribute('aria-pressed') === 'false' && $('#work [data-play="original"]').textContent.includes(T('held in "{pack}" already', { pack: packTitle(a) })), 'launcher: the original held in the complete pack');
   ok(await selectPacks(['selftest', a]) && !st.mod && records('films').find((r) => r.id === 31).quality === 71, 'a complete pack with another pack: shown combined, nothing to change in place');
@@ -335,6 +336,7 @@ async function selftestPacks({ ok, wait, typeInto, go2, W, confirmDialog }) {
     const held = await api('GET', `/api/packs/${b}+${prot.name}`).then((r) => r.error || '', (e) => e.message);
     ok(held.includes(prot.name) && held.includes(b), 'server: a pack not played with a complete pack that holds it (' + held + ')');
     await go2('#launcher');
+    setTab('launcher', 'packs');
     await wait(300);
     ok($(`#work [data-play="${prot.name}"]`).disabled, 'launcher: a pack held in the chosen one cannot be added');
     await selectPacks([prot.name]);
@@ -352,6 +354,7 @@ async function selftestPacks({ ok, wait, typeInto, go2, W, confirmDialog }) {
   await wait(300);
   ok(!modInfo(made[made.length - 1]) && !st.packs.length, 'overview: the pack being changed deleted, out of the selection');
   await go2('#launcher');
+  setTab('launcher', 'packs');   /* (the packs: in their tab) */
   await wait(300);
   for (const n of made.slice(0, -1)) {
     $(`#work [data-delete="${n}"]`).click();
@@ -519,8 +522,16 @@ async function selftestGerman({ ok, wait, typeInto, go2, W, confirmDialog }) {
   await go2('#launcher');
   await wait(400);
   scan('launcher');
-  ok($('#work').textContent.includes('Was läuft heute?') && $('#work').textContent.includes('Das Originalspiel') && $('#work').textContent.includes('Klassisch-Modus')
-    && $('#work').textContent.includes('3 · Fehlerkorrekturen'), 'German: the launcher, its packs, settings, Classic and the fixes');
+  const deTabs = {};
+  for (const t of ['packs', 'rules', 'fixes']) {
+    setTab('launcher', t);
+    await wait(200);
+    scan('launcher, ' + t);
+    deTabs[t] = $('#work .gdrawer').textContent;
+  }
+  setTab('launcher', '');
+  ok($('#work').textContent.includes('Tresor') && $('#work').textContent.includes('Neues Spiel') && $('#work').textContent.includes('Korrekturen') && deTabs.packs.includes('Das Originalspiel')
+    && deTabs.rules.includes('Allgemein') && deTabs.fixes.includes('Klassisch 1991') && deTabs.fixes.includes('Alle Korrekturen'), 'German: the launcher, its safe, the packs, the rules, Classic and the fixes');
   await go2('#multiplayer');
   await wait(400);
   scan('multiplayer');
@@ -613,10 +624,12 @@ async function playerSelftest() {
       'player: the version at the foot of the board, as the release page writes it (' + $('#rail .railver').textContent + ')');
     ok($('#logo').textContent === 'OpenMTV' && $('#logo').offsetWidth > 0, `player: the name in the top bar (${$('#logo').offsetWidth}px)`);
     if (!st.settings) { await loadSettings(); renderEntry(); }
-    const art = W('.pbart img');
+    const art = W('.safepic img');
     if (art) await loaded(art);
-    ok(art && art.naturalWidth === 320 && art.naturalHeight > 0, `player: the room behind the start (${art && art.naturalWidth}x${art && art.naturalHeight})`);
+    ok(art && art.naturalWidth === 320 && art.naturalHeight === 109, `player: the safe of the office as the game draws it (${art && art.naturalWidth}x${art && art.naturalHeight})`);
     ok(!!modInfo('selftest'), 'player: the pack "selftest" is there (the test tool makes it)');
+    setTab('launcher', 'packs');
+    await wait(150);
     const broken = st.mods.filter((m) => m.error);
     ok(broken.every((m) => W(`[data-packerror="${m.name}"]`)?.textContent === m.error && W(`[data-play="${m.name}"]`).disabled),
       `player: ${broken.length} packs that cannot be read: in the list with why, not to choose` + (broken[0] ? ` (${broken[0].error})` : ''));

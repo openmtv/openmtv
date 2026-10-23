@@ -4,7 +4,7 @@ OpenMTV plays **Mad TV**, the TV station management game by Rainbow Arts (1991),
 natively on **Windows, macOS and Linux**. The original DOS program was
 decompiled function by function into readable C and checked against the
 original machine code: same memory, same picture. On top of that come things
-1991 did not have: multiplayer over the internet, fixes for 31 of the
+1991 did not have: multiplayer over the internet, fixes for 32 of the
 original's bugs, a content editor, a 4× resolution display and AI-upscaled
 pictures.
 
@@ -45,7 +45,7 @@ of the rights to Mad TV — see [Legal](#legal).
   port forwarding: a lobby with invite codes, the host sets the rules and the
   content packs, the game is saved every night, a free station stays with the
   computer. Windows, macOS and Linux play together.
-- **31 of the original's bugs fixed** — crashes and hangs, money tricks,
+- **32 of the original's bugs fixed** — crashes and hangs, money tricks,
   computer players that miscalculate, broken data — each one switchable on
   its own ([list](#the-originals-bugs-fixed), details in
   [docs/CHANGES.md](docs/CHANGES.md)).
@@ -182,6 +182,7 @@ one with the addresses in the original.
 | `ai-rating` | a computer player's rating overflows above 21.5 million viewers and it takes almost no ad contracts |
 | `ai-bids` | a computer player's auction bids run past their list: contract counts break, then the game crashes |
 | `ai-warning` | a computer player's live film opens "Warning" boxes on the human's screen until the game crashes |
+| `trendy-studios` | the show "Trendy" ends the production lock of every running studio: a studio given up mid-production is freed at once and the production is lost |
 | `film-200` | data: film 200 is titled "xxx", its German text cut off, and it is never offered |
 | `live-aid` | data: film 164 "Live Aid" is 0 hours long and can never be planned |
 | `video-connection` | data: the show "Video-Connection" asks nothing of its cast, so it never finds viewers |
@@ -200,7 +201,8 @@ The main ones:
   `--start-money=N`, `--credit-line=N|original`, `--terror-damage=N`,
   `--sammy-prize=N[,N,N,N]`, `--ad-offers=N`, `--film-offers=N` (10–17),
   `--fourth-speed`, `--fast-rooms`, `--ai-improve=off|normal|strong`,
-  `--cast-fit`, `--series-topicality`.
+  `--cast-fit`, `--series-topicality`; `--load-slot N` straight into the
+  game saved in slot N of the office safe (1–10; the launcher's safe).
 - **Input**: `--mouse captured|free|system` (system: the system's own arrow).
 
 The binaries read the settings file only with `--settings[=FILE]`, so tests

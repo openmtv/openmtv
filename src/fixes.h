@@ -38,6 +38,8 @@ enum {
     FIX_AI_WARNING = 1u << 28,    /* 229E:0225 a computer player's refused placement opens a warning box on the human's screen */
     FIX_LIVE_AID = 1u << 29,      /* data: film 164 "Live Aid" is 0 hours long */
     FIX_VIDEO_CONN = 1u << 30,    /* data: screenplay 20 "Video-Connection" asks nothing of its two roles */
+    FIX_TRENDY_STUDIOS = 1u << 31, /* 24B8:0C4A "Trendy" ending ends the production lock of every running studio */
+    /* (the last bit of fix_mask: a further fix needs a wider mask) */
 };
 /* fixes a network game always has, whatever the host chose (Classic included):
  * money cheats for whoever finds them -- the corner of the case, the boss's repayment

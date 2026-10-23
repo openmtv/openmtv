@@ -136,6 +136,7 @@ extern int seat_humans;                         /* runtime/seat.h: with --humans
  * and stood still for everyone), alone the player's choice; never under --difftest */
 static inline int fast_rooms(void) { return seat_humans || (fast_rooms_opt && !difftest_on); }
 extern int new_game_opt;                        /* --new-game: no intro, the setup's Start at once (src/main_loop.c; a network game's start) */
+extern int load_slot_opt;                       /* --load-slot N: no intro, the setup's "Load game" and slot N (1..10) at once (src/main_loop.c) */
 extern int difficulty_opt;                      /* --difficulty N (1..3) for --new-game; 0: the setup's */
 extern char new_game_names[3][9];               /* --names A,B,C: the managers of stations 1..3 for --new-game ("": the game's) */
 extern int notice_german;                       /* the game in German (--args d): the window's notices too */

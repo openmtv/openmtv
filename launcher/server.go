@@ -521,6 +521,12 @@ func (s *server) get(r *http.Request, parts []string, lang string) reply {
 			return fail(400, err.Error())
 		}
 		return reply{200, list}
+	case len(parts) == 1 && parts[0] == "saves": // the safe of a selection (?mod=A+B; none: the original game's): saves.go
+		d, err := safeDoc(r.URL.Query().Get("mod"))
+		if err != nil {
+			return failure(err, lang)
+		}
+		return reply{200, d}
 	case len(parts) == 2 && parts[0] == "packs": // /api/packs/A+B: the launcher's report
 		return reply{200, s.packsInfo(parts[1], lang)}
 	case len(parts) == 3 && parts[0] == "sprite": // /api/sprite/BANK/K.png
@@ -630,7 +636,15 @@ func (s *server) post(r *http.Request, parts []string, lang string) reply {
 	case len(parts) == 2 && parts[0] == "mp": // the lobby: host, join, me, game, save, start, leave
 		return s.mpPost(parts[1], b, lang)
 	case len(parts) == 1 && parts[0] == "launch": // start the game
-		return s.launch(str(b["mod"]), str(b["lang"]), truthy(b["classic"]), truthy(b["dry"]), lang)
+		slot := 0 // (a saved game of the safe: 1..10; none: a new game)
+		if v, ok := b["slot"]; ok && v != nil {
+			n, whole := v.(int64)
+			if !whole || n < 1 || n > saveSlots {
+				return fail(400, newMsg("no such thing").in(lang))
+			}
+			slot = int(n)
+		}
+		return s.launch(str(b["mod"]), str(b["lang"]), truthy(b["classic"]), slot, truthy(b["dry"]), lang)
 	case len(parts) == 3 && parts[0] == "mods" && parts[2] == "build": // build only, no start
 		out, err := buildMod(s.g, parts[1])
 		if err != nil {
@@ -656,7 +670,7 @@ func (s *server) post(r *http.Request, parts []string, lang string) reply {
 // launch: the game with the settings file, what play.sh starts: the original game files,
 // or packs (built first); a language or classic only for this start; dry: only the
 // command (the self-test)
-func (s *server) launch(mod, gameLang string, classic, dry bool, lang string) reply {
+func (s *server) launch(mod, gameLang string, classic bool, slot int, dry bool, lang string) reply {
 	if !exists(program("mtv-dec")) {
 		return fail(400, newMsg("the game is not built yet (make build/mtv-dec)").in(lang))
 	}
@@ -669,6 +683,9 @@ func (s *server) launch(mod, gameLang string, classic, dry bool, lang string) re
 		built = rel(out)
 	}
 	args := playArgs(mod, gameLang, classic)
+	if slot > 0 {
+		args = append(args, "--load-slot", strconv.Itoa(slot))
+	}
 	line := strings.Join(append([]string{play}, args...), " ")
 	if dry {
 		return reply{200, obj{"built": nil, "cmd": line, "pid": nil}}

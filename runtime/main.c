@@ -100,6 +100,7 @@ int ad_offers_opt;                          /* --ad-offers=N: the ad agency's of
 int film_offers_opt;                        /* --film-offers=N: the film dealer's offers, 10..17; 0 = the original's 10 (src/film_offers.c) */
 int series_top_opt;                         /* --series-topicality[=yes|no]: the series card shows the series' topicality (runtime.h) */
 int new_game_opt;                           /* --new-game: straight into a new game (no intro, no setup) */
+int load_slot_opt;                          /* --load-slot N: straight into the saved game of slot N (1..10; src/main_loop.c) */
 int difficulty_opt;                         /* --difficulty N: 1 easy, 2 normal, 3 difficult (with --new-game) */
 char new_game_names[3][9];                  /* --names A,B,C: the managers' names (8 characters, the setup's limit) */
 int notice_german;                          /* the game in German: the window's notices too (host.c) */
@@ -273,7 +274,8 @@ int main(int argc, char **argv) {
         {"new-game", no_argument, 0, 'n'}, {"difficulty", required_argument, 0, 'd'},
         {"names", required_argument, 0, 'k'}, {"seed", required_argument, 0, 'z'},
         {"mp-save", required_argument, 0, 0x100}, {"mp-load", required_argument, 0, 0x101},
-        {"knock", required_argument, 0, 0x102}, {"mp-key", required_argument, 0, 0x103}, {0, 0, 0, 0}};
+        {"knock", required_argument, 0, 0x102}, {"mp-key", required_argument, 0, 0x103},
+        {"load-slot", required_argument, 0, 0x104}, {0, 0, 0, 0}};
 #ifdef _WIN32
     setvbuf(stderr, NULL, _IONBF, 0);     /* as on Linux and macOS: a crash or a kill keeps the messages */
 #endif
@@ -308,6 +310,12 @@ int main(int argc, char **argv) {
             char *e; long n = strtol(optarg, &e, 10);
             if (!*optarg || *e || n < 0 || n > KNOCK_OPT_MAX) { fprintf(stderr, "--knock: game minutes from 0 to %d, not '%s'\n", KNOCK_OPT_MAX, optarg); return 2; }
             knock_opt = (int)n;
+            break;
+        }
+        case 0x104: {                                   /* a saved game of the safe (room 58): no intro, the setup's "Load game" */
+            char *e; long n = strtol(optarg, &e, 10);
+            if (!*optarg || *e || n < 1 || n > 10) { fprintf(stderr, "--load-slot: a slot of the safe, 1 to 10, not '%s'\n", optarg); return 2; }
+            load_slot_opt = (int)n;
             break;
         }
         case 0x101:                                     /* a network game from a savegame: no intro, no setup */
@@ -498,6 +506,14 @@ int main(int argc, char **argv) {
     if (!fix_init() && new_game_opt) {             /* the machine-level build: the original's start */
         fprintf(stderr, "--new-game: the decompiled build only (build/mtv-dec)\n");
         new_game_opt = 0;
+    }
+    if (!fix_init() && load_slot_opt) {
+        fprintf(stderr, "--load-slot: the decompiled build only (build/mtv-dec)\n");
+        load_slot_opt = 0;
+    }
+    if (load_slot_opt && (new_game_opt || seat_humans)) {   /* (a network game loads its own savegames: --mp-load) */
+        fprintf(stderr, "--load-slot: a single player's game, not with --new-game, --mp-load or --humans\n");
+        return 2;
     }
     if (mp_load_opt && !seat_humans) {             /* a network game's savegame: its humans' stations */
         fprintf(stderr, "--mp-load needs --humans (the savegame's stations)\n");

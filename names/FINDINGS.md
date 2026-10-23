@@ -503,7 +503,12 @@ seeded from the timer (`random_n`), whose phase is not part of the save.
     news budget DS:6EAD 1470 -> 0); studio_release 229E:1264 stores the
     unfinished screenplay of a given-up studio in owned_scripts but never
     increments g_scripts_owned_count (it is lost); film 138 "Trendy" aired
-    by anyone matches every running studio in 24B8:0C4A (design?); 0DD9
+    by anyone matches every running studio in 24B8:0C4A (24B8:16D5 cmp
+    8Ah; reproduced 2026-10-22: a studio given up mid-production is freed
+    at once, the production lost, its end day later finishes screenplay 0
+    over a computer player's news budget -- tests/fixes/trendy_studios.txt;
+    Trendy's own studio is already the screenplay-target match, screenplay
+    24 -> film 138; fix "trendy-studios"); 0DD9
     reads a series' topicality one episode early (series_episode_at
     1C18:1116 before placing: a never-aired series counts 0); 348B:02A3
     gives a fully booked contract genre mask 0 (read from the code).

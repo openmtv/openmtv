@@ -61,6 +61,11 @@ const ICONS = {
   card: '<rect x="3" y="5" width="18" height="14" rx="1"/><path d="M3 9h18"/>',
   form: '<path d="M4 6h16M4 12h16M4 18h10"/>',
   up: '<path d="M6 15l6-6 6 6"/>', down: '<path d="M6 9l6 6 6-6"/>',
+  layers: '<path d="M12 3l9 5-9 5-9-5z"/><path d="M3 13l9 5 9-5"/>',
+  sliders: '<path d="M4 6h10M18 6h2M4 12h4M12 12h8M4 18h12"/><circle cx="16" cy="6" r="2"/><circle cx="10" cy="12" r="2"/><circle cx="18" cy="18" r="2"/>',
+  wrench: '<path d="M14.5 5.5a4 4 0 0 0-5 5L4 16l4 4 5.5-5.5a4 4 0 0 0 5-5l-2.5 2.5-2.5-.5-.5-2.5z"/>',
+  tape: '<rect x="3" y="6" width="18" height="12" rx="1.5"/><circle cx="8.5" cy="12" r="2"/><circle cx="15.5" cy="12" r="2"/>',
+  grip: '<circle cx="9" cy="6" r="1.2" fill="currentColor"/><circle cx="15" cy="6" r="1.2" fill="currentColor"/><circle cx="9" cy="12" r="1.2" fill="currentColor"/><circle cx="15" cy="12" r="1.2" fill="currentColor"/><circle cx="9" cy="18" r="1.2" fill="currentColor"/><circle cx="15" cy="18" r="1.2" fill="currentColor"/>',
   tv: '<rect x="3" y="6" width="18" height="13" rx="2"/><path d="M8 3l4 3 4-3"/>',
   gear: '<path d="M19.22 9.33 L22.05 10.23 L22.05 13.77 L19.22 14.67 L18.99 15.22 L20.36 17.85 L17.85 20.36 L15.22 18.99 L14.67 19.22 L13.77 22.05 L10.23 22.05 L9.33 19.22 L8.78 18.99 L6.15 20.36 L3.64 17.85 L5.01 15.22 L4.78 14.67 L1.95 13.77 L1.95 10.23 L4.78 9.33 L5.01 8.78 L3.64 6.15 L6.15 3.64 L8.78 5.01 L9.33 4.78 L10.23 1.95 L13.77 1.95 L14.67 4.78 L15.22 5.01 L17.85 3.64 L20.36 6.15 L18.99 8.78Z"/><circle cx="12" cy="12" r="3.2"/>',
   globe: '<circle cx="12" cy="12" r="9"/><path d="M3 12h18M12 3a14 14 0 0 1 0 18M12 3a14 14 0 0 0 0 18"/>',
@@ -773,7 +778,7 @@ function renderRail() {
 function playCards(tip) {
   const card = (key, cls, ic, size, sub) => h('button', { class: 'playcard' + cls + (st.section === key ? ' active' : ''), 'data-key': key, 'data-tip': tip(MODES[key].label), 'aria-label': MODES[key].label,
     onclick: () => { st.section = key; renderAll(); } }, h('span', { class: 'disc' }, icon(ic, size)), h('span', { class: 'pt' }, h('b', {}, MODES[key].label), h('span', {}, sub)));
-  return [hasMode('launcher') ? card('launcher', '', 'play', 13, T('Packs and rules')) : null,
+  return [hasMode('launcher') ? card('launcher', '', 'play', 13, T('Continue or a new game')) : null,
     hasMode('multiplayer') ? card('multiplayer', ' mpcard', 'people', 14, T('Online or in the LAN')) : null,
     hasMode('settings') ? card('settings', ' prefcard', 'gear', 15, T('Display, sound, mouse')) : null].filter(Boolean);
 }
@@ -1266,7 +1271,7 @@ const langTag = () => h('span', {}, editLang().toUpperCase());
 const inspWidth = () => ((document.getElementById('inspector') || {}).clientWidth || 330) - 28;
 const inspScale = () => Math.max(2, Math.min(4, Math.floor((inspWidth() - 32) / CARD_W)));
 const monScale = () => Math.max(2, Math.min(3, Math.floor(inspWidth() / 116)));
-let inspScales = '';
+let inspScales = { v: '', timer: null };
 addEventListener('resize', () => {
   clearTimeout(inspScales.timer);
   inspScales.timer = setTimeout(() => { if (st.data && `${inspScale()},${monScale()}` !== inspScales.v) renderEntry(); }, 150);

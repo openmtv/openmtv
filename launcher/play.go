@@ -21,7 +21,8 @@ var (
 	valued = []string{"--scale", "--aspect", "--filter", "--mouse", "--start-money", "--credit-line", "--terror-damage", "--sammy-prize", "--ai-improve", "--ad-offers", "--film-offers",
 		"--mp", "--seat", "--humans", "--difficulty", "--names", "--seed", "--knock", // (a network game: lobby.go)
 		"--mp-save", "--mp-load", // (its savegames: src/mpsave.c)
-		"--mp-key"} // (the seat's secret from the lobby: runtime/net.c)
+		"--mp-key",    // (the seat's secret from the lobby: runtime/net.c)
+		"--load-slot"} // (a saved game of the safe: src/main_loop.c)
 	optional = []string{"--cast-fit", "--fourth-speed", "--fast-rooms", "--series-topicality"} // also NAME=VALUE, never NAME VALUE
 )
 
