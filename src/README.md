@@ -103,3 +103,36 @@ arbitrary earlier stack use (`32BA:07EC`) or has not been traced
 (`193D:2424`, `32BA:1800`), `src/` uses a defined value in every mode.  The
 difftest uses the same tracking: a mismatch where the original's result
 depended on such a read is reported as `UNDEF`, not counted as a failure.
+
+### Registers read before they are set
+
+The same in registers: on some paths an original function reads SI or DI
+before it sets them, i.e. the value its caller left there (Turbo C keeps
+register variables in SI and DI; every callee saves and restores them).  The
+decompiled C has them as locals, which would be uninitialized there -- each
+compiler gave other garbage (clang: `-Wuninitialized`,
+`-Wsometimes-uninitialized`), so a game could take another path on the Mac
+than on Windows.  These locals start with the register's value on entry,
+`R.si` / `R.di`: the decompiled functions leave the CPU registers to the
+machine-level code, so under the difftest that is exactly the original's
+value, and in play the main loop's SI and DI (60 and its "button held"
+flag, game_main) -- defined, the same on every machine, but not what the
+original has where functions in between set SI or DI (as with the boss
+room's call without arguments, `rooms_people.c`).  None of these paths is
+reached in play: `room_anim_update` (`105E:17D1`, DI for an animation frame
+below 0), `room_anim_blit` (`105E:2DEF`, an area other than 1, 3..9),
+`dealer_draw_pose` (`105E:4107`, a pose outside 0xBC..0xBF),
+`room_planner_click` (`05FF:0D0E`, a dragged programme of no genre 1..11).
+Where the caller's value is known, it is used instead: `tooltip_update`
+(`14E1:000E`) reads DI in the ad agency off the folders -- 0, from
+`game_frame`, its only caller.  The one place reached in play whose value
+depends on the way in, `room_anim_update`'s SI when a room is left (the
+callers leave 0..0x41 there), takes a defined 0 (docs/CHANGES.md §2).  In
+nine AI functions `ax` gets only its low byte before use; it starts at 0 so
+that the never-read high byte is defined too (two found on 2026-11-03,
+`ai_ad_requirements` `348B:02A3` by a review and `ai_buy_script` `348B:0AAF` by
+gcc: clang does not warn where the use keeps AH, `ax = (ax & 0xFF00) | n`).
+gcc's `-Wmaybe-uninitialized` still names six `si`/`di` places (ai.c,
+building.c, main_loop.c, rooms_people.c, screens.c, one via dec.h) that clang
+does not: not looked at yet.  A new clang warning of this
+kind is a place to check the same way: `make` on the Mac shows them.

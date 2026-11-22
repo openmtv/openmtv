@@ -388,7 +388,7 @@ void ai_upgrade_ads(void) {
 
 /* 2DD9:08D1  (contract idx, hour) if the contract is over-booked in that half (today/tomorrow) and not complete: the not-complete contract with the highest minimum audience still <= estimated viewers and genre-compatible (stops at one still needing spots); returns its idx or 0 */
 u16 ai_find_better_ad(u16 a0, u16 a1) {
-    u16 ax;
+    u16 ax = 0;                        /* only AL is set before its first use: AH is never read */
     u16 di;
     u16 si;
     u32 l_4;
@@ -1250,7 +1250,7 @@ void ai_execute_purchases(void) {
             si = AT(ai_buy, l_8).slot;
             if ((AT(ai_buy, l_8).auction) != 0) {
                 l_4 = auction_at(si);
-                if (fix_on(FIX_AI_BIDS)) {
+                if (fix_on(FIX_AI_BIDS) || g_nlots > 10) {   /* (--auction-lots: always, the list has 11 places) */
                     /* one entry a lot: a lot already in the list keeps its entry, the reserve
                      * added (10 lots, 11 places); no place: no bid, the reserve back */
                     u16 base = (u16)((l_C * 0x42) + 0x756A), n = g_ai_bid_count(l_C), k = 0;
@@ -1276,7 +1276,7 @@ void ai_execute_purchases(void) {
                 AT(lot, l_4).bidder = (u8)l_C;
                 t10 = auction_increment(si);
                 AT(lot, l_4).bid = (AT(lot, l_4).bid) + t10;
-                if (!fix_on(FIX_AI_BIDS)) g_ai_bid_count(l_C) = g_ai_bid_count(l_C) + 1;
+                if (!(fix_on(FIX_AI_BIDS) || g_nlots > 10)) g_ai_bid_count(l_C) = g_ai_bid_count(l_C) + 1;
             } else {
                 dealer(si).program = 0;
                 players(l_C).money = (players(l_C).money) - (AT(ai_buy, l_8).price);
@@ -1313,7 +1313,7 @@ L_planned:
 
 /* 2DD9:20BA  (plan idx) compare auction lots (not already led by this or the other AI) at bid+increment with the same score as ai_plan_film_purchases (genre must have < 3 programs) and put a better one into the plan entry as an auction item */
 void ai_plan_auction_bid(u16 a0) {
-    u16 ax;
+    u16 ax = 0;                        /* only AL is set before its first use: AH is never read */
     int cc;
     u16 di;
     u16 si;
@@ -1342,7 +1342,7 @@ void ai_plan_auction_bid(u16 a0) {
         di = di + 1;
     }
     di = 1;
-    while (((i16)di) <= 10) {
+    while (((i16)di) <= (i16)g_nlots) {   /* 10 in the original (--auction-lots) */
         LOOP_TICK(220);
         FR16(fr_, 40, 0xE) = 0;
         FR8(fr_, 40, 0x25) = 1;
@@ -1495,7 +1495,7 @@ void ai_auction_rebid(void) {
 
 /* 2DD9:26EA  (player) daily ranking vs. the other AI and the human: image rank (+0x2B, also max deals = 2*rank), Betty love rank (gift priority), library quality/size need (film priority), reach share >28%/<20% (transmitter priority), rating rank (news/production priority, Sammy-dependent); pot percentages = base weights {5,28,14,18,35,0} * priority, normalised to 100 */
 void ai_plan_budget(u16 a0) {
-    u16 ax;
+    u16 ax = 0;                        /* only AL is set before its first use: AH is never read */
     u16 bx;
     u16 di;
     u16 si;
@@ -2026,7 +2026,7 @@ u16 library_total_blocks(u16 a0, u16 ax) {
 
 /* 2DD9:362D  (genre) ?total blocks of the AI's programs of one genre (series: genre-10); result is lost, no callers */
 void library_genre_blocks(u16 a0) {
-    u16 ax;
+    u16 ax = 0;                        /* only AL is set before its first use: AH is never read */
     u16 si;
     u8 l_1;
     u32 l_6;
@@ -2473,7 +2473,7 @@ u16 ai_next_goal(void) {
 
 /* 2DD9:4115  toggle g_ai_cur between the two computer players */
 void ai_switch(void) {
-    u16 ax;
+    u16 ax = 0;                        /* only AL is set before its first use: AH is never read */
     FUNC_TICK(7);
     if (g_ai_cur == 0) {
         ax = (((u8)((u8)(ax >> 8))) << 8) | 1;
@@ -2890,7 +2890,7 @@ L_49C4:
 
 /* 2DD9:4B84  1 if transmitter budget > 50000, time slot >= 18 and the other AI is not buying; 2 if the human is on the transmitter map (room 0x19); else 0 */
 u16 ai_want_transmitter(void) {
-    u16 ax;
+    u16 ax = 0;                        /* only AL is set before its first use: AH is never read */
     u16 bx;
     u16 es;
     u8 l_1;

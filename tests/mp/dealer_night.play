@@ -1,0 +1,2141 @@
+# tools/mpchaos.py seed 403 (two humans, classic clock), its input up to frame 83600: see dealer_night.txt
+763 key esc
+802 pointer 137 187
+828 seat 1 click 52 55
+867 seat 1 key esc
+954 click 283 96
+1006 seat 1 click 116 79
+1047 seat 1 pointer 215 161
+1077 click 59 167
+1164 seat 1 click 219 110
+1173 pointer 74 38
+1179 down 1
+1187 pointer 234 40
+1201 up 1
+1270 seat 1 pointer 139 105
+1279 pointer 312 149
+1420 click 262 109
+1428 seat 1 key esc
+1506 click 178 74
+1550 click 300 169
+1578 seat 1 key esc
+1610 click 211 2
+1734 seat 1 click 220 67
+1748 click 288 19
+1782 seat 1 click 60 23
+1815 click 39 179
+1857 seat 1 click 65 156
+1907 pointer 146 184
+1913 down 1
+1921 pointer 173 132
+1935 up 1
+2009 seat 1 click 199 85
+2057 seat 1 key esc
+2089 click 31 165
+2101 seat 1 rclick 113 11
+2205 seat 1 click 227 108
+2213 click 70 122
+2278 click 87 39
+2360 click 191 142
+2360 seat 1 click 193 147
+2428 key esc
+2456 seat 1 click 62 130
+2484 key esc
+2537 seat 1 click 24 194
+2604 click 307 120
+2655 seat 1 click 27 95
+2704 click 315 154
+2708 seat 1 pointer 105 32
+2714 seat 1 down 1
+2722 seat 1 pointer 17 152
+2736 seat 1 up 1
+2769 click 256 9
+2863 seat 1 key esc
+2913 click 21 5
+2959 seat 1 click 82 123
+3011 key esc
+3107 seat 1 click 221 66
+3115 key esc
+3243 key esc
+3256 seat 1 click 97 56
+3277 click 197 48
+3383 seat 1 click 184 94
+3406 click 117 123
+3512 click 200 11
+3513 seat 1 pointer 51 190
+3519 seat 1 down 1
+3527 seat 1 pointer 79 7
+3541 seat 1 up 1
+3587 click 51 113
+3634 click 257 172
+3682 seat 1 key esc
+3776 click 200 106
+3797 seat 1 click 217 116
+3806 key esc
+3881 rclick 314 154
+3904 seat 1 pointer 149 139
+4030 click 100 51
+4045 seat 1 click 188 102
+4090 seat 1 click 27 68
+4156 click 280 48
+4190 seat 1 click 215 126
+4248 seat 1 click 254 185
+4296 click 250 107
+4340 seat 1 rclick 130 145
+4385 click 3 107
+4463 seat 1 click 230 139
+4472 seat 1 key space
+4476 click 153 38
+4553 pointer 293 191
+4559 down 1
+4562 seat 1 key esc
+4567 pointer 157 141
+4581 up 1
+4607 seat 1 key space
+4630 seat 1 click 124 155
+4645 click 318 101
+4740 seat 1 key esc
+4790 click 306 0
+4823 seat 1 click 88 9
+4858 click 270 134
+4868 seat 1 click 188 197
+4901 seat 1 click 148 72
+4903 click 177 13
+4977 seat 1 key esc
+5002 click 200 37
+5018 seat 1 click 28 197
+5091 click 278 54
+5161 seat 1 key esc
+5166 pointer 88 135
+5172 down 1
+5180 pointer 18 169
+5194 up 1
+5214 seat 1 click 200 53
+5242 click 7 1
+5271 seat 1 pointer 120 53
+5311 seat 1 pointer 97 126
+5392 seat 1 click 127 40
+5394 click 93 196
+5448 seat 1 pointer 209 193
+5469 click 42 135
+5506 seat 1 key esc
+5562 seat 1 key esc
+5601 pointer 228 136
+5613 seat 1 key esc
+5686 click 229 193
+5716 seat 1 key esc
+5828 seat 1 click 290 47
+5838 rclick 156 6
+5893 seat 1 click 269 53
+5978 rclick 267 108
+6042 seat 1 click 223 79
+6113 key esc
+6165 click 144 8
+6194 seat 1 click 143 98
+6220 pointer 131 20
+6299 seat 1 click 15 194
+6366 pointer 140 56
+6372 down 1
+6380 pointer 7 187
+6394 up 1
+6423 seat 1 pointer 198 39
+6429 seat 1 down 1
+6431 key esc
+6437 seat 1 pointer 290 24
+6451 seat 1 up 1
+6576 click 236 1
+6590 seat 1 click 313 139
+6638 pointer 288 183
+6644 down 1
+6652 pointer 1 125
+6666 up 1
+6748 seat 1 click 179 198
+6788 key esc
+6857 seat 1 click 97 36
+6917 seat 1 click 259 9
+6947 key esc
+6985 pointer 52 17
+7018 seat 1 pointer 137 32
+7028 click 153 78
+7129 seat 1 click 153 16
+7142 click 117 141
+7222 seat 1 click 88 177
+7229 key esc
+7329 click 219 156
+7342 seat 1 click 245 2
+7381 seat 1 key esc
+7463 click 100 85
+7467 seat 1 rclick 186 84
+7538 seat 1 pointer 299 170
+7544 seat 1 down 1
+7550 key space
+7552 pointer 207 23
+7552 seat 1 pointer 78 55
+7566 seat 1 up 1
+7614 key esc
+7679 seat 1 click 236 173
+7698 pointer 29 107
+7704 down 1
+7712 pointer 13 153
+7726 up 1
+7762 pointer 36 17
+7789 seat 1 pointer 201 53
+7795 seat 1 down 1
+7803 seat 1 pointer 295 197
+7817 seat 1 up 1
+7852 click 249 126
+7933 click 68 185
+7954 seat 1 pointer 122 55
+7960 seat 1 down 1
+7968 seat 1 pointer 71 106
+7982 seat 1 up 1
+8006 key space
+8049 key esc
+8134 seat 1 click 192 35
+8173 seat 1 click 204 54
+8182 click 113 116
+8249 click 125 72
+8257 seat 1 pointer 142 149
+8358 seat 1 pointer 101 114
+8364 seat 1 down 1
+8372 seat 1 pointer 274 76
+8386 seat 1 up 1
+8404 pointer 226 87
+8459 seat 1 click 153 104
+8489 click 209 3
+8514 seat 1 click 8 84
+8555 seat 1 click 139 196
+8623 key esc
+8654 key esc
+8660 seat 1 click 250 100
+8707 seat 1 click 247 180
+8762 seat 1 pointer 199 126
+8810 key esc
+8899 key esc
+8912 seat 1 click 186 54
+9043 click 187 141
+9057 seat 1 click 255 15
+9159 seat 1 pointer 157 58
+9165 seat 1 down 1
+9173 seat 1 pointer 210 27
+9179 click 231 46
+9187 seat 1 up 1
+9235 pointer 294 154
+9292 click 22 33
+9323 seat 1 click 118 106
+9364 rclick 260 98
+9400 click 313 127
+9452 seat 1 click 42 185
+9453 key esc
+9508 click 100 47
+9551 seat 1 pointer 14 126
+9553 rclick 138 122
+9557 seat 1 down 1
+9565 seat 1 pointer 138 41
+9579 seat 1 up 1
+9597 key esc
+9611 seat 1 click 138 28
+9692 seat 1 key esc
+9723 click 95 78
+9725 seat 1 click 113 25
+9819 seat 1 click 136 160
+9835 pointer 2 92
+9841 down 1
+9849 pointer 312 117
+9863 up 1
+9908 click 100 76
+9957 click 101 174
+9973 seat 1 pointer 74 179
+10074 click 107 51
+10110 seat 1 pointer 65 145
+10149 click 59 193
+10249 click 85 199
+10266 seat 1 click 269 127
+10338 seat 1 key esc
+10382 pointer 90 64
+10388 down 1
+10396 pointer 122 185
+10410 up 1
+10440 seat 1 pointer 207 75
+10446 seat 1 down 1
+10447 key esc
+10454 seat 1 pointer 185 195
+10468 seat 1 up 1
+10527 click 11 45
+10560 key esc
+10562 seat 1 key esc
+10631 seat 1 click 70 38
+10680 click 126 0
+10701 seat 1 click 217 124
+10800 click 187 183
+10858 seat 1 click 200 52
+10904 seat 1 click 261 128
+10912 pointer 102 98
+11016 click 137 47
+11045 seat 1 click 41 78
+11062 click 153 35
+11081 seat 1 click 176 157
+11126 seat 1 pointer 188 26
+11131 click 55 110
+11177 seat 1 click 142 60
+11193 pointer 216 11
+11303 rclick 226 73
+11317 seat 1 key esc
+11374 rclick 297 171
+11458 click 6 2
+11458 seat 1 rclick 192 81
+11539 key esc
+11566 seat 1 pointer 288 127
+11601 pointer 113 164
+11641 rclick 150 194
+11717 seat 1 click 197 47
+11772 click 76 159
+11829 seat 1 pointer 296 39
+11835 seat 1 down 1
+11843 seat 1 pointer 196 27
+11857 seat 1 up 1
+11911 key esc
+12006 seat 1 key esc
+12031 click 244 118
+12141 seat 1 click 281 97
+12181 pointer 166 82
+12187 down 1
+12195 pointer 214 136
+12209 up 1
+12220 seat 1 pointer 139 145
+12280 seat 1 click 108 37
+12362 key esc
+12401 seat 1 pointer 251 102
+12448 seat 1 click 81 41
+12455 key esc
+12551 seat 1 key esc
+12575 click 17 136
+12608 click 154 32
+12613 seat 1 click 67 74
+12644 seat 1 click 242 7
+12722 seat 1 click 248 69
+12727 click 288 166
+12789 seat 1 click 283 145
+12844 click 138 1
+12857 seat 1 click 160 83
+12884 rclick 230 90
+12933 seat 1 key esc
+12997 rclick 162 54
+13000 seat 1 key esc
+13087 seat 1 click 127 10
+13126 seat 1 key esc
+13144 rclick 90 114
+13169 seat 1 click 6 144
+13248 click 200 191
+13294 seat 1 key esc
+13341 seat 1 pointer 287 5
+13391 seat 1 pointer 161 108
+13392 click 250 90
+13496 click 201 7
+13499 seat 1 click 269 183
+13580 click 105 137
+13656 seat 1 click 168 34
+13725 click 269 72
+13801 seat 1 click 287 100
+13804 click 21 57
+13891 seat 1 key esc
+13907 click 59 6
+13972 key esc
+13982 seat 1 click 307 59
+14027 click 9 20
+14133 seat 1 key esc
+14158 key esc
+14189 key esc
+14260 click 305 189
+14289 seat 1 pointer 93 70
+14295 seat 1 down 1
+14303 seat 1 pointer 88 176
+14317 seat 1 up 1
+14367 pointer 309 53
+14421 key esc
+14428 seat 1 click 252 23
+14484 pointer 36 66
+14490 down 1
+14498 pointer 306 179
+14512 up 1
+14527 seat 1 key esc
+14626 key esc
+14640 seat 1 pointer 261 109
+14646 seat 1 down 1
+14654 seat 1 pointer 142 122
+14668 seat 1 up 1
+14712 click 195 38
+14723 seat 1 rclick 85 26
+14790 seat 1 click 144 193
+14830 seat 1 click 207 176
+14851 click 81 168
+14873 seat 1 key esc
+14904 seat 1 key esc
+14926 click 256 112
+14960 seat 1 key esc
+14998 click 71 168
+14998 seat 1 click 290 117
+15144 seat 1 pointer 49 121
+15157 click 38 49
+15192 pointer 200 165
+15281 seat 1 click 288 159
+15298 key esc
+15383 click 234 129
+15422 seat 1 click 109 30
+15470 click 146 148
+15506 seat 1 click 233 141
+15555 pointer 102 79
+15620 seat 1 click 100 88
+15644 key esc
+15705 seat 1 pointer 218 145
+15764 click 174 136
+15806 seat 1 key esc
+15857 pointer 48 88
+15887 seat 1 key space
+15915 seat 1 key esc
+16008 click 252 56
+16046 seat 1 click 185 27
+16113 click 1 103
+16142 seat 1 click 194 80
+16228 click 172 135
+16269 seat 1 key esc
+16377 click 34 44
+16381 seat 1 click 100 23
+16461 seat 1 click 133 105
+16506 seat 1 key space
+16509 click 311 166
+16583 click 79 53
+16603 seat 1 click 153 26
+16645 seat 1 pointer 300 9
+16651 seat 1 down 1
+16659 seat 1 pointer 29 160
+16673 seat 1 up 1
+16721 click 204 15
+16827 seat 1 pointer 117 61
+16860 click 194 152
+16970 click 277 78
+16977 seat 1 click 200 80
+17049 click 247 80
+17080 key esc
+17095 seat 1 pointer 43 177
+17165 seat 1 click 153 29
+17207 click 102 125
+17240 seat 1 click 64 23
+17289 click 201 139
+17290 seat 1 click 204 68
+17350 click 78 75
+17378 seat 1 click 250 69
+17484 key esc
+17490 seat 1 click 214 89
+17555 click 153 49
+17634 seat 1 rclick 80 79
+17685 click 3 85
+17699 seat 1 click 257 190
+17769 click 38 122
+17852 seat 1 key esc
+17910 click 168 16
+18011 seat 1 click 75 29
+18023 click 46 69
+18127 seat 1 click 311 172
+18145 click 149 113
+18170 seat 1 click 238 117
+18216 seat 1 click 168 191
+18250 seat 1 click 29 184
+18297 pointer 281 179
+18330 seat 1 click 295 98
+18415 key esc
+18452 seat 1 click 307 190
+18466 click 155 70
+18484 seat 1 click 151 30
+18535 seat 1 click 287 176
+18594 rclick 279 115
+18639 seat 1 click 64 140
+18642 click 29 106
+18728 click 188 65
+18798 seat 1 click 190 198
+18855 click 267 56
+18898 seat 1 pointer 61 83
+18980 seat 1 click 234 182
+18985 pointer 154 16
+18991 down 1
+18999 pointer 173 91
+19013 up 1
+19123 seat 1 click 7 105
+19155 click 248 166
+19185 seat 1 click 1 41
+19227 seat 1 key esc
+19268 seat 1 click 189 32
+19297 click 70 93
+19376 seat 1 click 119 158
+19398 click 46 148
+19418 seat 1 key esc
+19491 seat 1 pointer 261 2
+19504 click 60 62
+19530 seat 1 click 152 123
+19590 pointer 84 32
+19596 down 1
+19604 pointer 242 108
+19618 up 1
+19625 seat 1 click 211 75
+19661 click 205 21
+19703 seat 1 click 100 41
+19770 click 191 118
+19808 seat 1 pointer 129 192
+19814 seat 1 down 1
+19817 key esc
+19822 seat 1 pointer 134 4
+19836 seat 1 up 1
+19881 seat 1 pointer 45 161
+19952 click 226 172
+19990 seat 1 click 127 146
+20104 key esc
+20148 seat 1 click 105 137
+20166 click 251 18
+20219 key esc
+20227 seat 1 click 116 181
+20288 key esc
+20316 seat 1 key esc
+20370 click 211 195
+20386 seat 1 click 316 25
+20430 seat 1 click 298 116
+20450 click 200 62
+20508 click 114 38
+20548 seat 1 click 216 95
+20616 seat 1 click 230 167
+20619 click 94 128
+20668 seat 1 click 220 32
+20730 seat 1 click 73 170
+20739 key esc
+20795 seat 1 pointer 85 80
+20801 seat 1 down 1
+20809 seat 1 pointer 282 21
+20823 seat 1 up 1
+20837 key esc
+20882 seat 1 click 76 112
+20932 seat 1 key esc
+20986 key esc
+21028 click 112 29
+21038 seat 1 click 100 92
+21070 click 249 144
+21142 click 91 98
+21181 seat 1 click 133 171
+21286 rclick 262 105
+21304 seat 1 click 62 0
+21374 click 197 105
+21434 seat 1 click 56 161
+21441 click 39 11
+21561 seat 1 click 33 30
+21566 pointer 252 36
+21572 down 1
+21580 pointer 183 165
+21594 up 1
+21624 click 200 84
+21687 seat 1 click 286 163
+21760 click 95 191
+21803 click 22 8
+21834 seat 1 click 291 89
+21897 seat 1 click 153 35
+21905 pointer 147 0
+21958 seat 1 key esc
+21992 seat 1 rclick 157 153
+21996 pointer 238 112
+22049 seat 1 key esc
+22148 pointer 160 117
+22153 seat 1 click 312 71
+22193 seat 1 key esc
+22198 click 139 182
+22305 seat 1 click 302 141
+22308 pointer 40 130
+22314 down 1
+22322 pointer 151 77
+22336 up 1
+22346 seat 1 click 173 93
+22390 click 153 47
+22478 seat 1 key esc
+22538 click 284 85
+22614 seat 1 click 100 72
+22655 click 72 2
+22685 click 187 142
+22773 seat 1 pointer 140 70
+22779 seat 1 down 1
+22787 click 305 30
+22787 seat 1 pointer 63 45
+22801 seat 1 up 1
+22900 key esc
+22931 seat 1 click 98 36
+22954 rclick 242 121
+23049 seat 1 rclick 35 3
+23065 click 305 186
+23111 seat 1 click 227 57
+23153 click 181 34
+23165 seat 1 click 219 79
+23195 key esc
+23201 seat 1 click 200 34
+23229 click 284 164
+23300 key space
+23308 seat 1 click 218 160
+23350 click 220 32
+23434 seat 1 click 58 13
+23471 click 148 149
+23518 key esc
+23530 seat 1 click 218 134
+23609 key esc
+23665 seat 1 pointer 86 165
+23671 seat 1 down 1
+23679 seat 1 pointer 187 138
+23693 seat 1 up 1
+23713 pointer 89 180
+23719 down 1
+23727 pointer 116 22
+23741 up 1
+23754 seat 1 click 61 154
+23855 seat 1 click 232 63
+23897 click 198 182
+23907 seat 1 click 185 157
+23935 key space
+23941 pointer 234 149
+24003 seat 1 pointer 100 9
+24050 click 150 124
+24079 seat 1 key esc
+24132 pointer 297 171
+24194 seat 1 click 142 114
+24285 click 221 109
+24340 seat 1 click 32 70
+24349 click 35 40
+24390 click 196 184
+24390 seat 1 key esc
+24457 click 237 86
+24478 seat 1 key esc
+24496 click 305 153
+24588 seat 1 click 148 178
+24593 key esc
+24632 click 160 92
+24656 seat 1 click 54 110
+24731 seat 1 click 234 127
+24751 click 239 37
+24816 seat 1 click 31 147
+24822 click 235 193
+24883 pointer 216 40
+24890 seat 1 click 183 89
+24927 click 100 62
+24993 seat 1 rclick 199 78
+25057 click 255 51
+25138 seat 1 click 112 6
+25168 click 271 166
+25229 seat 1 click 221 62
+25306 click 162 127
+25330 seat 1 click 289 153
+25443 key esc
+25473 seat 1 rclick 10 180
+25528 seat 1 key esc
+25561 rclick 216 109
+25620 key esc
+25638 seat 1 pointer 254 85
+25735 click 91 108
+25770 click 306 67
+25771 seat 1 key esc
+25803 seat 1 key esc
+25824 click 240 37
+25835 seat 1 click 112 93
+25875 seat 1 click 184 38
+25918 seat 1 pointer 110 94
+25924 pointer 314 173
+25924 seat 1 down 1
+25932 seat 1 pointer 28 124
+25946 seat 1 up 1
+25980 key esc
+26055 click 240 30
+26100 seat 1 click 98 195
+26193 pointer 38 56
+26200 seat 1 click 153 66
+26226 click 91 167
+26300 click 80 124
+26330 seat 1 click 304 150
+26361 pointer 228 127
+26482 seat 1 click 49 28
+26504 rclick 146 24
+26533 seat 1 key esc
+26580 seat 1 pointer 70 198
+26586 seat 1 down 1
+26594 seat 1 pointer 260 182
+26608 seat 1 up 1
+26628 click 93 2
+26680 seat 1 click 82 7
+26720 seat 1 pointer 277 40
+26731 click 204 29
+26765 rclick 128 153
+26804 seat 1 key esc
+26849 click 42 43
+26896 seat 1 pointer 77 66
+26902 seat 1 down 1
+26907 key esc
+26910 seat 1 pointer 68 40
+26924 seat 1 up 1
+27029 seat 1 key esc
+27066 key esc
+27101 seat 1 pointer 239 85
+27135 click 60 82
+27149 seat 1 click 225 130
+27173 click 10 162
+27236 pointer 163 45
+27238 seat 1 click 289 28
+27242 down 1
+27250 pointer 301 55
+27264 up 1
+27308 key esc
+27370 seat 1 click 296 122
+27377 click 309 21
+27421 click 53 61
+27453 seat 1 click 221 30
+27508 click 235 33
+27600 seat 1 key esc
+27642 click 132 147
+27663 seat 1 rclick 221 46
+27709 key esc
+27790 click 102 82
+27807 seat 1 click 57 122
+27897 key esc
+27909 seat 1 click 200 97
+28019 key esc
+28038 seat 1 key esc
+28053 pointer 274 197
+28086 click 248 9
+28117 click 25 172
+28125 seat 1 pointer 316 119
+28176 seat 1 click 88 161
+28211 key esc
+28276 seat 1 key esc
+28327 seat 1 click 66 170
+28355 pointer 154 52
+28361 down 1
+28369 pointer 298 89
+28383 up 1
+28436 seat 1 click 162 108
+28460 key esc
+28575 click 258 167
+28578 seat 1 click 60 87
+28628 key esc
+28645 seat 1 key esc
+28741 seat 1 click 173 116
+28743 click 50 196
+28794 seat 1 pointer 307 53
+28809 key esc
+28927 seat 1 click 117 186
+28953 click 252 9
+29025 seat 1 click 258 38
+29059 click 276 43
+29166 seat 1 key esc
+29184 pointer 54 46
+29266 pointer 82 108
+29315 seat 1 key esc
+29329 pointer 315 65
+29335 down 1
+29343 pointer 140 163
+29357 up 1
+29372 seat 1 click 144 168
+29390 pointer 46 171
+29422 seat 1 pointer 246 82
+29428 seat 1 down 1
+29429 pointer 239 187
+29436 seat 1 pointer 1 196
+29450 seat 1 up 1
+29468 click 200 56
+29530 seat 1 pointer 232 129
+29611 key esc
+29633 seat 1 click 260 89
+29707 seat 1 key esc
+29722 click 57 100
+29787 seat 1 key esc
+29796 key esc
+29874 seat 1 key esc
+29940 click 153 52
+29994 seat 1 key esc
+30025 click 75 75
+30050 seat 1 rclick 53 165
+30110 seat 1 click 175 172
+30141 pointer 204 114
+30147 down 1
+30155 pointer 75 183
+30169 up 1
+30176 seat 1 key esc
+30272 pointer 105 88
+30328 pointer 94 113
+30328 seat 1 click 68 86
+30441 seat 1 key esc
+30482 key esc
+30489 seat 1 pointer 95 128
+30495 seat 1 down 1
+30503 seat 1 pointer 71 102
+30517 seat 1 up 1
+30541 click 230 153
+30593 key esc
+30637 seat 1 key esc
+30678 key esc
+30683 seat 1 click 126 20
+30739 click 163 26
+30772 click 176 114
+30815 pointer 190 41
+30821 down 1
+30829 pointer 260 58
+30834 seat 1 click 204 9
+30843 up 1
+30886 click 73 51
+30916 seat 1 key esc
+30943 key esc
+31021 click 131 142
+31059 seat 1 click 250 65
+31115 click 172 17
+31170 seat 1 key esc
+31181 key esc
+31266 seat 1 key esc
+31318 click 7 198
+31395 seat 1 key esc
+31470 click 112 93
+31509 seat 1 click 313 147
+31615 key esc
+31655 seat 1 click 128 87
+31705 seat 1 click 196 189
+31738 key esc
+31797 key esc
+31799 seat 1 key esc
+31848 pointer 196 189
+31909 seat 1 click 291 168
+31978 seat 1 click 240 111
+32005 click 238 117
+32062 seat 1 click 200 54
+32109 seat 1 pointer 207 137
+32115 seat 1 down 1
+32123 seat 1 pointer 59 145
+32137 seat 1 up 1
+32143 pointer 51 134
+32191 seat 1 click 200 78
+32221 seat 1 click 53 5
+32270 click 240 13
+32293 seat 1 click 84 92
+32369 key esc
+32393 seat 1 key esc
+32425 click 60 140
+32492 seat 1 click 69 4
+32506 pointer 304 78
+32512 down 1
+32520 pointer 124 195
+32534 up 1
+32579 seat 1 pointer 95 15
+32622 key esc
+32642 seat 1 pointer 51 102
+32684 click 298 165
+32720 click 4 6
+32722 seat 1 click 285 84
+32810 seat 1 key esc
+32811 click 27 182
+32854 seat 1 click 60 63
+32938 seat 1 pointer 248 124
+32945 click 281 24
+33016 seat 1 key esc
+33060 seat 1 click 71 93
+33091 seat 1 pointer 236 136
+33096 click 139 125
+33097 seat 1 down 1
+33105 seat 1 pointer 238 27
+33119 seat 1 up 1
+33206 rclick 192 84
+33213 seat 1 click 253 141
+33258 click 51 4
+33299 seat 1 key esc
+33329 seat 1 key esc
+33388 seat 1 key esc
+33401 click 81 103
+33523 click 310 139
+33528 seat 1 pointer 270 172
+33616 seat 1 click 307 156
+33658 click 73 144
+33701 seat 1 rclick 177 57
+33739 key esc
+33804 click 219 187
+33820 seat 1 click 19 66
+33934 seat 1 click 149 21
+33957 rclick 87 29
+34068 seat 1 click 303 149
+34078 click 291 167
+34119 seat 1 click 233 77
+34183 seat 1 pointer 127 159
+34189 seat 1 down 1
+34197 seat 1 pointer 114 127
+34211 seat 1 up 1
+34216 pointer 115 125
+34288 seat 1 pointer 202 151
+34353 seat 1 pointer 122 111
+34364 click 289 144
+34408 seat 1 key esc
+34489 seat 1 click 248 2
+34496 pointer 137 26
+34536 seat 1 click 317 84
+34564 rclick 265 146
+34653 seat 1 click 76 177
+34683 pointer 167 192
+34715 seat 1 pointer 109 71
+34746 seat 1 click 274 114
+34766 click 0 94
+34804 click 292 59
+34861 seat 1 click 152 24
+34891 seat 1 key esc
+34898 click 100 101
+35024 seat 1 key esc
+35050 pointer 269 115
+35056 down 1
+35064 pointer 199 134
+35078 up 1
+35095 seat 1 click 226 10
+35174 rclick 157 161
+35230 seat 1 pointer 188 184
+35236 seat 1 down 1
+35244 seat 1 pointer 38 77
+35250 rclick 228 131
+35258 seat 1 up 1
+35371 rclick 14 171
+35388 seat 1 key esc
+35480 seat 1 key esc
+35486 click 219 81
+35577 click 157 49
+35600 seat 1 click 304 141
+35715 click 131 126
+35748 seat 1 click 63 168
+35752 seat 1 key space
+35790 pointer 242 71
+35796 down 1
+35804 pointer 215 54
+35818 up 1
+35839 key space
+35861 click 250 78
+35888 seat 1 click 134 188
+35893 seat 1 key space
+35896 key esc
+36001 seat 1 click 73 103
+36050 click 147 185
+36122 key space
+36144 seat 1 pointer 108 142
+36166 key esc
+36203 seat 1 rclick 118 176
+36263 seat 1 rclick 278 132
+36292 rclick 123 142
+36391 seat 1 click 66 118
+36394 key esc
+36460 seat 1 rclick 268 193
+36469 click 252 61
+36581 click 200 90
+36606 seat 1 pointer 59 46
+36612 seat 1 down 1
+36618 click 153 109
+36620 seat 1 pointer 56 103
+36634 seat 1 up 1
+36667 pointer 4 166
+36673 down 1
+36681 pointer 289 117
+36695 up 1
+36729 pointer 201 96
+36735 down 1
+36743 pointer 256 162
+36757 up 1
+36775 seat 1 rclick 19 6
+36816 seat 1 click 313 67
+36826 click 289 66
+36866 click 53 65
+36941 seat 1 click 213 25
+36999 pointer 55 98
+37025 seat 1 click 166 69
+37066 click 214 67
+37150 seat 1 key esc
+37153 click 200 73
+37284 key esc
+37302 seat 1 click 153 62
+37402 seat 1 click 57 55
+37419 click 153 87
+37435 seat 1 click 168 89
+37479 key esc
+37499 seat 1 key esc
+37509 pointer 143 48
+37515 down 1
+37523 pointer 77 191
+37537 up 1
+37543 seat 1 click 253 46
+37664 click 301 72
+37697 seat 1 click 238 72
+37714 click 139 189
+37804 pointer 260 49
+37805 seat 1 key esc
+37883 key esc
+37894 seat 1 click 297 59
+37967 seat 1 pointer 205 71
+37968 key esc
+37973 seat 1 down 1
+37981 seat 1 pointer 113 89
+37995 seat 1 up 1
+38051 seat 1 click 247 102
+38094 seat 1 click 87 104
+38115 pointer 233 152
+38121 down 1
+38129 pointer 224 78
+38143 up 1
+38196 seat 1 click 207 85
+38235 click 200 36
+38297 click 252 69
+38301 seat 1 click 142 151
+38396 click 180 108
+38432 seat 1 click 26 88
+38447 pointer 312 23
+38453 down 1
+38461 pointer 34 105
+38475 up 1
+38495 seat 1 click 153 85
+38564 rclick 142 5
+38618 seat 1 key esc
+38643 click 116 73
+38676 seat 1 click 100 43
+38694 click 147 150
+38816 seat 1 key esc
+38822 click 44 126
+38887 click 92 155
+38972 seat 1 click 199 99
+39036 click 270 1
+39107 seat 1 key esc
+39140 pointer 275 6
+39146 down 1
+39154 pointer 99 132
+39168 up 1
+39202 seat 1 rclick 7 56
+39276 seat 1 pointer 223 171
+39289 click 180 85
+39380 key esc
+39414 seat 1 click 92 1
+39424 click 15 199
+39519 click 260 127
+39532 seat 1 key esc
+39563 pointer 150 146
+39652 click 200 70
+39656 seat 1 pointer 76 28
+39712 seat 1 key esc
+39735 pointer 46 184
+39741 down 1
+39749 pointer 29 97
+39763 up 1
+39789 seat 1 click 81 5
+39855 click 292 35
+39876 seat 1 pointer 25 0
+39894 key esc
+39978 seat 1 click 306 118
+39980 click 154 195
+40065 pointer 233 90
+40108 click 91 9
+40110 seat 1 click 200 67
+40147 click 153 103
+40185 seat 1 key esc
+40218 seat 1 pointer 319 86
+40224 seat 1 down 1
+40232 seat 1 pointer 302 10
+40246 seat 1 up 1
+40255 click 271 140
+40318 key esc
+40321 seat 1 key esc
+40369 seat 1 click 60 87
+40412 click 153 106
+40441 seat 1 click 235 55
+40473 click 283 107
+40536 key esc
+40559 seat 1 key esc
+40604 click 100 168
+40657 seat 1 click 210 146
+40726 seat 1 key esc
+40762 key esc
+40836 seat 1 pointer 180 155
+40896 seat 1 click 57 77
+40904 click 185 87
+40995 seat 1 click 49 12
+41024 click 23 13
+41079 seat 1 click 21 45
+41122 seat 1 click 62 53
+41143 key esc
+41230 key esc
+41260 seat 1 click 267 59
+41375 click 60 63
+41404 seat 1 click 313 141
+41446 click 200 133
+41523 seat 1 click 250 198
+41558 click 286 53
+41628 click 250 40
+41646 seat 1 click 89 74
+41723 seat 1 key esc
+41737 click 41 170
+41783 seat 1 click 60 104
+41790 click 41 149
+41851 seat 1 click 227 48
+41881 click 100 38
+41939 click 15 80
+41957 seat 1 click 25 121
+41987 pointer 152 8
+42045 click 64 25
+42076 click 105 52
+42092 seat 1 pointer 123 51
+42227 click 287 51
+42232 seat 1 key esc
+42311 pointer 216 57
+42362 seat 1 click 149 113
+42377 pointer 65 2
+42452 seat 1 click 280 6
+42460 click 318 167
+42509 click 80 199
+42538 seat 1 click 199 182
+42597 seat 1 click 111 57
+42622 click 54 175
+42746 seat 1 pointer 300 156
+42763 click 298 121
+42800 seat 1 click 13 30
+42842 click 293 117
+42908 seat 1 click 250 99
+42909 click 247 10
+43062 seat 1 click 144 191
+43064 click 165 61
+43097 click 106 31
+43131 click 28 69
+43199 click 214 136
+43205 seat 1 click 225 84
+43265 seat 1 click 71 68
+43326 key esc
+43348 seat 1 click 250 83
+43364 click 153 42
+43395 seat 1 click 168 17
+43453 pointer 177 76
+43462 seat 1 rclick 265 51
+43500 seat 1 click 81 99
+43517 click 121 112
+43583 seat 1 click 60 63
+43621 pointer 32 54
+43664 click 291 100
+43725 seat 1 rclick 305 170
+43737 click 26 194
+43850 seat 1 click 78 99
+43881 click 107 190
+43899 seat 1 click 57 4
+44008 click 90 161
+44018 seat 1 click 123 46
+44063 key esc
+44145 seat 1 click 299 46
+44169 pointer 304 11
+44175 down 1
+44183 pointer 272 55
+44197 up 1
+44233 seat 1 pointer 319 116
+44288 seat 1 pointer 149 74
+44296 key esc
+44350 pointer 75 54
+44414 seat 1 click 125 142
+44483 click 282 143
+44510 seat 1 key space
+44515 seat 1 pointer 85 133
+44546 seat 1 click 198 76
+44605 click 198 43
+44613 seat 1 click 74 88
+44676 seat 1 key esc
+44737 key esc
+44788 seat 1 click 47 110
+44826 click 307 178
+44863 rclick 53 158
+44897 key esc
+44922 seat 1 click 262 183
+44985 click 135 174
+45063 seat 1 key esc
+45076 click 179 97
+45141 key esc
+45189 pointer 243 155
+45202 seat 1 click 158 0
+45235 key esc
+45236 seat 1 key esc
+45286 seat 1 pointer 119 109
+45305 key esc
+45349 seat 1 key space
+45415 click 97 71
+45442 seat 1 click 155 38
+45539 click 121 23
+45572 seat 1 pointer 136 169
+45666 click 158 72
+45702 seat 1 click 100 61
+45772 seat 1 click 188 16
+45824 pointer 62 48
+45830 down 1
+45838 pointer 5 48
+45852 up 1
+45853 seat 1 key esc
+45907 click 236 78
+45947 seat 1 key esc
+45986 seat 1 click 211 189
+46050 seat 1 pointer 35 134
+46057 key esc
+46131 seat 1 click 126 53
+46191 rclick 228 4
+46224 seat 1 pointer 95 78
+46230 seat 1 down 1
+46238 seat 1 pointer 67 115
+46252 seat 1 up 1
+46330 seat 1 click 32 64
+46346 click 242 163
+46448 seat 1 click 81 36
+46489 key esc
+46593 click 74 55
+46602 seat 1 click 153 98
+46638 seat 1 key esc
+46658 pointer 40 175
+46747 seat 1 key esc
+46768 click 47 74
+46815 click 195 129
+46848 seat 1 pointer 20 138
+46900 click 250 65
+46917 seat 1 rclick 227 173
+46960 key esc
+46986 seat 1 pointer 113 42
+46992 seat 1 down 1
+47000 seat 1 pointer 125 144
+47014 seat 1 up 1
+47065 click 143 149
+47080 seat 1 click 308 161
+47190 click 245 141
+47195 seat 1 key esc
+47225 pointer 169 54
+47257 click 213 40
+47305 seat 1 key esc
+47347 click 291 149
+47365 seat 1 click 230 107
+47400 click 68 10
+47420 seat 1 click 59 191
+47499 seat 1 click 198 69
+47534 pointer 307 128
+47540 down 1
+47548 pointer 53 7
+47562 up 1
+47643 pointer 300 181
+47649 down 1
+47656 seat 1 click 114 59
+47657 pointer 201 55
+47671 up 1
+47793 key esc
+47794 seat 1 pointer 280 45
+47800 seat 1 down 1
+47808 seat 1 pointer 269 154
+47822 seat 1 up 1
+47908 click 234 79
+47935 seat 1 click 201 32
+48025 click 117 1
+48081 pointer 155 70
+48083 seat 1 click 313 130
+48133 seat 1 click 298 25
+48166 click 176 103
+48201 seat 1 pointer 71 196
+48300 click 112 157
+48325 seat 1 click 46 45
+48343 click 234 4
+48464 seat 1 key esc
+48500 click 33 57
+48501 seat 1 key esc
+48532 seat 1 click 177 74
+48569 pointer 289 171
+48575 down 1
+48583 pointer 37 114
+48597 up 1
+48638 click 247 89
+48646 seat 1 click 295 111
+48691 seat 1 click 181 116
+48758 seat 1 pointer 164 105
+48759 click 64 151
+48888 seat 1 click 122 99
+48896 click 60 95
+48967 click 309 78
+48979 seat 1 click 243 19
+49009 click 310 11
+49013 seat 1 pointer 243 11
+49069 click 56 35
+49073 seat 1 key esc
+49147 seat 1 click 247 95
+49190 click 200 50
+49224 seat 1 key esc
+49285 key esc
+49328 seat 1 click 119 33
+49410 rclick 17 8
+49459 seat 1 click 194 93
+49509 seat 1 click 174 197
+49510 pointer 41 9
+49516 down 1
+49524 pointer 116 61
+49538 up 1
+49586 click 46 24
+49613 seat 1 pointer 50 197
+49704 click 85 188
+49713 seat 1 pointer 196 185
+49798 seat 1 click 70 170
+49802 click 17 99
+49863 seat 1 click 25 73
+49891 click 302 26
+49897 seat 1 click 40 130
+49959 click 207 191
+50036 seat 1 click 151 197
+50087 key esc
+50164 click 242 105
+50184 seat 1 pointer 79 134
+50190 seat 1 down 1
+50198 seat 1 pointer 207 18
+50212 seat 1 up 1
+50291 click 211 161
+50335 seat 1 click 140 132
+50364 pointer 56 118
+50427 click 99 67
+50484 seat 1 click 237 57
+50577 click 88 12
+50633 seat 1 key esc
+50666 seat 1 click 63 140
+50732 pointer 149 123
+50738 down 1
+50746 pointer 141 115
+50760 up 1
+50761 seat 1 pointer 281 117
+50849 pointer 103 152
+50855 down 1
+50863 pointer 14 53
+50877 up 1
+50903 seat 1 click 187 13
+51015 seat 1 rclick 57 32
+51016 click 262 63
+51059 seat 1 click 285 175
+51125 pointer 192 60
+51138 seat 1 click 175 53
+51170 key esc
+51227 seat 1 click 118 67
+51324 click 146 67
+51340 seat 1 key esc
+51435 key esc
+51454 seat 1 click 153 87
+51503 key esc
+51518 seat 1 rclick 105 171
+51651 seat 1 key esc
+51662 click 94 130
+51720 seat 1 rclick 209 162
+51779 click 289 83
+51809 seat 1 click 229 105
+51886 pointer 202 71
+51892 down 1
+51900 pointer 34 62
+51907 seat 1 click 16 50
+51914 up 1
+51937 seat 1 rclick 189 199
+52011 seat 1 click 200 49
+52032 pointer 173 101
+52149 click 147 89
+52149 seat 1 click 107 183
+52249 click 305 85
+52269 seat 1 click 211 146
+52358 click 230 58
+52400 seat 1 click 200 63
+52486 key esc
+52539 click 250 25
+52552 seat 1 click 171 127
+52684 click 56 168
+52708 seat 1 click 60 89
+52722 pointer 263 102
+52728 down 1
+52736 pointer 136 42
+52750 up 1
+52800 seat 1 key esc
+52803 pointer 224 88
+52899 seat 1 click 152 167
+52902 click 132 89
+52963 click 235 95
+53015 seat 1 pointer 130 97
+53039 pointer 75 134
+53045 down 1
+53053 pointer 23 163
+53059 seat 1 click 41 186
+53067 up 1
+53187 seat 1 click 1 128
+53211 pointer 195 131
+53217 down 1
+53225 pointer 285 105
+53239 up 1
+53269 seat 1 click 217 76
+53330 seat 1 key esc
+53359 pointer 311 170
+53399 seat 1 click 287 139
+53462 click 227 18
+53494 rclick 67 117
+53495 seat 1 click 250 75
+53574 pointer 39 52
+53580 down 1
+53588 pointer 235 105
+53602 up 1
+53608 seat 1 key esc
+53666 seat 1 click 55 10
+53748 click 92 197
+53759 seat 1 click 250 51
+53806 click 119 23
+53875 seat 1 pointer 5 168
+53881 seat 1 down 1
+53889 seat 1 pointer 200 13
+53903 seat 1 up 1
+53943 key esc
+54017 click 233 93
+54035 seat 1 click 250 151
+54096 click 8 4
+54175 seat 1 pointer 61 23
+54178 click 227 41
+54214 seat 1 click 44 70
+54279 key esc
+54281 seat 1 click 38 137
+54311 click 145 52
+54341 seat 1 pointer 252 107
+54347 seat 1 down 1
+54355 seat 1 pointer 255 133
+54369 seat 1 up 1
+54438 click 304 96
+54451 seat 1 click 250 35
+54553 seat 1 key esc
+54562 pointer 49 180
+54596 seat 1 rclick 127 5
+54712 seat 1 key esc
+54719 click 42 20
+54799 seat 1 pointer 76 55
+54843 click 244 180
+54876 seat 1 key esc
+54931 seat 1 click 6 90
+54944 key esc
+54983 seat 1 click 188 67
+55036 click 9 118
+55100 seat 1 pointer 177 69
+55151 click 212 113
+55218 seat 1 click 152 167
+55248 seat 1 rclick 242 53
+55260 click 257 53
+55393 seat 1 click 284 185
+55409 key esc
+55441 pointer 8 81
+55447 down 1
+55455 pointer 61 164
+55469 up 1
+55527 seat 1 pointer 268 187
+55533 seat 1 down 1
+55541 seat 1 pointer 138 92
+55555 seat 1 up 1
+55615 rclick 42 123
+55618 seat 1 click 165 120
+55653 click 203 146
+55699 seat 1 click 60 92
+55785 seat 1 click 193 123
+55812 click 187 190
+55869 click 192 33
+55928 seat 1 click 100 82
+55930 click 304 119
+55988 seat 1 click 58 73
+56025 seat 1 click 86 168
+56045 click 81 9
+56112 seat 1 click 100 107
+56199 pointer 135 130
+56247 seat 1 click 201 194
+56354 click 250 46
+56355 seat 1 click 3 30
+56436 click 207 68
+56467 seat 1 rclick 141 11
+56529 seat 1 click 60 88
+56544 click 29 76
+56618 click 1 30
+56649 seat 1 click 129 162
+56709 click 256 150
+56732 seat 1 click 153 39
+56778 click 287 169
+56873 seat 1 pointer 91 117
+56874 key esc
+56879 seat 1 down 1
+56887 seat 1 pointer 313 75
+56901 seat 1 up 1
+56906 key esc
+56951 seat 1 pointer 75 124
+56957 seat 1 down 1
+56965 seat 1 pointer 115 110
+56979 seat 1 up 1
+57037 pointer 73 94
+57043 down 1
+57051 pointer 116 27
+57065 up 1
+57088 seat 1 key esc
+57214 click 244 92
+57225 seat 1 click 82 4
+57288 click 181 98
+57328 click 107 104
+57364 seat 1 click 60 21
+57413 key esc
+57507 key esc
+57521 seat 1 key esc
+57612 click 60 104
+57633 seat 1 key esc
+57721 seat 1 rclick 249 53
+57752 key esc
+57796 click 93 194
+57845 seat 1 click 255 191
+57893 seat 1 click 260 0
+57934 pointer 121 17
+57987 seat 1 key esc
+58017 click 208 120
+58093 click 126 112
+58140 seat 1 key esc
+58187 click 222 152
+58244 pointer 277 42
+58246 seat 1 click 263 0
+58322 seat 1 key esc
+58401 key esc
+58456 click 127 29
+58467 seat 1 pointer 185 160
+58473 seat 1 down 1
+58481 seat 1 pointer 234 145
+58495 seat 1 up 1
+58511 click 170 53
+58549 key esc
+58593 seat 1 click 285 135
+58604 key esc
+58657 seat 1 pointer 160 99
+58713 pointer 77 141
+58740 seat 1 pointer 319 87
+58746 seat 1 down 1
+58754 seat 1 pointer 318 98
+58768 seat 1 up 1
+58851 pointer 57 187
+58851 seat 1 click 116 4
+58857 down 1
+58865 pointer 254 150
+58879 up 1
+58884 seat 1 key esc
+58946 key esc
+58959 seat 1 click 153 99
+59046 seat 1 click 80 135
+59097 click 290 143
+59099 seat 1 key esc
+59147 pointer 108 6
+59153 down 1
+59161 pointer 260 181
+59175 up 1
+59223 seat 1 key esc
+59253 click 126 43
+59346 seat 1 click 60 101
+59373 click 207 60
+59501 key esc
+59502 seat 1 click 153 104
+59603 seat 1 pointer 227 154
+59660 rclick 286 96
+59660 seat 1 key esc
+59746 click 29 35
+59771 seat 1 click 132 184
+59818 pointer 195 56
+59824 down 1
+59832 pointer 228 122
+59844 seat 1 click 199 27
+59846 up 1
+59919 click 118 127
+59987 seat 1 click 309 96
+60069 pointer 196 62
+60072 seat 1 key esc
+60101 click 36 112
+60142 seat 1 key space
+60184 click 187 107
+60199 seat 1 pointer 84 144
+60217 click 71 114
+60271 seat 1 click 37 85
+60286 key esc
+60391 seat 1 click 13 18
+60429 click 242 67
+60458 seat 1 key space
+60478 seat 1 click 102 183
+60561 seat 1 click 316 155
+60569 click 25 76
+60630 seat 1 click 99 41
+60680 click 60 66
+60724 seat 1 rclick 201 183
+60726 key esc
+60775 seat 1 key esc
+60854 seat 1 click 35 97
+60868 click 202 41
+60905 seat 1 click 107 76
+61007 click 100 74
+61020 seat 1 click 142 70
+61149 click 253 102
+61163 seat 1 click 200 39
+61236 seat 1 click 149 66
+61262 key esc
+61281 seat 1 pointer 266 170
+61296 key esc
+61334 key esc
+61369 click 211 16
+61397 seat 1 key esc
+61405 rclick 125 84
+61532 pointer 234 78
+61538 down 1
+61546 pointer 202 128
+61550 seat 1 click 136 117
+61560 up 1
+61596 seat 1 click 32 38
+61611 click 6 6
+61721 seat 1 pointer 184 109
+61725 click 100 36
+61761 click 285 192
+61828 click 57 3
+61870 seat 1 key esc
+61947 seat 1 pointer 290 198
+61961 click 314 35
+61993 seat 1 click 153 64
+62052 click 196 158
+62080 seat 1 pointer 56 171
+62086 seat 1 down 1
+62094 seat 1 pointer 167 15
+62108 seat 1 up 1
+62169 seat 1 click 105 141
+62187 key esc
+62265 click 153 26
+62282 seat 1 click 175 4
+62420 seat 1 key esc
+62423 click 268 32
+62495 seat 1 click 189 19
+62555 seat 1 pointer 162 60
+62561 seat 1 down 1
+62569 seat 1 pointer 26 49
+62580 click 102 182
+62583 seat 1 up 1
+62619 rclick 274 179
+62713 seat 1 click 60 21
+62745 key esc
+62779 click 177 107
+62812 pointer 290 44
+62818 down 1
+62826 pointer 251 156
+62840 up 1
+62855 seat 1 click 60 39
+62918 key esc
+62939 seat 1 pointer 74 6
+62987 seat 1 click 250 82
+62997 pointer 137 51
+63110 seat 1 pointer 281 21
+63116 seat 1 down 1
+63123 key space
+63124 seat 1 pointer 319 82
+63138 seat 1 up 1
+63141 click 148 184
+63276 seat 1 click 190 187
+63290 pointer 248 107
+63356 pointer 131 145
+63365 seat 1 pointer 83 59
+63406 seat 1 click 62 72
+63466 pointer 164 69
+63471 seat 1 key esc
+63472 down 1
+63480 pointer 143 87
+63494 up 1
+63512 seat 1 key esc
+63624 key esc
+63650 seat 1 click 273 151
+63697 key space
+63716 click 92 153
+63761 click 147 159
+63795 seat 1 click 165 190
+63854 seat 1 key esc
+63879 key esc
+63885 seat 1 key esc
+63911 key esc
+64027 seat 1 rclick 224 102
+64063 click 271 129
+64175 seat 1 pointer 158 91
+64214 click 132 31
+64229 seat 1 click 176 41
+64338 click 170 82
+64363 seat 1 click 299 74
+64414 seat 1 pointer 234 136
+64420 key esc
+64420 seat 1 down 1
+64428 seat 1 pointer 193 162
+64442 seat 1 up 1
+64480 click 111 82
+64519 pointer 226 142
+64525 down 1
+64533 pointer 277 112
+64547 up 1
+64551 seat 1 click 153 58
+64701 click 250 72
+64708 seat 1 click 153 65
+64740 key esc
+64802 seat 1 click 155 112
+64857 click 236 100
+64940 seat 1 rclick 263 133
+64964 pointer 25 196
+64970 down 1
+64978 pointer 37 40
+64992 up 1
+65036 seat 1 click 8 183
+65049 click 250 98
+65091 key esc
+65144 seat 1 key esc
+65219 rclick 218 64
+65271 seat 1 click 196 110
+65366 click 103 149
+65380 seat 1 click 106 79
+65463 key esc
+65479 seat 1 pointer 183 199
+65485 seat 1 down 1
+65493 seat 1 pointer 40 110
+65507 seat 1 up 1
+65583 click 30 53
+65629 seat 1 click 165 196
+65716 rclick 72 9
+65779 seat 1 key esc
+65832 click 107 66
+65902 seat 1 click 294 104
+65974 rclick 179 177
+66005 seat 1 rclick 58 162
+66038 click 236 0
+66102 seat 1 key esc
+66132 key esc
+66164 click 116 1
+66245 seat 1 click 200 96
+66295 key esc
+66383 seat 1 click 179 146
+66437 pointer 4 136
+66443 down 1
+66451 pointer 22 25
+66465 up 1
+66473 seat 1 click 243 89
+66559 seat 1 key esc
+66575 click 307 45
+66637 rclick 187 186
+66717 pointer 129 191
+66717 seat 1 pointer 70 134
+66762 seat 1 pointer 109 122
+66768 seat 1 down 1
+66776 seat 1 pointer 179 195
+66790 seat 1 up 1
+66812 click 60 71
+66907 seat 1 pointer 89 88
+66942 click 100 65
+67036 seat 1 click 236 109
+67090 click 200 46
+67138 seat 1 click 31 91
+67185 click 280 23
+67208 seat 1 click 108 20
+67275 seat 1 click 262 0
+67333 key esc
+67350 seat 1 click 64 171
+67372 click 207 125
+67470 rclick 144 117
+67479 seat 1 key esc
+67598 click 69 140
+67619 seat 1 click 306 128
+67634 click 68 132
+67714 pointer 207 140
+67772 seat 1 click 112 158
+67814 click 250 58
+67846 seat 1 key esc
+67901 click 132 70
+67941 seat 1 click 253 14
+67964 click 171 58
+68058 seat 1 click 186 84
+68059 click 23 26
+68121 click 267 68
+68171 seat 1 click 100 87
+68227 seat 1 key esc
+68264 key esc
+68278 seat 1 pointer 41 192
+68299 pointer 273 179
+68305 down 1
+68313 pointer 255 179
+68327 up 1
+68330 seat 1 key esc
+68382 seat 1 click 153 83
+68423 seat 1 click 41 77
+68459 click 154 55
+68536 seat 1 pointer 31 21
+68542 seat 1 down 1
+68550 seat 1 pointer 78 28
+68564 seat 1 up 1
+68571 rclick 90 144
+68649 seat 1 click 186 119
+68713 click 190 70
+68742 seat 1 key esc
+68752 click 300 199
+68790 rclick 133 118
+68886 seat 1 key esc
+68920 key esc
+68977 seat 1 click 162 128
+68999 click 152 170
+69085 seat 1 key esc
+69152 click 75 153
+69171 seat 1 click 60 53
+69224 pointer 44 65
+69290 seat 1 rclick 2 73
+69308 click 238 38
+69417 seat 1 click 281 89
+69462 pointer 64 155
+69524 seat 1 click 238 79
+69571 seat 1 pointer 6 54
+69577 seat 1 down 1
+69585 seat 1 pointer 16 31
+69598 click 156 176
+69599 seat 1 up 1
+69720 rclick 242 122
+69748 seat 1 key esc
+69769 click 250 76
+69817 key esc
+69850 seat 1 key esc
+69891 seat 1 click 169 21
+69940 click 161 136
+70006 seat 1 click 124 139
+70066 click 200 96
+70162 seat 1 pointer 313 97
+70183 key esc
+70210 seat 1 click 40 145
+70244 seat 1 click 60 40
+70289 seat 1 click 12 113
+70308 click 96 195
+70385 seat 1 click 257 142
+70417 seat 1 rclick 313 126
+70440 key esc
+70561 seat 1 click 135 94
+70582 click 250 87
+70622 seat 1 click 60 53
+70666 click 291 27
+70739 seat 1 click 248 112
+70820 click 153 168
+70874 seat 1 pointer 192 185
+70881 click 314 25
+70937 seat 1 click 7 45
+70981 click 60 101
+71013 pointer 108 80
+71019 down 1
+71027 pointer 250 199
+71041 up 1
+71071 seat 1 pointer 41 39
+71077 seat 1 down 1
+71085 seat 1 pointer 294 181
+71099 seat 1 up 1
+71184 click 200 87
+71219 seat 1 rclick 258 129
+71278 click 218 43
+71308 seat 1 click 33 28
+71322 click 235 58
+71344 seat 1 click 100 81
+71358 rclick 73 109
+71384 seat 1 pointer 258 84
+71390 seat 1 down 1
+71396 click 200 55
+71398 seat 1 pointer 66 22
+71412 seat 1 up 1
+71488 seat 1 click 95 143
+71519 seat 1 click 279 141
+71551 click 268 29
+71552 seat 1 key esc
+71626 seat 1 key esc
+71705 pointer 130 27
+71726 seat 1 click 256 28
+71758 seat 1 click 141 12
+71844 key esc
+71893 seat 1 click 60 78
+71931 seat 1 click 276 186
+71947 click 162 89
+72033 seat 1 click 200 98
+72049 click 28 27
+72097 seat 1 pointer 211 160
+72151 seat 1 click 236 186
+72195 click 95 141
+72251 seat 1 rclick 82 169
+72300 seat 1 click 76 23
+72335 pointer 56 118
+72341 down 1
+72349 pointer 24 108
+72349 seat 1 rclick 259 120
+72363 up 1
+72482 click 66 122
+72492 seat 1 click 139 165
+72587 click 294 38
+72608 seat 1 click 239 198
+72677 pointer 13 100
+72731 click 13 123
+72760 seat 1 key esc
+72860 click 165 16
+72880 seat 1 click 100 71
+72897 key esc
+72951 seat 1 click 275 156
+72988 pointer 309 193
+73059 seat 1 pointer 123 7
+73063 click 213 183
+73065 seat 1 down 1
+73073 seat 1 pointer 51 123
+73087 seat 1 up 1
+73108 click 275 191
+73196 key esc
+73222 seat 1 click 67 103
+73339 seat 1 click 318 38
+73355 click 118 69
+73398 seat 1 rclick 214 116
+73482 click 62 130
+73531 seat 1 key esc
+73546 click 120 28
+73642 pointer 223 150
+73661 seat 1 pointer 223 173
+73667 seat 1 down 1
+73675 seat 1 pointer 273 64
+73689 key esc
+73689 seat 1 up 1
+73806 key esc
+73825 seat 1 click 295 152
+73922 pointer 27 139
+73946 seat 1 key esc
+73981 pointer 39 92
+74066 seat 1 click 221 89
+74101 rclick 26 21
+74176 seat 1 click 60 44
+74206 click 11 16
+74319 seat 1 click 177 39
+74338 pointer 214 78
+74369 pointer 104 181
+74373 seat 1 click 42 169
+74375 down 1
+74383 pointer 199 171
+74397 up 1
+74425 seat 1 key esc
+74457 click 193 36
+74496 pointer 108 126
+74502 down 1
+74510 pointer 182 103
+74524 up 1
+74551 seat 1 pointer 67 2
+74557 seat 1 down 1
+74565 seat 1 pointer 195 65
+74579 seat 1 up 1
+74640 seat 1 click 240 126
+74664 click 122 146
+74720 seat 1 click 84 0
+74752 click 100 26
+74840 seat 1 click 98 88
+74866 click 210 58
+74978 key esc
+74992 seat 1 click 224 99
+75082 key esc
+75127 seat 1 pointer 15 127
+75155 click 69 28
+75211 seat 1 click 32 80
+75286 click 250 81
+75349 seat 1 key esc
+75376 pointer 247 85
+75382 down 1
+75390 pointer 78 45
+75399 seat 1 click 210 131
+75404 up 1
+75470 click 30 17
+75494 seat 1 click 302 61
+75518 pointer 314 149
+75524 down 1
+75531 seat 1 key esc
+75532 pointer 186 21
+75546 up 1
+75611 click 138 156
+75643 seat 1 click 268 129
+75720 key esc
+75777 seat 1 click 35 65
+75831 click 195 21
+75890 seat 1 click 70 153
+75977 click 102 16
+75979 seat 1 click 239 63
+76040 key esc
+76084 click 67 110
+76093 seat 1 pointer 45 22
+76099 seat 1 down 1
+76107 seat 1 pointer 128 16
+76121 seat 1 up 1
+76204 click 11 81
+76242 seat 1 key esc
+76341 seat 1 click 112 60
+76352 click 174 191
+76414 seat 1 click 225 100
+76473 seat 1 key esc
+76481 click 51 146
+76520 seat 1 click 252 1
+76538 click 206 85
+76601 seat 1 click 96 161
+76633 seat 1 key esc
+76640 pointer 76 177
+76646 down 1
+76654 pointer 42 174
+76668 up 1
+76699 seat 1 key esc
+76703 click 241 180
+76782 seat 1 click 61 59
+76827 rclick 28 135
+76879 seat 1 click 200 58
+76907 click 250 44
+77022 pointer 53 81
+77030 seat 1 click 6 139
+77099 key esc
+77178 seat 1 click 143 2
+77256 click 93 111
+77287 pointer 147 94
+77294 seat 1 key esc
+77352 click 221 147
+77385 seat 1 key esc
+77422 seat 1 key esc
+77461 seat 1 click 137 190
+77470 click 71 173
+77555 click 291 188
+77592 seat 1 click 303 62
+77628 click 74 183
+77733 seat 1 pointer 275 115
+77739 pointer 301 86
+77739 seat 1 down 1
+77745 down 1
+77747 seat 1 pointer 310 22
+77753 pointer 93 85
+77761 seat 1 up 1
+77767 up 1
+77835 click 89 51
+77912 rclick 192 191
+77917 seat 1 click 4 138
+77977 seat 1 click 192 99
+77988 rclick 316 172
+78120 key esc
+78120 seat 1 click 304 128
+78170 click 98 113
+78211 seat 1 click 216 43
+78238 key esc
+78279 key esc
+78310 seat 1 click 197 95
+78354 click 254 43
+78394 seat 1 click 60 25
+78431 rclick 113 193
+78523 rclick 71 114
+78550 seat 1 pointer 8 116
+78676 seat 1 click 44 162
+78677 pointer 247 13
+78683 down 1
+78691 pointer 311 151
+78705 up 1
+78789 seat 1 click 120 103
+78847 click 58 76
+78901 seat 1 pointer 183 44
+78952 seat 1 key esc
+78978 click 253 140
+79058 seat 1 click 122 85
+79116 key esc
+79181 seat 1 click 136 190
+79186 click 20 42
+79221 click 210 148
+79260 click 135 58
+79279 seat 1 click 300 113
+79359 seat 1 pointer 54 147
+79365 seat 1 down 1
+79373 seat 1 pointer 141 115
+79387 seat 1 up 1
+79397 click 200 62
+79400 seat 1 key space
+79448 click 250 40
+79507 seat 1 click 100 57
+79537 pointer 122 69
+79617 seat 1 pointer 106 186
+79623 seat 1 down 1
+79631 seat 1 pointer 33 136
+79645 seat 1 up 1
+79676 click 134 83
+79754 seat 1 click 249 33
+79812 seat 1 click 159 96
+79835 click 64 135
+79897 seat 1 click 250 108
+79901 seat 1 key space
+79931 seat 1 click 251 137
+79979 click 300 53
+80031 seat 1 click 153 57
+80129 click 100 52
+80135 seat 1 click 153 89
+80166 pointer 226 86
+80179 seat 1 key esc
+80218 pointer 308 137
+80224 down 1
+80232 pointer 306 187
+80246 up 1
+80254 seat 1 click 37 5
+80336 seat 1 rclick 171 150
+80381 click 54 140
+80430 rclick 310 175
+80488 seat 1 pointer 114 199
+80552 click 100 74
+80576 seat 1 click 100 64
+80592 rclick 267 110
+80720 seat 1 key esc
+80733 click 42 153
+80789 seat 1 key esc
+80826 key esc
+80909 key esc
+80941 seat 1 click 272 187
+80998 pointer 82 181
+81029 seat 1 click 300 19
+81136 click 150 90
+81136 seat 1 click 296 41
+81173 pointer 166 58
+81179 down 1
+81187 pointer 191 189
+81201 up 1
+81221 key space
+81247 seat 1 pointer 17 169
+81279 pointer 276 56
+81285 down 1
+81290 seat 1 click 90 165
+81293 pointer 99 38
+81307 up 1
+81368 click 231 142
+81395 seat 1 pointer 103 151
+81401 seat 1 down 1
+81409 seat 1 pointer 261 40
+81423 seat 1 up 1
+81483 key esc
+81509 seat 1 pointer 289 3
+81540 seat 1 click 266 68
+81594 pointer 248 151
+81644 seat 1 click 106 86
+81666 pointer 154 196
+81746 seat 1 pointer 152 24
+81765 click 190 117
+81888 seat 1 key esc
+81891 click 55 125
+81934 key space
+81937 seat 1 key esc
+82003 pointer 265 91
+82055 seat 1 click 222 105
+82087 key esc
+82161 click 200 69
+82168 seat 1 key esc
+82229 seat 1 key esc
+82273 seat 1 pointer 33 36
+82302 key esc
+82378 seat 1 key esc
+82381 click 168 151
+82411 click 295 144
+82440 seat 1 key esc
+82487 seat 1 click 184 107
+82544 click 194 132
+82558 seat 1 pointer 300 112
+82564 seat 1 down 1
+82572 seat 1 pointer 112 109
+82586 seat 1 up 1
+82645 key esc
+82701 seat 1 pointer 166 20
+82707 seat 1 down 1
+82715 seat 1 pointer 90 69
+82729 seat 1 up 1
+82776 key esc
+82790 seat 1 click 302 166
+82859 pointer 177 159
+82902 seat 1 click 250 65
+82911 pointer 58 24
+83013 click 115 15
+83033 seat 1 click 175 119
+83158 click 27 188
+83189 seat 1 click 65 61
+83314 click 158 47
+83315 seat 1 key esc
+83428 click 118 99
+83448 seat 1 click 181 123
+83514 seat 1 click 56 79
+83587 click 76 32

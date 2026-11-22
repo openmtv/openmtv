@@ -55,6 +55,10 @@ func TestRoundTrip(t *testing.T) {
 	}
 	save, _ := res.get(startSave)
 	built[startSave] = patchStartSave(save, built[0xC9], built[0xCA], built[0xCB], built[0xCC])
+	if !bytes.Equal(built[studiosBlock], save[saveStudios:saveStudios+studiosLen]) {
+		t.Errorf("the studios differ")
+	}
+	delete(built, studiosBlock)
 	for i, b := range built {
 		o, _ := res.get(i)
 		if !bytes.Equal(b, o) {
@@ -90,6 +94,9 @@ print(json.dumps(datafixes.apply(content.export(content.Resources(sys.argv[2:]))
 		got[k] = d
 	}
 	for _, tb := range tables {
+		if tb.name == "studios" { // (tools/content.py has no studios: TestStudios*)
+			continue
+		}
 		if !equal(got[tb.name], want.(obj)[tb.name]) {
 			g, _ := json.Marshal(got[tb.name])
 			w, _ := json.Marshal(want.(obj)[tb.name])

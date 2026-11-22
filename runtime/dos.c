@@ -103,7 +103,16 @@ static void err(u16 code) { R.cf = 1; R.ax = code; }
 
 /* ---- FindFirst/FindNext over the game directory ---- */
 static char find_pat[32];
-static DIR *find_dir;
+/* the matching names, sorted as DOS lists them: the original's install wrote SOURCE1.RSC
+ * before SOURCE2.RSC, and the game relies on it -- rtl_res_open_all lets a later file's
+ * resources override an earlier one's, rtl_res_create appends a savegame to the first.  The
+ * host's own order (readdir) is not that everywhere: the iPhone's file system (and tmpfs)
+ * lists SOURCE2.RSC first, so a save went into SOURCE2.RSC and the shipped slot 1 of
+ * SOURCE1.RSC, read last, covered it at the next start (the user 2026-11-03: "loading puts
+ * me back at the beginning of the day").  Case-insensitive, by name: the same on every machine. */
+static char (*find_names)[13];
+static int find_n, find_i, find_cap;
+static int find_cmp(const void *a, const void *b) { return strcasecmp((const char *)a, (const char *)b); }
 
 int dos_state_blocks(StateBlock *b) {
     int n = 0;
@@ -131,25 +140,88 @@ static int wild_match(const char *pat, const char *s) {
     return 1;
 }
 
-static int find_next_entry(void) {
+static void find_list(void) {
+    find_n = find_i = 0;
+    DIR *dir = opendir(gamedir);
     struct dirent *e;
-    while (find_dir && (e = readdir(find_dir))) {
+    while (dir && (e = readdir(dir))) {
         if (e->d_name[0] == '.') continue;
         if (strlen(e->d_name) > 12) continue;
         if (!wild_match(find_pat, e->d_name)) continue;
+        if (find_n == find_cap) {
+            int cap = find_cap ? 2 * find_cap : 16;
+            void *n = realloc(find_names, sizeof *find_names * (size_t)cap);
+            if (!n) break;
+            find_names = n;
+            find_cap = cap;
+        }
+        snprintf(find_names[find_n++], 13, "%s", e->d_name);
+    }
+    if (dir) closedir(dir);
+    if (find_n > 1) qsort(find_names, (size_t)find_n, sizeof *find_names, find_cmp);
+}
+static int find_next_entry(void) {
+    while (find_i < find_n) {
+        const char *name = find_names[find_i++];
         char path[1200]; struct stat st;
-        snprintf(path, sizeof path, "%s/%s", gamedir, e->d_name);
+        snprintf(path, sizeof path, "%s/%s", gamedir, name);
         if (stat(path, &st) || !S_ISREG(st.st_mode)) continue;
         u8 *d = dta_ptr ? dta_ptr : M + lin(PSP_SEG, 0x80);
         d[0x15] = 0x20;
         d[0x16] = 0; d[0x17] = 0; d[0x18] = 0x21; d[0x19] = 0x1A;
         d[0x1A] = (u8)st.st_size; d[0x1B] = (u8)(st.st_size >> 8); d[0x1C] = (u8)(st.st_size >> 16); d[0x1D] = (u8)(st.st_size >> 24);
         int i = 0;
-        for (; e->d_name[i] && i < 12; i++) d[0x1E + i] = (u8)toupper((u8)e->d_name[i]);
+        for (; name[i] && i < 12; i++) d[0x1E + i] = (u8)toupper((u8)name[i]);
         d[0x1E + i] = 0;
         return 1;
     }
     return 0;
+}
+
+/* Savegames left in SOURCE2.RSC by the host's order before (find_list): the slots and their
+ * names (D1h..DBh) that SOURCE2.RSC's index holds move into SOURCE1.RSC, where DOS has them --
+ * else the next save into such a slot, now appended to SOURCE1.RSC, would lie under the old
+ * one in SOURCE2.RSC again.  In DOS order SOURCE2.RSC's entry is the one the game loads (and
+ * the launcher shows), so it is the one that moves: the same save as without the move.  (Where
+ * the host listed SOURCE2.RSC first, the game loaded SOURCE1.RSC's -- the shipped slot 1 over
+ * the player's: the fault this mends.  A folder that lived on file systems of both orders may
+ * hold a later save of a slot in SOURCE1.RSC than in SOURCE2.RSC; nothing tells which is
+ * newer, and SOURCE2.RSC's wins, as it already did where SOURCE1.RSC was listed first.)
+ * Each one: the bytes appended to
+ * SOURCE1.RSC, its entry pointed at them, then SOURCE2.RSC's entry cleared (stopped in
+ * between, SOURCE2.RSC's copy is still the one read: nothing lost).  At the start, before the
+ * game opens the files; nothing to do in every game but such a one. */
+void dos_rsc_saves_tidy(void) {
+    char p1[512], p2[512];
+    if (!host_path((const u8 *)"SOURCE1.RSC", p1, sizeof p1, 1) || !host_path((const u8 *)"SOURCE2.RSC", p2, sizeof p2, 1)) return;
+    FILE *f2 = fopen(p2, "rb");
+    if (!f2) return;
+    u8 e2[6 * 600];
+    int any = 0;
+    if (fread(e2, 1, sizeof e2, f2) == sizeof e2)
+        for (int i = 0xD1; i <= 0xDB; i++) any |= e2[6 * i] | e2[6 * i + 1] | e2[6 * i + 2] | e2[6 * i + 3];
+    fclose(f2);
+    if (!any) return;                    /* (the usual case: no slot there) */
+    FILE *f1 = fopen(p1, "r+b");
+    if (!f1 || !(f2 = fopen(p2, "r+b"))) { if (f1) fclose(f1); fprintf(stderr, "[saves] %s: cannot write the game files\n", gamedir); return; }
+    static u8 buf[65536];
+    int moved = 0;
+    for (int i = 0xD1; i <= 0xDB; i++) {
+        u32 off = e2[6 * i] | e2[6 * i + 1] << 8 | e2[6 * i + 2] << 16 | (u32)e2[6 * i + 3] << 24;
+        u16 size = (u16)(e2[6 * i + 4] | e2[6 * i + 5] << 8);
+        if (!off) continue;
+        if (fseek(f2, (long)off, SEEK_SET) || fread(buf, 1, size, f2) != size) break;
+        if (fseek(f1, 0, SEEK_END)) break;
+        long end = ftell(f1);
+        if (end <= 0 || fwrite(buf, 1, size, f1) != size || fflush(f1)) break;
+        u8 e[6] = { (u8)end, (u8)(end >> 8), (u8)(end >> 16), (u8)(end >> 24), (u8)size, (u8)(size >> 8) };
+        if (fseek(f1, 6L * i, SEEK_SET) || fwrite(e, 1, 6, f1) != 6 || fflush(f1)) break;
+        static const u8 zero[6];
+        if (fseek(f2, 6L * i, SEEK_SET) || fwrite(zero, 1, 6, f2) != 6 || fflush(f2)) break;
+        moved++;
+    }
+    fclose(f1); fclose(f2);
+    if (moved) fprintf(stderr, "[saves] %d savegame entries moved from SOURCE2.RSC into SOURCE1.RSC (%s)\n", moved, gamedir);
 }
 
 int dos_snapshot_pos(long *pos, int n) {
@@ -278,8 +350,7 @@ int dos_findfirst(const u8 *pattern) {
     const char *b = strrchr(pat, '\\'); b = b ? b + 1 : pat;
     if (b[0] && b[1] == ':') b += 2;
     snprintf(find_pat, sizeof find_pat, "%s", b);
-    if (find_dir) closedir(find_dir);
-    find_dir = opendir(gamedir);
+    find_list();
     return find_next_entry() ? 0 : -18;
 }
 int dos_findnext(void) {

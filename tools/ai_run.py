@@ -5,6 +5,7 @@ play, one memory dump per game day, statistics as CSV.
     tools/ai_run.py DAYS OUTDIR [--bin build/mtv-dec] [--difficulty 1|2|3] [--no-clamp] [--stackchk]
                     [--fixes[=LIST]] [--human 1|2|3] [--offset N] [--speed 20|30|60|120]
                     [--human-plan early|steady|FILE] [--ai-improve off|normal|strong] [--ad-offers N] [--film-offers N]
+                    [--auction-lots N]
 
 Starts a new game (English, human = player 1, or the station --human names), presses Esc every 300 frames
 so dialogs that stop the clock (the boss in the morning) are dismissed, and
@@ -36,7 +37,8 @@ lines "DAY[.HOUR] MAXFEE" (HOUR 0..7 = 17:00..00:00; MAXFEE -1 / -2: the
 west / east satellite; the plans buy at 18:00).  The money is clamped as
 always, so the plan never runs out of it.  --ai-improve plays with the
 option (build/mtv-dec --ai-improve), --ad-offers N with the ad agency's
-N offers, --film-offers N with the film dealer's (10..17, build/mtv-dec).
+N offers, --film-offers N with the film dealer's (10..17), --auction-lots N
+with the auction's N lots (10..20, build/mtv-dec).
 """
 import os, sys, shutil, subprocess, argparse
 
@@ -94,6 +96,7 @@ def main():
     ap.add_argument('--ai-improve', default=None, choices=('off', 'normal', 'strong'))
     ap.add_argument('--ad-offers', type=int, default=None, choices=range(10, 18), metavar='10..17')
     ap.add_argument('--film-offers', type=int, default=None, choices=range(10, 18), metavar='10..17')
+    ap.add_argument('--auction-lots', type=int, default=None, choices=range(10, 21), metavar='10..20')
     a = ap.parse_args()
     game = os.environ.get('GAME', os.path.join(ROOT, '..'))
     out = os.path.abspath(a.outdir)
@@ -122,14 +125,15 @@ def main():
     lines.sort(key=lambda x: x[0])
     script = os.path.join(out, 'run.txt')
     with open(script, 'w') as f:
-        f.write('# tools/ai_run.py %d days, difficulty %d%s%s%s%s%s%s%s%s\n' % (a.days, a.difficulty, '' if a.no_clamp else ', human image >= 20 and money >= 0 (clamped)',
+        f.write('# tools/ai_run.py %d days, difficulty %d%s%s%s%s%s%s%s%s%s\n' % (a.days, a.difficulty, '' if a.no_clamp else ', human image >= 20 and money >= 0 (clamped)',
                                                            ', fixes ' + a.fixes if a.fixes else '',
                                                            ', human = station %d' % a.human if a.human != 1 else '',
                                                            ', speed %d' % a.speed if a.speed != 30 else '',
                                                            ', human plan ' + a.human_plan if a.human_plan else '',
                                                            ', ai-improve ' + a.ai_improve if a.ai_improve else '',
                                                            ', ad offers %d' % a.ad_offers if a.ad_offers else '',
-                                                           ', film offers %d' % a.film_offers if a.film_offers else ''))
+                                                           ', film offers %d' % a.film_offers if a.film_offers else '',
+                                                           ', auction lots %d' % a.auction_lots if a.auction_lots else ''))
         f.writelines('%d %s\n' % l for l in lines)
         if a.human_plan:
             f.writelines('@%d.%d txbuy %d %d\n' % (d, h, a.human, fee) for d, h, fee in human_plan(a.human_plan, a.days))
@@ -153,6 +157,8 @@ def main():
         cmd.append('--ad-offers=%d' % a.ad_offers)
     if a.film_offers:
         cmd.append('--film-offers=%d' % a.film_offers)
+    if a.auction_lots:
+        cmd.append('--auction-lots=%d' % a.auction_lots)
     with open(os.path.join(out, 'log.txt'), 'w') as log:
         subprocess.run(cmd, stdout=log, stderr=subprocess.STDOUT, check=False)
     with open(os.path.join(out, 'stats.csv'), 'w') as f:

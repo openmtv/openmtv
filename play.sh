@@ -46,6 +46,8 @@
 #                             loading wait (the decompiled build only)
 #   --series-topicality[=yes|no]   the series card shows how topical the series still is,
 #                             a bar as on the film card (the decompiled build only)
+#   --original-screenplays[=yes|no]   the original's 23 unfinished screenplays (shows 25-33,
+#                             series 37-50) filled and offered by the agency (the decompiled build only)
 #   --cast-fit[=yes|no]       the production shop shows each actor's fit for the role
 #                             picked, in per cent, instead of the three bars (the
 #                             decompiled build only)
@@ -56,6 +58,8 @@
 #                             (the original: 10; the decompiled build only)
 #   --film-offers=N           the films and series the film dealer offers at a time, 10 to 17
 #                             (the original: 10; the decompiled build only)
+#   --auction-lots=N          the lots of the film auction at a time, 10 to 20 (the original:
+#                             10; from 11 a second page of the board; the decompiled build only)
 #   --settings=FILE           another settings file
 #   ./play.sh --mod NAME      play the mod mods/NAME (made in the content editor); its
 #                             game files are built into build/mods/NAME

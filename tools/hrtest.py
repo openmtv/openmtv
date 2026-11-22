@@ -13,8 +13,9 @@ on the decompiled build and the logical clock:
    original's own (the intro, tools/hrsurvey.py's measurement), with the
    real rules as well;
 3. our own pixel writers with the player's options (tools/castfittest.py's
-   game: role fit; --film-offers=17, --fixes: the tower sign) leave no pixel
-   without a valid cell after the intro;
+   game: role fit; --film-offers=17, --fixes: the tower sign; --auction-lots=20:
+   the auction board's second page and its tab) leave no pixel without a valid
+   cell after the intro;
 4. a network game (tests/mp/ad_agency.txt: two humans, --seats 2): the same
    game with and without --filter hr-pixel, and every seat's screen keeps its
    cells through the seat switches (runtime/seat.c, src/hr.c hr_seat_*):
@@ -97,15 +98,24 @@ def check(job):
 
 
 def own_writers(tmp):
-    """the role fit, 17 film offers and the tower sign: no pixel without a cell after the intro"""
+    """the role fit, 17 film offers, the tower sign and the auction's tab: no pixel without a cell after the intro"""
     sys.path.insert(0, HERE)
     import castfittest
     path = os.path.join(tmp, 'castfit.txt')
     open(path, 'w').write(castfittest.SCRIPT.format(d=tmp))
+    # the auction's board, both pages, a bid, the board closed and the agency left
+    # (tests/fixes/auction_lots up to frame 4890: a fix test has no quit -- tools/fixtest.py
+    # ends it --, and its night after it is not the board's: the TV monitor's corner at the
+    # day change lacks cells for a few frames with or without the option)
+    auction = os.path.join(tmp, 'auction.txt')
+    with open(os.path.join(ROOT, 'tests', 'fixes', 'auction_lots.txt')) as f:
+        keep = [l for l in f.read().split('\n') if l.strip() and (l.startswith('#') or int(l.split()[0]) < 4890)]
+    open(auction, 'w').write('\n'.join(keep + ['4890 quit']) + '\n')
     errs = []
     for name, script, lang, extra in (('castfit', path, 'd', ['--cast-fit']),
                                       ('dealer', os.path.join(ROOT, 'tests', 'scenarios', 'room_dealer_buy.txt'), 'e',
-                                       ['--film-offers=17', '--fixes'])):
+                                       ['--film-offers=17', '--fixes']),
+                                      ('auction', auction, 'e', ['--auction-lots=20', '--logical-time'])):
         rc, out, err = run(script, lang, ['--filter', 'hr-pixel'] + extra, {'HR_SELFTEST': '1'})
         _, inv = selftest(err)
         if rc or inv is None:

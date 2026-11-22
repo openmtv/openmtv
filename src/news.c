@@ -8,6 +8,7 @@
  */
 #include "game.h"
 #include "seat.h"
+#include "fixes.h"
 
 /* A table resource with more bytes than the records the game has room for (films,
  * series, ads: state.c table_count; the others: the original's fixed counts) -- a
@@ -479,7 +480,7 @@ void auction_commit_bids(void) {
     u32 t1;
     FUNC_TICK(8);
     l_6 = 1;
-    while (((i16)l_6) <= 10) {
+    while (((i16)l_6) <= (i16)g_nlots) {   /* 10 in the original (--auction-lots) */
         LOOP_TICK(24);
         l_4 = auction_at(l_6);
         if (((i8)(AT(lot, l_4).bidder)) < 0) {
@@ -735,7 +736,7 @@ u32 money_available(u16 a0) {
         l_A = l_A + 1;
     }
     l_A = 1;
-    while (((i16)l_A) <= 10) {
+    while (((i16)l_A) <= (i16)g_nlots) {   /* 10 in the original (--auction-lots) */
         LOOP_TICK(40);
         l_4 = auction_at(l_A);
         if ((AT(lot, l_4).program) != 0) {
@@ -788,6 +789,13 @@ void program_withdraw(u16 a0) {
                     l_2 = l_2 + 1;
                 }
                 library_count(l_8, l_4) = library_count(l_8, l_4) - 1;
+                /* ORIGINAL BUG (fix "planner-row"): the shift above copies one slot
+                 * past the shelf's last programme into the freed slot -- from a full
+                 * shelf (4) the next genre's first programme, for series (genre 11)
+                 * the counts of genres 0 and 1 (e.g. 0x0200 = series 512).  Only the
+                 * planner's list reads it (room_planner_click 05FF:0D0E takes a click
+                 * on an empty row as that slot).  Fixed: the freed slot is 0. */
+                if (fix_on(FIX_PLANNER_ROW)) library_items(l_8, l_4, library_count(l_8, l_4)) = 0;
             }
             l_6 = l_6 + 1;
         }

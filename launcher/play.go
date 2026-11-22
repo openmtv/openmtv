@@ -17,13 +17,13 @@ import (
 
 // display and input options passed on to the game: alone, NAME=VALUE, or NAME VALUE
 var (
-	flags  = []string{"--fullscreen", "--integer", "--cast-fit", "--fourth-speed", "--fast-rooms", "--series-topicality", "--new-game"}
-	valued = []string{"--scale", "--aspect", "--filter", "--mouse", "--start-money", "--credit-line", "--terror-damage", "--sammy-prize", "--ai-improve", "--ad-offers", "--film-offers",
+	flags  = []string{"--fullscreen", "--integer", "--cast-fit", "--fourth-speed", "--skip-intro", "--tv-back", "--fast-rooms", "--series-topicality", "--original-screenplays", "--new-game"}
+	valued = []string{"--scale", "--aspect", "--filter", "--mouse", "--start-money", "--credit-line", "--terror-damage", "--sammy-prize", "--ai-improve", "--ad-offers", "--film-offers", "--auction-lots",
 		"--mp", "--seat", "--humans", "--difficulty", "--names", "--seed", "--knock", // (a network game: lobby.go)
 		"--mp-save", "--mp-load", // (its savegames: src/mpsave.c)
 		"--mp-key",    // (the seat's secret from the lobby: runtime/net.c)
 		"--load-slot"} // (a saved game of the safe: src/main_loop.c)
-	optional = []string{"--cast-fit", "--fourth-speed", "--fast-rooms", "--series-topicality"} // also NAME=VALUE, never NAME VALUE
+	optional = []string{"--cast-fit", "--fourth-speed", "--skip-intro", "--tv-back", "--fast-rooms", "--series-topicality", "--original-screenplays"} // also NAME=VALUE, never NAME VALUE
 )
 
 // program: build/NAME (build/NAME.exe on Windows)
@@ -325,7 +325,7 @@ func prepareStart(args []string, built, intro bool) ([]string, error) {
 		cmd := append(append([]string{program("mtv"), "--game", gamedir}, lang...), o.settings)
 		return append(cmd, o.opts...), nil
 	}
-	if !exists(program("mtv-dec")) {
+	if inProcess == nil && !exists(program("mtv-dec")) {
 		rel, _ := filepath.Rel(root, program("mtv-dec"))
 		if windows {
 			return nil, fmt.Errorf("the game: %s is not built yet (make win)", rel)

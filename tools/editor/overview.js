@@ -33,6 +33,7 @@ function renderOverview(w, ins) {
       try {
         const info = await api('POST', `/api/mods/${st.mod}/info`, { title: title.value.trim() || st.mod, description: desc.value });
         st.mods = st.mods.map((x) => (x.name === st.mod ? info : x));
+        renderAll();                     /* (the new title everywhere: the head, every list of packs) */
         status(T('Pack title and description saved.'), 'ok');
       } catch (e) { status(e.message, 'err'); }
     };
@@ -56,7 +57,7 @@ function renderOverview(w, ins) {
       const d = o ? diffs(sec, r) : [];
       per.append(h('div', { class: 'erow' }, h('button', { class: 'link', onclick: () => go(sec.key, r.id, { view: 'list' }) }, `#${r.id}`), h('span', { class: 'et' }, titleOf(sec, r)),
         h('span', { class: 'ed' }, o ? d.slice(0, 4).map((x) => `${x.label} ${x.from} -> ${x.to}`).join('; ') + (d.length > 4 ? '; ' + T('{n} more', { n: d.length - 4 }) : '') : T('added in this pack')),
-        o ? h('button', { class: 'plate small white', 'data-revert': `${sec.key}-${r.id}`, onclick: () => { const recs = st.data[sec.table].records; recs[recs.indexOf(r)] = clone(o); markDirty([sec.table]); renderEntry(); status(T('#{id} is the original again.', { id: r.id })); } }, T('Revert')) : h('span')));
+        o ? h('button', { class: 'plate small white', 'data-revert': `${sec.key}-${r.id}`, onclick: () => { toOriginal(sec, r); renderEntry(); status(T('#{id} is the original again.', { id: r.id })); } }, T('Revert')) : h('span')));
     }
   }
   page.append(tiles, h('section', { class: 'box' }, h('div', { class: 'boxtitle' }, T('Changes against the original')),

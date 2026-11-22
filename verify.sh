@@ -31,6 +31,10 @@
 #     4x enlargement, no more pixels without a cell than the original's own
 # 18. the AI pictures (tools/kitest.py, without a model; where Pillow and numpy are): mtv-dec --make-ki
 #     makes what tools/hrai.py makes, and a set is display only (a network game with and without one)
+# 20. the rule "Unfertige Drehbuecher integrieren" (tools/origscriptstest.py): the original's unfinished screenplays
+#     filled and offered, their card's text, savegames with and without them in both directions
+# 21. a single player's savegame carries its rules (tools/saverulestest.py): saved with them, loaded in a game
+#     started without them (--load-slot and the setup's "Load game"), a tape without them, another build's line
 set -e
 cd "$(dirname "$0")"
 make -s build/mtv build/mtv-dec build/mtv-intro build/mmpx4 GENCFLAGS="-O1 -Igen"
@@ -39,8 +43,8 @@ GO_BUILT=
 if [ "$1" != "--quick" ] && command -v "${GO:-go}" >/dev/null 2>&1 && make -s launcher; then GO_BUILT=1; fi
 # steps 4-8 use their own temporary game directories: start them now
 # (and stop them if an earlier step fails)
-P4= P5= P6= P7= P8= P9= P10= P11= P12= P13= P14= P15= P17= P18= P19=
-trap '[ -n "$P4$P5$P6$P7$P8$P9$P10$P11$P12$P13$P14$P15$P17$P18$P19" ] && kill $P4 $P5 $P6 $P7 $P8 $P9 $P10 $P11 $P12 $P13 $P14 $P15 $P17 $P18 $P19 2>/dev/null; true' EXIT
+P4= P5= P6= P7= P8= P9= P10= P11= P12= P13= P14= P15= P17= P18= P19= P20= P21=
+trap '[ -n "$P4$P5$P6$P7$P8$P9$P10$P11$P12$P13$P14$P15$P17$P18$P19$P20$P21" ] && kill $P4 $P5 $P6 $P7 $P8 $P9 $P10 $P11 $P12 $P13 $P14 $P15 $P17 $P18 $P19 $P20 $P21 2>/dev/null; true' EXIT
 if [ "$1" != "--quick" ]; then
   if [ -d tests/scenarios ] && ls tests/scenarios/*.txt >/dev/null 2>&1; then
     python3 tools/scenario.py check > build/v_scenarios.log 2>&1 & P4=$!
@@ -59,6 +63,8 @@ if [ "$1" != "--quick" ]; then
   python3 tools/sertoptest.py > build/v_sertop.log 2>&1 & P15=$!
   python3 tools/hrtest.py > build/v_hr.log 2>&1 & P17=$!
   python3 tools/loadslottest.py > build/v_loadslot.log 2>&1 & P19=$!
+  python3 tools/origscriptstest.py > build/v_origscripts.log 2>&1 & P20=$!
+  python3 tools/saverulestest.py > build/v_saverules.log 2>&1 & P21=$!
   if python3 -c 'import numpy, PIL' 2>/dev/null; then python3 tools/kitest.py > build/v_ki.log 2>&1 & P18=$!; fi
   if [ -n "$GO_BUILT" ]; then
     sh -c 'python3 tools/playtest.py && python3 tools/buildtest.py && python3 tools/launchertest.py && python3 tools/lobbytest.py && python3 tools/mpedgetest.py' > build/v_launcher.log 2>&1 & P13=$!
@@ -150,5 +156,13 @@ if [ -n "$P19" ]; then
   if wait $P19; then tail -1 build/v_loadslot.log; echo "[19] a saved game of the safe straight from the start (--load-slot), as the setup loads it"
   else cat build/v_loadslot.log; echo "[19] FAIL"; RC=1; fi
 fi
-P4= P5= P6= P7= P8= P9= P10= P11= P12= P13= P14= P15= P17= P18= P19=
+if [ -n "$P20" ]; then
+  if wait $P20; then cat build/v_origscripts.log; echo "[20] the original's unfinished screenplays playable (the rule), savegames both ways"
+  else cat build/v_origscripts.log; echo "[20] FAIL"; RC=1; fi
+fi
+if [ -n "$P21" ]; then
+  if wait $P21; then tail -1 build/v_saverules.log; echo "[21] a single player's savegame carries its rules, a load plays on with them"
+  else cat build/v_saverules.log; echo "[21] FAIL"; RC=1; fi
+fi
+P4= P5= P6= P7= P8= P9= P10= P11= P12= P13= P14= P15= P17= P18= P19= P20= P21=
 exit $RC

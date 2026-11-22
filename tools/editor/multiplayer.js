@@ -21,7 +21,7 @@
  * list asked for by itself) and brings its own second player (/api/mp/bot). */
 'use strict';
 st.mp = st.mp || { snap: null, found: null, rooms: null, finding: false, listAt: 0, listErr: null, where: 'internet', address: '', code: '', listed: true,
-  sig: '', err: null, timer: null, fixGroup: 0, onlyChanged: false, building: false, packs: null, saves: null, saveOpen: {}, saveMore: {}, saveMenu: null };
+  sig: '', err: null, timer: null, fixGroup: 0, building: false, packs: null, saves: null, saveOpen: {}, saveMore: {}, saveMenu: null };
 const MP_NAME_KEY = 'madtv-mp-name', MP_PACKS_KEY = 'madtv-mp-packs', MP_DIFF_KEY = 'madtv-mp-difficulty', MP_KNOCK_KEY = 'madtv-mp-knock', MP_SERVER_KEY = 'madtv-mp-server';
 const mpDry = () => new URLSearchParams(location.search).has('selftest');
 const cleanMpName = (v) => String(v || '').replace(/[^\x20-\x7e]|,/g, '').slice(0, 8);
@@ -68,7 +68,8 @@ function mpDefaults() {
     speed4: sv('game', 'fourth_speed', true) === 'yes', aiimp: sv('game', 'ai_improve', true) || 'off', money: Number(sv('game', 'start_money', true) || 200000),
     credit: sv('game', 'credit_line', true) === CREDIT_ORIGINAL ? 0 : Number(sv('game', 'credit_line', true) || 700000), terror: Number(sv('game', 'terror_damage', true) ?? 50000),
     sammy: SAMMY_KEYS.map((k) => Number(sv('game', k, true) ?? 0)), offers: Number(sv('game', 'ad_offers', true) || 10),
-    filmoffers: Number(sv('game', 'film_offers', true) || 10), sertop: sv('game', 'series_topicality', true) !== 'no', knock: mpKnock(), castfit: sv('display', 'cast_fit', true) === 'yes' };
+    filmoffers: Number(sv('game', 'film_offers', true) || 10), lots: Number(sv('game', 'auction_lots', true) || 10), sertop: sv('game', 'series_topicality', true) !== 'no',
+    origscripts: sv('game', 'original_screenplays', true) === 'yes', knock: mpKnock(), castfit: sv('display', 'cast_fit', true) === 'yes' };
 }
 /* the host changes the game: in the lobby, and kept for the next one */
 function mpGameSet(changes) {
@@ -77,9 +78,11 @@ function mpGameSet(changes) {
   if ('fixes' in changes) keep.fixes = changes.fixes;
   if ('speed4' in changes) keep.fourth_speed = changes.speed4 ? 'yes' : 'no';
   if ('sertop' in changes) keep.series_topicality = changes.sertop ? 'yes' : 'no';
+  if ('origscripts' in changes) keep.original_screenplays = changes.origscripts ? 'yes' : 'no';
   if ('aiimp' in changes) keep.ai_improve = changes.aiimp;
   if ('offers' in changes) keep.ad_offers = String(changes.offers);
   if ('filmoffers' in changes) keep.film_offers = String(changes.filmoffers);
+  if ('lots' in changes) keep.auction_lots = String(changes.lots);
   if ('money' in changes) keep.start_money = String(changes.money);
   if ('credit' in changes) keep.credit_line = changes.credit === 0 ? CREDIT_ORIGINAL : String(changes.credit);   /* 0: the original's credit system */
   if ('terror' in changes) keep.terror_damage = String(changes.terror);
@@ -164,6 +167,17 @@ async function mpCall(what, body) {
     return true;
   } catch (e) { status(e.message, 'err'); return false; } finally { renderEntry(); }
 }
+/* a guest keeps the host's pack NAME (null: all of them) among its own packs */
+async function mpKeep(name) {
+  try {
+    const r = await api('POST', '/api/mp/keep', name ? { name } : {});
+    st.mp.snap = r.lobby;
+    st.mods = await api('GET', '/api/mods');
+    const renamed = r.kept.filter((k) => k.as !== k.name).map((k) => packTitle(k.as));
+    status(renamed.length ? T('Kept: another pack of that name is yours, so it is now "{list}".', { list: renamed.join('", "') })
+      : TP(r.kept.length, 'Kept: the pack is among your packs now.', 'Kept: {n} packs are among your packs now.'), 'ok');
+  } catch (e) { status(e.message, 'err'); } finally { renderEntry(); }
+}
 async function mpRefresh() {
   try { st.mp.snap = await api('GET', '/api/mp'); } catch (e) { return; }
   const e = st.mp.snap.error;
@@ -177,7 +191,7 @@ function mpPoll() {
   st.mp.timer = setInterval(async () => {
     if (st.section !== 'multiplayer') { clearInterval(st.mp.timer); st.mp.timer = null; return; }
     await mpRefresh();
-    const s = st.mp.snap, sig = JSON.stringify([s.role, s.state, s.mods, s.save, s.go, s.connected]);
+    const s = st.mp.snap, sig = JSON.stringify([s.role, s.state, s.mods, s.save, s.go, s.connected, s.offer]);
     const typing = document.activeElement && document.activeElement.closest('#work, #inspector') && ['INPUT', 'SELECT'].includes(document.activeElement.tagName);
     if (sig !== st.mp.sig && !typing) { st.mp.sig = sig; renderEntry(); }
     if (!mpDry()) mpList(false);
@@ -572,9 +586,9 @@ function renderLobby(w) {
    -- the host changes them, the others see them (a savegame fixes most of them) */
 function lobbyTabs(g, isHost, saved, classicOn, keptFx, check) {
   const s = st.mp.snap, set = g.settings, host = mpHostP();
-  const cur = (key) => (key === 'castfit' ? !!set.castfit : key === 'sertop' ? set.sertop !== false : set[key]);   /* (a server without the key: castfit unset = No, sertop unset = Yes, as the games start) */
+  const cur = (key) => (key === 'castfit' || key === 'origscripts' ? !!set[key] : key === 'sertop' ? set.sertop !== false : set[key]);   /* (a server without the key: castfit unset = No, sertop unset = Yes, as the games start) */
   /* what a savegame holds: its value shown, locked (the difficulty and the start money: "the savegame's") */
-  const SAVED = ['difficulty', 'speed4', 'aiimp', 'offers', 'filmoffers', 'money', 'credit', 'terror', 'sammy'];
+  const SAVED = ['difficulty', 'speed4', 'aiimp', 'offers', 'filmoffers', 'lots', 'origscripts', 'money', 'credit', 'terror', 'sammy'];
   const fixed = (k) => !!saved && SAVED.includes(k);
   const seg = (key, opts) => h('div', { class: 'seg', role: 'group', 'data-mpset': key },
     ...opts.map(([v, label]) => h('button', { class: cur(key) === v ? 'on' : '', 'data-value': String(v), disabled: !isHost || fixed(key), 'aria-pressed': cur(key) === v ? 'true' : 'false', onclick: () => mpGameSet({ [key]: v }) }, label)));
@@ -604,8 +618,10 @@ function lobbyTabs(g, isHost, saved, classicOn, keptFx, check) {
     [[T('Shops'), [
       row('offers', T('Ad offers'), adOffersHelp(), adOffers(typeof set.offers === 'number' ? set.offers : 10, may ? (v) => mpGameSet({ offers: v }) : null, 'data-mpset', 'offers'), (set.offers || 10) === 10, '10', { offers: 10 }),
       row('filmoffers', T('Film offers'), filmOffersHelp(), filmOffers(typeof set.filmoffers === 'number' ? set.filmoffers : 10, may ? (v) => mpGameSet({ filmoffers: v }) : null, 'data-mpset', 'filmoffers'), (set.filmoffers || 10) === 10, '10', { filmoffers: 10 }),
+      row('lots', T('Auction lots'), auctionLotsHelp(), auctionLots(typeof set.lots === 'number' ? set.lots : 10, may ? (v) => mpGameSet({ lots: v }) : null, 'data-mpset', 'lots'), (set.lots || 10) === 10, '10', { lots: 10 }),
       row('castfit', T('Role fit in the shop'), castFitHelp() + ' ' + T('In a network game the host chooses it, the same for everyone.'), seg('castfit', yn), !cur('castfit'), T('No'), { castfit: false }),
-      row('sertop', T('Series topicality'), T('The series card shows how topical the series still is: a bar as on the film card, over all its episodes (also with Classic). No: the original\'s card.'), seg('sertop', yn), cur('sertop'), T('Yes'), { sertop: true })]],
+      row('sertop', T('Series topicality'), T('The series card shows how topical the series still is: a bar as on the film card, over all its episodes (also with Classic). No: the original\'s card.'), seg('sertop', yn), cur('sertop'), T('Yes'), { sertop: true }),
+      row('origscripts', T('Include unfinished screenplays'), T('Yes: the 23 screenplays the original left unfinished -- the shows 25-33 and the series 37-50 -- are completed (roles, shopping lists, prices) and the screenplay agency offers them (also with Classic); the editor shows them so. No: as in 1991, the agency never offers them.'), seg('origscripts', yn), !cur('origscripts'), T('No'), { origscripts: false })]],
     [T('Network game'), [row('knock', T('Knocking'), T('The film dealer, the ad agency and the supermarket take one at a time. Who finds a player inside knocks: that player has this many game minutes (at normal speed one is two seconds), then the room is the knocker\'s. Off: whoever is inside stays as long as they like.'),
       seg('knock', KNOCK_CHOICES.map((n) => [n, n ? T('{n} min', { n }) : T('Off')])), (set.knock ?? 15) === 15, T('{n} min', { n: 15 }), { knock: 15 })]],
     [T('Events and prizes'), [
@@ -630,12 +646,23 @@ function lobbyTabs(g, isHost, saved, classicOn, keptFx, check) {
     : h('div', { class: 'hint' + (['ok', 'building', 'fetching'].includes(mods.status) ? '' : ' err'), 'data-mp': 'mods' },
       { fetching: T('Fetching the host\'s content packs ...'), building: T('Building the host\'s content packs ...'), ok: T('Content packs built here: the same as the host\'s.'),
         differ: T('Content packs built, but the files differ from the host\'s: other original game files?'), failed: T('The content packs could not be built: {why}', { why: mods.msg }) }[mods.status] || '');
+  /* a guest: the host's packs themselves (sharepacks.go) -- kept among one's own packs on a click */
+  const offer = !isHost && !saved ? s.offer || [] : [], keepable = offer.filter((o) => o.state === 'new' || o.state === 'differs');
+  const offerRow = (o) => h('li', { 'data-mpoffer': o.name }, h('span', {}, o.title),
+    o.state === 'same' ? h('span', { class: 'pill green', 'data-tip': T('You have this pack, file for file.') }, icon('ok', 12), T('yours too'))
+      : o.state === 'bad' ? h('span', { class: 'pill dark' }, T('cannot be read here'))
+        : h('button', { class: 'plate small white', 'data-mpkeep': o.name, onclick: () => mpKeep(o.name),
+          'data-tip': o.state === 'differs' ? T('You have another pack of that name: this one is kept beside it, the host\'s name in its title.') : T('Keep it among your packs: to play it alone, change it in the editor or host with it later.') },
+        icon('download', 13), T('Keep')));
   const packsPanel = () => h('div', { class: 'gpanel packspanel' },
     h('div', { class: 'pcol mppacks' },
       ...(isHost && !saved ? packRows({ packs: mpPacks(), select: setMpPacks, manage: false, attr: 'data-mppack', moveAttr: 'data-mpmove', disabled: st.mp.building })
         : [h('div', { class: 'h3' }, T('Packs of this game'), h('span', { class: 'hint' }, saved ? T('The savegame\'s packs: its game was played with them.') : T('as the host chooses'))),
-          h('ol', { class: 'mppacklist', 'data-mpset': 'packs' }, h('li', { class: 'base' }, T('The original game')), ...titles.map((t) => h('li', {}, t)))]),
-      st.mp.building ? h('div', { class: 'hint', 'data-mp': 'building' }, T('Building the content packs ...')) : built),
+          h('ol', { class: 'mppacklist', 'data-mpset': 'packs' }, h('li', { class: 'base' }, T('The original game')), ...(offer.length ? offer.map(offerRow) : titles.map((t) => h('li', {}, t)))),
+          keepable.length > 1 ? h('button', { class: 'plate small white', 'data-mpkeep': 'all', onclick: () => mpKeep(null) }, icon('download', 14), T('Keep all')) : null]),
+      st.mp.building ? h('div', { class: 'hint', 'data-mp': 'building' }, T('Building the content packs ...')) : built,
+      !st.mp.building && !saved && mods.status === 'ok' && (mods.studios || []).length ? h('button', { class: 'plate small white', 'data-mp': 'studios',   /* (a saved game keeps its building) */
+        onclick: () => dialog(T('Studios in the building'), studioOverview(mods.studios, { head: false }), [[T('Close'), 'white']]) }, icon('building', 14), T('Look at the studios')) : null),
     h('div', { class: 'scol' },
       h('div', { class: 'h3' }, T('On the machines'), h('span', { class: 'hint' }, T('every machine builds them from its own original game files; the files must come out the same'))),
       ...g.players.map((p) => h('div', { class: 'vault', 'data-mpmachine': p.name },
@@ -646,7 +673,7 @@ function lobbyTabs(g, isHost, saved, classicOn, keptFx, check) {
     { id: 'rules', label: T('Rules'), sub: changed.length ? T('{n} changed: {list}', { n: changed.length, list: changed.map((r) => r.label).join(', ') }) : T('as by default'), chg: changed.length > 0 },
     { id: 'fixes', label: T('Fixes|tab'), sub: (saved ? T('from the savegame') + ': ' : '') + fixSum[0], chg: fixSum[1] }],
   panel: (id) => (id === 'packs' ? packsPanel()
-    : id === 'rules' ? rulesPanel({ cols: rules, only: st.mp.onlyChanged, setOnly: (v) => { st.mp.onlyChanged = v; renderEntry(); },
+    : id === 'rules' ? rulesPanel({ cols: rules,
       resetAll: isHost ? () => mpGameSet(Object.assign({}, ...rules.flat().flatMap((x) => x[1]).filter((r) => r.changed && r.reset).map((r) => r.back))) : null,
       lock: !isHost ? T('as {name} sets them, the host', { name: host ? host.name : '?' }) : saved ? T('grey: from the savegame') : null })
       : fixesPanel({ page: 'lobby', mode, mp: true, pick: isHost && !saved ? pickFixModeLobby : null, fx, forced,
@@ -729,6 +756,9 @@ SELFTESTS.push(Object.assign(async function selftestMultiplayer(t) {
     && $('#work [data-mp="start"]').textContent.includes(T('waiting for {name}', { name: 'Robo' })), 'multiplayer: Robo not ready: no start, the button waits for him');
   ok(await until(() => $('#work [data-station="2"] [data-check="ok"]'), 180000),     /* (Robo builds the packs: slow on a busy machine) */
     'multiplayer: Robo\'s version, original files and built packs the same as the host\'s');
+  const offered = (await api('POST', '/api/mp/bot', { action: 'me' })).offer || [];
+  ok(offered.length === 1 && offered[0].name === 'selftest' && offered[0].title === packTitle('selftest') && offered[0].state === 'same',
+    'multiplayer: Robo is offered the host\'s pack itself, to keep -- the same machine: "yours too" (' + JSON.stringify(offered) + ')');
   await api('POST', '/api/mp/bot', { action: 'me', ready: true });
   ok(await until(() => !$('#work [data-mp="start"]').disabled && $('#work [data-mp="start"]').classList.contains('ready')), 'multiplayer: Robo ready: the start possible (green)');
   await mtab('rules');
@@ -820,10 +850,15 @@ SELFTESTS.push(Object.assign(async function selftestMultiplayer(t) {
   mf().value = '12';
   mf().dispatchEvent(new Event('change'));
   ok(await until(() => mpState().settings.filmoffers === 12 && mf().value === '12'), 'multiplayer: the host\'s 12 film offers reach the server');
+  const ml = () => $('#work [data-mpset="lots"]');
+  ok(mpState().settings.lots === 10 && ml().value === '10' && !ml().disabled, 'multiplayer: the original\'s 10 auction lots for a new game, the host may change them');
+  ml().value = '18';
+  ml().dispatchEvent(new Event('change'));
+  ok(await until(() => mpState().settings.lots === 18 && ml().value === '18'), 'multiplayer: the host\'s 18 auction lots reach the server');
   await wait(400);
   const mk = (await api('GET', SETTINGS_URL(true))).values.game;
   ok(mk.credit_line === '1000000' && mk.terror_damage === '0' && mk.sammy_series === '250000' && mk.sammy_news === '0', 'multiplayer: the host\'s amounts kept for the next game');
-  ok(mk.ad_offers === '15' && mk.film_offers === '12', 'multiplayer: the host\'s ad and film offers kept for the next game');
+  ok(mk.ad_offers === '15' && mk.film_offers === '12' && mk.auction_lots === '18', 'multiplayer: the host\'s ad and film offers and auction lots kept for the next game');
   $('#work [data-mpchoose="selftest-game"]').click();
   ok(await until(() => mpState().save && $('#work [data-mpsave="selftest-game"] [data-mpchosen]')), 'multiplayer: the saved game chosen');
   ok(await until(() => { const b = (mpState().players || []).find((p) => p.name === 'Robo'); return b && b.save === mpState().save.hash; }), 'multiplayer: Robo fetched the savegame through the server');
@@ -838,6 +873,7 @@ SELFTESTS.push(Object.assign(async function selftestMultiplayer(t) {
     'multiplayer: the terror damage and the Sammy prize are the savegame\'s (the original\'s: saved before the options), locked');
   ok(await until(() => mpState().settings.offers === 10 && mo().value === '10' && mo().disabled), 'multiplayer: the ad offers are the savegame\'s (the original\'s 10: saved before the option), locked');
   ok(await until(() => mpState().settings.filmoffers === 10 && mf().value === '10' && mf().disabled), 'multiplayer: the film offers are the savegame\'s (10), locked');
+  ok(await until(() => mpState().settings.lots === 10 && ml().value === '10' && ml().disabled), 'multiplayer: the auction lots are the savegame\'s (the original\'s 10: saved before the option), locked');
   $('#work [data-sit="3"]').click();
   ok(await until(() => mpMe().station === 3 && $('#work [data-mp="problems"]').textContent.includes(T('{name} sits on a station that is the computer\'s in the savegame.', { name: 'Tester' }))
     && $('#work [data-mp="problems"]').textContent.includes(T('Nobody sits on {name}\'s station of the savegame.', { name: 'Anna' }))), 'multiplayer: station 3 is the computer\'s in the savegame, Anna\'s is free: no start');
@@ -852,11 +888,11 @@ SELFTESTS.push(Object.assign(async function selftestMultiplayer(t) {
   ok(await until(() => st.mp.snap.go && st.mp.snap.cmd), 'multiplayer: started from the savegame (dry)');
   const lcmd = st.mp.snap.cmd || '';
   ok(/ --mp-load \S*selftest-game\Stag-005\.mtvmp/.test(lcmd) && / --mp-save \S*selftest-game/.test(lcmd) && !/--new-game/.test(lcmd) && / --humans 1,2 /.test(lcmd) && / --credit-line=300000 /.test(lcmd)
-    && / --terror-damage=50000 /.test(lcmd) && / --sammy-prize=0,0,0,0 /.test(lcmd) && / --ad-offers=10 /.test(lcmd) && / --film-offers=10 /.test(lcmd),
+    && / --terror-damage=50000 /.test(lcmd) && / --sammy-prize=0,0,0,0 /.test(lcmd) && / --ad-offers=10 /.test(lcmd) && / --film-offers=10 /.test(lcmd) && / --auction-lots=10 /.test(lcmd),
     'multiplayer: the command loads the savegame and goes on saving in its game\'s directory (' + lcmd.replace(/^\S+/, '').slice(0, 200) + ' ...)');
   await mpCall('leave');
   await api('POST', '/api/mp/bot', { action: 'leave' });
-  await api('PUT', SETTINGS_URL(true), { values: { game: { fixes: 'all', classic: 'no', credit_line: '700000', terror_damage: '50000', sammy_series: '0', ad_offers: '10', film_offers: '10' } } });
+  await api('PUT', SETTINGS_URL(true), { values: { game: { fixes: 'all', classic: 'no', credit_line: '700000', terror_damage: '50000', sammy_series: '0', ad_offers: '10', film_offers: '10', auction_lots: '10' } } });
   await api('POST', '/api/mp/saves/delete?test=1', { game: 'selftest-game' });
   st.mp.saves = null;
   await loadSettings(true, true);

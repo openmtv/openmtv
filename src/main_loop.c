@@ -127,7 +127,9 @@ u16 game_main(u16 argc, u32 argv) {
     T += 4;
     framed(0x01F2, 1, 0x12C); r = res_exists(0x12C, 0x12C); framed_pop(1);
     T += 4;
-    if (new_game_opt || load_slot_opt) timer_start(0);   /* --new-game, --load-slot, no intro: the tick block to the sound driver, as the intro hands it */
+    /* --new-game, --load-slot, --skip-intro (not in the difftest: the original's way), no intro: the
+     * tick block to the sound driver, as the intro hands it -- the setup comes as after it */
+    if (new_game_opt || load_slot_opt || (skip_intro_opt && !difftest_on)) timer_start(0);
     else if ((u16)r != 0xFFFF) {         /* the intro, if its resource is there */
         T += 5;
         framed(0x0205, 2, 0, 0x1F4); snd_room_music_start(0x1F4, 0, 0x1F4); framed_pop(2);
@@ -256,6 +258,7 @@ u16 game_main(u16 argc, u32 argv) {
     framed(0x0567, 2, g_panel_sprites_hi, g_panel_sprites_lo); mem_free(g_panel_sprites_lo, g_panel_sprites_hi); framed_pop(2);
     T += 2;
     framed(0x056F, 0); panel_show_wipe(); framed_pop(0);
+    game_panel_shown = 1;                /* (runtime/host.c: a tap on the TV family's monitor, --tv-back) */
     T += 3;
     framed(0x057C, 2, g_panel_bmp_hi, g_panel_bmp_lo); mem_free(g_panel_bmp_lo, g_panel_bmp_hi); framed_pop(2);
     T += 2;
@@ -562,6 +565,7 @@ void game_load_init_data(u16 ax) {
     mem_zero(DSP(0x19A0), 0x4D);
     memset(g_ad_offers_extra, 0, (AD_OFFERS_MAX - 10) * 0x7);   /* --ad-offers: the offers past 10 */
     filmoffers_clear(11);                /* --film-offers: the dealer's slots past 10 */
+    auction_lots_clear();                /* --auction-lots: the auction's lots past 10 */
     mem_zero(DSP(0x1B70), 0x118);
     mem_zero(DSP(0x76A8), 8);
     mem_zero(DSP(0x72BA), 0x90);
@@ -920,6 +924,14 @@ u16 room_load_assets(u16 a0, u16 ax) {
                     cpu_halt("bad switch index %u in 0054:0F79", ax);
                 }
             }
+            /* multiplayer: the pose is set for 17:00..00:59 only; after it the last one stays.
+             * One human never sees the dealer after 01:00 -- the day's end takes it home at
+             * once -- but in a network game a human still walks while the others are on their
+             * way home, and a seat that had not met the dealer yet had pose 0: resource 0 does
+             * not exist, the "insert disk" box waited inside that seat's turn, and the game
+             * halted on every machine (tools/mpchaos.py seed 403, frame 83585; very likely
+             * the user's friend's "artifacts, then a crash" of 2026-11-02).  The late pose. */
+            if (seat_humans && (g_dealer_pose < 0xBC || g_dealer_pose > 0xBF)) g_dealer_pose = 0xBF;
             t28 = res_load(g_dealer_pose);
             g_actor_txt = t28;
             dealer_draw_pose();

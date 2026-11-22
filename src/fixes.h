@@ -6,46 +6,46 @@
  * comparison with the original stays meaningful.  The table: fixes.c. */
 #ifndef FIXES_H
 #define FIXES_H
-enum {
-    FIX_INTRUDER  = 1u << 0,   /* 1DA8:2D3B intruder hang on a series-only library */
-    FIX_RANDOM0   = 1u << 1,   /* 0D5E:0229 random_n(0) divides by zero */
-    FIX_AI_STUDIO = 1u << 2,   /* 348B:098D AI rents studio 13 instead of the chosen one */
-    FIX_AI_FILL_HOUR = 1u << 3,   /* 2DD9:0DD9 AI audience estimate gets the category instead of the hour */
-    FIX_AI_SERIES_RULE = 1u << 4, /* 2DD9:162A AI series genre check uses id-24 instead of id+1000 */
-    FIX_SERIES_AVG = 1u << 5,     /* 2DD9:3085 series average topicality over episodes 2..n+1 */
-    FIX_ESTATE_TEXT = 1u << 6,    /* 05FF:3AB7 estate agent shows room names 0x77/0x78 as messages */
-    FIX_TX_PRICE = 1u << 7,       /* 05FF:2C02 transmitter purchase checked against less than its price */
-    FIX_LIBRARY_OWNER = 1u << 8,  /* 0AA4:24C3 a film put back on the library shelf stays on the market */
-    FIX_NEWS_CACHE = 1u << 9,     /* 26A7:292F headline lookup searches 20 of 24 cache entries */
-    FIX_AI_ODD_RANGE = 1u << 10,  /* 2DD9:0DD9 AI odd-length check reads its half-day range from stack garbage */
-    FIX_BOSS_MUSIC = 1u << 11,    /* 0AA4:000E boss calls snd_room_music_stop without its arguments */
-    FIX_FILM200 = 1u << 12,       /* data: film 200's texts damaged ("xxx", German cut off), never offered */
-    FIX_CATCH_BOUNTY = 1u << 13,  /* 1DA8:3643 catch bounty only for figure 0 (the human on station 1) */
-    FIX_AI_VISIT = 1u << 14,      /* 2DD9:3C0D AI "visit the human" (state 5) goes to station 1's rooms */
-    FIX_AI_TRENDY = 1u << 15,     /* 24B8:0C4A "Trendy" aired by an AI: trends written by player number, not AI index */
-    FIX_AI_RIVAL = 1u << 16,      /* 2DD9:26EA AI budget plan compares a computer player with itself */
-    FIX_AI_ARRIVED = 1u << 17,    /* 2DD9:4126 "already at the door" only for AI index 0: AI 1 waits again */
-    FIX_TITLE_CACHE = 1u << 18,   /* 048C:025B film text cache: slots 49.. written over the series cache */
-    FIX_CASE_OWNER = 1u << 19,    /* 05FF:090A a library tape carried in the case is ownerless and on the market */
-    FIX_AI_FILL_GENRE = 1u << 20, /* 2DD9:12C1/1316 AI fill: genre bit and audience row of the best, not the candidate */
-    FIX_AI_LIB_QUALITY = 1u << 21, /* 348B:0895 AI library average over genres 0..11, slots 0..count */
-    FIX_STUDIO_TAKEOVER = 1u << 22, /* 24B8:170C studio hand-over gets the player loop index as the studio */
-    FIX_STUDIO_RESERVED = 1u << 23, /* 229E:1080/1264 a studio's pending renter/give-up byte is never cleared */
-    FIX_CASE_CORNER = 1u << 24,   /* 05FF:0359/14E1:000E the film agency's case hands out slots past the carried tapes */
-    FIX_CREDIT_REPAY = 1u << 25,  /* 0AA4:000E repaying the boss's credit is not limited by the credit, nor by a negative cash */
-    FIX_AI_RATING = 1u << 26,     /* 2DD9:2B8D AI yesterday's rating: viewers x 100 overflows 32 bits above 21.5M viewers */
-    FIX_AI_BIDS = 1u << 27,       /* 2DD9:1DDA AI auction bid list: a new entry per bid, 11 places, never emptied but by the human */
-    FIX_AI_WARNING = 1u << 28,    /* 229E:0225 a computer player's refused placement opens a warning box on the human's screen */
-    FIX_LIVE_AID = 1u << 29,      /* data: film 164 "Live Aid" is 0 hours long */
-    FIX_VIDEO_CONN = 1u << 30,    /* data: screenplay 20 "Video-Connection" asks nothing of its two roles */
-    FIX_TRENDY_STUDIOS = 1u << 31, /* 24B8:0C4A "Trendy" ending ends the production lock of every running studio */
-    /* (the last bit of fix_mask: a further fix needs a wider mask) */
-};
+/* the fixes' bits in fix_mask (fixes.c), 64 of them (32 were full with trendy-studios) */
+#define FIX_INTRUDER (1ull << 0)         /* 1DA8:2D3B intruder hang on a series-only library */
+#define FIX_RANDOM0 (1ull << 1)          /* 0D5E:0229 random_n(0) divides by zero */
+#define FIX_AI_STUDIO (1ull << 2)        /* 348B:098D AI rents studio 13 instead of the chosen one */
+#define FIX_AI_FILL_HOUR (1ull << 3)     /* 2DD9:0DD9 AI audience estimate gets the category instead of the hour */
+#define FIX_AI_SERIES_RULE (1ull << 4)   /* 2DD9:162A AI series genre check uses id-24 instead of id+1000 */
+#define FIX_SERIES_AVG (1ull << 5)       /* 2DD9:3085 series average topicality over episodes 2..n+1 */
+#define FIX_ESTATE_TEXT (1ull << 6)      /* 05FF:3AB7 estate agent shows room names 0x77/0x78 as messages */
+#define FIX_TX_PRICE (1ull << 7)         /* 05FF:2C02 transmitter purchase checked against less than its price */
+#define FIX_LIBRARY_OWNER (1ull << 8)    /* 0AA4:24C3 a film put back on the library shelf stays on the market */
+#define FIX_NEWS_CACHE (1ull << 9)       /* 26A7:292F headline lookup searches 20 of 24 cache entries */
+#define FIX_AI_ODD_RANGE (1ull << 10)    /* 2DD9:0DD9 AI odd-length check reads its half-day range from stack garbage */
+#define FIX_BOSS_MUSIC (1ull << 11)      /* 0AA4:000E boss calls snd_room_music_stop without its arguments */
+#define FIX_FILM200 (1ull << 12)         /* data: film 200's texts damaged ("xxx", German cut off), never offered */
+#define FIX_CATCH_BOUNTY (1ull << 13)    /* 1DA8:3643 catch bounty only for figure 0 (the human on station 1) */
+#define FIX_AI_VISIT (1ull << 14)        /* 2DD9:3C0D AI "visit the human" (state 5) goes to station 1's rooms */
+#define FIX_AI_TRENDY (1ull << 15)       /* 24B8:0C4A "Trendy" aired by an AI: trends written by player number, not AI index */
+#define FIX_AI_RIVAL (1ull << 16)        /* 2DD9:26EA AI budget plan compares a computer player with itself */
+#define FIX_AI_ARRIVED (1ull << 17)      /* 2DD9:4126 "already at the door" only for AI index 0: AI 1 waits again */
+#define FIX_TITLE_CACHE (1ull << 18)     /* 048C:025B film text cache: slots 49.. written over the series cache */
+#define FIX_CASE_OWNER (1ull << 19)      /* 05FF:090A a library tape carried in the case is ownerless and on the market */
+#define FIX_AI_FILL_GENRE (1ull << 20)   /* 2DD9:12C1/1316 AI fill: genre bit and audience row of the best, not the candidate */
+#define FIX_AI_LIB_QUALITY (1ull << 21)  /* 348B:0895 AI library average over genres 0..11, slots 0..count */
+#define FIX_STUDIO_TAKEOVER (1ull << 22) /* 24B8:170C studio hand-over gets the player loop index as the studio */
+#define FIX_STUDIO_RESERVED (1ull << 23) /* 229E:1080/1264 a studio's pending renter/give-up byte is never cleared */
+#define FIX_CASE_CORNER (1ull << 24)     /* 05FF:0359/14E1:000E the film agency's case hands out slots past the carried tapes */
+#define FIX_CREDIT_REPAY (1ull << 25)    /* 0AA4:000E repaying the boss's credit is not limited by the credit, nor by a negative cash */
+#define FIX_AI_RATING (1ull << 26)       /* 2DD9:2B8D AI yesterday's rating: viewers x 100 overflows 32 bits above 21.5M viewers */
+#define FIX_AI_BIDS (1ull << 27)         /* 2DD9:1DDA AI auction bid list: a new entry per bid, 11 places, never emptied but by the human */
+#define FIX_AI_WARNING (1ull << 28)      /* 229E:0225 a computer player's refused placement opens a warning box on the human's screen */
+#define FIX_LIVE_AID (1ull << 29)        /* data: film 164 "Live Aid" is 0 hours long */
+#define FIX_VIDEO_CONN (1ull << 30)      /* data: screenplay 20 "Video-Connection" asks nothing of its two roles */
+#define FIX_TRENDY_STUDIOS (1ull << 31)  /* 24B8:0C4A "Trendy" ending ends the production lock of every running studio */
+#define FIX_PLANNER_ROW (1ull << 32)     /* 1C18:12F2 a programme off the shelf leaves a stale slot; 05FF:0D0E the planner's list takes a click on an empty row as it */
+#define FIX_LOAD_MUSIC (1ull << 33)      /* 05FF:44F4 a game loaded from the setup screen starts without its room's music */
 /* fixes a network game always has, whatever the host chose (Classic included):
  * money cheats for whoever finds them -- the corner of the case, the boss's repayment
  * (but credit-repay is off with the original's credit system: --credit-line=original) */
 #define FIX_MP_ALWAYS (FIX_CASE_CORNER | FIX_CREDIT_REPAY)
-int fix_on(unsigned fix);
+int fix_on(unsigned long long fix);
 /* fix "ai-bids": the places of a computer player's auction bid list (DS:756A + player x 0x42, 6 bytes each) */
 #define AI_BIDS_MAX 11
 /* fix "case-corner": the film agency's case slot under the cursor (column, slot =
@@ -58,6 +58,24 @@ int fix_film200_record(void);
 int fix_live_aid_record(void);
 /* data fix video-connection (fixes.c): screenplay 20's role requirements, while they are the original's */
 int fix_video_conn_record(void);
+/* a savegame's rules (src/saverules.c): the fixes' choice anew (spec as --fixes, NULL Classic; unknown
+ * names passed over), the data fixes in or out as it says */
+void fix_respec(const char *spec);
+void fix_data_records_sync(void);
+/* A single player's savegame carries its rules (src/saverules.c): the line of them in the
+ * extension (the eighth "MTVX" count its length), at most SAVERULES_MAX bytes -- the launcher
+ * (launcher/content.go savegameOptions) and tools/content.py count it into a savegame's largest.
+ *   saverules_needed      a rule is not the build's default: the savegame gets the line
+ *   saverules_text        the line ("fixes=all speed4=0 ..."), its length (0: does not fit)
+ *   saverules_apply       a savegame's line being loaded (slot: its resource): the game takes its rules
+ *   saverules_after_load  after such a load: what follows the rules (the data fixes) */
+#define SAVERULES_MAX 768
+#define SAVE_SLOT_RES 0xD1            /* the safe's names; tape n (1..10) is resource SAVE_SLOT_RES + n */
+#define START_SAVE_RES 0x2B           /* the start savegame: a new game (game_main, and after game over) */
+int saverules_needed(void);
+u16 saverules_text(u8 *out, u16 cap);
+void saverules_apply(u16 slot, const u8 *line, u16 n);
+void saverules_after_load(void);
 /* fix "title-cache" (text_cache.c): the film text cache's slots past the 49
  * of g_film_txt_cache (DS:63E5), in host memory; the texts in the game's heap */
 #define FILM_TXT_MORE 64
@@ -131,6 +149,17 @@ void drag_refresh(void);
  *                      original's fits its cards (18 x 13 cells) exactly,
  *                      the taller series card would write past its end */
 int series_top_on(void);
+/* The rule "Unfertige Drehbuecher integrieren" (--original-screenplays, settings [game]
+ * original_screenplays; src/origscripts.c): the original's unfinished screenplays
+ * 25-33 and 37-50 filled and offered.
+ *   origscripts_after_load  after every game_load: the rule's screenplays, series and
+ *                      films in (the rule on, or a savegame made with it) or out
+ *   origscripts_texts  a screenplay's 16 texts as read: the rule's where the game's
+ *                      are empty (txt_script_cache_load_one) */
+int origscripts_on(void);
+int origscripts_active(void);       /* its screenplays are in the game (the rule, or a savegame of it) */
+void origscripts_after_load(void);
+int origscripts_texts(u16 id, const u8 *buf, u16 len, u8 *out, u16 cap);
 u16 series_top_bar(u32 series);
 u32 series_top_layout(u32 layout, u16 lines, u16 *rows);
 u16 series_top_window_buf(u16 size);
@@ -185,6 +214,33 @@ void filmoffers_shelf_bg(u16 *x, u16 *w, u16 *h);
 void filmoffers_clear(u16 from);
 void filmoffers_return_to_market(const u8 *slot);
 int filmoffers_tape(const u8 *const orig[10], int j, u8 *px, int *w, int *h);
+/* More auction lots (--auction-lots=N, settings [game] auction_lots = N, 10..20,
+ * src/auction_lots.c): the film auction holds N lots instead of the original's
+ * 10 (lots 11..N: g_lots_extra, game_types.h auction_at).  10 keeps the
+ * original's board; from 11 it has a second page with lots 11..N, turned by a
+ * tab at its right edge.
+ *   auction_lots_count     the number of lots (10 under --difftest)
+ *   auction_page_reset     the board opens: page 1
+ *   auction_lot_at_place   the lot at place k (1..10) of the page shown, 0 past the game's lots
+ *   auction_board_dx       the board's x shift: 0, with the tab -16 (the cursor reaches x 303 at most)
+ *   auction_tab_shown      the board has the tab (more than 10 lots)
+ *   auction_tab_draw       the tab, with the other page's number
+ *   auction_tab_click      a click on the board: on the tab, the other page (1)
+ *   auction_lots_clear     lots 11..20 empty (a new game, a savegame without them)
+ *   auction_lot_return_to_market  a lot of a savegame past this game's, its programme back to the market
+ *   auction_lots_drop_ai_bids     the computer players' bids on lots past this game's, their money back
+ *   auction_lots_night_bids       the night: the computer players' bid lists empty (more than 10 lots) */
+u16 auction_lots_count(void);
+void auction_page_reset(void);
+u16 auction_lot_at_place(u16 k);
+int auction_board_dx(void);
+int auction_tab_shown(void);
+void auction_tab_draw(void);
+int auction_tab_click(void);
+void auction_lots_clear(void);
+void auction_lot_return_to_market(const u8 *lot);
+void auction_lots_drop_ai_bids(void);
+void auction_lots_night_bids(void);
 /* Role fit in the shop (--cast-fit, settings [display] cast_fit, src/cast_fit.c): the
  * actor panel's bars give way to a row "Eignung" -- each actor's fit for the picked role, in per cent.
  * Display only (no time, no game state).

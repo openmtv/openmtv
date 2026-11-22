@@ -90,7 +90,7 @@ func (e *editorData) load(s *server) error {
 		}
 		fg[lang], sg[lang], co[lang] = a, b, c
 		cd := obj{}
-		for _, k := range []int{39, 40, 77, 78, 79, 80, 376, 377, 382, 383, 385, 412, 413, 414, 415, 416, 417, 418, 419, 425} {
+		for _, k := range []int{39, 40, 77, 78, 79, 80, 206, 207, 376, 377, 382, 383, 385, 412, 413, 414, 415, 416, 417, 418, 419, 425} {
 			cd[fmt.Sprint(k)] = at(l, k)
 		}
 		card[lang] = cd
@@ -102,8 +102,8 @@ func (e *editorData) load(s *server) error {
 	}
 	e.meta = obj{"tables": tbl, "film_genres": fg, "series_genres": sg, "countries": co, "card": card,
 		"audience_classes": []any{int64(0), 0.25, 0.5, int64(1), 2.5, int64(5), int64(10), int64(25), int64(50), int64(100)},
-		"metrics":          metrics, "glyphs": glyphs, "tv_pictures": tv, "datafixes": s.g.datafixes,
-		"fields": obj{}, "fields_de": obj{}, "genre_aud": []int64{}}
+		"metrics":          metrics, "glyphs": glyphs, "tv_pictures": tv, "datafixes": s.g.datafixes, "origscripts": s.g.layerIDs(),
+		"fields": obj{}, "fields_de": obj{}, "genre_aud": []int64{}, "studio_doors": s.g.doors}
 	if data, err := s.pageFile("fields.json"); err == nil { // (the page works without the descriptions)
 		if v, err := parseOrdered(data); err == nil && v.get("en") != nil && v.get("de") != nil {
 			e.meta["fields"], e.meta["fields_de"] = v.get("en"), v.get("de")
@@ -389,7 +389,10 @@ func setModInfo(g *game, name string, title, desc any) (obj, error) {
 
 // saveTable: a table of a pack, as the page sent its entries; a protected pack only
 // when the page unlocked it on purpose.  A pack that is not complete keeps only its own
-// entries (ownEntries): the original's come from the player's game files
+// entries (ownEntries): the original's come from the player's game files.  With "layer"
+// (the rule "Unfertige Drehbücher integrieren" on, the page showed its screenplays) a record sent as the
+// rule has it, unchanged, goes back to the plain one (unlayer, origscripts.go): a pack is
+// stored without the rule
 func saveTable(g *game, name, t string, data []byte) (obj, error) {
 	if _, ok := tableIdx[t]; !ok {
 		return nil, newMsg("no table {name}", "name", t)
@@ -420,10 +423,14 @@ func saveTable(g *game, name, t string, data []byte) (obj, error) {
 	if err != nil {
 		return nil, err
 	}
+	recs := sent.get("records")
+	if truthy(sent.get("layer").valueOr(nil)) {
+		recs = unlayer(t, recs, docs)
+	}
 	doc = doc.copy()
-	doc.set("records", sent.get("records"))
+	doc.set("records", recs)
 	docs[t], _ = doc.value().(obj)
-	if err := checkDocs(docs); err != nil {
+	if err := gameProblems(g, docs); err != nil {
 		return nil, err
 	}
 	if !truthy(meta["complete"]) { // (a complete pack holds the original itself)
@@ -445,8 +452,11 @@ func (n *onode) valueOr(alt any) any {
 
 // ---------------------------------------------------------------- the editor's requests
 
-// editorGet: GET /api/... of the editor's own; ok false: not one of them
-func (s *server) editorGet(parts []string, lang string) (reply, bool) {
+// editorGet: GET /api/... of the editor's own; ok false: not one of them.  LAYER (?layer=1):
+// the rule "Unfertige Drehbücher integrieren" on -- the tables with its screenplays, as the game plays
+// them (origscripts.go): the original's, a pack's, a selection's
+func (s *server) editorGet(parts []string, lang string, layer bool) (reply, bool) {
+	g := s.g
 	switch {
 	case len(parts) == 1 && parts[0] == "strings":
 		e, err := s.editorData()
@@ -456,20 +466,35 @@ func (s *server) editorGet(parts []string, lang string) (reply, bool) {
 		return reply{200, e.strings}, true
 	case len(parts) == 2 && parts[0] == "original":
 		if _, ok := tableIdx[parts[1]]; ok {
-			return reply{200, canonical(parts[1], s.g.original[parts[1]])}, true
+			if layer {
+				return reply{200, canonical(parts[1], g.layered()[parts[1]])}, true
+			}
+			return reply{200, canonical(parts[1], g.original[parts[1]])}, true
 		}
 	case len(parts) == 3 && parts[0] == "mods":
 		if _, ok := tableIdx[parts[2]]; ok {
-			n, err := orderedTable(s.g, parts[1], parts[2])
+			n, err := orderedTable(g, parts[1], parts[2])
 			if err != nil {
 				return failure(err, lang), true
+			}
+			if layer && contains(origScriptTables, parts[2]) {
+				docs, err := modDocs(g, parts[1])
+				if err != nil {
+					return failure(err, lang), true
+				}
+				if lay, _, err := layerOrigScripts(docs); err == nil {
+					n = layerOrdered(parts[2], n, lay[parts[2]])
+				}
 			}
 			return reply{200, n}, true
 		}
 	case len(parts) == 2 && parts[0] == "selection": // /api/selection/A+B (or original): all tables
-		docs, report, err := orderedSelection(s.g, parts[1])
+		docs, report, err := orderedSelection(g, parts[1])
 		if err != nil {
 			return failure(err, lang), true
+		}
+		if layer {
+			docs = layerSelection(docs)
 		}
 		return reply{200, obj{"tables": docs, "report": obj{"packs": report.Packs, "conflicts": report.Conflicts}}}, true
 	}

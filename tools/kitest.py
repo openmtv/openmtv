@@ -72,16 +72,17 @@ def main():
             fails += not ok
             print('%s its launcher gone (--ki-parent not its parent): %s' % ('ok  ' if ok else 'FAIL',
                   'ends before the first picture, no set' if ok else 'exit %d, %r' % (p.returncode, p.stderr[-200:])))
-        fails += not network(game, tmp, b)
+        fails += not network(tmp, b)
     finally:
         shutil.rmtree(tmp, ignore_errors=True)
     print('kitest: %d failed' % fails)
     sys.exit(1 if fails else 0)
 
 
-def network(game, tmp, ki):
+def network(tmp, ki):
     """3.: seat 1 with the set KI and two switches, seat 0 without -> ok"""
-    os.environ['GAME'] = game
+    # (on the game files tests/mp was recorded with, as tools/mptest.py takes them: $GAME or the
+    # directory above -- not run/, the single player's copy, which need not be the originals)
     sys.path.insert(0, HERE)
     import mptest, seattest
     plain = mptest.client_args

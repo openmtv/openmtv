@@ -20,6 +20,7 @@ extern int net_active;          /* --mp HOST:PORT given */
 extern int net_seat;            /* the seat this machine plays */
 const char *seat_name(int seat, char *buf, size_t n);   /* a seat's human by name, for the notices */
 extern int net_lead;            /* the server's lead over the fastest client in frames (LEAD n): the clients keep near it */
+extern int net_rtt;             /* this machine's round trip to the server in frames (LEAD n r), -1: not said */
 
 /* connect, say hello (seat, the game's parameters); exits with a message
  * on failure */

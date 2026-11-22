@@ -54,7 +54,7 @@ static inline u8 *dg_addr(u16 o) {
 #define FPADD(p, n) (((u32)(p) & 0xFFFF0000u) | (u16)((u16)(p) + (n)))   /* far ptr arithmetic wraps the offset */
 /* moved areas other than DGROUP: the tables and handles for C buffers */
 typedef struct { u32 lin, len; u8 *host; } HostRegion;
-#define HOST_REGIONS 19
+#define HOST_REGIONS 20
 extern HostRegion host_regions[HOST_REGIONS];
 static inline u8 *host_addr(u16 seg, u16 off) {
     u32 a = lin(seg, off);

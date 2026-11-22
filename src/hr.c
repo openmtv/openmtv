@@ -606,19 +606,23 @@ void hr_seat_load(int seat) {
 
 /* ---- the picture ---- */
 
+int hr_ki_state(void) { return ki_shown; }    /* the AI pictures shown (runtime/host.c draw_drag's key) */
+
+static const u32 *ki_colours(const u32 *pal, u32 *own) {   /* the AI cells' colours: the set's 32..254 */
+    if (!(ki_shown && ki_ext)) return pal;
+    memcpy(own, pal, sizeof (u32) * 256);
+    for (int i = 32; i < 255; i++)
+        own[i] = 0xFF000000u | (u32)ki_pal[3 * i] << 16 | (u32)ki_pal[3 * i + 1] << 8 | ki_pal[3 * i + 2];
+    return own;
+}
+
 /* the 1280x800 picture of the screen (A000:0000) from the cells, colours
  * from pal; bad[i] = 1 where screen pixel i's cell is not valid (the caller
- * takes MMPX there).  Returns the number of those. */
+ * draws the pixel itself there, 4 x 4).  Returns the number of those. */
 int hr_render(u32 *out, const u32 *pal, u8 *bad) {
     if (!hr_on) return -1;
     u32 own[256];
-    const u32 *kpal = pal;                /* the AI cells' colours: the set's 32..254 */
-    if (ki_shown && ki_ext) {
-        memcpy(own, pal, sizeof own);
-        for (int i = 32; i < 255; i++)
-            own[i] = 0xFF000000u | (u32)ki_pal[3 * i] << 16 | (u32)ki_pal[3 * i + 1] << 8 | ki_pal[3 * i + 2];
-        kpal = own;
-    }
+    const u32 *kpal = ki_colours(pal, own);
     int n = 0;
     for (int y = 0; y < 200; y++)
         for (int x = 0; x < 320; x++) {
@@ -635,6 +639,35 @@ int hr_render(u32 *out, const u32 *pal, u8 *bad) {
                 for (int q = 0; q < 4; q++) o[q] = cp[px[4 * r + q]];
         }
     return n;
+}
+
+/* a picture in memory at 4x from its cells: w x h pixels at seg:off, rows stride apart, into
+ * out (4w x 4h, 0 where transparent: a sub-pixel the cell leaves out, as the cursor draws the
+ * picture over the room); a pixel whose cell is not valid 4 x 4 itself.  For the carried item
+ * of a network game, which the window draws (runtime/host.c draw_drag).  0 without cells. */
+int hr_picture_4x(u16 seg, u16 off, int stride, int w, int h, u32 *out, const u32 *pal) {
+    if (!hr_on) return 0;
+    u32 own[256];
+    const u32 *kpal = ki_colours(pal, own);
+    for (int y = 0; y < h; y++)
+        for (int x = 0; x < w; x++) {
+            u32 a = lin(seg, (u16)(off + y * stride + x));
+            const HrCell *c = &hr_cells[a];
+            u8 v = M[a];
+            u32 *o = out + (size_t)(4 * y) * (4 * w) + 4 * x;
+            if (c->base != v) {
+                for (int r = 0; r < 4; r++, o += 4 * w)
+                    for (int q = 0; q < 4; q++) o[q] = v ? pal[v] : 0;
+                continue;
+            }
+            int ai = ki_shown && c->kvalid;
+            const u8 *px = ai ? c->kpx : c->px;
+            u16 mask = ai ? c->kmask : c->mask;
+            const u32 *cp = ai ? kpal : pal;
+            for (int r = 0; r < 4; r++, o += 4 * w)
+                for (int q = 0; q < 4; q++) o[q] = mask >> (4 * r + q) & 1 ? cp[px[4 * r + q]] : 0;
+        }
+    return 1;
 }
 
 /* ---- self-test ---- */

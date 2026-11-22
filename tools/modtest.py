@@ -41,9 +41,10 @@ into the original layout first).
               rebuilt smaller, its build folder's saves kept): not loaded --
               a warning says why, the game goes on as it was (loaded, its
               libraries and schedules would hold films past the table).
-    savesize  999 films and 375 series: tools/content.py refuses them (a
-              savegame would not fit in 64 KB); 374 series: the game saves
-              65 283 bytes (the buffer's size computed in 32 bits: in 16 it
+    savesize  999 films and 354 series: tools/content.py refuses them (a
+              savegame would not fit in 64 KB with every option on, the
+              rules' line at its largest included); 353
+              series: the game saves 64 422 bytes (the buffer's size computed in 32 bits: in 16 it
               wrapped and the save ran over the heap) and loads them back;
               380 series past the check: the game does not save, a warning
               says why.
@@ -405,19 +406,19 @@ def test_savesize(d):
         return docs, res
     checks = []
     try:
-        content.build(big(375)[0])
-        checks.append(('999 films, 375 series: refused', False))
+        content.build(big(354)[0])
+        checks.append(('999 films, 354 series: refused', False))
     except ValueError as e:
-        checks.append(('999 films, 375 series: refused (%s)' % str(e).split(':')[1].strip()[:40], 'a savegame would have 65521 bytes' in str(e)))
+        checks.append(('999 films, 354 series: refused (%s)' % str(e).split(':')[1].strip()[:40], 'a savegame would have 65522 bytes' in str(e)))
     a, b = os.path.join(d, 'a'), os.path.join(d, 'b')
     os.makedirs(a)
     os.makedirs(b)
     dump = lambda n: os.path.join(d, 'd%d.bin' % n)
-    # 374 series: the savegame is 65 283 bytes; the original's buffer of 40 000 + the extension
-    # (27 678) wrapped at 16 bits to 2 142 bytes and the save ran over the heap
-    build(a, *big(374))
-    play(a, NEW_GAME + ['1500 call 1DA8:22F6,374,1,0,0',          # prog_give_to_player: film 374 and series 374
-                        '1500 call 1DA8:22F6,1374,1,0,0',         # to station 1
+    # 353 series: the savegame is 64 422 bytes; the original's buffer of 40 000 + the extension
+    # (26 817) wrapped at 16 bits to 1 281 bytes and the save ran over the heap
+    build(a, *big(353))
+    play(a, NEW_GAME + ['1500 call 1DA8:22F6,353,1,0,0',          # prog_give_to_player: film 353 and series 353
+                        '1500 call 1DA8:22F6,1353,1,0,0',         # to station 1
                         '1502 call 229E:200D,0xD1,0xD1', '1504 dump ' + dump(0),   # game_save(0xD1)
                         '1506 call 229E:1386,0x2B,0x2B',          # the start savegame
                         '1508 call 229E:1386,0xD1,0xD1', '1510 dump ' + dump(1), '1511 quit'])
@@ -428,9 +429,9 @@ def test_savesize(d):
     m = [Mem(dump(i)) for i in range(2)]
     buf = m[0].far(DS + 0x8FCA)                                 # g_save_buf, its heap block's size before it
     block = (struct.unpack_from('<I', m[0].m, buf - 8)[0] & ~1) - 8
-    checks += [('999 films, 374 series: savegame %d bytes' % save_size, save_size == 37605 + 12 + 799 * 0x12 + 324 * 0x29),
+    checks += [('999 films, 353 series: savegame %d bytes' % save_size, save_size == 37605 + 12 + 799 * 0x12 + 303 * 0x29),
                ('in a buffer of %d bytes' % block, block >= save_size),
-               ('loaded: film 374 and series 374 station 1\'s', m[1].b(m[1].film(374) + 5) == 1 and m[1].b(m[1].series(374) + 0x24) == 1)]
+               ('loaded: film 353 and series 353 station 1\'s', m[1].b(m[1].film(353) + 5) == 1 and m[1].b(m[1].series(353) + 0x24) == 1)]
     # 380 series past the editor's check: the game does not save, the room says why
     keep = getattr(content, 'SAVE_MAX', 0x20000)
     content.SAVE_MAX = 0x20000

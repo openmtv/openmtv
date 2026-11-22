@@ -395,6 +395,7 @@ void auction_daily(void) {
     u16 l_12;
     u16 l_14;
     FUNC_TICK(21);
+    if (g_nlots > 10) auction_lots_night_bids();   /* --auction-lots: the computer players' bid lists (auction_lots.c) */
     l_10 = 0;
     l_14 = 1;
     while (((i16)l_14) <= (i16)g_nfilms) {
@@ -415,7 +416,7 @@ void auction_daily(void) {
         l_14 = l_14 + 1;
     }
     l_14 = 1;
-    while (((i16)l_14) <= 10) {
+    while (((i16)l_14) <= (i16)g_nlots) {   /* 10 in the original (--auction-lots) */
         LOOP_TICK(193);
         l_C = auction_at(l_14);
         if ((AT(lot, l_C).program) != 0) {
@@ -443,7 +444,7 @@ void auction_daily(void) {
                 AT(lot, l_C).program = 0;
             }
         }
-        if (((i16)l_14) <= 8 && (AT(lot, l_C).program) == 0 && ((i16)l_10) > 0) {
+        if ((((i16)l_14) <= 8 || ((i16)l_14) > 10) && (AT(lot, l_C).program) == 0 && ((i16)l_10) > 0) {   /* (--auction-lots: 11.. too; 9 and 10 stay for the players' films) */
             l_10 = l_10 - 1;
             l_E = 0;
             while (l_E == 0) {

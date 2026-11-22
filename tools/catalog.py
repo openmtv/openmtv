@@ -1721,8 +1721,8 @@ def odd_notes(data):
     out.append(esc('Same-genre split (24B8:0C4A): the stations are processed in order 1, 2, 3 and each sums the pulls '
                    'of all stations with its genre, including pulls already reduced earlier in the same loop. When two '
                    'stations show the same genre, the later one is split against a smaller sum.'))
-    out.append(esc('Signing an ad needs image 20 when the first condition byte (+0x0C) is non-zero; the description '
-                   'of 05FF:33F6 in names/symbols.txt calls these "X-rated ads".'))
+    out.append(esc('Signing an ad needs image 20 when the first condition byte (+0x0C) is non-zero -- a genre '
+                   'required or excluded (05FF:33F6); computer players do not check it (2DD9:33CB).'))
     out.append(esc('Movie %d "%s": each airing adds 5 Betty love (up to the image) and the tape then leaves the '
                    'library (24B8:0C4A withdraws it after airing). The daily check 1DA8:0B53 sends the love letter '
                    'only to an owner who still holds it with the film in today’s schedule, so the letter looks '

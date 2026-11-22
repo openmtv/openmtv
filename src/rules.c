@@ -204,6 +204,35 @@ void programs_recover_topicality(void) {
     return;
 }
 
+/* Fix "trendy-studios", its other half: a studio's lock ("running", +0xE) that
+ * nothing ends any more.  A show keeps its studio running after the shooting
+ * until the show has aired (24B8:0C4A matches the aired film with the
+ * studio's screenplay).  "Trendy" (screenplay 24, one production only) is
+ * taken out of its studio as its shooting ends (below: state 99,
+ * studio_cancel_production) -- screenplay 0 matches no film, and only the
+ * original's every-studio branch for film 138 ended that lock.  With the
+ * fix the studio stayed locked for good: its door "being shot", and a
+ * computer player put its next screenplay in, could never start it and
+ * asked for a shopping list after another (games saved before this fix
+ * still hold such studios).  So: a running studio that is not shooting
+ * (end day 0) and holds no show shot there (a screenplay with bit 2, not a
+ * series, episode >= 2: studio_start_production counts it up) is let go
+ * like a show that has aired. */
+static void studios_free_stale(void) {
+    for (u16 s = 1; s <= 12; s++) {
+        u32 p = studios_at(s);
+        if (AT(studio, p).running == 0 || AT(studio, p).end_day != 0) continue;
+        u16 sc = AT(studio, p).script;
+        if (sc != 0 && (screenplays(sc).flags & 5) == 4 && (i8)AT(studio, p).episode >= 2) continue;
+        AT(studio, p).running = 0;
+        if (AT(studio, p).reserved != 0xFF) {
+            if ((i8)AT(studio, p).reserved > 0) studio_take_over(s, (u16)(i8)AT(studio, p).reserved);
+        } else {
+            studio_release(s);
+        }
+    }
+}
+
 /* 1DA8:034E  for each of the 12 studios whose production finishes today at/after this hour: message 0x10E ("Studio No. %d reports ... completed"), movie/episode becomes available (+6|=0x20) and goes to the owner's archive at price 0, series episode marked produced; whole production done -> script status 99 and studio freed; refreshes planner/library if open */
 void studio_check_finished(void) {
     u16 ax;
@@ -310,6 +339,7 @@ L_06B6:
         }
         di = di + 1;
     }
+    if (fix_on(FIX_TRENDY_STUDIOS)) studios_free_stale();
     return;
 }
 
@@ -326,7 +356,7 @@ void archive_genre_full(u16 player, u16 id, u16 genre) {
     }
     si = 1;
     di = (u16)(i8)(library_count(player, genre));
-    while (((i16)si) <= 10) {
+    while (((i16)si) <= (i16)g_nlots) {   /* 10 in the original (--auction-lots) */
         LOOP_TICK(35);
         if (((u16)((u16)(i8)(auction(si).bidder))) == player) {
             l_6 = auction(si).program;
@@ -484,7 +514,7 @@ void betty_culture_check(void) {
                 if (((i16)g_culture_missed_days) >= 3) {
                     program_withdraw(0x3A);
                     si = 1;
-                    while (((i16)si) <= 10) {
+                    while (((i16)si) <= (i16)g_nlots) {   /* 10 in the original (--auction-lots) */
                         LOOP_TICK(12);
                         if ((auction(si).program) != 0) {
                             si = si + 1;
@@ -510,7 +540,7 @@ L_0C4C:
         }
     } else {
         si = 1;
-        while (((i16)si) <= 10) {
+        while (((i16)si) <= (i16)g_nlots) {   /* 10 in the original (--auction-lots) */
             LOOP_TICK(12);
             if ((auction(si).program) != 0) {
                 si = si + 1;

@@ -1,0 +1,30 @@
+# fix: ai-warning (229E:09AF studio_new_shopping_list, called by 348B:0F05 ai_next_shopping_list)
+# A shopping list refused -- the fifth list is the last (text 0x41), Trendy has one episode
+# (0x40), a show at most 10 productions (0x14F) -- calls ui_warning: room_enter(-1) and a box on
+# the human's screen, also when the list is a computer player's.  A computer player whose studio
+# cannot shoot asks again every round (a Mac game 2026-10-26: "Du hast schon zuviele
+# Einkaufslisten!" over and over, in the building and in the planner).  Here, as in
+# ai_warning.txt: the human is with the boss (room 3, his box open: g_ui_box_depth DS:14F0 = 1);
+# computer player 2's studio 8 holds screenplay 21 (DS:61E5) and player 2 has 5 lists (DS:7484).
+# Classic: its next list opens the warning screen (g_room DS:838C = 0xFFFF) and a second box;
+# fixed: refused without a word (room 3, depth 1).
+# expect classic 3000 call 229E:09AF,8 == 0
+# expect classic 3000 word 39D4:838C == 0xFFFF
+# expect classic 3000 word 39D4:14F0 == 2
+# expect fixed   3000 call 229E:09AF,8 == 0
+# expect fixed   3000 word 39D4:838C == 3
+# expect fixed   3000 word 39D4:14F0 == 1
+# The human's own sixth list (studio 6, DS:7482 = 5) still warns either way.
+# expect classic 3050 call 229E:09AF,6 == 0
+# expect classic 3050 word 39D4:14F0 == 3
+# expect fixed   3050 call 229E:09AF,6 == 0
+# expect fixed   3050 word 39D4:838C == 0xFFFF
+# expect fixed   3050 word 39D4:14F0 == 2
+400 key esc
+1000 click 64 100
+1300 click 172 185
+3000 poke16 39D4:61E5 21
+3000 poke16 39D4:7484 5
+3050 poke16 39D4:61C5 21
+3050 poke16 39D4:7482 5
+3100 quit

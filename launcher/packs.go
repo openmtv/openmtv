@@ -1,6 +1,7 @@
 package main
 
 import (
+	"bytes"
 	"fmt"
 	"os"
 	"path/filepath"
@@ -35,11 +36,15 @@ type game struct {
 	dir       string
 	paths     []string // SOURCE1.RSC, SOURCE2.RSC
 	original  map[string]obj
-	datafixes []string // the data fixes applied to it (tools/datafixes.py)
+	datafixes []string     // the data fixes applied to it (tools/datafixes.py)
+	floors    []byte       // the original's floor table (the start savegame's), studios.go
+	doors     []studioDoor // the studios' doors in it
+	texts     map[string][]string
+	lay       *gameLayer // the rule "Unfertige Drehbücher integrieren": the original's tables with its screenplays (origscripts.go)
 }
 
 func openGame(dir string) (*game, error) {
-	g := &game{dir: absPath(dir)}
+	g := &game{dir: absPath(dir), lay: &gameLayer{}}
 	for _, f := range []string{"SOURCE1.RSC", "SOURCE2.RSC"} {
 		p := filepath.Join(g.dir, f)
 		if !exists(p) {
@@ -56,6 +61,23 @@ func openGame(dir string) (*game, error) {
 		return nil, err
 	}
 	g.original, g.datafixes = applyDataFixes(docs)
+	save, err := res.get(startSave)
+	if err != nil {
+		return nil, err
+	}
+	if len(save) < saveFloors+floorsLen {
+		return nil, fmt.Errorf("the start savegame is too short")
+	}
+	g.floors = append([]byte{}, save[saveFloors:saveFloors+floorsLen]...)
+	g.doors = studioDoors(g.floors)
+	g.texts = map[string][]string{}
+	for lang, r := range textRes {
+		if data, err := res.get(r); err == nil {
+			for _, t := range bytes.Split(data, []byte{0}) {
+				g.texts[lang] = append(g.texts[lang], cp437Decode(t))
+			}
+		}
+	}
 	return g, nil
 }
 
@@ -292,9 +314,10 @@ type pack struct {
 // of its new entries ([first, last, n] per table) and how many of them moved; the
 // entries two packs change differently (the later one wins)
 type packReport struct {
-	Packs      []packAdded `json:"packs"`
-	Conflicts  []conflict  `json:"conflicts"`
-	Incomplete []string    `json:"incomplete"`
+	Packs      []packAdded  `json:"packs"`
+	Conflicts  []conflict   `json:"conflicts"`
+	Incomplete []string     `json:"incomplete"`
+	Studios    []studioView `json:"studios,omitempty"` // the launcher's report: the studios, if the packs change one
 }
 
 type packAdded struct {
@@ -541,9 +564,22 @@ func buildMod(g *game, spec string) (string, error) {
 	return out, buildDocs(g, docs, srcs, out)
 }
 
+// withTable: docs with table T as DOC (a copy of the map)
+func withTable(docs map[string]obj, t string, doc obj) map[string]obj {
+	out := map[string]obj{}
+	for k, v := range docs {
+		out[k] = v
+	}
+	out[t] = doc
+	return out
+}
+
 // buildDocs: tables written into the game files SRCS, the results in OUT
 func buildDocs(g *game, docs map[string]obj, srcs []string, out string) error {
-	if err := checkDocs(docs); err != nil {
+	if _, ok := docs["studios"]; !ok { // (the tables of a network game saved before the studios)
+		docs = withTable(docs, "studios", g.original["studios"])
+	}
+	if err := gameProblems(g, docs); err != nil {
 		return err
 	}
 	if inc := incomplete(docs, g.original); len(inc) > 0 {
@@ -562,6 +598,14 @@ func buildDocs(g *game, docs map[string]obj, srcs []string, out string) error {
 		return err
 	}
 	built[startSave] = patchStartSave(save, built[0xC9], built[0xCA], built[0xCB], built[0xCC])
+	block := built[studiosBlock]
+	delete(built, studiosBlock)
+	built[startSave] = putStudios(built[startSave], block, g.floors, saveStudios, saveFloors, g.doors)
+	init, err := res.get(initRes)
+	if err != nil {
+		return err
+	}
+	built[initRes] = putStudios(init, block, g.floors, initStudios, initFloors, g.doors)
 	byFile := map[int]map[int][]byte{}
 	for i, data := range built {
 		n, err := res.where(i)

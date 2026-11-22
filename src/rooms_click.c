@@ -300,10 +300,10 @@ L_05D5:
                             LOOP_TICK(14);
                             l_4 = auction_at(si);
                             if ((auction(si).program) == 0) break;
-                            if (((i16)si) > 10) break;
+                            if (((i16)si) > (i16)g_nlots) break;   /* 10 in the original (--auction-lots) */
                             si = si + 1;
                         }
-                        if (((i16)si) <= 10) {
+                        if (((i16)si) <= (i16)g_nlots) {
                             AT(lot, l_4).program = g_drag_film;
                             AT(lot, l_4).seller = G8(0x8BA8);
                             AT(lot, l_4).bidder = 0;
@@ -373,16 +373,22 @@ L_05D5:
         case 3:
             break;
         case 4:
+            if (auction_tab_click()) {           /* --auction-lots: the tab turns the board's page */
+                ui_draw_auction_board(2);
+                present_frame();
+                break;
+            }
             si = 0;
             while (((i16)si) <= 1) {
                 LOOP_TICK(66);
                 di = 1;
                 while (((i16)di) <= 5) {
                     LOOP_TICK(61);
-                    if ((mouse_in_rect((si * 0x8E) + 0x14, (di * 0x13) + 0xFFF9, (si * 0x8E) + 0x9C, (di * 0x13) + 0xB)) != 0) {
-                        cc = (auction((si * 5) + di).program) == 0;
-                        if (!(cc || (auction_toggle_bid((si * 5) + di)) != 1)) {
-                            ui_draw_auction_board(((si * 5) + di) + 0x64);
+                    if ((mouse_in_rect((si * 0x8E) + 0x14 + auction_board_dx(), (di * 0x13) + 0xFFF9, (si * 0x8E) + 0x9C + auction_board_dx(), (di * 0x13) + 0xB)) != 0 && auction_lot_at_place((si * 5) + di) != 0) {
+                        u16 lot = auction_lot_at_place((si * 5) + di);   /* (si * 5) + di in the original (--auction-lots: the page's) */
+                        cc = (auction(lot).program) == 0;
+                        if (!(cc || (auction_toggle_bid(lot)) != 1)) {
+                            ui_draw_auction_board(lot + 0x64);
                             present_frame();
                             ui_draw_money();
                             g_redraw = 1;
@@ -583,7 +589,7 @@ void room_planner_click(void) {
     u16 s2;
     u16 s3;
     u16 s4;
-    u16 si;
+    u16 si = R.si;                     /* SI on entry: read before set when a dragged programme's genre is not 1..11 (src/README.md, "Registers read before they are set") */
     u32 l_4;
     u16 l_6;
     u16 l_8;
@@ -768,6 +774,14 @@ L_0DA8:
                         g_selected_index = t63;
                         t66 = G16(t61 + (t63 << 1));
                         g_selected_program = G16(t61 + (t63 << 1));
+                        /* ORIGINAL BUG (fix "planner-row"): an empty row is told by its slot
+                         * being 0, not by the shelf's count (as the tooltip does, 14E1:000E) --
+                         * a slot freed by program_withdraw (1C18:12F2) holds what lay past
+                         * the shelf: a film of the next genre to plan, or as a series an id
+                         * like 512, far past the table: its length and title from wherever,
+                         * the drag's bitmap overruns the heap and the game crashes.  Fixed:
+                         * a row past the count is empty (also in games saved before). */
+                        if (fix_on(FIX_PLANNER_ROW) && (i16)t63 >= (i16)(u16)(i8)library_count(g_room_owner, g_selected_genre)) t66 = 0;
                         if (t66 != 0) {
                             l_8 = (g_selected_index * 0xA) + 0x48;
                             if (((i16)g_selected_program) < 1000) {
@@ -1934,7 +1948,7 @@ void room_txmap_click(void) {
     return;
 }
 
-/* 05FF:33F6  advertising agency (room 11): take an ad offer (10 slots) if image >= required (1DA8_2682 from ad image class; X-rated ads need image>=20; else msg 0xCD); give back an ad taken today (else msg 0x69 'already signed'); drop on bag signs it (max 10 contracts, msg 0x66); 0x23 = confirm/leave (ad_agency_sign_contracts) */
+/* 05FF:33F6  advertising agency (room 11): take an ad offer (10 slots) if image >= required (1DA8_2682 from ad image class) and, for an ad whose first genre byte +0xC is set (a genre required or excluded), image >= 20 (else msg 0xCD); give back an ad taken today (else msg 0x69 'already signed'); drop on bag signs it (max 10 contracts, msg 0x66); 0x23 = confirm/leave (ad_agency_sign_contracts) */
 void room_adagency_click(void) {
     int cc;
     u16 di;
@@ -2578,6 +2592,10 @@ L_46EF:
                                     g_room_mode = 0;
                                     G32(0x8A4A) = 0x10000;
                                     g_room_stack_top = 2;
+                                    /* fix "load-music": loaded from the setup (silent), the safe is the last
+                                     * room snd_room_music_start saw -- back in the office it takes the music
+                                     * as playing and starts none; no last room: the room's music starts */
+                                    if (fix_on(FIX_LOAD_MUSIC)) g_snd_room_on = 0;
                                     room_escape();
                                     g_game_mode = 3;
                                     g_clock_halt = 0;

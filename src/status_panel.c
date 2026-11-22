@@ -13,7 +13,10 @@
 void tooltip_update(void) {
     u16 ax;
     int cc;
-    u16 di;
+    u16 di = 0;                          /* DI on entry: in the ad agency, off the three
+                                          * folder hotspots, the original reads DI before it
+                                          * sets it (ad_offers(di) below) -- the 0 that
+                                          * game_frame (0ED7:0004), the only caller, has there */
     u16 si;
     u32 l_4;
     u16 t1;
@@ -345,8 +348,8 @@ L_0863:
                     g_tip_j = 1;
                     while (((i16)g_tip_j) <= 5) {
                         LOOP_TICK(57);
-                        if (!((mouse_in_rect((g_tip_i * 0x8E) + 0x14, (g_tip_j * 0x13) + 0xFFF9, (g_tip_i * 0x8E) + 0x9E, (g_tip_j * 0x13) + 0xB)) == 0 || (auction((g_tip_i * 5) + g_tip_j).program) == 0)) {
-                            t168 = auction((g_tip_i * 5) + g_tip_j).program;
+                        if (!((mouse_in_rect((g_tip_i * 0x8E) + 0x14 + auction_board_dx(), (g_tip_j * 0x13) + 0xFFF9, (g_tip_i * 0x8E) + 0x9E + auction_board_dx(), (g_tip_j * 0x13) + 0xB)) == 0 || auction_lot_at_place((g_tip_i * 5) + g_tip_j) == 0 || (auction(auction_lot_at_place((g_tip_i * 5) + g_tip_j)).program) == 0)) {   /* (g_tip_i * 5) + g_tip_j in the original (--auction-lots: the page's lot) */
+                            t168 = auction(auction_lot_at_place((g_tip_i * 5) + g_tip_j)).program;
                             g_tip_row = 1;
                             si = t168;
                             if (g_tip_i != 0) {

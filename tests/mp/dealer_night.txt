@@ -1,0 +1,16 @@
+# The film dealer after 01:00, a seat's first visit (multiplayer, tools/seattest.py): two humans
+# playing at random (tools/mpchaos.py seed 403, its input in dealer_night.play).  At 01:00 of the
+# first day (time slot 1, the clock standing while the humans go home) seat 1 still walks and
+# enters the film dealer (room 8) for the first time.  room_load_assets (0054:0F79) sets the
+# dealer's pose (resources 0xBC..0xBF) for 17:00..00:59 only; seat 1's was still 0: resource 0
+# does not exist, the "insert disk" box waited inside seat 1's turn (its bitmaps' pointers in the
+# shared DS:8FFC/9000), and the game halted (1E17:1C1C, every machine alike).  Now a network
+# game takes the late pose (0xBF) for a pose not set; the game goes on, seat 1 in the dealer's room.
+# humans 1,2
+# options --new-game --seed 403
+# play tests/mp/dealer_night.play until 83600
+83700 seat 1 peek16 39D4:838C
+83700 seat 1 peek16 39D4:7A26
+83800 hash
+83801 seat 1 hash
+84000 quit

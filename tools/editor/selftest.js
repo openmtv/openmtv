@@ -135,6 +135,7 @@ async function selftest() {
       ok(!recById(sec.table, 51), `new ${sec.what} #51 deleted again`);
     }
     await selftestScreenplays({ ok, wait, typeInto, go2, W, confirmDialog });
+    await selftestStudios({ ok, wait, go2, W });
     ok(await save(), 'saved');
     ok((await api('GET', '/api/mods/selftest/films')).records.some((x) => x.id === 201), 'film 201 stored');
     const f = (await api('GET', '/api/mods/selftest/films')).records.find((x) => x.id === 31);
@@ -177,7 +178,7 @@ async function selftest() {
     ok(st.section === 'films' && st.sel.films === 33, 'search: Goldfinger -> film 33');
 
     /* ---- the modes, each with its own checks (monitor.js, overview.js, table.js, stage.js, tree.js) */
-    const modeScripts = $$('script[src]').map((x) => x.getAttribute('src')).filter((x) => !/\/(i18n|game|schema|editor|selftest)\.js$/.test(x) && !x.startsWith('/wails/'));     /* (the launcher's own window adds its runtime's) */
+    const modeScripts = $$('script[src]').map((x) => x.getAttribute('src')).filter((x) => !/\/(i18n|game|studios|schema|editor|selftest)\.js$/.test(x) && !x.startsWith('/wails/'));     /* (the launcher's own window adds its runtime's) */
     ok(SELFTESTS.length === modeScripts.length && !PAGE_ERRORS.length, `every mode loaded: ${modeScripts.join(' ')}` + (PAGE_ERRORS.length ? ' -- ' + PAGE_ERRORS.join('; ') : ''));
     for (const fn of SELFTESTS) await fn({ ok, wait, typeInto, go2, W, confirmDialog });
     await selftestPacks({ ok, wait, typeInto, go2, W, confirmDialog });
@@ -269,6 +270,14 @@ async function selftestScreenplays({ ok, wait, typeInto, go2, W }) {
   await wait(20);
   ok(spList(recById('screenplays', 11), 4).length === n11 && !changed('screenplays', recById('screenplays', 11)), 'screenplay 11: an entry added and taken out again -- the original again');
   st.tab.screenplays = 'all';
+  /* the rule "Unfertige Drehbücher integrieren": the original's tables with its screenplays (?layer=1), the
+     original's without -- 23 filled, 30 offered with its price, series 44 with its 8 episodes */
+  {
+    const lay = await api('GET', '/api/original/screenplays?layer=1'), plain = await api('GET', '/api/original/screenplays');
+    const ser = await api('GET', '/api/original/series?layer=1'), f = (d, id) => d.records.find((r) => r.id === id);
+    ok(f(lay, 30).flags === 6 && f(lay, 30).price === 480000 && f(plain, 30).flags === 0 && f(ser, 44).episodes === 8 && (st.meta.origscripts || []).length === 23,
+      'the rule "Include unfinished screenplays": screenplay 30 and series 44 filled with ?layer=1, the original\'s without');
+  }
   /* a series never offered: 38 -- a list for each of the 10 episodes of series 38 */
   await go2('#screenplays/38/form');
   st.tab.screenplays = 'all'; renderEntry();
@@ -293,6 +302,70 @@ async function selftestScreenplays({ ok, wait, typeInto, go2, W }) {
   ok(spRoleCount(s) === 1 && !W('tr[data-role="2"]'), 'a role only in a list past its series\' episodes is not shown (the lists the game uses)');
   back('screenplays', 38); back('series', 38);
   ok(!changed('screenplays', recById('screenplays', 38)) && !changed('series', recById('series', 38)), 'screenplay and series 38 the original again');
+  /* screenplay <-> film (series): the band under the head both ways, the head's pill a way back */
+  const H = (q) => $('#workhead ' + q);
+  await go2('#screenplays/1');
+  ok(H('[data-linkband="screenplays"] .lbname').textContent.includes(T('Film #{id}', { id: 51 })), 'screenplay 1: the band names film 51');
+  H('[data-linkto="films-51"]').click();
+  await wait(50);
+  ok(st.section === 'films' && st.sel.films === 51 && H('[data-linkband="films"] [data-linkto="screenplays-1"]'), 'to film 51, its band back to screenplay 1');
+  H('[data-producedby="1"]').click();
+  await wait(50);
+  ok(st.section === 'screenplays' && st.sel.screenplays === 1, 'the pill "produced by screenplay 1" leads there');
+  await go2('#series/1');
+  ok(H('[data-linkto="screenplays-8"]') && H('[data-producedby="8"]') && !diffs(secByKey('series'), recById('series', 1)).length, 'series 1: made from screenplay 8, as in the original (its 0x40 without 0x20 no change)');
+  H('[data-linkto="screenplays-8"]').click();
+  await wait(50);
+  ok(st.sel.screenplays === 8 && H('[data-linkto="series-1"]'), 'screenplay 8 leads back to series 1');
+  await go2('#films/31');
+  ok(!H('[data-linkband]') && !H('[data-producedby]'), 'a film no screenplay produces: no band');
+  /* the market of a record with bit 6 alone (series 1, 0x46): to the dealer one change, back to nowhere the original */
+  const s1 = recById('series', 1), mf = fieldByKey(secByKey('series'), 'offered');
+  fieldSet(mf, s1, 0x20);
+  const d1 = diffs(secByKey('series'), s1).map((x) => x.key);
+  fieldSet(mf, s1, 0);
+  ok(same(d1, ['offered']) && !changed('series', s1), 'series 1 to the dealer: the one change "offered" (' + d1 + '); back to nowhere: the original again');
+}
+
+/* ---- the studios (studios.js): the estate agent's plan with a ring per studio, a public room free
+   from the start and back, a consulate locked, the three start studios changed together; the
+   launcher's report shows the studios of a pack that changes them */
+async function selftestStudios({ ok, wait, go2, W }) {
+  await go2('#studios/11');
+  const plan = W('[data-studioplan] img');
+  for (let k = 0; k < 40 && !(plan && plan.complete && plan.naturalWidth); k++) await wait(50);
+  ok(plan && plan.naturalWidth === 320 && plan.naturalHeight === 120 && $$('#work [data-studioplan] .sring').length === 12 && W('.sring.sel[data-studio="11"]'),
+    'studio 11: the plan (320 x 120, the game\'s) with 12 rings, its own chosen');
+  W('[data-field="renter"] [data-v="255"]').click();
+  await wait(50);
+  const r11 = recById('studios', 11);
+  ok(r11.renter === 255 && changed('studios', r11) && W('.sring.free[data-studio="11"]') && studioChecks(r11).every((c) => c.level === 'ok'), 'studio 11 free from the start: changed, its ring yellow');
+  W('[data-field="renter"] [data-v="0"]').click();
+  await wait(50);
+  ok(!changed('studios', recById('studios', 11)), 'studio 11 public again: the original');
+  await go2('#studios/7');
+  ok(!W('[data-field="renter"]') && W('[data-field="size"]') && W('.sring.locked[data-studio="7"]'), 'studio 7, a consulate: no choice at the start (locked), its size still');
+  await go2('#studios/8');
+  W('[data-field="size"] [data-v="3"]').click();
+  await wait(50);
+  ok([6, 8, 10].every((i) => recById('studios', i).size === 3) && studioChecks(recById('studios', 6)).every((c) => c.level === 'ok'), 'start studio 8 size 3: all three start studios');
+  recById('studios', 6).rent = 5000;
+  ok(studioChecks(recById('studios', 8)).some((c) => c.level === 'err'), 'the start studios differing: an error');
+  recById('studios', 6).rent = recById('studios', 8).rent;
+  toOriginal(secByKey('studios'), recById('studios', 8));
+  renderEntry();
+  ok([6, 8, 10].every((i) => !changed('studios', recById('studios', i))), '"Original" on start studio 8: all three start studios the original again');
+  /* (here too: the pack's title -- renamed in the overview, shown at once everywhere) */
+  await go2('#overview');
+  const keptTitle = packTitle(st.mod), renameTo = async (v) => { const i = $('#modtitle'); i.value = v; i.dispatchEvent(new Event('change')); for (let k = 0; k < 30 && packTitle(st.mod) !== v; k++) await wait(50); await wait(50); };
+  await renameTo('self-test renamed');
+  ok($('.pagehead h1').textContent === 'self-test renamed' && [...$$('#inspector .modrow, #inspector [data-mod]')].concat([...$$('#inspector *')]).some((x) => x.textContent === 'self-test renamed'),
+    'overview: the pack renamed -- the head and the list of packs show the new title at once');
+  await renameTo(keptTitle);
+  const views = st.meta.studio_doors.map((d) => Object.assign({}, d, { name: { en: gameStr(d.sign, 'en'), de: gameStr(d.sign, 'de') } }, origById('studios', d.studio), { renter: d.studio === 5 ? 255 : origById('studios', d.studio).renter }));
+  const ov = studioOverview(views);
+  ok(ov.querySelectorAll('.sring').length === 12 && ov.querySelectorAll('.sring.free').length === 1 && ov.querySelector('.svsum').textContent.includes('1') && ov.textContent.includes(numFmt(12000)),
+    'the overview (launcher, lobby): 12 rings, studio 5 free at the estate agent\'s $12,000 a day');
 }
 
 /* ---- packs: the original alone, and a protected pack -- the first change makes a new, complete
@@ -474,6 +547,7 @@ async function selftestGerman({ ok, wait, typeInto, go2, W, confirmDialog }) {
     screenplays: [2, 24, 25, 26, 38, pick('screenplays', (r) => spIsSeries(r))],
     news: [2, 38, 166, (unreachedNodes()[0] || {}).id],
     topics: [1],
+    studios: [6, 7, 11],
   };
   st.epText = true;
   for (const sec of SECTIONS) {

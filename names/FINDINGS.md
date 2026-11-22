@@ -103,8 +103,13 @@ checkpoints.
   bids (the human also loses lots nobody bid on when leaving the agency).
 * Series episodes wear by quality × wear / 20 per airing, minimum 1
   (1C18:172F).
-* X-rated ads require image ≥ 20; actors require image ≥ 10, fees > $5 000
-  need ≥ 15, > $10 000 need ≥ 20; actor cost = fee × episode multiplier.
+* Signing an ad whose first genre byte (+0x0C) is set -- a genre required
+  or excluded -- needs image ≥ 20 besides the minimum audience as % of the
+  reach (05FF:33F6; there are no X-rated ads, the 20 is this genre
+  condition).  Computer players check only the audience against their image
+  (2DD9:33CB) and take an ad with only exclusions below image 20 too.
+* Actors require image ≥ 10, fees > $5 000 need ≥ 15, > $10 000 need ≥ 20;
+  actor cost = fee × episode multiplier.
 
 ## Production
 
@@ -507,8 +512,12 @@ seeded from the timer (`random_n`), whose phase is not part of the save.
     8Ah; reproduced 2026-10-22: a studio given up mid-production is freed
     at once, the production lost, its end day later finishes screenplay 0
     over a computer player's news budget -- tests/fixes/trendy_studios.txt;
-    Trendy's own studio is already the screenplay-target match, screenplay
-    24 -> film 138; fix "trendy-studios"); 0DD9
+    fix "trendy-studios" -- first assuming Trendy's own studio is the
+    screenplay-target match, screenplay 24 -> film 138: it is not, 1DA8:034E
+    cancels screenplay 24 as its single production ends (script 0) and keeps
+    the show's lock, so only the every-studio branch ever ended it; found
+    2026-10-26 in a Mac game, the lock kept for good: the fix now also ends a
+    lock nothing ends any more, tests/fixes/trendy_studios_lock.txt); 0DD9
     reads a series' topicality one episode early (series_episode_at
     1C18:1116 before placing: a never-aired series counts 0); 348B:02A3
     gives a fully booked contract genre mask 0 (read from the code).
@@ -680,6 +689,32 @@ seeded from the timer (`random_n`), whose phase is not part of the save.
   human sees "Warning" boxes he did not cause.  tests/fixes/ai_warning.txt.
   Fix "ai-warning": no box for a computer player (the placement is refused
   as before).
+* 229E:09AF (studio_new_shopping_list) with 348B:0F05 (ai_next_shopping_list;
+  found 2026-10-26 in a Mac game): the same ui_warning for a refused list --
+  the sixth (text 0x41 "too many shopping lists"), Trendy's second episode
+  (0x40), an 11th production (0x14F) -- also when the list is a computer
+  player's.  ai_production_status (2DD9:41FF) gives status 4 (office) to a
+  computer player whose studio holds a screenplay but is locked and not
+  shooting, and 348B:0F05 then "continues the current production" in the
+  first such studio: one more list every round, never shot, and from the
+  sixth on the box pops up on the human's screen, wherever he is.
+  tests/fixes/ai_warning_shoplist.txt; under fix "ai-warning" no box for a
+  computer player there either.
+* 1C18:12F2 (program_withdraw) with 05FF:0D0E (room_planner_click; found
+  2026-10-26, a Mac game replayed on a changed build hung in the planner):
+  every way a programme leaves a shelf (dealer, auction, bailiff, bomb, the
+  case, a computer player's sale) shifts the slots after it with
+  `while (count > i) slot[i] = slot[i + 1]` -- reading slot[count], one past
+  the last programme, into the freed slot.  From a full shelf that is the
+  next genre's slot 0 (a film of another genre), for genre 11 the counts of
+  genres 0 and 1 (DS:6F79 + player x 0x6C, as a word, e.g. 0x0200).  The
+  planner's list (mode 2, hotspot 0x18) picks row (y - 72) / 10 if its slot
+  is not 0 -- no count check (tooltip_update 14E1:000E has one): an empty row
+  hands out the stale slot, a series id like 512 overruns the drag bitmap
+  (halt "interp: unknown opcode F1 at FFFF:1E10", or a hang, depending on
+  the heap).  tests/fixes/planner_row.txt.  Fix "planner-row" (the first
+  fix past bit 31: fix_mask is 64 bits): the freed slot is 0, a row past the
+  count is empty.
 
 ## Observations (original behaviour, not confirmed as bugs)
 
@@ -702,7 +737,19 @@ Seen while writing the room scenarios (tests/scenarios/) and the catalogue
 * Estate agent (05FF:3AB7): only studios with renter 0xFF are offered.
   Studios 1–5, 7, 9, 11 and 12 start with renter 0 (behind other rooms'
   doors) and can never be rented by the human; the computer players'
-  348B:098D treats 0 as free.
+  348B:098D treats 0 as free.  Behind which door (size, base rent): 1 laundry
+  (floor 2; 1, $2 000), 2 psychiatrist (3; 1, 2 000), 3 bio-control (3; 2,
+  8 000), 4 society against nicotine (4; 2, 5 000), 5 tobacco producers (4; 3,
+  8 000), 7 consulate of the Free Republic (7, room 0x12; 3, 8 000), 9
+  consulate of the People's Republic (9, room 0x13; 2, 5 000), 11 gun agency
+  (10; 3, 14 000), 12 Peace Brothers (12; 2, 9 000); 6, 8, 10 the stations'
+  (size 1, $2 000).  A bomb in a public room (types 16..24, 1DA8:2D3B) turns
+  its door into a free studio (room 0x36, signs 0x89/0x8A, owner 0, renter
+  0xFF) -- normally the rival consulate's, through swapped signs any public
+  room.  A pack can do it from the start (docs/CHANGES.md, "Studios").  The
+  plan (room 62) draws from resource 0xA0 (its gfx1) and the frame tiles of
+  resource 4; a free studio has the public rooms' marker (renter < 1 as a
+  signed byte).
 * 1DA8:034E: after a film of a multi-production screenplay (flag bit 2) the
   studio stays "running"; a later give-up is deferred (reserved 0xFF).
 * Unused content: headline nodes 65, 96, 99, 171, 185 and 186 have text but

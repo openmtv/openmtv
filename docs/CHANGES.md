@@ -48,8 +48,10 @@ on (`verify.sh` step 5); `build/mtv-dec --fixes=list` prints the table.
 | `case-corner` | the film agency's case takes a click anywhere in its frame: slot = column + 5 x row, 7 columns and 3 rows (0..16) where the tapes are drawn 5 by 2, and only asks whether the word at that slot is non-zero -- the library asks slot < count.  Behind the 10 used slots lie 5 never written, then the programme scores of the hour: slot 16, the lower right corner of the frame (x 278..279, y 88..103), is the human's (station 1's) score, taken for a film id.  Hovered, it shows that film's info without a title (titles are loaded only for the case, shelf and auction); taken and dropped on Mr. Jabble, it is sold (or put into the auction) for its full price, again and again, a new film every hour.  Each grab counts the case down past zero: the next tapes bought go to the words before it (computer player 3's transmitter search) and are lost | only the drawn tapes: column 0..4 and slot < count, for the click and the info.  **Always on in a network game**, whatever the host chose, Classic included (`FIX_MP_ALWAYS`, `seat_humans`); there the corner held station 1's score for every seat | `05FF:0359`, `14E1:000E` | `case_corner`, `case_corner_mp` |
 | `ai-rating` | a computer player's average rating of yesterday is viewers x 100 / (reach x 2464), the product in 32 signed bits: above 21.5 million viewers an hour -- reached only with a satellite -- it overflows to a rating of 0 or below; it then takes only ads with no minimum audience and ranks itself last (measured with the AI improvement's satellites: ratings about 1 %, cash -75 M on day 60) | the product in 64 bits | `2DD9:2B8D` | `ai_rating` |
 | `ai-bids` | a computer player's auction bids go into a list of 11 places (DS:756A), one new entry per bid -- the same lot again after the other computer player outbid it -- and only the human outbidding it removes one: an active bidder writes past the list over the contract counts and the hour's news viewers; the ad agency then marks thousands of garbage "contracts" as held and writes into the sound driver's code -- the game halts (18 of 70 measured games with the AI improvement) | a lot already in the list keeps its entry, the reserve added (10 lots, 11 places) | `2DD9:1DDA` | `ai_bids` |
-| `ai-warning` | a placement refused for a computer player (its live film's hour is over) shows the human's "Warning" box and switches his screen; the computer player tries again at every office visit, each try opens another box, none closed, until a box's background save gets a null bitmap and writes the screen over the interrupt vectors -- the game halts (8 of 70 measured games with the AI improvement's satellites) | no box for a computer player; the placement is refused as before | `229E:0225`, `2DD9:4719` | `ai_warning` |
-| `trendy-studios` | a live show (17 of the screenplays: game shows, talk shows, "Trendy") keeps its studio "running" after the shooting until the show has aired; only then does a deferred give-up free the studio or a queued renter take it over.  The hour's programme phase lets a studio go when the film that just aired is its screenplay's film -- and also when that film is 138, "Trendy" (Im Trend, itself one of the shows, screenplay 24), for every running studio, whoever airs it, shooting or waiting.  A studio whose renter gave it up mid-production is then freed at once, a queued renter takes it at once: the production is lost (its screenplay goes into the list without being counted), and its end day stays, so at the end hour the game "finishes" screenplay 0 for renter 0xFF -- into player -1's library, over a computer player's news budget (1470 -> 0); a studio not given up loses its protection, and giving it up then frees it at once.  In a network game one player's "Trendy" hits the others' studios | "Trendy" lets only its own studio go, like every other show | `24B8:0C4A` (`24B8:16D5`) | `trendy_studios` |
+| `ai-warning` | a placement refused for a computer player (its live film's hour is over) shows the human's "Warning" box and switches his screen; the computer player tries again at every office visit, each try opens another box, none closed, until a box's background save gets a null bitmap and writes the screen over the interrupt vectors -- the game halts (8 of 70 measured games with the AI improvement's satellites).  The same box for a computer player's refused shopping list (its sixth, "Du hast schon zuviele Einkaufslisten!"; also "only one episode", "only 10 productions"): a computer player whose studio cannot shoot asks again every round, and the box pops up wherever the human is -- the building, the planner -- and takes him out of what he was doing | no box for a computer player; the placement or the list is refused as before | `229E:0225`, `2DD9:4719`, `229E:09AF`, `348B:0F05` | `ai_warning`, `ai_warning_shoplist` |
+| `trendy-studios` | a live show (17 of the screenplays: game shows, talk shows, "Trendy") keeps its studio "running" after the shooting until the show has aired; only then does a deferred give-up free the studio or a queued renter take it over.  The hour's programme phase lets a studio go when the film that just aired is its screenplay's film -- and also when that film is 138, "Trendy" (Im Trend, itself one of the shows, screenplay 24), for every running studio, whoever airs it, shooting or waiting.  A studio whose renter gave it up mid-production is then freed at once, a queued renter takes it at once: the production is lost (its screenplay goes into the list without being counted), and its end day stays, so at the end hour the game "finishes" screenplay 0 for renter 0xFF -- into player -1's library, over a computer player's news budget (1470 -> 0); a studio not given up loses its protection, and giving it up then frees it at once.  In a network game one player's "Trendy" hits the others' studios | "Trendy" lets only its own studio go, like every other show.  Trendy's own studio is no match for that: its production is a single one, and as its shooting ends the game takes its screenplay out of the studio (screenplay 0, matching no film) -- only the every-studio branch ended its lock.  So with the fix a studio's lock that nothing ends any more -- running, not shooting, and no show shot there that waits for its airing -- ends with the hour: Trendy's studio as its shooting ends (not when Trendy airs), and a lock left by the first version of this fix (a Mac game 2026-10-26: a computer player put its next screenplay into such a studio, could never shoot it and asked for a shopping list after another) at the next full hour of a loaded game | `24B8:0C4A` (`24B8:16D5`), `1DA8:034E` | `trendy_studios`, `trendy_studios_lock` |
+| `planner-row` | a programme taken off its shelf -- sold to the dealer, seized by the bailiff, destroyed by a bomb, carried to the case, sold by a computer player -- goes through one function (`program_withdraw` `1C18:12F2`), which shifts the slots after it down one slot too far: the freed slot gets what lies past the shelf's last programme.  From a full shelf (4) that is the next genre's first programme, for series (the last genre) the counts of genres 0 and 1 as a word (e.g. 0x0200 = series 512).  The planner's programme list tells an empty row by its slot being 0, not by the count (the tooltip over it does check the count): a click on an empty row picks that slot up -- a film of another genre from a genre's list, planned like any other, or a series id far past the table, whose drag image overruns the heap: the game halts or hangs.  Seen 2026-10-26: a Mac game held series 512 in its fourth series slot; the click on the empty row hung the game | the freed slot is 0, and a row past the shelf's count is empty -- also in games saved before | `1C18:12F2`, `05FF:0D0E` | `planner_row` |
+| `load-music` | a game loaded from the setup screen -- "Load game", a slot; the launcher's safe and the iPhone's menu start it so (`--load-slot`) -- goes on in silence until the next room change: the setup plays no music, the safe records itself as the last room (`g_snd_room_on` DS:1608 = 0x3A), and back in the office `snd_room_music_start` (35F8:037C) takes the music as playing -- as it is when one comes back from the safe in a running game -- and loads none (user 2026-11-17: "wenn man ein spiel lädt ist der sound erst nicht da") | no last room before the way back: the office's music (sample 0x61) starts | `05FF:44F4` (`room_saveload_click`) | `load_music`, `load_music_slot` |
 | `film-200` (data) | film 200, John Carpenter's "Prince of Darkness" (1987), has the placeholder English title "xxx", and its German text is cut off in the resource after "Die Fürsten der" (a table of numbers follows; the length byte, 26, is that of "Die Fürsten der Dunkelheit"; the description is lost); it is never offered | titles "Prince of Darkness" / "Die Fürsten der Dunkelheit", a new German description, offered by the film dealer -- only while the data is the original's damaged data | `src/fixes.c` (texts as read, the market flag after the start savegame); the editor's starting point: `tools/datafixes.py` | `film200` |
 | `live-aid` (data) | film 164, "Live Aid" (a live broadcast in the auction pool: quality 50, $700 000), is 0 hours long -- the only film without a length.  The computer players value a lot at hours × topicality × 20 / thousands of dollars: 0, so they never bid on it (`2DD9:20BA`, `2DD9:2386`).  Its date is drawn as evening hour 1..8 − length (`1DA8:0CB3`): one time in eight 1 a.m., an hour that can never be planned (it is lost as missed).  Placed in the planner (`229E:0225`) it clears no hour: a programme it is put on keeps its continuation hours, which then air as Live Aid, and the planner draws its box 0 pixels high (length × 16).  Aired it never reaches its last hour (`24B8:0C4A` counts from 1), so the tape is not used up: it stays in the archive and is taken away at night with "You missed ... live" (`1DA8:135D`).  Its record also lacks the value 4 in `flags2` (bit 2) that the other live broadcasts and the shows have -- "used up when aired", what a live broadcast is anyway by its genre (`24B8:0C4A` asks for either), otherwise read only for studio productions -- and anything in the low five bits of `flags`, which the code never reads: both left as they are | 2 hours: the other ten live broadcasts cost about $7 000 per hour and quality point (59: 1 hour, quality 50, $100 000; 163: 2 hours, quality 60, $750 000; 187: 4 hours, quality 80, $3 000 000 -- the best fit $6 965), which makes $700 000 at quality 50 2.01 hours, and puts the computer players' value of it (2.9) among the others' (2.0 .. 3.7) -- only while the record is the original's (a mod's film 164 stays its own) | `src/fixes.c` (the record after the start savegame; also a pack's film 164 while it is the original's record).  The editor keeps the original's length 0 (a pack made there carries it, the game repairs it) | `live_aid` |
 | `video-connection` (data) | screenplay 20, "Video-Connection" (film 134, a show: "a low budget music video show -- a few star guests and a sparkling host make it a success"), asks nothing of its two roles, the host (category 5, slot 1, weight 10) and the star guests (category 7, slots 2 and 3, weight 4 each): their requirements (humor, the unused second byte, looks, craft at +0x168) are all 0 -- the only roles of the 50 screenplays without any.  How well an actor fits a role (`script_role_match_pct` `1DA8:2560`: the sum of min(requirement, attribute) over the sum of the requirements) is then 0 for everyone, so the shooting (`229E:0B98`: quality = base x sum(score) / sum(weight) x 125 %) counts only the set (weight 4 of 22): quality 20 x 4 / 22 x 125 % = 3 at best (2 / 22: 1 with the cheapest set), which draws no viewers; whatever the actors cost is lost.  The shop's role fit (`--cast-fit`) shows "-" for every actor | both roles get the requirements of "Talk for Two" (screenplay 16, also a host and a guest): humor 20, looks 18, craft 16 -- only while the record is the original's (a mod's screenplay 20 with requirements stays its own).  Played again from a game where it was produced with a fair cast: quality 12 instead of 3, 1.15 million viewers at midnight instead of 0 | `src/fixes.c` (the requirements after the start savegame; a savegame holds only the episode blocks, so a loaded game has them too).  The editor keeps the original's record | `video_connection` |
@@ -69,34 +71,52 @@ original's).
 | Terror damage: `[game] terror_damage = N`, `--terror-damage=N` (0 to 100 000 000; default 50 000, the original's) | a terrorist's bomb in a room with an owner -- one whose sign was swapped at the information board, by the human or by a computer player's sabotage; the consulates are public and cost nobody anything -- costs the owner $50 000 (the ledger's "credit repaid", shown under sundry costs) and message 0x135 says so ("... are $50.000!") | N dollars, for humans and computer players alike; the message names the amount the way the original writes it ("$250.000": "$50.000" replaced in the text as it is shown, both languages; a pack's own text without it stays); 0: no costs and no message -- the room's other losses (a film, the production, the studio) stay.  In a network game a setting of the host's (`terror=` in the game's parameters, the network savegame's description; one from before the option: 50 000); a recording's header names it | `1DA8:2D3B` npc_event_strike, `2B74:1875` msg_show_next (`terror_damage`, `terror_text`, `src/fixes.c`) | `terror_damage`, `terror_damage_zero`, `terror_damage_ai` (`# option:`) |
 | Sammy prize money: `[game] sammy_news`, `sammy_culture`, `sammy_shows`, `sammy_series` = N; `--sammy-prize=N` (every category) or `--sammy-prize=NEWS,CULTURE,SHOWS,SERIES` (0 to 100 000 000 each; default 0, the original's) | the Sammy -- every three days a category: the best news, cultural engagement, self-produced shows, self-produced series (the last two count only what is shot in one's own studio; before day 5 only the first two) -- brings its winner image (+8/4/6/6, taken from the others) and a message (0x159), no money | the winner, human or computer player, also gets the category's amount at the day change: cash, and for a human the ledger's sundry income (in the report of the day that ends, like the credit's interest); the winner's message adds "It comes with prize money of $300.000!" / "Dazu erhalten Sie ein Preisgeld von $300.000!" (the amount travels in the message, a savegame keeps it).  In a network game a setting of the host's (`sammy=` in the game's parameters, the network savegame's description; one from before the option: none); a recording's header names it | `1DA8:4481` sammy_daily_update, `2B74:1875` msg_show_next (`sammy_prize`, `sammy_pay`, `sammy_prize_text`, `src/fixes.c`) | `sammy_prize`, `sammy_prize_mp` (`# option:`) |
 | Fourth speed: `[game] fourth_speed = yes`, `--fourth-speed` | the planner's Control-Center has three speed buttons: 20, 30 and 60 game seconds per 50 timer ticks (`g_game_speed`) | a fourth button, 120 -- twice the third (a game hour in about 2 100 frames instead of 4 250 at 60).  Four buttons of the original's size (28 pixels, the car 26) do not fit the 96-pixel row, so the panel and its boxes grow by 16 pixels on each side and the buttons move closer together (gaps 5-6 instead of 6); the fourth shows the third's car with a flame out of its back (3 rows, palette 19/26/25).  The original's hotspot table has three speed entries; with the option a check before it gives the four new ones (0x3F..0x42).  At 120 the clock counts whole seconds -- (accumulated + ticks x speed) / 50 instead of whole steps of 50 ticks x speed -- or it would move 2 minutes at a time and skip the planner's refreshes at :00, :05 and :55.  A game saved at 120 and loaded without the option goes on at 60.  A recording's header names it | `2B74:0E63` options_draw, `05FF:0D0E` (case 0x42), `0AA4:2197` hotspots, `0D5E:02E4` clock, `229E:1386` load (`speed4_*`, `src/fixes.c`) | `fourth_speed` (`# option:`) |
+| Skip the title sequence: `[game] skip_intro = yes`, `--skip-intro` | a new start plays the title sequence (`intro_play`) before the setup; a key ends it, a click only if the button is down at the moment it looks -- once per picture, a few hundred milliseconds apart | the setup at once, as `--new-game` and `--load-slot` already start (the sound driver's tick block handed over as the intro does).  Not in the difftest | `src/main_loop.c` (before `intro_play`) | -- |
+| TV monitor = back: `[input] tv_back = yes`, `--tv-back` (touch screens) | a click on the TV family's monitor (bottom right, 208,127, 104 x 58) does nothing | a finger's tap there is the right button -- back, out of a room -- once the bottom panel stands (`game_panel_up`: shown after the setup, no message or pause screen): one hand will do.  Mouse clicks there stay as they were | `runtime/host.c` (`touch_on_tv`), `src/state.c`, `src/main_loop.c` (`game_panel_shown`) | -- |
 | Fast room changes: `[game] fast_rooms = yes`, `--fast-rooms` | entering and leaving a room takes 30 to 82 frames on the logical clock (the office 57 in and 39 out, the studio 82 in): a wipe with a timer tick's delay per step (20 steps), the sprite decoder's time, some 7000 AdLib accesses of the room's music start.  The game's clock stands still meanwhile (`game_clock_pause`), so it costs no game time -- only the player's wait | 0 to 3 frames: the wipe without its delay per step (the room is there at once), the sprite decoder (`huff_*`) free on the logical clock, the AdLib accesses during a room change or disk access at a tenth of their price -- what a network game always does (there the world runs in the host's frames and stood still for everyone).  The rules are unchanged; random draws seeded from the timer fall otherwise, as with any other pace.  Without `--logical-time` (the tests' timing) only part of the time goes.  A recording's header names it | `0054:0D03` room_return, `0054:0E5F` room_enter (`fast_wipe_delay`, `src/main_loop.c`), `37B4:*` (`FUNC_TICK_FAST_ROOMS`, `src/huffman.c`), `port_clock` (`runtime/hw.c`); `fast_rooms()` in `runtime/runtime.h` | `fast_rooms` (`# option:`) |
 | AI improvement: `[game] ai_improve = normal` or `strong`, `--ai-improve=normal` or `strong` (off by default) | the computer players buy transmitters only from their transmitter pot (35 % x a priority of every income; over $50 000, from 18:00, the site with the most new viewers whose price fits the pot); a good player who builds early passes them by day 10 or so, for good | each computer player watches the strongest human's reach: once it is 10 % above its reference, it notices it, remembers it (S), waits (normal 8-20, strong 4-12 played hours; a day is 17:00-01:00) and then buys towards S x F (normal 0.50-0.80, strong 0.80-1.02: the plan's 0.75-1.00 and 0.90-1.15 measured too strong) up to one (strong two) transmitters, if the gap is a million viewers or more: of all 1 500 map points (30 a step) the one whose new viewers are 80-130 % of the gap with the most new viewers per dollar (otherwise its usual rules), paid from the cash, which may go negative; their daily fees from the cash and half from the transmitter pot (as the original's for every transmitter) -- the pots for films, news and productions stay untouched.  The search measures against a copy of its own coverage and leaves the game's shared map as it was (in a network game another human may be on the transmitter map); it notices only what a human has paid for (not masts set on the map and not yet paid).  If more than 15 % of the target is still missing after them, it follows up: a new wait, half one of its level's, then the same target again, until the gap is smaller or nothing is left to buy (a satellite of the human's leaves a gap two transmitters do not close).  The satellites (the whole west / east half, $2.5M / $4.5M), which the original's computer players never buy: it may own as many as the strongest human has paid for (strong) or one fewer (normal); an allowed one is one more site of the rule -- its new viewers the half's it does not reach yet -- if they are at most 130 % of the gap or keep it at most at the human's reach; bought from the cash, its fees like a follow-up transmitter's.  Then its reference is S and it looks again: one step behind the human.  Further expansions during a wait are not counted; one ahead of the human plays as the original; its own purchases from the pot go on.  A hidden personality per computer player (cautious or ambitious, drawn with its state) takes the waits from the upper and the factors from the lower half of the ranges, or the other way round.  The draws: `random_n`, mixed with the played time.  The state goes into the savegame (the fourth part of the `MTVX` extension, also without a mod; a savegame without it starts it anew, with the human's reach then as the reference); in a network game a rule of the host's, in the game's parameters (`aiimp=`) and the network savegame.  Diagnostics: `[ai-improve]` lines on stderr (`build/game.log`).  A recording's header names it | `2DD9:000C` ai_tick, `2DD9:4B84` ai_want_transmitter, `2DD9:4862` ai_scan_transmitter_site, `1DA8:0FB9` pay_daily_costs, `229E:139A` the savegame's extension (`src/ai_improve.c`, `src/actions.c`) | `ai_improve` (`# option:`), `tools/aiimptest.py`, `tests/mp/ai_improve*`, `tests/mpsave/ai_*` |
 | More ad offers: `[game] ad_offers = N`, `--ad-offers=N` (10 to 17; default 10, the original's) | the ad agency offers 10 contracts at a time (`g_ad_offers` DS:19A0, 10 x 7 bytes; the film dealer's slots follow at 19ED), drawn every night and refilled when a slot is free (`adagency_refill`); its desk holds them in three stacks of 3/4/3 folders | N offers, the same draw for every slot (which classes come up does not change: early demands stay high, the best-paid ads stay rare late).  Offers 11..N live in a host array behind the far segment EE00 (`g_ad_offers_extra`, `ad_offers_at`; any other index keeps the original's address), every loop over the offers runs to N (refill, the night's release, the computer players' choice, signing, giving one back, the briefcase's search).  10 keeps the original's desk; from 11 the folders stand in a front row at y 66 (x 68 + 8 per offer, up to 13: it covers the agent's hands) and a back row of up to 4 at y 43 (x 148.., it covers the clock on the desk -- decoration, no hotspot), drawn as the original draws (the back first, each row from the right) inside the background it saves (64..207 x 43..112 with the rows) -- the mock-ups chosen with the user (`https://claude.ai/artifact/SFKBcSBUPRcNyXSN6EBjQz`) 15 pixels further left: a folder's tip opens at x 184 and covered the rows' right end (the user, after playing it).  A click takes the folder at X for the cursor at X+5..X+12 (a row's last to X+9), the front row first unless its folder there is gone (then the back row's shows through); the tip the same with the mouse one pixel left, as the original's; a carried folder goes back on the desk around both rows (hotspot 0x26: (66,62)-(176,106) and (146,43)-(184,74), holding the original's two).  More slots need more ads: every ad has one holder, the pool is every free ad below 40 % of the largest reach -- with the original's 50 some places stay empty early (not drawn: gaps, as in the original); the neue-werbung pack (75) helps.  The savegame keeps offers 11.. (a fifth count of the `MTVX` extension, after the computer players' state; a savegame without them has none, offers past the game's N are left out and their ads free again at the next refill); in a network game a rule of the host's (`offers=` in the game's parameters, the network savegame's description when above 10; one without it: 10).  A recording's header names it | `24B8:000C` adagency_refill, `1DA8:1227` market_day_cleanup, `2DD9:311D` ai_take_contracts, `05FF:33F6` room_adagency_click, `0AA4:23B5` ad_agency_sign_contracts, `0AA4:267A` ad_return_offer, `26A7:14FB` ui_draw_ad_offers, `0AA4:2197` hotspots, the status panel's tip, `229E:139A` the savegame's extension (`ad_offers_count`, `adoffer_*`, `src/fixes.c`; `src/state.c`, `src/game_types.h`) | `ad_offers`, `ad_offers_save` (`# option:`), `tests/mp/ad_offers` |
 | More film offers: `[game] film_offers = N`, `--film-offers=N` (10 to 17; default 10, the original's) | the film dealer offers 10 films and series at a time (`g_dealer` DS:19ED, 10 x 8 bytes; the players' screenplays follow at 1A45), drawn every night and refilled when a slot is empty (`dealer_refill`); his counter holds them as a row of 10 tapes, smaller towards the back right, each slot with a sprite (resource 155, 17 x 36 down to 14 x 26) and a rectangle (`g_filmshelf_rects` DS:032E) of its own | N offers, the same draw for every slot (the pool is about 80 films).  Slots 11..N live in a host array behind the far segment EE10 (`g_dealer_extra`, `dealer_at`), their rectangles behind EE20 (`filmshelf_rect_at`); every loop over the slots runs to N (refill, the night's return to the market, the computer players' shopping plan, giving a fresh film back, the case's search, the title caches).  10 keeps the original's counter; from 11 the row grows to the left, towards the viewer: new tape j (1..7) has tape 1's shape scaled to 36 + j rows (Pillow's nearest scaling) and the spine width, label lines and colour mark of another original tape, a different one each; it stands where its right edge ends just before its neighbour's label face, its bottom on the row's line extended (x 71, 62, 54, 43, 32, 20, 11) -- built once from the decoded bank and drawn by `src/film_offers.c` itself, not through the game's sprite bank, pixel for pixel the mock-ups chosen with the user (`https://claude.ai/artifact/1bmf7kkbbJ3q1znnRBhBEM`, all 8 steps compared).  The new tapes stand in front: drawn after the original's ten, tested first by the click and the tip; the tip of tapes 11.. opens on the right (the original's back tapes 9 and 10 have it on the left); Mr. Jabble's animation (x 16..87, y 18..70, every frame) draws them again over its picture; the dealer's hotspot 0x18 (a fresh film given back) reaches left along the row; the background the shelf saves grows to 8..183 x 59..112.  Slots the game has and a savegame not stay empty until the next refill (a new game's first, `new_day`, fills them before the first morning; refilling at the load took films off the market the new game's setup still draws its starting programmes from -- with several humans that draw never ended); offers of a savegame past the game's N go back to the market (else they would stay off it: only the night's cleanup returns an offer, and only from the slots it knows).  The series title cache (15 places) stops at its end in the agency (the original does not check).  The savegame keeps slots 11.. (a sixth count of the `MTVX` extension, after the ad offers); in a network game a rule of the host's (`filmoffers=` in the game's parameters, the network savegame's description when above 10).  A recording's header names it | `24B8:04B9` dealer_refill, `1DA8:1227` market_day_cleanup, `2DD9:1A3F` ai_plan_film_purchases, `05FF:0359` room_filmagency_click, `0AA4:2586` filmagency_return_film, `26A7:0FE5` ui_draw_dealer_shelf, `105E:17D1` the room animation, `14E1:000E` the tip, `048C:025B`/`048C:0B69` the title caches, `0AA4:2197` hotspots, `229E:139A` the savegame's extension (`src/film_offers.c`, `src/state.c`, `src/game_types.h`) | `film_offers`, `film_offers_save` (`# option:`), `tests/mp/film_offers` |
+| More auction lots: `[game] auction_lots = N`, `--auction-lots=N` (10 to 20; default 10, the original's) | the film auction (Mr. Jabble's board in the film agency) holds 10 lots (`g_auction` DS:1B0D, 10 x 9 bytes; the contracts follow at 1B70) on a board of 2 columns of 5 that fills the room's picture; every night lots 1..8 are refilled from the auction pool (the expensive, good films: mean price $229 000, the dealer's $74 500), 9 and 10 stay free for what the players give Mr. Jabble | N lots (the user's wish 2026-11-16: more of the expensive films).  Lots 11..N live in a host array behind the far segment EE30 (`g_lots_extra`, `auction_at`); every loop over the lots runs to N (the night's settling and refill -- lots 1..8 and 11..N, 9 and 10 stay free --, committing the human's bids on leaving, the money available, the balance sheet's pending bids, the 4-per-genre check, Betty's culture film, a film given to Mr. Jabble, the computer players' bids, the title caches).  10 keeps the original's board; from 11 the board has a second page with lots 11..N in the same places, turned by a tab with the other page's number at the board's right edge (the layout chosen with the user).  The game's cursor reaches x 303 at most, so with the tab the board stands 16 pixels further left (x 0..287) and the tab at x 288..303.  Every board opens on page 1; the page is the looking human's own (one per seat).  The computer players' bid lists (11 places, never emptied in the original but by a human outbidding them) empty every night with more than 10 lots, no money moving (a human outbidding one gives its bid back at once; with 20 lots they would soon bid on 11 lots only); with more than 10 lots a computer player's bid always takes the fix ai-bids' path (one place per lot).  The series title cache (15 places) stops at its end in the agency.  The savegame keeps lots 11.. (a seventh count of the `MTVX` extension, after the dealer's slots); lots of a savegame past the game's N give their programmes back to the market, a computer player leading one its bid, and the computer players' planned bids on them (a shopping plan saved before carried out) their reserve -- else such a bid would go to the original's address, the contracts at DS:1B70; lots the game has and a savegame not stay empty until the night.  In a network game a rule of the host's (`lots=` in the game's parameters, "lots" in the network savegame's description when above 10; the public server must know the key).  A recording's header names it.  The largest savegame with every option on grows by 92 bytes: a mod of 999 films may have 372 series (374 before) | `24B8:0905` auction_daily, `1C18:0C1B` auction_commit_bids, `1C18:11F8` money_available, `2B74:1F33` finance_report_draw, `1DA8:06EA` archive_genre_full, `1DA8:0B53` betty_culture_check, `05FF:0359` room_filmagency_click, `2DD9:1DDA`/`2DD9:20BA` the computer players' bids, `26A7:2F27` ui_draw_auction_board, `14E1:000E` the tip, `048C:025B`/`048C:0B69` the title caches, `229E:139A` the savegame's extension (`src/auction_lots.c`, `src/state.c`, `src/game_types.h`) | `auction_lots`, `auction_lots_save` (`# option:`), `tests/mp/auction_lots` |
 | Role fit in the shop: `[display] cast_fit = yes`, `--cast-fit` (off by default) | the production shop's actor panel shows, for the five actors on view, the fee and three bars -- humor, appearance, craft (bytes +6, +8, +9 of an actor; +7 counts nowhere and shows nowhere); the role picked in the shopping list has a requirement in the same three (screenplay +0x168, 4 bytes a role), never shown: the game rates an actor when shooting starts as the sum of min(requirement, attribute) over the sum of the requirements (`script_role_match_pct`), so what lies above the requirement is wasted and the fee counts nowhere; the panel knows only the slot's category, not the slot | the bars give way to one row "Eignung" ("Fit"): each actor's rating for the role picked, in per cent, the game's own sum (the best of the five in green, below 60 in red; "-" for a role without requirements, where every actor scores 0); the panel ends after it, 14 rows shorter, the room's picture under it again (kept as the shop is entered, before the panel covers it).  The role: the slot last clicked (the slot clicks tell it, per seat), else the first slot of the panel's category.  Display only: the game draws its panel with the same calls, then `src/cast_fit.c` paints over the screen buffer pixel by pixel -- no time taken, no game state touched: a recording replays the same.  The mock-up chosen with the user: `https://claude.ai/artifact/Kt9rUAFxEjVKWLMV59HzU5` (B; then without the bars, the panel shorter); in a network game the host chooses it in the lobby, the same for everyone (the game starts with `--cast-fit=yes|no`, over each player's own setting) | `26A7:3B04` ui_draw_actor_card, `0AA4:10CC` room_shop_click (the slot clicks), `0054:0F79` room_load_assets (the shop entered, room 63), `1DA8:2560` script_role_match_pct (`src/cast_fit.c`, `src/screens.c`, `src/rooms_people.c`, `src/main_loop.c`) | `tools/castfittest.py` |
 | Series topicality: `[game] series_topicality = yes` (the default), `--series-topicality`; in a network game the host's (lobby key `sertop`, every machine the same: it draws more) | the film card shows the film's topicality (text 417, a bar of topicality x 40 / quality pixels, row 11); the series card (`tooltip_show` 14E1:16BB, id 1000..) shows none, although every episode has its own topicality (byte e*3+1 beside its quality at e*3) and the series' price is reckoned from them (`series_price` 1DA8:4035); its row 11 is empty, its bands go light (genre), dark (critics, press), light (episodes, price), dark (next episode), light (the last row, "(Program)") | the bar under the next episode on a light band of its own, the last row dark, so the bands go on alternating: all produced episodes' topicality against their quality (as the price weighs them); the card keeps its 12 rows -- when the next episode's title takes two lines (some 15 to 20 of the 389 German titles, about 30 English) it grows by one row; in the programme planner, whose cards share one window bitmap allocated on entry (the original's 0x3A88 bytes fit 18 x 13 cells exactly), that bitmap is 8 + 64 x 18 x 15 bytes with the option (up to 3dcd737 the taller card wrote past it, over the next heap block: wrong pictures, then a hang or an exit some game days later; `window_create` now halts on a window larger than the buffer). Also with Classic; the machine-level build has the original's card | `14E1:16BB` (`series_top_*`, `src/fixes.c`) | `tools/sertoptest.py` (verify step 15) |
-| Multiplayer (in progress): `--humans A,B[,C]`; over the network `--mp HOST:PORT --seat K` against the server (`build/madtv serve`) | one human, on the station chosen at the setup; two computer players | two or three humans, each on their own station, computer players on the rest (or none); one world with the rules for several humans (daily costs, messages -- the Sammy's result too, which the original tells only `g_player` --, catching, the bailiff, the end, a shared pause); every human has their own screen, input and sound (a copy of the sound driver plays that seat's songs on the machine that plays it); `--new-game` starts without the intro and the setup screen.  Over the network every machine computes the same game from the same inputs (lockstep, the state's hash compared every 70 frames) | `runtime/seat.c`, `src/seatctx.c`, `runtime/net.c`, `tools/mpserver.py` | `tests/mp` (`tools/seattest.py`, `tools/mptest.py`) |
+| Include unfinished screenplays (German: Unfertige Drehbücher integrieren; until 2026-11-17 "Original screenplays"): `[game] original_screenplays = yes`, `--original-screenplays` (off by default); in a network game the host's (lobby key `origscripts`) | 23 screenplays of the 1991 data are unfinished and never offered (nothing sets their flag bit 1, `scriptagency_refill` 24B8:02C1): the shows 25-33 have roles and actor categories but no requirements and no shopping list (26-33 neither price, shooting time, base quality nor agency text), the series 37-50 their titles, descriptions and every episode's title and text, nothing else (episode length 0, no roles, lists or price; 44 "Mary & John" has 8 episode titles and 0 episodes) | filled and offered: every role a name (the series', from the episode texts) and requirements, every episode a shopping list with base quality, sets after the episode's places, prices and shooting times after the 27 finished ones, agency texts in both languages (measured: 4 card lines); the series one block an episode, an episode price, critics, press, the TV family (44: 8 episodes); 26 "Die Massaker-Show" and 31 "The Pet-Show" X rated. The series' roles each have an actor who fits 100 %, the shows' 92-95 % (the highlights 30 and 33: 100 %). A show's ten productions each get the first one's list (as `script_init_episodes` 1C18:0313 copies it). Only while a screenplay's part a savegame does not hold is the original's (a pack's own stays its own), a series screenplay only with a series to produce (the rule's, or a pack's with episodes of a length: 44 with 0 episodes would stop the game); a savegame whose lists are the rule's brings it along, one without them puts the original's back (a pack's own list in one of them is no sign of it). The editor shows the tables so while the rule is on -- the original's, a pack's, a selection's -- record by record with the game's checks; a pack is stored without the rule (a record sent as the rule has it, unchanged, goes back to the plain one), so it plays the same with the rule on or off, and the packs' builds stay without it. Also with Classic; the machine-level build has the original's | `game_load` 229E:1386 (`origscripts_after_load`), `txt_script_cache_load_one` 048C:15A2 (`origscripts_texts`), `src/origscripts.c`; the values: `tools/origscripts.py` (writes `src/origscripts_data.h` and `launcher/origscripts.json`) | `tools/origscriptstest.py` (verify step 20), `launcher/origscripts_test.go` |
+| Multiplayer (in progress): `--humans A,B[,C]`; over the network `--mp HOST:PORT --seat K` against the server (`build/madtv serve`) | one human, on the station chosen at the setup; two computer players | two or three humans, each on their own station, computer players on the rest (or none); one world with the rules for several humans (daily costs, messages -- the Sammy's result too, which the original tells only `g_player` --, catching, the bailiff, the end, a shared pause); every human has their own screen, input and sound (a copy of the sound driver plays that seat's songs on the machine that plays it); `--new-game` starts without the intro and the setup screen.  Over the network every machine computes the same game from the same inputs (lockstep, the state's hash compared every 70 frames).  The TV family is each human's own (2026-11-03): its sprites (`g_tv_family_gfx`, 12 000 bytes) and viewer 0's record were shared, and every seat loads its own family's banks there at :05 -- the last seat's banks were drawn in every view, the viewer records of the others pointing into them: a stranger's head blinking over the grandmother's knitting, when the two programmes' families differ (`src/seatctx.c`: the buffer and `DS:832E..837D`, `DS:8C5A` in the seat block).  The film dealer after 01:00 (2026-11-03, found by `tools/mpchaos.py`): `room_load_assets` sets the dealer's pose for 17:00..00:59 only; a single human never meets him later (the day's end takes it home), but in a network game a human still walks while the others go home, and a seat that had not met him yet had pose 0 -- resource 0, the "insert disk" box waiting inside that seat's turn, then a halt on every machine.  A network game takes the late pose (`0xBF`) for a pose not set (`tests/mp/dealer_night`).  And `DS:8FFA..9007` (Madris' popup handle, the "insert disk" box's and the language box's bitmaps) belong to the seat: two humans' Madris closed each other's popup | `runtime/seat.c`, `src/seatctx.c`, `runtime/net.c`, `tools/mpserver.py` | `tests/mp` (`tools/seattest.py`, `tools/mptest.py`) |
 | A network game saved each night: `--mp-save DIR`; on from it: `--mp-load FILE` (with `--humans` its stations) | the safe in the office saves one human's game into a slot of `SOURCE1.RSC`; it stays shut with several humans | at every day's end -- every human gone home, the new day made -- every machine writes the same file `DIR/tag-NNN.mtvmp`: the original's savegame (the same bytes as `game_save`, written without changing the game) and each human's own data (credit, bag, ledgers, office, the boss's complaints, Madris); `--mp-load` starts from it without the intro and the setup: that day's morning, every human with their own data, a fired one watching.  The launcher keeps a directory per network game and lets the host go on from any night; the guests fetch the file through the server | `src/mpsave.c`, `229E:139A` (`mp_savegame_write`, `src/actions.c`), `tools/mplobby.py` | `tests/mpsave` (`tools/mpsavetest.py`), `tools/lobbytest.py --load` |
-| Knocking (network games): `--knock=N` (game minutes, 0 to 120; 0 or none: off), in the lobby the host's "Knocking" (Off, 5, 10, 15, 30; default 15) | the film dealer, the ad agency and the supermarket take one figure at a time (`door_check_entry`: "someone inside", 0x12B); a human inside stays as long as it likes, whoever comes waits or goes away | a human who finds another human inside one of the three knocks: the one inside has N game minutes (at the normal speed one is two seconds; a pause stops them), then it is out of the room at the top of its main loop, as when caught.  The room then waits as long for the knocker: nobody else gets in, neither the one thrown out nor a computer player; the knocker walks in by itself (waiting at the door, in the building, not in the lift: once, as a click on the door).  Without a knock nobody is hurried; the knock holds only while the knocker waits -- standing where it knocked or walking to that door again; a knocker who goes anywhere else (a click on the floor, another door, the lift) takes the knock back (the one inside is told), and a room already waiting for it is free again; a second knocker meanwhile finds the room occupied, as before.  Notices over the picture, one line each: the one inside (who knocks, how long; the time is up), the knocker only at its turn (at the knock its status line says it, a notice would cover it); the knocker's status line, instead of 0x12B, tells the game minutes the one inside has left (at every click on the door anew).  Everything follows from the door checks and the world's clock (`g_clock_seconds`), the same on every machine, outside the game's memory; the day it was made in ends it.  A rule of the host's, in the game's parameters (`knock=`); not in the savegame (the host chooses it anew) | `1DA8:3643` door_check_entry (`mp_knock`, `mp_knock_held`, `mp_knock_tick`, `src/seatctx.c`) | `tests/mp/knock`, `tests/mp/knock_away`, `tools/lobbytest.py` |
+| Knocking (network games): `--knock=N` (game minutes, 0 to 120; 0 or none: off), in the lobby the host's "Knocking" (Off, 5, 10, 15, 30; default 15) | the film dealer, the ad agency and the supermarket take one figure at a time (`door_check_entry`: "someone inside", 0x12B); a human inside stays as long as it likes, whoever comes waits or goes away | a human who finds another human inside one of the three knocks: the one inside has N game minutes (at the normal speed one is two seconds; a pause stops them), then it is out of the room at the top of its main loop, as when caught.  The room then waits as long for the knocker: nobody else gets in, neither the one thrown out nor a computer player; the knocker walks in by itself (waiting at the door, in the building, not in the lift: once, as a click on the door) -- also when the one inside leaves by itself before its time is up (2026-10-23; before, the knock just ended and the knocker kept "someone is in this room" until it clicked again).  Without a knock nobody is hurried; the knock holds only while the knocker waits -- standing where it knocked or walking to that door again; a knocker who goes anywhere else (a click on the floor, another door, the lift) takes the knock back (the one inside is told), and a room already waiting for it is free again; a second knocker meanwhile finds the room occupied, as before.  Notices over the picture, one line each: the one inside (who knocks, how long; the time is up), the knocker only at its turn (at the knock its status line says it, a notice would cover it); the knocker's status line, instead of 0x12B, tells the game minutes the one inside has left (at every click on the door anew).  Everything follows from the door checks and the world's clock (`g_clock_seconds`), the same on every machine, outside the game's memory; the day it was made in ends it.  A rule of the host's, in the game's parameters (`knock=`); not in the savegame (the host chooses it anew) | `1DA8:3643` door_check_entry (`mp_knock`, `mp_knock_held`, `mp_knock_tick`, `src/seatctx.c`) | `tests/mp/knock`, `tests/mp/knock_away`, `tests/mp/knock_leave`, `tools/lobbytest.py` |
 
 ## 2. Different in every mode (no switch)
 
 Places where the original reads never-written memory ("stack garbage")
 whose value the recompiled C cannot know; it uses a defined value instead.
 Classic mode reproduces the original's garbage where it could be traced
-(`2DD9:1147`, `0AA4:000E`, see the fixes above); these three it cannot:
+(`2DD9:1147`, `0AA4:000E`, see the fixes above); these four it cannot:
 
 | Where | The original | The recompiled game |
 |-------|--------------|---------------------|
 | `32BA:07EC` | a computer player's audience estimate for tomorrow adds a fifth of a stack word nothing wrote for it | adds nothing (the one known way the decompiled game can play a different game than the original; ROADMAP Phase 3) |
 | `193D:2424` | a building switch case returns stale stack bytes for room type 0 | "no label" |
 | `32BA:1800` | a terrorist from a consulate whose door is gone makes the sign swap write to a random address (seen: the film dealer's door destroyed, the elevator hung) | no swap |
+| `105E:17D1` | leaving a room frees the screenplay agency's flying papers only if the slot that SI points at is set -- SI is whatever the caller left there (0..65 measured, mostly past the three slots) | SI = 0 (until 2026-11-02 each compiler read other garbage, so a network game between the Mac and Windows could fall out of step here): with no paper in flight, as at every exit the tests make, nothing to free and 0 returned like the original; left during the second flight, its background (24 x 12) stays allocated, as in the original whenever its SI is 0..2 |
 
 ## 3. Engine and platform (the game unchanged)
 
 - Runs as native C: no emulated CPU except for the AdLib sound driver
   (which is code inside the data files); the game's state lives in host
   memory.
+- The game files in DOS order on every machine (2026-11-03, `runtime/dos.c`
+  `find_list`): the game's findfirst/findnext lists the directory sorted by
+  name, as the original's install had them (SOURCE1.RSC, then SOURCE2.RSC) --
+  the game lets a later file's resources override an earlier one's and
+  appends a savegame to the first.  The host's own order was readdir's: the
+  iPhone's file system (and tmpfs) lists SOURCE2.RSC first, so a save into
+  slot 1 went into SOURCE2.RSC and the shipped slot 1 of SOURCE1.RSC, read
+  last, covered it at the next start (day 1, 17:03 -- "loading puts me back at
+  the beginning of the day").  Savegames already in SOURCE2.RSC (slots and
+  names, D1h..DBh) move into SOURCE1.RSC at the start (`dos_rsc_saves_tidy`):
+  what the game loads stays what it loaded before.  The launcher lists the
+  safe in the same order (`launcher/saves.go` `rscNames`).  Tests:
+  `tools/loadslottest.py` cases 7 and 8.
 - Runs without `MTV.EXE`: the game directory needs only `SOURCE1.RSC` and
   `SOURCE2.RSC`.  What the game took from the EXE -- its initial data
   segment -- is built into `build/mtv-dec` from the EXE at build time
@@ -118,8 +138,40 @@ Classic mode reproduces the original's garbage where it could be traced
   about 400 of 700 such notes in the title music, many of them silent.  The
   game's own timing is unchanged (tests and recordings stay valid).
 - Display: fullscreen (`--fullscreen`; F11, Alt+Enter, Cmd+F), 4:3 like a
-  VGA monitor (the default; square pixels as an option), sharp scaling
-  (even pixels at any size), full resolution on Retina displays.
+  VGA monitor (the default; square pixels or stretched over the whole window
+  -- `--aspect stretch`, made for the iPhone Duo's 1.42:1 -- as options), sharp scaling
+  (even pixels at any size), full resolution on Retina displays.  Pictures
+  at the display's pace: 60 a second on a 60 Hz display, all of the game's
+  70 on 120 Hz and faster (before: 35-45, every second frame dropped), and
+  the frames evenly apart: the sound's clock is smoothed between the pieces
+  the sound card takes (23 ms each), where the game ran in bursts of two.
+- iPhone and iPad (docs/ios.md): the same game as
+  `build/mtv-dec` built for iOS with SDL2 (`make ios` on the Mac), without the
+  launcher.  The game files, `settings.ini` and `game.log` live in the app's
+  folder in the Files app; the whole screen, lying; a finger is the mouse
+  (a press waits until the game's eased cursor has arrived -- on every touch
+  screen); on every touch screen a tap clicks when the finger lifts, a finger
+  held 0.3 s or slid aims -- no click yet, the game's own arrow showing,
+  lifting clicks there (the transmitter map: reach and price before buying;
+  in the programme planner a swipe clicks nothing; a tap is released only once
+  the game has read it -- the title sequence looks a few times a second); something carried
+  hangs from its corner at the finger, where the game puts it (one tap on a
+  planner slot puts a programme there, or swaps) -- and two fingers tapped together are the right button (Esc in
+  the game: out of a room, back from a screen); on the iPhone the game's arrow
+  shows only where it says more than the finger (`--mouse system`); the game's
+  text fields bring up the screen's keyboard; in the background the game stands.  SDL2 gets
+  ios/sdl2-uiscene.patch (the UIScene life cycle, which apps built with the
+  iOS 27 SDK must use, taken over from SDL3).  The app's icon is the
+  launcher's television (`openmtv icons` writes icon-ios.png too).  Before
+  the game the app shows a launcher in the system's look (SwiftUI): a new
+  game or a saved one of the selection, the content packs (the four of
+  mods/ come with the app), the game's rules, picture and sound -- over the
+  Go launcher's logic, linked in as a C library (launcher/ios.go: the same
+  /api/ in process; a start hands the game's command line to the app).  The
+  app ends with the game.  Network games on the internet: the open games,
+  joining by a tap or the code, opening one, the lobby -- the launcher's lobby
+  client and its bridge to the server run inside the app (no LAN: hosting one
+  needs a server process).
 - Display filter MMPX (`--filter mmpx`): the picture 4 times its size with
   smoothed edges and diagonals, made only of the picture's own colours
   (runtime/mmpx.c).
@@ -173,10 +225,26 @@ Classic mode reproduces the original's garbage where it could be traced
   covered, so it plays and takes its time exactly as with the free mouse;
   the busy and carrying cursors and carried items stay the game's, and its
   arrow comes back where the cursor is not under the pointer (moved with
-  the arrow keys).  In a network game it stands for the arrow of the seat
+  the arrow keys).  A carried item dropped (the planner, the agencies): the
+  game had held its cursor so that the item stays above the panel, and it
+  moved only with the next motion -- the game's arrow showed there, above a
+  pointer at the bottom edge; now the host sends the pointer anew when the
+  game changes its cursor's limits (free and system mouse alike: as the next
+  motion would; recorded, in a network game through the server; 2026-10-23,
+  `mouse_limits_changed`, `src/fixes.c`, asked at the present with the seat
+  this machine shows in memory -- a guest's own limits, not seat 0's: a
+  guest's machine sent its pointer again whenever the host's cursor limits
+  changed.  A guest's drop already brought its cursor to the pointer before:
+  a real-window network game, seat 1 in its planner, the same with and
+  without the fix).  In a network game it stands for the arrow of the seat
   this machine shows, where the server's bundle has taken that seat's
   cursor (a few frames behind the pointer itself); the other seats' arrows
-  are drawn as they are.  Test: tools/arrowtest.py (verify.sh step 9, with
+  are drawn as they are.  A carried item there is drawn by the window at the
+  pointer (`draw_drag`, `runtime/host.c`); with hr-pixel from the item's
+  cells at 4x (2026-11-03, `hr_picture_4x`, `src/hr.c`) -- before, its
+  pixels blown up: a programme or ad in the planner showed the original's
+  font at the pointer.  The same sub-pixels as the game's own drawing of it
+  (film and series in the planner compared: all of them).  Test: tools/arrowtest.py (verify.sh step 9, with
   a network game).  On macOS the system pointer is hidden by AppKit as well
   (NSCursor hide, 2026-10-17): SDL 2 hides it there with an invisible
   cursor area of the window, which macOS gave up after some seconds -- the
@@ -233,6 +301,9 @@ Classic mode reproduces the original's garbage where it could be traced
   and Linux the game carries SDL2 itself.  A Mac package started from where
   macOS moved it ("App Translocation") takes the quarantine off itself and
   its decomp folder and starts again from its place (`launcher/macpkg_darwin.go`).
+  Since 2026-11-09 the Mac package is signed with a Developer ID and notarized
+  by Apple (`tools/package.py mac --notarize`): macOS only asks once whether to
+  open an application from the internet.
   In the packages the sound chip emulator Nuked-OPL3 (LGPL-2.1) is a
   library of its own beside the game, with its source (`OPL3_SHARED=1`).  The
   release page at https://openmtv.net/ (`site/`, `tools/release.py`).
@@ -252,6 +323,60 @@ Classic mode reproduces the original's garbage where it could be traced
   choice kept) --, sliding open and shut; the lobby of a network game has
   the same tabs (`launcher/saves.go`, `tools/editor/launcher.js`,
   `src/main_loop.c`; `tools/loadslottest.py`).
+- Saved games keep their rules (2026-11-22): a single player's savegame
+  holds the rules it was played with -- the fixes (all, an own choice, or
+  Classic 1991), credit line, terror damage, Sammy prizes, the fourth
+  speed, the AI improvement, the ad and film offers, the auction lots, the
+  series topicality, the unfinished screenplays: the keys and values of a
+  network game's parameters --, and a load plays on with them, from the
+  safe in the game as from the launcher's "Continue" (`--load-slot`).
+  Before, a tape played on with the rules set at the start: a game saved
+  with 20 auction lots and loaded with 10 gave lots 11..20 back to the
+  market without a word, one saved with the fixes played on as Classic 1991
+  if Classic was set.  Where: the eighth count of the savegame's extension
+  ("MTVX") is the length of a line like `fixes=all speed4=0 aiimp=1
+  credit=700000 ... lots=20 sertop=1 scripts=0`, written after the
+  auction's lots (at most 768 bytes: every fix by name fits with 216 to
+  spare).  The load takes it before the extension's data are read -- the
+  offers' and lots' counts and their host memory set anew
+  (`tables_offers_init`), the fixes' choice anew; after the load the data
+  fixes live-aid and video-connection go in or out (the records they change
+  are no part of a savegame).  A key a later game wrote is passed over, a
+  rule the line lacks is the original's, a fix this game does not know is
+  not played but kept in the choice.  A tape without rules -- saved before,
+  or by a game started without settings and options -- plays with the rules
+  the game was started with, also after a tape with rules was loaded in the
+  same game -- and so does a new game (the start savegame, which the setup
+  loads again after game over).  Written only when a rule is not the build's own default (the
+  original's): a game without settings and options, the tests and classic
+  runs, saves the original's bytes as before; the launcher's settings
+  always give rules (its default credit line is the staircase), so every
+  tape saved from a launcher's game has them.  Not a rule, the player's:
+  display, sound, mouse, window, language, the room changes' pace, the
+  role fit in the shop; the start money and the difficulty are game state
+  already.  A network game neither writes nor applies the line (its
+  savegame's description has the host's rules).  The launcher shows a
+  tape's rules beside it -- "as set", or those not as set and how, or none
+  on the tape (saved before) -- and "Continue" plays with them; the tabs
+  below are the rules of a new game.  The largest savegame of a pack (every
+  option on) counts the line at its 768 bytes: 999 films now take at most
+  353 series (372 before) (`src/saverules.c`, `src/actions.c`
+  `savegame_extras`, `launcher/saves.go` `saveRules`/`tapeRules`,
+  `tools/editor/launcher.js` `tapeRulesText`; `tools/saverulestest.py`,
+  `go test` `TestSaveRules`).
+- Safes emptied (2026-10-24): the original game has no way to delete a
+  saved game -- a tape is only ever saved over.  The launcher's safe deletes
+  the picked tape (the bin at the head of its column, asked first): its name
+  and its index entry go back to how the game came -- an empty slot, slot 1
+  the original's own unnamed save --, written in place as the game writes
+  them; the file does not shrink.  The panel "Packs" deletes a selection's
+  whole safe, its folder `build/mods/A+B` with the games saved in it (asked
+  first, naming them); its packs stay and its next start builds it anew.  The
+  original game's safe (`run/`) loses tapes only one by one.  Neither while a
+  game the launcher started plays from that safe (`launcher/saves.go`
+  `deleteTape`/`deleteSafe`, `POST /api/saves/delete`; `go test`
+  `TestDeleteTapeGame`: the game's own saves deleted, the files' first bytes
+  the original's again, `--load-slot` finds the slot empty).
 - Every game's traces (2026-10-17): the launcher keeps the last ten games in
   `build/logs/<start time>/` -- the game's messages (`game.log`;
   `build/game.log` is the same file, so the next start no longer wipes them),
@@ -265,6 +390,22 @@ Classic mode reproduces the original's garbage where it could be traced
   replay moves the game's cursor and the system arrow the same way), is
   written out every frame and names its command line.  The game's log has a
   line at every focus change of the window, with the buttons held.
+- The sound's health in the game's log (2026-11-18): at the start the sound
+  device (driver, rate, piece size) and the picture's renderer; an `[audio]`
+  line, with the wall clock's time, for every second the sound ran short (the
+  queue under one of the device's pieces before a push, or empty, or pieces
+  left out) or the game made fewer than 66 frames, with where the time went
+  (drawing, presents, sleeping, the longest stand); once a minute the same
+  over the minute.  For crackling that comes and goes (the Mac).
+- Crackling on the Mac (2026-11-18): the game could be caught at the
+  display's 60 frames instead of its 70 -- Metal hands out three drawables,
+  a new one only at the next refresh; with all three taken each present
+  waited a whole refresh (15.6 ms) and the next was due at once, the sound
+  short by a seventh, until a room change or the window in the background
+  let them come free.  A present that waited more than half a period now
+  leaves the next one out: the presents come between the refreshes again
+  (`SWAPCHAIN_TEST=HZ:N` simulates such a display: 60 frames and crackling
+  before, 70.4 and no gap after).
 
 ## 4. Content and tools
 
@@ -325,6 +466,35 @@ Classic mode reproduces the original's garbage where it could be traced
   they play as before, the same tables byte for byte.  They are no longer in
   the players' packages (the release page): `tools/package.py packs` puts them
   into a zip of their own for the developer's machines.
+- Studios (2026-10-23): a pack's table "studios" -- the building's twelve
+  studios (DS:6165: size, renter, base rent).  The original starts with three
+  real studios, the stations' (6, 8, 10: size 1, $2 000); the other nine
+  numbers belong to the doors of public rooms (the laundry, the consulates,
+  the gun agency ...), and the estate agent offers only a free one (renter
+  0xFF, `05FF:3AB7`) -- a public room becomes one only when a bomb goes off
+  in it (`1DA8:2D3B`).  A pack can make public rooms free studios from the
+  start (their doors as the bomb leaves them: room 0x36, signs "Free studio" /
+  "Free", no owner), set every studio's size (the sets it holds, 1-3:
+  `script_count_scenes` 1DA8:2293 -- 15 of the 27 offered screenplays fit
+  size 1, 21 size 2, all size 3) and base rent (the estate agent asks 1.5
+  times as much a day and three days of that to move in, `229E:1080`).  The
+  consulates stay public (the terrorists come from them); the three start
+  studios have one size and one rent (no station starts better off); the
+  computer players rent only public rooms (fix `ai-studio`), never a free
+  studio.  No change in the game: the pack build writes the records and the
+  doors into the start savegame and the start tables (resource 0x2B at 34642 /
+  23544, resource 0xD0 at 8 / 4248; `launcher/studios.go`); a saved game keeps
+  its building.  The editor's section "Studios": the estate agent's plan as the
+  game draws it (`/api/plan.png`, ui_draw_building_plan 26A7:32CA, pixel for
+  pixel the game's), a ring and a number per studio, a click chooses one; the
+  launcher's Packs tab and the lobby ("Look at the studios") show the studios
+  of the packs that change them.  The protected content pack "Mehr Studios"
+  (`mods/mehr-studios`): the tobacco producers (floor 4, size 3), the gun
+  agency (floor 10, size 3) and the Peace Brothers (floor 12, size 2) free from
+  the start.  Tests: `launcher/studios_test.go` (the offsets from the sources,
+  the build and its checks, the plan against `build/mtv-dec`'s, a free studio
+  rented in the game, the computer players' sabotage with seven public rooms
+  free), the editor's self-test.
 - The editor in English and German: its interface (labels, checks, field
   help, the server's messages) switches in its settings ("Interface"),
   apart from the language of the game texts being edited ("Game texts" in
@@ -344,7 +514,7 @@ Classic mode reproduces the original's garbage where it could be traced
   data plays exactly as before (the counts are read from the resource index,
   no file access).  Limits: each language's texts of a table at most 64 KB;
   a savegame at most 65 520 bytes with every option on (e.g. 999 films and
-  at most 374 series): `tools/content.py` and the editor refuse a larger set,
+  at most 353 series, since the saved rules of 2026-11-22; 372 since the auction lots of 2026-11-16, 374 before): `tools/content.py` and the editor refuse a larger set,
   the game refuses to save instead of overrunning its buffer (2026-10-15);
   a table resource longer than its table is read only as far as the table
   holds; the machine-level build (`--lifted`) keeps the original counts.
@@ -441,7 +611,13 @@ Classic mode reproduces the original's garbage where it could be traced
   the most (12 frames; a click came up to 0.7 s late).  The lead is the
   longest round trip and 2 frames (was 3).  A network game writes a line a
   minute on its pace; the launcher keeps the game's messages in
-  `build/game.log` on every system.
+  `build/game.log` on every system.  The machine with the slower clock no
+  longer hangs up to the whole lead behind the front (2026-11-01: the
+  iPhone's taps in the planner came ~0.1 s later than the PC's): the server
+  tells each machine its own round trip too (`LEAD n r`), and a machine
+  catches up from lead - r + 2 frames behind (at least 4) -- measured with a
+  slower clock and a 50 ms jumpy round trip: behind median 7-8 -> 3-4, the
+  faster machine as before, nothing running ahead.
 - Sound (2026-10-11): it runs 100 ms ahead of the device (was 70), after a
   gap (the game stood: a window being moved, minimized, on another desktop)
   half again as much up to 250 ms, 10 ms less every minute without one.  On
@@ -458,6 +634,21 @@ Classic mode reproduces the original's garbage where it could be traced
   their tables go through the server, each machine builds them from its
   own original files), everyone picks a station and says ready, the host
   starts.
+- A host's packs kept by its guests (2026-10-23): beside the combined tables of
+  its selection (which every machine builds the game from) the host hands on each
+  chosen pack itself -- its mod.json and its tables' files as they are on its
+  disk (the lobby's "mod" message, field "packs": {name, title, data} each,
+  base64 of zlib of {file: text}; at most 20 packs, 6 MB; the server keeps them
+  with the selection and hands them on with "getmod"; an older host sends none,
+  an older guest ignores them).  A guest sees in the lobby's tab "Packs" for each
+  of them whether it has it ("yours too", file for file) and "Keep" / "Keep all":
+  the pack goes into its mods/ under its name -- or, when a pack of that name of
+  its own is there, beside it as NAME-2 .. with "(from HOST)" in its title --,
+  protected if the host's is.  Only a pack's files (mod.json, one per table, each
+  a JSON object, a table with its list of records) are taken, written into a
+  directory of their own first and then moved (`launcher/sharepacks.go`; tests
+  `sharepacks_test.go`, the multiplayer self-test).  Needs the server of this
+  version (openmtv.net).
 - Saving network games (2026-10-12): every network game saves itself at
   each day's end on every player's machine (beside the settings file:
   `mp-saves/GAME/tag-NNN.mtvmp`, with `game.json`: the game's packs as
@@ -483,6 +674,18 @@ Classic mode reproduces the original's garbage where it could be traced
   longer ends the game.  The launcher's page says why this machine's game
   ended; quitting the launcher keeps an internet game's bridge until the
   game ends.
+- Savegames in a player's files (2026-10-26): the lobby compares the players'
+  files without the savegame slots (D1h..DBh), but a network game with one
+  machine whose SOURCE1.RSC held single-player savegames ended at frame 70
+  ("the machines no longer compute the same game").  The .rsc layer counts
+  time for every resource it enters into its index, at every resource read
+  (`src/rtl_io.c`, the logical clock), and the list of present resources
+  (DS:8C7C) is in the hashed data segment: savegames made that machine's
+  game a little later.  Network games without packs play `run/`, the single
+  player's files, so saving there was enough.  A network game now leaves
+  slots 2..10 (D3h..DBh) out of the index -- it never uses them; the names
+  and slot 1 are in every shipped file.  `tools/mpsavetest.py`: the night
+  test over the network with one client holding two savegames.
 - Review fixes (2026-10-15), network games: a player's seat can no longer be
   taken by someone who only knows the room's code -- the lobby gives each
   player's game a secret for its seat (`--mp-key`, sent with HELLO; older
@@ -526,7 +729,8 @@ Classic mode reproduces the original's garbage where it could be traced
   26-33 and 37-50 also no price, shooting time, base quality or
   description (25, "Guess!", has these, but no list); the series 37-50 have
   no episode length, episode price or episode values, 44 ("Mary & John")
-  no episodes.  Not enabled in the original data.  Produced as they are,
+  no episodes.  Not enabled in the original data (the rule "Include unfinished screenplays", §1
+  game options, fills and offers them -- 2026-11-17).  Produced as they are,
   the shooting would not fail: an empty list gives quality 0
   (`studio_start_production` 229E:0B98 tests the sum of the weights before
   it divides, the studio's forecast as well).  But the computer players rate
@@ -554,6 +758,23 @@ Classic mode reproduces the original's garbage where it could be traced
   (39, "Scene No. 23", is in later lists of 13, 15 and 34 in the original
   -- kept as it is).  Bytes past a list's end stay as they were (11 and
   14 have weights there; an item 0 counts nowhere).
+- Screenplay and film side by side (2026-10-23, user's request): under the
+  head of a screenplay a band "Becomes" names its film or series (number,
+  title, genre and length, a series' episodes) with "To the film" / "To the
+  series"; under the head of a film or series a screenplay produces, the
+  band "Made from" names the screenplay (description, roles, sets of its
+  first list, shooting time) with "To the screenplay" -- one row for each
+  screenplay, at the same place in the card and in "All fields"; a
+  screenplay without one says where to choose it.  The head's pill
+  "produced by screenplay N" leads there too.  The changes against the
+  original no longer name "flags" for a film or series with the auction bit
+  without the market bit (11 of the original's records, series 1: 0x46):
+  the comparison's copy no longer sets the fields that agree, and the
+  market choice "nowhere" keeps that bit as the original has it -- to the
+  dealer and back is the original again.  The launcher's pack switches keep
+  the keyboard focus when the page is drawn anew, and "New game"'s line
+  "with the packs ..." stays one line (a third pack wrapped it and moved the
+  pack list under it).
 - Settings page (2026-10-18, user's request): what is the player's and not
   the game's -- the display (fullscreen, window size, aspect, filter,
   whole-number scaling), the AI upscaling, the sound, the mouse -- is a page

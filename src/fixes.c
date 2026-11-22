@@ -7,7 +7,7 @@
 #include "fixes.h"
 #include "seat.h"
 
-static const struct { const char *name; unsigned bit; const char *what; } fix_table[] = {
+static const struct { const char *name; unsigned long long bit; const char *what; } fix_table[] = {
     {"intruder",  FIX_INTRUDER,  "bailiff/terrorist hang on a library that holds only series; love films never seized (1DA8:2D3B)"},
     {"random0",   FIX_RANDOM0,   "random_n(0) divides by zero -> \"Divide error\" (0D5E:0229)"},
     {"ai-studio", FIX_AI_STUDIO, "computer player rents studio 13 instead of the chosen one (348B:098D)"},
@@ -36,15 +36,26 @@ static const struct { const char *name; unsigned bit; const char *what; } fix_ta
     {"case-corner", FIX_CASE_CORNER, "the film agency's case hands out slots past the carried tapes: in its lower right corner lies your own programme score of the hour as a film id -- an untitled film to sell to the dealer again and again, each time the case count drops below zero and a tape put in later is lost; always on in network games (05FF:0359)"},
     {"ai-rating", FIX_AI_RATING, "a computer player's average rating of yesterday multiplies the viewers by 100 in 32 bits: above 21.5 million viewers an hour (a satellite's reach) it overflows -- a rating of 0 or below, so it takes almost no ad contracts and its budget plan ranks it last (2DD9:2B8D)"},
     {"ai-bids", FIX_AI_BIDS, "a computer player's auction bids go into a list of 11 places, one new entry per bid -- the same lot again and again -- emptied only when the human outbids it: a busy bidder writes past it over the contract counts and more (a crash: the ad agency then writes into the sound driver) (2DD9:1DDA)"},
-    {"ai-warning", FIX_AI_WARNING, "a computer player placing a programme it may not (a live film whose hour is over) gets the human's warning box: tried at every office visit, the boxes pile up on the human's screen until one saves the screen through a null pointer over the interrupt vectors (a crash) (229E:0225, 2DD9:4719)"},
+    {"ai-warning", FIX_AI_WARNING, "a computer player placing a programme it may not (a live film whose hour is over) gets the human's warning box: tried at every office visit, the boxes pile up on the human's screen until one saves the screen through a null pointer over the interrupt vectors (a crash); so does a computer player's refused shopping list (\"too many shopping lists\", asked again every round its studio cannot shoot) (229E:0225, 2DD9:4719, 229E:09AF)"},
     {"live-aid", FIX_LIVE_AID, "data: film 164 \"Live Aid\", a live broadcast in the auction pool, is 0 hours long: no computer player bids on it, placed it clears nothing (the programme it covers airs on as Live Aid), aired it stays in the archive and is taken away at night as \"missed\"; its date can be 1 a.m., which cannot be planned"},
-    {"trendy-studios", FIX_TRENDY_STUDIOS, "the live show \"Trendy\" (film 138), aired by anyone, counts as every running studio's show: each studio in production or waiting for its live show is let go -- a deferred give-up or a queued renter takes it mid-production, the production is lost, and the studio later \"finishes\" screenplay 0 into player -1's library (a computer player's news budget -> 0) (24B8:0C4A)"},
+    {"trendy-studios", FIX_TRENDY_STUDIOS, "the live show \"Trendy\" (film 138), aired by anyone, counts as every running studio's show: each studio in production or waiting for its live show is let go -- a deferred give-up or a queued renter takes it mid-production, the production is lost, and the studio later \"finishes\" screenplay 0 into player -1's library (a computer player's news budget -> 0) (24B8:0C4A); fixed, Trendy's own studio -- its screenplay gone once shot -- is let go as the shooting ends, and a lock nothing ends any more (in games saved before) at the next hour (1DA8:034E)"},
     {"video-connection", FIX_VIDEO_CONN, "data: screenplay 20 \"Video-Connection\" (a show) asks nothing of its two roles: every cast fits 0 %, only the set counts -- produced, the show has quality 3 of 20 at best and next to no viewers"},
+    {"planner-row", FIX_PLANNER_ROW, "a programme taken off a full shelf (sold, seized, carried to the case) leaves in its freed slot what lies past the shelf: the next genre's first programme, for series two genre counts (e.g. series 512); the planner's list takes a click on an empty row as that slot -- a film of another genre to plan, or the game crashes (1C18:12F2, 05FF:0D0E)"},
+    {"load-music", FIX_LOAD_MUSIC, "a game loaded from the setup screen (the launcher's safe, --load-slot) starts silent: the setup has no music, the safe records itself as the last room, and back in the office the game takes its music as playing -- silence until the next room change (05FF:44F4, 35F8:037C)"},
 };
 #define NFIX (int)(sizeof fix_table / sizeof fix_table[0])
 
-static unsigned fix_mask;
+static unsigned long long fix_mask;
 static int fix_parsed;
+
+/* the table for the launcher in the same process (the iPhone app: launcher/ios.go, instead of
+ * --fixes=list): entry I's name and description -> 0 past the end */
+int fix_list_entry(int i, const char **name, const char **what) {
+    if (i < 0 || i >= NFIX) return 0;
+    *name = fix_table[i].name;
+    *what = fix_table[i].what;
+    return 1;
+}
 
 static void fix_parse(void) {
     fix_parsed = 1;
@@ -65,7 +76,32 @@ static void fix_parse(void) {
     free(buf);
 }
 
-int fix_on(unsigned fix) {
+/* the fixes' choice anew (a savegame's rules, src/saverules.c): spec "all", the names of the
+ * fixes on, or NULL for Classic; a name this game does not know (a later game's fix) is passed
+ * over -- not the command line's error */
+void fix_respec(const char *spec) {
+    static char *own;
+    char *copy = spec ? strdup(spec) : NULL;
+    if (spec && !copy) { fprintf(stderr, "out of memory\n"); exit(1); }
+    fix_spec = copy;
+    free(own);
+    own = copy;
+    fix_mask = 0;
+    fix_parsed = 1;
+    if (!copy) return;
+    if (!strcmp(copy, "all")) { for (int i = 0; i < NFIX; i++) fix_mask |= fix_table[i].bit; return; }
+    char *buf = strdup(copy);
+    if (!buf) { fprintf(stderr, "out of memory\n"); exit(1); }
+    for (char *t = strtok(buf, ","); t; t = strtok(NULL, ",")) {
+        int i = 0;
+        while (i < NFIX && strcmp(t, fix_table[i].name)) i++;
+        if (i < NFIX) fix_mask |= fix_table[i].bit;
+        else fprintf(stderr, "[save-rules] the savegame's fix '%s' is not in this game: passed over\n", t);
+    }
+    free(buf);
+}
+
+int fix_on(unsigned long long fix) {
     if (difftest_on) return 0;                   /* compare with the original */
     if (credit_line_opt == CREDIT_LINE_ORIGINAL && !(fix &= ~FIX_CREDIT_REPAY)) return 0;   /* the original's credit, its repayment too */
     if (seat_humans && (fix & FIX_MP_ALWAYS)) return 1;   /* a network game */
@@ -135,11 +171,13 @@ int fix_film200_record(void) {
  * the last block (24B8:0C4A counts from 1), so it stays in the archive and is taken away
  * at night with "you missed" (1DA8:135D).  Only the original's record is changed: a mod that
  * changed film 164 keeps its own. */
+static int live_aid_applied;           /* (saverules: a savegame's fixes take it out again) */
 int fix_live_aid_record(void) {
     if (!fix_on(FIX_LIVE_AID) || (i16)g_nfilms < 164) return 0;
     if (films(164).blocks != 0 || films(164).genre != GENRE_LIVE || films(164).quality != 50
         || MK32(films(164).price_hi, films(164).price_lo) != 700000) return 0;
     films(164).blocks = 2;
+    live_aid_applied = 1;
     return 1;
 }
 
@@ -155,6 +193,7 @@ int fix_live_aid_record(void) {
  * requirements keeps its own.  The requirements are no part of a savegame (only the
  * episode blocks are), so the fix holds for a loaded game as well. */
 static const u8 video_conn_needs[4] = { 20, 0, 18, 16 };
+static int video_conn_applied;
 int fix_video_conn_record(void) {
     if (!fix_on(FIX_VIDEO_CONN)) return 0;
     u32 s = screenplays_at(20);
@@ -162,7 +201,30 @@ int fix_video_conn_record(void) {
     for (u16 i = 0; i < 8; i++)
         if (FP8(s, 0x168 + i)) return 0;
     for (u16 i = 0; i < 8; i++) FP8(s, 0x168 + i) = video_conn_needs[i & 3];
+    video_conn_applied = 1;
     return 1;
+}
+
+/* A savegame's rules loaded (src/saverules.c): the data fixes that change records no
+ * savegame holds -- live-aid's length, video-connection's requirements -- in as its
+ * fixes have them, or out again (the original's record back) where they came in with
+ * the game's start; film-200's market bit is a savegame's, its texts are fixed where
+ * they are read. */
+void fix_data_records_sync(void) {
+    if (fix_on(FIX_LIVE_AID)) fix_live_aid_record();
+    else if (live_aid_applied) {
+        if (films(164).blocks == 2) films(164).blocks = 0;
+        live_aid_applied = 0;
+    }
+    if (fix_on(FIX_VIDEO_CONN)) fix_video_conn_record();
+    else if (video_conn_applied) {
+        u32 s = screenplays_at(20);
+        int ours = 1;
+        for (u16 i = 0; i < 8; i++)
+            if (FP8(s, 0x168 + i) != video_conn_needs[i & 3]) ours = 0;
+        for (u16 i = 0; ours && i < 8; i++) FP8(s, 0x168 + i) = 0;
+        video_conn_applied = 0;
+    }
 }
 
 /* the new-game setup (0AA4:0AC5) gives the human this much cash; the credit stays $200 000 */
@@ -275,7 +337,7 @@ static int sys_arrow_here(void) {
 static int clampi(int v, int lo, int hi) { return v < lo ? lo : v > hi ? hi : v; }
 
 static int sys_arrow_stands_in(void) {
-    if (!sys_arrow_on() || sys_ptr_x < 0) return 0;
+    if (!sys_arrow_on() || sys_ptr_x < 0 || host_game_arrow) return 0;
     int x0 = (i16)g_mouse_min_x, x1 = (i16)g_mouse_max_x, y0 = (i16)g_mouse_min_y, y1 = (i16)g_mouse_max_y;
     int tx = clampi(sys_ptr_x, x0, x1), ty = clampi(sys_ptr_y, y0, y1);
     /* beyond limits the whole-screen ones (mouse_bounds_full: 0..303, 0..189) do not set */
@@ -405,19 +467,56 @@ void drag_refresh(void) {
         }
 }
 
-/* for the host: the carried item's picture (8-bit, 0 transparent) and its hot spot */
-int sys_drag_image(u8 *pix, int cap, int *w, int *h, int *hx, int *hy, int lim[4]) {
+/* the carried item's bitmap: its pixels, row stride, the size the cursor draws; 0: none fit */
+static int drag_bitmap(u32 *p, int *stride, int *w, int *h) {
     if (!(g_drag_image_lo | g_drag_image_hi)) return 0;
     u32 b = g_drag_image;
-    int stride = FP16(b, 0) << 3;
-    *w = (i16)g_drag_w; *h = (i16)g_drag_h; *hx = (i16)g_drag_hot_x; *hy = (i16)g_drag_hot_y;
+    *p = FP32(b, 4);
+    *stride = FP16(b, 0) << 3;
+    *w = (i16)g_drag_w; *h = (i16)g_drag_h;
+    return *w > 0 && *h > 0 && *w <= *stride;
+}
+
+/* for the host: the carried item's picture (8-bit, 0 transparent) and its hot spot */
+int sys_drag_image(u8 *pix, int cap, int *w, int *h, int *hx, int *hy, int lim[4]) {
+    u32 p;
+    int stride;
+    if (!(g_drag_image_lo | g_drag_image_hi)) return 0;
+    int ok = drag_bitmap(&p, &stride, w, h);
+    *hx = (i16)g_drag_hot_x; *hy = (i16)g_drag_hot_y;
     lim[0] = (i16)g_mouse_min_x; lim[1] = (i16)g_mouse_min_y;   /* (the cursor's: a transmitter stays on the map, rooms_click.c) */
     lim[2] = (i16)g_mouse_max_x; lim[3] = (i16)g_mouse_max_y;
-    if (*w <= 0 || *h <= 0 || *w > stride || *w * *h > cap) return 0;
-    u32 p = FP32(b, 4);
+    if (!ok || *w * *h > cap) return 0;
     for (int r = 0; r < *h; r++)
         for (int c = 0; c < *w; c++) pix[r * *w + c] = rb(FPSEG(p), (u16)(FPOFF(p) + r * stride + c));
     return 1;
+}
+
+/* ... at 4x from its cells (--filter hr-pixel): out 4w x 4h, 0 transparent; 0 without cells */
+int sys_drag_image_4x(u32 *out, int cap, const u32 *pal) {
+    u32 p;
+    int stride, w, h;
+    if (!drag_bitmap(&p, &stride, &w, &h) || 16 * w * h > cap) return 0;
+    return hr_picture_4x(FPSEG(p), FPOFF(p), stride, w, h, out, pal);
+}
+
+/* The free mouse (--mouse free / system): the game changed its cursor's limits -- a carried
+ * item dropped (ui_drag_end 26A7:1DF8: the whole screen again, mouse_bounds_full), where it
+ * had held the cursor so that the item stays above the panel (ui_drag_begin: max y = 120 - its
+ * height + the grip).  The cursor stood at that limit while the pointer went further down, and
+ * the game moves it only with the next motion -- the system arrow showed the game's own arrow
+ * there until then.  So the host sends the pointer once more (as a motion, recorded and in a
+ * network game through the server like every other): the cursor comes to it at once.
+ * Asked with the seat this machine shows in memory (a network game's guest: its own seat's
+ * limits, runtime/host.c).  -> 1 once per change */
+int mouse_limits_changed(void) {
+    static u16 seen[4];
+    static int have;
+    u16 now[4] = { g_mouse_min_x, g_mouse_min_y, g_mouse_max_x, g_mouse_max_y };
+    int changed = have && memcmp(now, seen, sizeof now) != 0;
+    memcpy(seen, now, sizeof now);
+    have = 1;
+    return changed;
 }
 
 /* for the host: SYS_ARROW_ON the system pointer shows the game's arrow;

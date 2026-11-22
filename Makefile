@@ -212,6 +212,84 @@ build/win/weak.rsp: tools/winweak.py $(WIN_OBJ)
 build/mtv-dec.exe: $(WIN_OBJ) build/win/weak.rsp | $(WIN_OPL3)
 	$(WIN_CC) -o $@ $(WIN_OBJ) @build/win/weak.rsp $(WIN_LDLIBS)
 
+# ---- iPhone and iPad (docs/ios.md), on the Mac with Xcode, CMake and XcodeGen
+# (brew install cmake xcodegen):
+#   make ios-lib   ->  build/ios/libopenmtv.a: the game (the same sources and flags as
+#                      build/mtv-dec, for iOS arm64; objects in build/ios/obj/), and SDL2
+#                      for iOS in build/ios/sdl2 (tools/sdl2_ios.py)
+#   make ios       ->  that, the launcher's logic for the app (build/ios/libopenmtv-launcher.a:
+#                      launcher/ as a C library, Go with -tags ios -- launcher/ios.go), the
+#                      content packs it brings (build/ios/mods: IOS_PACKS from mods/), and
+#                      build/ios/OpenMTV.xcodeproj (ios/project.yml): open it in Xcode,
+#                      choose the iPhone, Run
+#   make ios-app   ->  the signed app without Xcode's window (build/ios/dd/...), and
+#   make ios-install IOS_DEVICE=NAME  puts it on the iPhone (xcrun devicectl)
+# IOS_TEAM: the Apple account's team (Xcode: Settings > Accounts), IOS_BUNDLE_ID: the app's id
+# (a free account needs one nobody else has taken).  No intro (build/mtv-intro): the game
+# starts at its own title.
+IOS_MIN       ?= 17.0
+IOS_TEAM      ?=
+IOS_BUNDLE_ID ?= net.openmtv.game
+IOS_DEVICE    ?=
+IOS_CC      = xcrun -sdk iphoneos clang -arch arm64 -miphoneos-version-min=$(IOS_MIN)
+IOS_SDL2    = build/ios/sdl2
+IOS_CFLAGS  = -O2 -g -Wall -Wno-unused-function -Iruntime -I$(IOS_SDL2)/include/SDL2 -D_THREAD_SAFE
+IOS_RT_OBJ  = $(patsubst runtime/%.c,build/ios/obj/%.o,$(RT_SRC)) build/ios/obj/opl3.o
+IOS_GEN_OBJ = $(patsubst gen/%.c,build/ios/obj/gen_%.o,$(GEN_SRC))
+IOS_SRC_OBJ = $(patsubst src/%.c,build/ios/obj/src_%.o,$(SRC_SRC))
+IOS_OBJ     = $(IOS_RT_OBJ) $(IOS_GEN_OBJ) $(IOS_SRC_OBJ) build/ios/obj/clock_entries.o build/ios/obj/exe_image.o build/ios/obj/hr_data.o
+IOS_SDL2_H  = $(IOS_SDL2)/include/SDL2/SDL.h
+
+IOS_PACKS   = mehr-studios neue-filme neue-serien neue-werbung
+IOS_SDK     = $(shell xcrun -sdk iphoneos --show-sdk-path 2>/dev/null)
+IOS_CGO     = -isysroot $(IOS_SDK) -arch arm64 -miphoneos-version-min=$(IOS_MIN)
+
+ios-lib: build/ios/libopenmtv.a $(IOS_SDL2_H)
+ios: ios-lib build/ios/libopenmtv-launcher.a build/ios/mods/.made build/ios/OpenMTV.xcodeproj/project.pbxproj
+build/ios/libopenmtv-launcher.a: | build/ios/obj
+	cd launcher && GOOS=ios GOARCH=arm64 CGO_ENABLED=1 CC="$$(xcrun -sdk iphoneos -f clang)" \
+	  CGO_CFLAGS="$(IOS_CGO)" CGO_LDFLAGS="$(IOS_CGO)" $(GO) build -buildmode=c-archive -tags ios -trimpath \
+	  -ldflags "-s -w -X main.version=$(VERSION12)" -o ../$@ .
+build/ios/mods/.made: $(foreach p,$(IOS_PACKS),$(wildcard mods/$(p)/*))
+	rm -rf build/ios/mods && mkdir -p build/ios/mods
+	for p in $(IOS_PACKS); do cp -R mods/$$p build/ios/mods/; done
+	touch $@
+$(IOS_SDL2_H): tools/sdl2_ios.py tools/sdl2_static.py ios/sdl2-uiscene.patch
+	IOS_MIN=$(IOS_MIN) python3 tools/sdl2_ios.py $(IOS_SDL2)
+	touch $@
+build/ios/obj:
+	mkdir -p build/ios/obj
+build/ios/obj/%.o: runtime/%.c runtime/*.h | build/ios/obj $(IOS_SDL2_H)
+	$(IOS_CC) $(IOS_CFLAGS) $(XFLAGS) -DSTACKCHK -c $< -o $@
+build/ios/obj/gen_%.o: gen/%.c runtime/*.h gen/*.h | build/ios/obj
+	$(IOS_CC) $(GENCFLAGS) $(IOS_CFLAGS) $(XFLAGS) -c $< -o $@
+build/ios/obj/src_%.o: src/%.c src/*.h runtime/*.h gen/lifted.h | build/ios/obj $(IOS_SDL2_H)
+	$(IOS_CC) $(IOS_CFLAGS) $(XFLAGS) $(DIVTRAP) -fno-strict-aliasing -Isrc -Wno-unused-label -Wno-unused-variable -Wno-unused-but-set-variable -c $< -o $@
+build/ios/obj/opl3.o: third_party/nuked-opl3/opl3.c | build/ios/obj
+	$(IOS_CC) -O2 $(XFLAGS) -c $< -o $@
+build/ios/obj/clock_entries.o: build/clock_entries.c runtime/*.h | build/ios/obj
+	$(IOS_CC) $(IOS_CFLAGS) $(XFLAGS) -c $< -o $@
+build/ios/obj/exe_image.o: build/exe_image.c runtime/*.h | build/ios/obj
+	$(IOS_CC) $(IOS_CFLAGS) $(XFLAGS) -c $< -o $@
+build/ios/obj/hr_data.o: build/hr_data.c src/hr_data.h | build/ios/obj
+	$(IOS_CC) $(IOS_CFLAGS) $(XFLAGS) -Isrc -c $< -o $@
+build/ios/libopenmtv.a: $(IOS_OBJ)
+	rm -f $@
+	xcrun -sdk iphoneos libtool -static -no_warning_for_no_symbols -o $@ $(IOS_OBJ)
+build/ios/OpenMTV.xcodeproj/project.pbxproj: ios/project.yml $(wildcard ios/Launcher/*)
+	IOS_DIR=$(CURDIR)/ios IOS_TEAM=$(IOS_TEAM) IOS_BUNDLE_ID=$(IOS_BUNDLE_ID) xcodegen generate --quiet --spec ios/project.yml --project build/ios
+build/ios/.team: FORCE
+	@echo '$(IOS_TEAM) $(IOS_BUNDLE_ID)' | cmp -s - $@ || echo '$(IOS_TEAM) $(IOS_BUNDLE_ID)' > $@
+build/ios/OpenMTV.xcodeproj/project.pbxproj: build/ios/.team
+ios-app: ios
+	xcodebuild -quiet -project build/ios/OpenMTV.xcodeproj -scheme OpenMTV -configuration Release \
+	  -destination generic/platform=iOS -derivedDataPath build/ios/dd -allowProvisioningUpdates -allowProvisioningDeviceRegistration build
+ios-install: ios-app
+	@test -n "$(IOS_DEVICE)" || { echo "IOS_DEVICE=name or id (xcrun devicectl list devices)"; exit 2; }
+	xcrun devicectl device install app --device "$(IOS_DEVICE)" build/ios/dd/Build/Products/Release-iphoneos/OpenMTV.app
+FORCE:
+.PHONY: ios ios-lib ios-app ios-install FORCE
+
 # ---- INTRO.EXE (lifted into gen_intro/)
 GENI_SRC = $(wildcard gen_intro/*.c)
 GENI_OBJ = $(patsubst gen_intro/%.c,build/obj/genI_%.o,$(GENI_SRC))
@@ -239,6 +317,7 @@ launcher/web/index.html: $(wildcard tools/editor/* tools/editor/fonts/*)
 # the version built in: git's, or build/COMMIT.txt where there is no git (a copy made by git archive)
 VERSION12 := $(shell [ "$$(git rev-parse --show-toplevel 2>/dev/null)" = "$$(pwd -P)" ] && git rev-parse --short=12 HEAD || cat build/COMMIT.txt 2>/dev/null)
 GO_BUILD  = CGO_ENABLED=0 $(GO) build -trimpath -ldflags "-s -w -X main.version=$(VERSION12)"
+build/ios/libopenmtv-launcher.a: $(GO_SRC)   # (make ios, above: GO_SRC is set only here)
 launcher: build/openmtv
 launcher-win: build/openmtv.exe
 launcher-mac: build/darwin-arm64/openmtv
@@ -285,5 +364,5 @@ build/OpenMTV.app: build/openmtv-native build/icons/icon.icns launcher/Info.plis
 	rm -rf $@ && mkdir -p $@/Contents/MacOS $@/Contents/Resources
 	cp build/openmtv-native $@/Contents/MacOS/openmtv && cp build/icons/icon.icns $@/Contents/Resources/icon.icns
 	sed 's/@VERSION@/$(VERSION12)/' launcher/Info.plist > $@/Contents/Info.plist
-	codesign --force -s - $@   # (ad hoc: its own name for macOS, not the linker's "a.out"; no Developer ID)
+	codesign --force -s - $@   # (ad hoc: its own name for macOS, not the linker's "a.out"; the Developer ID: tools/package.py mac --notarize)
 .PHONY: launcher launcher-win launcher-mac launcher-native launcher-native-app playtest-win

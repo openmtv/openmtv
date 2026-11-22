@@ -1,0 +1,26 @@
+# option: --auction-lots=20
+# Not a fix: the player's choice "auction lots" -- the auction's lots 11..20 in a savegame.  New game;
+# at 3000 test pokes: lot 11 = film 31 at $120 000, lot 20 = film 37 (segment EE30 = EC80 relative to
+# the load segment, 9 bytes each: +0 programme, +2 u32 bid, +6 bidder, +7 seller), the game saved to
+# slot 0xD1 (game_save 229E:200D, the harness's call), both lots emptied, the slot loaded again
+# (game_load 229E:1386): with the option the savegame brings them back ("MTVX" with a seventh count,
+# after the film dealer's slots, src/actions.c); classic they are no lots -- the savegame has no
+# extension and the load leaves what the pokes left.
+# expect classic 3000 word EC80:0000 == 0
+# expect option  3000 word EC80:0000 == 31
+# expect option  3000 word EC80:0002 == 54464
+# expect option  3000 word EC80:0004 == 1
+# expect option  3000 word EC80:0051 == 37
+400 key esc
+1000 click 64 100
+1300 click 172 185
+3000 poke16 EC80:0000 31
+3000 poke16 EC80:0002 54464
+3000 poke16 EC80:0004 1
+3000 poke16 EC80:0051 37
+3000 call 229E:200D,209
+3000 poke16 EC80:0000 0
+3000 poke16 EC80:0002 0
+3000 poke16 EC80:0004 0
+3000 poke16 EC80:0051 0
+3000 call 229E:1386,209

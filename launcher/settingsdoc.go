@@ -27,7 +27,7 @@ type settingKind struct {
 var schema = []settingKind{
 	{"display", "fullscreen", "bool", []any{"no", "yes"}},
 	{"display", "scale", "int", []any{3, 1, 8}},
-	{"display", "aspect", "choice", []any{"4:3", "square"}},
+	{"display", "aspect", "choice", []any{"4:3", "square", "stretch"}},
 	{"display", "filter", "choice", []any{"sharp", "nearest", "linear", "mmpx", "hr-pixel"}}, // (hr went 2026-10-18; the game reads it as hr-pixel)
 	{"display", "integer", "bool", []any{"no", "yes"}},
 	{"display", "cast_fit", "bool", []any{"no", "yes"}},
@@ -43,13 +43,17 @@ var schema = []settingKind{
 	{"game", "sammy_shows", "int", []any{0, 0, 100000000}},
 	{"game", "sammy_series", "int", []any{0, 0, 100000000}},
 	{"game", "fourth_speed", "bool", []any{"no", "yes"}},
+	{"game", "skip_intro", "bool", []any{"no", "yes"}},
 	{"game", "fast_rooms", "bool", []any{"no", "yes"}},
 	{"game", "series_topicality", "bool", []any{"yes", "no"}},
+	{"game", "original_screenplays", "bool", []any{"no", "yes"}},
 	{"game", "ai_improve", "choice", []any{"off", "normal", "strong"}},
 	{"game", "ad_offers", "int", []any{int(offersLow), int(offersLow), int(offersHigh)}}, // (lobby.go)
 	{"game", "film_offers", "int", []any{int(offersLow), int(offersLow), int(offersHigh)}},
+	{"game", "auction_lots", "int", []any{int(lotsLow), int(lotsLow), int(lotsHigh)}},
 	{"sound", "sound", "bool", []any{"on", "off"}},
 	{"input", "mouse", "choice", []any{"captured", "free", "system"}},
+	{"input", "tv_back", "bool", []any{"no", "yes"}},
 }
 
 var (
@@ -119,11 +123,19 @@ var (
 	fixesList [][2]string // (kept once the game said them: a game not built yet is asked again)
 )
 
+// fixesBuiltIn: the fixes from the game's own table where it is linked into this process (the
+// iPhone app, ios.go) -- no build/mtv-dec to ask
+var fixesBuiltIn func() [][2]string
+
 // gameFixes: [(name, description)] of build/mtv-dec --fixes=list
 func gameFixes() [][2]string {
 	fixesMu.Lock()
 	defer fixesMu.Unlock()
 	if fixesList != nil {
+		return fixesList
+	}
+	if fixesBuiltIn != nil {
+		fixesList = fixesBuiltIn()
 		return fixesList
 	}
 	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)

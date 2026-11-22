@@ -6,6 +6,7 @@ import (
 	"fmt"
 	"net"
 	"os"
+	"runtime"
 	"strings"
 	"sync"
 	"syscall"
@@ -51,6 +52,9 @@ func lanAddresses() []string {
 
 func readAddresses() []string {
 	out := []string{}
+	if runtime.GOOS == "ios" { // (internet games only there -- and a name lookup in the LAN would ask the player)
+		return out
+	}
 	if c, err := net.Dial("udp4", "192.0.2.1:9"); err == nil { // (no packet goes out: it only picks the interface)
 		out = append(out, c.LocalAddr().(*net.UDPAddr).IP.String())
 		c.Close()

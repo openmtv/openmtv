@@ -1,0 +1,37 @@
+# The film auction with 20 lots in a network game (the option --auction-lots, tools/seattest.py):
+# two humans, a new game (--seed 29) as tests/mp/film_offers; seat 1 (station 2) is walked to the
+# film agency (test pokes of figure 1: floor 7, door 0) and is there from about frame 4500.  The
+# new game's first night filled lots 11..20 (segment EE30 = EC80 relative to the load segment, 9
+# bytes each).  4600 seat 1 opens the board (Mr. Jabble), 4700 turns it to page 2 (the tab at
+# 295 30), 4800 bids on place 1 = lot 11 (pending: bidder -100), 4900 Esc closes the board, 5000
+# Esc leaves the agency: the bid committed, station 2 the bidder.  Every machine the same: the
+# lots, the bid and the screens as recorded.
+# humans 1,2
+# options --new-game --seed 29 --auction-lots=20
+3300 key esc
+3350 seat 1 key esc
+3600 seat 1 click 30 60
+3800 seat 1 click 30 60
+3900 poke16 39D4:7B66 7
+3900 poke16 39D4:7B72 0
+3900 poke16 39D4:7B68 0
+3900 poke16 39D4:7B64 153
+4500 seat 1 peek16 39D4:838C
+4500 peek16 EC80:0000
+4500 peek32 EC80:0002
+4600 seat 1 click 40 35
+4650 seat 1 goto 295 30
+4700 seat 1 click 295 30
+4750 seat 1 goto 64 20
+4800 seat 1 click 64 20
+4850 seat 1 peek8 EC80:0006
+4850 peek8 EC80:0006
+4900 seat 1 key esc
+5000 seat 1 key esc
+5300 peek16 EC80:0000
+5300 peek8 EC80:0006
+5300 peek32 EC80:0002
+5300 seat 1 peek8 EC80:0006
+5300 hash
+5301 seat 1 hash
+5400 quit

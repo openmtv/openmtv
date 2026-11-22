@@ -17,7 +17,8 @@ var helpText = map[string]string{
     --mod NAME | A+B+C       with the content pack mods/NAME (several: in this order)
     --fullscreen             fullscreen (F11 or Alt+Enter switch while playing)
     --scale N                the window N times 320x240
-    --aspect 4:3|square      4:3 like a VGA monitor, or square pixels
+    --aspect 4:3|square|stretch
+                             4:3 like a VGA monitor, square pixels, or the whole window
     --filter sharp|nearest|linear|mmpx|hr-pixel
                              sharp: even pixels at any size; mmpx: smoothed edges;
                              hr-pixel: drawn at 4 times the resolution (a finer font,
@@ -26,6 +27,7 @@ var helpText = map[string]string{
     --mouse captured|free|system
                              free: the system pointer moves the game's cursor;
                              system: the system's arrow is the game's
+    --tv-back[=yes|no]       a finger's tap on the TV family's monitor: back, as the right button
     --start-money=N          the cash of a new game, in dollars (the original: 200000)
     --credit-line=N          the most the boss lends (image below 50), in dollars:
                              +100000 a day from day 2 (the original: 300000);
@@ -35,10 +37,14 @@ var helpText = map[string]string{
     --sammy-prize=N[,N,N,N]  the Sammy winner's prize money, in dollars: one amount, or
                              news, culture, shows, series (the original: none)
     --fourth-speed[=yes|no]  a fourth game speed, twice the fastest
+    --skip-intro[=yes|no]    the game's first screen at once, without the title sequence
     --fast-rooms[=yes|no]    room changes at once, without the wipe and loading wait
     --cast-fit[=yes|no]      the shop shows each actor's fit for the role, in per cent
     --series-topicality[=yes|no]
                              the series card shows how topical the series still is
+    --original-screenplays[=yes|no]
+                             the original's 23 unfinished screenplays (shows 25-33,
+                             series 37-50) filled and offered by the agency
     --ai-improve=off|normal|strong
                              computer players build up their transmitters when you
                              build up yours, a while later (the original: off)
@@ -46,6 +52,8 @@ var helpText = map[string]string{
                              (the original: 10)
     --film-offers=N          the films and series the film dealer offers at a time,
                              10 to 17 (the original: 10)
+    --auction-lots=N         the lots of the film auction at a time, 10 to 20 (the
+                             original: 10; from 11 a second page of the board)
     --load-slot N            straight into the game saved in slot N of the safe (1 to 10)
     --settings=FILE          another settings file
     --print                  the game's command line, printed instead of started
@@ -62,7 +70,8 @@ The original game files (SOURCE1.RSC, SOURCE2.RSC): {files}
     --mod NAME | A+B+C       mit dem Inhaltspaket mods/NAME (mehrere: in dieser Folge)
     --fullscreen             Vollbild (F11 oder Alt+Enter schalten beim Spielen um)
     --scale N                das Fenster N-mal 320x240
-    --aspect 4:3|square      4:3 wie ein VGA-Monitor, oder quadratische Pixel
+    --aspect 4:3|square|stretch
+                             4:3 wie ein VGA-Monitor, quadratische Pixel, oder das ganze Fenster
     --filter sharp|nearest|linear|mmpx|hr-pixel
                              sharp: gleichmäßige Pixel in jeder Größe; mmpx: geglättete Kanten;
                              hr-pixel: in vierfacher Auflösung gezeichnet (feinere Schrift,
@@ -71,6 +80,7 @@ The original game files (SOURCE1.RSC, SOURCE2.RSC): {files}
     --mouse captured|free|system
                              free: der Mauszeiger des Systems führt den des Spiels;
                              system: der Pfeil des Systems ist der des Spiels
+    --tv-back[=yes|no]       ein Fingertipp auf den Monitor der TV-Familie: zurück, wie die rechte Taste
     --start-money=N          das Startgeld eines neuen Spiels in Dollar (Original: 200000)
     --credit-line=N          so viel leiht der Chef höchstens (Image unter 50), in Dollar:
                              ab Tag 2 jeden Tag 100000 mehr (Original: 300000);
@@ -80,10 +90,14 @@ The original game files (SOURCE1.RSC, SOURCE2.RSC): {files}
     --sammy-prize=N[,N,N,N]  das Preisgeld des Sammy-Gewinners in Dollar: ein Betrag, oder
                              News, Kultur, Shows, Serien (Original: keins)
     --fourth-speed[=yes|no]  eine vierte Spielgeschwindigkeit, doppelt so schnell wie die schnellste
+    --skip-intro[=yes|no]    gleich der erste Bildschirm des Spiels, ohne die Titelsequenz
     --fast-rooms[=yes|no]    Raumwechsel sofort, ohne Blende und Ladezeit
     --cast-fit[=yes|no]      der Laden zeigt, wie gut jeder Schauspieler zur Rolle passt, in Prozent
     --series-topicality[=yes|no]
                              die Serienkarte zeigt, wie aktuell die Serie noch ist
+    --original-screenplays[=yes|no]
+                             die 23 unfertigen Drehbücher des Originals (Shows 25-33,
+                             Serien 37-50) ergänzt, die Agentur bietet sie an
     --ai-improve=off|normal|strong
                              Computerspieler bauen ihr Sendenetz nach, wenn du deins
                              ausbaust, mit etwas Verzögerung (das Original: off)
@@ -91,6 +105,8 @@ The original game files (SOURCE1.RSC, SOURCE2.RSC): {files}
                              10 bis 17 (Original: 10)
     --film-offers=N          so viele Filme und Serien bietet der Filmhändler auf einmal an,
                              10 bis 17 (Original: 10)
+    --auction-lots=N         so viele Filme und Serien bietet die Filmauktion auf einmal an,
+                             10 bis 20 (Original: 10; ab 11 eine zweite Seite der Tafel)
     --load-slot N            sofort der Spielstand auf Kassette N des Tresors (1 bis 10)
     --settings=FILE          eine andere Einstellungsdatei
     --print                  die Befehlszeile des Spiels nur ausgeben, nicht starten

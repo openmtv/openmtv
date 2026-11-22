@@ -38,6 +38,7 @@ u8 g_ads_extra[(ADS_MAX - 50) * 0x18];   /* a mod's ads 51.. (ads 1..50: DGROUP,
 u8 g_ad_offers_extra[(AD_OFFERS_MAX - 10) * 0x7];   /* the ad agency's offers 11.. (--ad-offers; 1..10: DGROUP, DS:19A0) */
 u8 g_dealer_extra[(FILM_OFFERS_MAX - 10) * 0x8];   /* the film dealer's slots 11.. (--film-offers; 1..10: DGROUP, DS:19ED) */
 u16 g_filmshelf_extra[(FILM_OFFERS_MAX - 10) * 4];  /* their shelf rectangles x1, y1, x2, y2 (src/film_offers.c) */
+u8 g_lots_extra[(AUCTION_LOTS_MAX - 10) * 0x9];   /* the auction's lots 11.. (--auction-lots; 1..10: DGROUP, DS:1B0D) */
 u8 g_coverage[0x11E2];
 
 _Static_assert(sizeof(struct film) == 0x17, "struct film has the original record layout");
@@ -56,6 +57,7 @@ _Static_assert(sizeof(struct screenplay) == 0x1B3, "struct screenplay has the or
 u16 g_nfilms = 200, g_nseries = 50, g_nads = 50;
 u16 g_nadoffers = 10;                    /* the ad agency's offers: the original's 10, or --ad-offers (src/fixes.c) */
 u16 g_nfilmoffers = 10;                  /* the film dealer's offers: the original's 10, or --film-offers (src/film_offers.c) */
+u16 g_nlots = 10;                        /* the auction's lots: the original's 10, or --auction-lots (src/auction_lots.c) */
 
 /* the moved heap blocks: the DGROUP far pointer the game keeps to each, its
  * host copy and size (0: the film or series table, sized by g_nfilms /
@@ -74,7 +76,8 @@ static const struct { u16 ptr; void *host; u16 len; } blocks[] = {
 #define OFFERS_REGION (NBLOCKS + 1)      /* then the ad agency's offers 11.. (tables_count_init) */
 #define DEALER_REGION (NBLOCKS + 2)      /* then the film dealer's slots 11.. */
 #define RECTS_REGION (NBLOCKS + 3)       /* and their shelf rectangles */
-#define R_HANDLES (NBLOCKS + 4)          /* then handles for C buffers */
+#define LOTS_REGION (NBLOCKS + 4)        /* then the auction's lots 11.. */
+#define R_HANDLES (NBLOCKS + 5)          /* then handles for C buffers */
 _Static_assert(R_HANDLES < HOST_REGIONS, "room for handles");
 
 static u16 table_count(u16 res, u16 size, u16 orig, u16 max) {
@@ -90,21 +93,27 @@ void tables_count_init(void) {
         host_regions[ADS_REGION].host = g_ads_extra;
         host_regions[ADS_REGION].len = (u32)(g_nads - 50) * 0x18;
     }
+    tables_offers_init();
+}
+/* the ad agency's offers, the film dealer's and the auction's lots as the options have
+ * them, and the host memory of those past 10 -- at the start, and again when a savegame's
+ * rules come in (src/saverules.c: none past 10 any more, or more than before) */
+void tables_offers_init(void) {
     g_nadoffers = ad_offers_count();
-    if (g_nadoffers > 10) {
-        host_regions[OFFERS_REGION].lin = (u32)AD_OFFERS_SEG << 4;
-        host_regions[OFFERS_REGION].host = g_ad_offers_extra;
-        host_regions[OFFERS_REGION].len = (u32)(g_nadoffers - 10) * 0x7;
-    }
+    host_regions[OFFERS_REGION].lin = (u32)AD_OFFERS_SEG << 4;
+    host_regions[OFFERS_REGION].host = g_ad_offers_extra;
+    host_regions[OFFERS_REGION].len = g_nadoffers > 10 ? (u32)(g_nadoffers - 10) * 0x7 : 0;
     g_nfilmoffers = film_offers_count();
-    if (g_nfilmoffers > 10) {
-        host_regions[DEALER_REGION].lin = (u32)FILM_OFFERS_SEG << 4;
-        host_regions[DEALER_REGION].host = g_dealer_extra;
-        host_regions[DEALER_REGION].len = (u32)(g_nfilmoffers - 10) * 0x8;
-        host_regions[RECTS_REGION].lin = (u32)FILM_RECTS_SEG << 4;
-        host_regions[RECTS_REGION].host = (u8 *)g_filmshelf_extra;
-        host_regions[RECTS_REGION].len = (u32)(g_nfilmoffers - 10) * 0x8;
-    }
+    host_regions[DEALER_REGION].lin = (u32)FILM_OFFERS_SEG << 4;
+    host_regions[DEALER_REGION].host = g_dealer_extra;
+    host_regions[DEALER_REGION].len = g_nfilmoffers > 10 ? (u32)(g_nfilmoffers - 10) * 0x8 : 0;
+    host_regions[RECTS_REGION].lin = (u32)FILM_RECTS_SEG << 4;
+    host_regions[RECTS_REGION].host = (u8 *)g_filmshelf_extra;
+    host_regions[RECTS_REGION].len = g_nfilmoffers > 10 ? (u32)(g_nfilmoffers - 10) * 0x8 : 0;
+    g_nlots = auction_lots_count();
+    host_regions[LOTS_REGION].lin = (u32)AUCTION_LOTS_SEG << 4;
+    host_regions[LOTS_REGION].host = g_lots_extra;
+    host_regions[LOTS_REGION].len = g_nlots > 10 ? (u32)(g_nlots - 10) * 0x9 : 0;
 }
 
 /* fp is the data of a live block of the far heap holding len bytes (Borland:
@@ -174,6 +183,36 @@ void state_drop(void) {
 void game_cursor(int *x, int *y) {
     *x = (i16)g_mouse_x + (i16)g_mouse_pending_dx;
     *y = (i16)g_mouse_y + (i16)g_mouse_pending_dy;
+}
+/* the game's cursor has arrived where it was heading (the eased motion done, frame.c) */
+int game_cursor_still(void) {
+    return !g_mouse_pending_dx && !g_mouse_pending_dy;
+}
+
+/* where the game clicks, from its cursor (cursor_x/y, ui.c): something carried (a programme
+ * in the planner, a transmitter) goes where its corner is, the cursor less its grip; the
+ * waste bin's cursor (shape 2) clicks 5 pixels right of and below it.  -> 1 and the cursor's
+ * way from that point where it is not the cursor itself */
+int game_drag_hot(int *hx, int *hy) {
+    if (g_drag_image_lo | g_drag_image_hi) {
+        *hx = (i16)g_drag_hot_x; *hy = (i16)g_drag_hot_y;
+        return 1;
+    }
+    if (g_cursor_shape == 2) { *hx = *hy = -5; return 1; }
+    return 0;
+}
+
+/* the bottom panel stands (shown once after the setup, src/main_loop.c) and no screen of its own
+ * covers the game (rooms below 0: a message, the pause): a tap on the TV family's monitor may be
+ * the right button there (runtime/host.c, --tv-back) */
+int game_panel_shown;
+int game_panel_up(void) {
+    return game_panel_shown && (i16)g_room >= 0;
+}
+
+/* the room or screen shown (runtime/host.c: a finger's swipe in the planner) */
+int game_room(void) {
+    return (i16)g_room;
 }
 
 /* the game frees the heap block at fp: a moved one goes back first (the

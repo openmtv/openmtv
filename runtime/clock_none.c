@@ -18,8 +18,18 @@ __attribute__((weak)) void game_cursor(int *x, int *y) {
     *x = (s16)(M[ds + 0x7BF6] | M[ds + 0x7BF7] << 8) + (s16)(M[ds + 0x7A48] | M[ds + 0x7A49] << 8);
     *y = (s16)(M[ds + 0x7BF8] | M[ds + 0x7BF9] << 8) + (s16)(M[ds + 0x7A4A] | M[ds + 0x7A4B] << 8);
 }
+__attribute__((weak)) int game_cursor_still(void) {
+    u32 ds = (u32)(LOADSEG + 0x39D4) << 4;
+    return !(M[ds + 0x7A48] | M[ds + 0x7A49] | M[ds + 0x7A4A] | M[ds + 0x7A4B]);
+}
+__attribute__((weak)) int game_drag_hot(int *hx, int *hy) { (void)hx; (void)hy; return 0; }
+__attribute__((weak)) int game_room(void) { return -1; }
+__attribute__((weak)) int game_panel_shown;
+__attribute__((weak)) int game_panel_up(void) { return 0; }
+__attribute__((weak)) int fix_list_entry(int i, const char **name, const char **what) { (void)i; (void)name; (void)what; return 0; }
 /* the system arrow needs the decompiled build (src/fixes.c) */
 __attribute__((weak)) int sys_arrow_state(void) { return SYS_ARROW_OFF; }
+__attribute__((weak)) int mouse_limits_changed(void) { return 0; }
 __attribute__((weak)) const int src_native_count = 0;
 /* no built-in program image (build/exe_image.c, decompiled build only):
  * load the EXE */
@@ -50,6 +60,8 @@ __attribute__((weak)) void hr_seat_load(int seat) { (void)seat; }
 __attribute__((weak)) int sys_drag_image(unsigned char *pix, int cap, int *w, int *h, int *hx, int *hy, int lim[4]) {
     (void)pix; (void)cap; (void)w; (void)h; (void)hx; (void)hy; (void)lim; return 0;   /* (no carried item without src/) */
 }
+__attribute__((weak)) int hr_ki_state(void) { return 0; }
+__attribute__((weak)) int sys_drag_image_4x(u32 *out, int cap, const u32 *pal) { (void)out; (void)cap; (void)pal; return 0; }
 __attribute__((weak)) int seat_disk_busy(void) { return 0; }
 /* a seat's own sound (src/rtl_snd.c): none without src/ */
 __attribute__((weak)) void seat_sound_frame(void) {}

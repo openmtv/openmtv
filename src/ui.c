@@ -1080,7 +1080,7 @@ void mouse_poll(void) {
 /* 105E:17D1  per-frame ambient animations of the current room (rooms 1,2,4,5,8,9,10,12 and -3): draws animated parts into room buffers (frame counter 0xD3C) and pushes them with room_anim_blit; sets 0x7A38 */
 u16 room_anim_update(u16 a0, u16 ax) {
     int cc;
-    u16 di;
+    u16 di = R.di;                     /* DI on entry: read before set for an anim frame below 0 (src/README.md, "Registers read before they are set") */
     u16 s0;
     u16 s1;
     u16 s2;
@@ -1809,6 +1809,17 @@ L_2D45:
             goto L_1BF0;
         }
     } else if (a0 == 2) {
+        /* ORIGINAL BUG (no switch): a room is left -- the screenplay agency's
+         * flying papers (g_sa_fly1_bg: 3 x {saved background, x, y}) are freed
+         * only if the slot SI points at is set, but SI is not set here: it is
+         * whatever the caller left (measured in the scenarios: 0..0x41,
+         * mostly past the 3 slots).  With no flight under way -- every exit
+         * the scenarios make -- the original frees nothing and returns 0
+         * either way; SI = 0 does the same without the loop.  A defined value
+         * in every mode (each compiler had read other garbage): the first
+         * flight's slot.  Left during the second flight, its background stays
+         * allocated, as in the original whenever SI is 0..2.  docs/CHANGES.md §2 */
+        si = 0;
         G32(0xD3C) = 0;
         g_news_anim_pick = 0xFFFF;
         ax = (G16((si << 3) + 0xD44)) | (G16((si << 3) + 0xD46));
@@ -1846,7 +1857,7 @@ void anim_div_tick(u16 a0, u32 a1) {
 /* 105E:2DEF  copy animated room area n (1,3..9: fixed rects from room buffers 0x10C..0x118) to VGA, hiding the cursor while it overlaps */
 u16 room_anim_blit(u16 a0) {
     u16 ax;
-    u16 di;
+    u16 di = R.di;                     /* DI on entry: read before set for an area other than 1, 3..9 (src/README.md, "Registers read before they are set") */
     u16 si;
     u32 rv_;
     u16 t1;
@@ -2605,8 +2616,8 @@ void office_draw_letter(void) {
 /* 105E:4107  film agency (room 8): draw Mr. Jabble at his terminal in the pose res g_dealer_pose (0xBC..0xBF, changes every 2 game hours) */
 void dealer_draw_pose(void) {
     u16 ax;
-    u16 di;
-    u16 si;
+    u16 di = R.di;                     /* DI and SI on entry: read before set for a pose outside */
+    u16 si = R.si;                     /* 0xBC..0xBF (src/README.md, "Registers read before they are set") */
     FUNC_TICK(35);
     ax = g_dealer_pose - 0xBC;
     if (((u16)(g_dealer_pose - 0xBC)) <= 3) {

@@ -33,6 +33,7 @@ int net_active;
 int net_seat;
 const char *net_key;               /* --mp-key: the seat's secret from the lobby (none: no lobby, or an older one) */
 int net_lead = 12;                 /* the server's lead (LEAD n; an older server: its --lead default) */
+int net_rtt = -1;                  /* this machine's round trip to the server in frames (LEAD n r; -1: an older server) */
 
 static sock_t sock = BAD_SOCK;
 static int sock_dead;                    /* the server closed it: no BYE */
@@ -174,9 +175,13 @@ static void handle(char *msg) {
         snprintf(pong, sizeof pong, "PONG %s", msg + 5);
         net_send(pong);
         flush_out();
-    } else if (!strncmp(msg, "LEAD ", 5)) {        /* the server's lead over the fastest client (host.c keeps near it) */
-        int n = atoi(msg + 5);
-        if (n > 0 && n < 200) net_lead = n;
+    } else if (!strncmp(msg, "LEAD ", 5)) {        /* the server's lead over the fastest client (host.c keeps near it), */
+        char *e, *e2;                              /* and a newer server's this machine's own round trip */
+        long n = strtol(msg + 5, &e, 10), r = strtol(e, &e2, 10);
+        if (n > 0 && n < 200) {                    /* (both from the same LEAD or neither) */
+            net_lead = (int)n;
+            net_rtt = e2 != e && r >= 0 && r < 200 ? (int)r : -1;
+        }
     } else if (!strncmp(msg, "START", 5)) {
         started = 1;
     } else if (!strncmp(msg, "WELCOME", 7)) {

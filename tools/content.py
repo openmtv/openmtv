@@ -41,7 +41,7 @@ films (ids below 1000, where the series begin), 999 series (programme ids
 +1000/+2000/+3000), as long as each language's texts of a table fit in
 64 KB; a savegame appends films 201.., series 51.. and ads 51.. at its end,
 and it must stay below 64 KB (SAVE_MAX: 18 bytes a film past 200, 41 a
-series past 50, 1 an ad past 50 -- 999 films and 50 ads leave room for 374
+series past 50, 1 an ad past 50 -- 999 films and 50 ads leave room for 372
 series).
 The start savegame keeps the original counts; the game takes the others of
 a new game from the tables.
@@ -83,13 +83,16 @@ PHRASE_SLOTS = 561          # length table of the phrase resources (0x462 bytes)
 
 # A savegame (game_save_load 229E:139A, src/actions.c) is the original's 37 605 bytes and,
 # with more than 200 films, 50 series or 50 ads or a game option that needs it, an
-# extension (savegame_extra_size): "MTVX" and up to 6 u16 counts, films 201.. (0x12 bytes
+# extension (savegame_extra_size): "MTVX" and up to 8 u16 counts, films 201.. (0x12 bytes
 # each), series 51.. (0x29), ads 51.. (1), the computer players' state (--ai-improve: 86),
-# the ad agency's offers 11..17 (7 each) and the film dealer's 11..17 (8 each).  Its length
+# the ad agency's offers 11..17 (7 each), the film dealer's 11..17 (8 each), the
+# auction's lots 11..20 (9 each) and the line of the game's rules (src/saverules.c: at
+# most SAVE_RULES_MAX, src/fixes.h SAVERULES_MAX).  Its length
 # is 16 bits, and the game addresses it through one far pointer: at most SAVE_MAX bytes.
 SAVE_BASE = 37605
 SAVE_MAX = 0xFFF0
-SAVE_OPTIONS = 6 + 2 * 6 + (2 + 3 * 28) + 7 * 7 + 7 * 8   # the head, every option at its largest
+SAVE_RULES_MAX = 768
+SAVE_OPTIONS = 6 + 2 * 8 + (2 + 3 * 28) + 7 * 7 + 7 * 8 + 10 * 9 + SAVE_RULES_MAX   # the head, every option at its largest
 
 
 def savegame_size(nfilms, nseries, nads):

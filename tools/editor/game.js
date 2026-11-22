@@ -46,7 +46,7 @@ const st = {
   meta: null, mods: [], mod: null, lang: 'en', plang: null, section: 'films',
   data: {}, orig: {}, dirty: new Set(), sel: {}, filter: {}, view: {}, tab: {}, mode: 'form',
   glyphImg: [], glyphCache: {}, undo: [], redo: [], base: {}, railFolded: false,
-  packs: [], unlocked: new Set(), forking: null, cardScale: 3, stageRow: {}, packInfo: {},
+  packs: [], unlocked: new Set(), forking: null, cardScale: 3, stageRow: {}, packInfo: {}, layer: false, layerPending: false,
 };
 const editLang = () => st.plang || st.lang;     /* the previews' language: the one being edited */
 
@@ -522,14 +522,33 @@ function filmRows(r, lang) {
   const y20 = c14 >= 100, year = (t) => (y20 ? t.replace('19#', '20#') : t), yy = y20 ? c14 - 100 : c14;
   let tpl;
   if (r.genre === 6) tpl = fmtRows(gfmt(year(card[413]), [country, yy, c15 << 2, c16 << 2]), 'grey', ['origin', 'c15', 'c16']);
+  else if (r.genre === LIVE) tpl = [{ text: ' ' }, { text: '' }, { text: '' }];   /* live: a blank (DS:1112) over the three lines -- no country, year or bars */
   else if (r.genre === 8) tpl = fmtRows(gfmt(card[414], [c13 << 2, c14 << 2]), 'grey', ['c13', 'c14']);
   else tpl = fmtRows(gfmt(year(card[412]), [country, yy, c15 << 2, c16 << 2]), 'grey', ['origin', 'c15', 'c16']);
+  while (tpl.length < 3) tpl.push({ text: '' });   /* the card keeps three lines for it (layout DS:1118 "233 2-- 2--"): a show's two bars leave one blank */
   rows.push(...tpl);
-  if (r.genre === 7) rows.push(...fmtRows(gfmt(card[416], [Math.max(0, r.live_day - 1), `${(r.live_slot || 1) + 17}:00`]), 'grey', 'live'));
   rows.push({ bg: 'band', segs: gfmt(card[418], [r.blocks])[0], right: '$ ' + moviePrice(r.price, r.quality, r.topicality), edit: 'price' });
-  rows.push(...fmtRows(gfmt(card[417], [r.quality ? Math.round((r.topicality * 40) / r.quality) : 0]), 'grey', 'topicality'));
+  rows.push(...filmDateLine(r, card));
   if (r.flags2 & 8) rows.push({ text: card[419], color: '#de2424', edit: 'rating' });
   return rows;
+}
+/* the line under the length (tooltip_film 14E1:4172): a live broadcast the game has dated
+ * "In N Tag(en)." from 2 days on, else "heute/morgen, HH:00 Uhr" (hour = slot + 17); films 29
+ * and 187 add their part "(n von 3/5)"; a live broadcast without a date and a show: blank;
+ * any other film: the topicality bar.  The card stands on day 1 of a new game -- a stored date
+ * matters only in a start library: the dealer and the auction date a live film when they offer
+ * it (24B8:04B9, 1DA8:0CB3), and the start savegame leaves the parts at 3 and 5 to go */
+const LIVE = 7, LIVE_PARTS = { 29: 3, 187: 5 };
+function filmDateLine(r, card) {
+  if (r.genre === LIVE) {
+    if (!r.live_day) return [{ text: ' ', edit: 'live' }];
+    const n = LIVE_PARTS[r.id], d = r.live_day - 1;
+    const part = n ? gfmt(card[415], [0, n])[0].map((x) => x.s || '').join('') : ' ';
+    const lines = d >= 2 ? gfmt(card[416], [d, part]) : gfmt(card[425], [d === 0 ? card[206] : card[207], r.live_slot + 17, part]);
+    return fmtRows(lines, 'grey', 'live');
+  }
+  if (r.genre === 8) return [{ text: ' ' }];       /* DS:1116 */
+  return fmtRows(gfmt(card[417], [r.quality ? Math.round((r.topicality * 40) / r.quality) : 0]), 'grey', 'topicality');
 }
 /* series */
 function seriesRows(r, lang) {

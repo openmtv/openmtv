@@ -396,6 +396,7 @@ u16 ui_input_text(u16 a0, u16 a1, u16 a2, u32 a3) {
     u32 t18;
     u32 t24;
     FUNC_TICK(65);
+    host_text_entry(1);                /* (iOS: the keyboard; nothing for the game) */
     cursor_hide();
     l_6 = bitmap_alloc((a2 + 2) << 3, 8);
     blit_opaque_rect(g_screen_buf, l_6, 0, 0, a0 & 0xFFF8, a1, (a2 + 2) << 3, 8, 0 /* unused ax */);
@@ -446,6 +447,7 @@ u16 ui_input_text(u16 a0, u16 a1, u16 a2, u32 a3) {
     } else {
         ax = 0;
     }
+    host_text_entry(0);
     return ax;
 }
 

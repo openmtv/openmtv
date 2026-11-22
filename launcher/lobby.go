@@ -41,6 +41,8 @@ var (
 	terrorDef  = int64(50000)                        // the game's --terror-damage: the original's, the default
 	offersLow  = int64(10)                           // the game's --ad-offers and --film-offers: lowest (the original's, the default),
 	offersHigh = int64(17)                           // highest
+	lotsLow    = int64(10)                           // the game's --auction-lots: lowest (the original's, the default),
+	lotsHigh   = int64(20)                           // highest (a second page of the board)
 	knockDef   = int64(15)                           // the game's --knock (network games): game minutes for the one inside a knocked-at room
 	knockHigh  = int64(120)                          // (0: no knocking; the game's KNOCK_OPT_MAX)
 )
@@ -117,6 +119,15 @@ func offersCount(v any) int64 {
 	return offersLow
 }
 
+// lotsCount: the film auction's lots (the game's --auction-lots), lotsLow (the original's)
+// to lotsHigh
+func lotsCount(v any) int64 {
+	if x, ok := v.(int64); ok && x >= lotsLow && x <= lotsHigh {
+		return x
+	}
+	return lotsLow
+}
+
 // knockMinutes: the host's game minutes for knocking (--knock), 0 (off) to knockHigh; knockDef if none
 func knockMinutes(v any) int64 {
 	if x, ok := v.(int64); ok && x >= 0 && x <= knockHigh {
@@ -165,7 +176,7 @@ func fixListOK(s string) bool {
 }
 
 func platformName() string {
-	sys := map[string]string{"linux": "Linux", "windows": "Windows", "darwin": "Darwin"}[runtime.GOOS]
+	sys := map[string]string{"linux": "Linux", "windows": "Windows", "darwin": "Darwin", "ios": "iOS"}[runtime.GOOS]
 	if sys == "" {
 		sys = runtime.GOOS
 	}
@@ -188,6 +199,7 @@ type lobby struct {
 	mu          sync.Mutex
 	originalDir string
 	build       func(docs map[string]obj, mid string) (string, error)    // docs -> the built game files' directory
+	studios     func(docs map[string]obj) []studioView                   // the studios the packs change (nil: none), shown in the lobby
 	startGame   func(args []string, ended func(why string)) (int, error) // the game in the background; ENDED at its end
 	dry         bool                                                     // the start only told, not done (tests)
 	label       string
@@ -200,10 +212,11 @@ type lobby struct {
 	role, address, internet, room string // ("" = none)
 	state                         obj
 	err                           obj
-	mods                          obj // id, hash, dir, status, msg (, want): the content packs here
-	modData                       any // their tables as the server has them (kept with the game's savegames)
-	save                          obj // the savegame the game goes on from, here
-	goInfo                        obj // the start: what the server said, the command, the game
+	mods                          obj       // id, hash, dir, status, msg (, want): the content packs here
+	modData                       any       // their tables as the server has them (kept with the game's savegames)
+	offer                         []offered // the host's packs, file for file (sharepacks.go): a guest may keep them
+	save                          obj       // the savegame the game goes on from, here
+	goInfo                        obj       // the start: what the server said, the command, the game
 	log                           []string
 	bridge                        *bridge
 }
@@ -221,7 +234,7 @@ func (l *lobby) reset() {
 	l.mu.Lock()
 	defer l.mu.Unlock()
 	l.role, l.address, l.internet, l.room = "", "", "", ""
-	l.state, l.err, l.goInfo, l.modData = nil, nil, nil, nil
+	l.state, l.err, l.goInfo, l.modData, l.offer = nil, nil, nil, nil, nil
 	l.mods, l.save = noMods(), noSave()
 	l.log = nil
 }
@@ -318,6 +331,7 @@ func (l *lobby) message(m obj) {
 		l.mu.Unlock()
 		l.note(fmt.Sprintf("error: %v", m["msg"]))
 	case "mod":
+		l.takeOffer(m["packs"])
 		go l.modsBuild(m, nil)
 	case "save":
 		go l.saveStore(m)
@@ -575,8 +589,9 @@ func (l *lobby) me(kw obj) error {
 const keepDocs = 2 // setGame: the packs as they are
 
 // setGame: the host -- the game's settings; the chosen packs' tables (docsMode 0: the
-// original game, 1: DOCS, keepDocs: unchanged)
-func (l *lobby) setGame(settings obj, docs map[string]obj, docsMode int, packs []any) error {
+// original game, 1: DOCS, keepDocs: unchanged); OFFER: the packs themselves, for the guests to
+// keep (packOffer; nil: none)
+func (l *lobby) setGame(settings obj, docs map[string]obj, docsMode int, packs []any, offer []any) error {
 	l.mu.Lock()
 	role := l.role
 	l.mu.Unlock()
@@ -613,7 +628,11 @@ func (l *lobby) setGame(settings obj, docs map[string]obj, docsMode int, packs [
 		}
 		l.mu.Unlock()
 		if mods["status"] == "ok" {
-			return l.send(obj{"t": "mod", "hash": mods["hash"], "data": data})
+			msg := obj{"t": "mod", "hash": mods["hash"], "data": data}
+			if offer != nil {
+				msg["packs"] = offer
+			}
+			return l.send(msg)
 		}
 	}
 	return nil
@@ -653,7 +672,7 @@ func (l *lobby) chooseSave(game, file any) error {
 	// the saved game's rules: as its start had them (game.json), else as the savegame says
 	s := info["settings"].(obj)
 	rules := obj{}
-	for _, k := range []string{"fixes", "speed4", "aiimp", "credit", "terror", "sammy", "offers", "filmoffers"} {
+	for _, k := range []string{"fixes", "speed4", "aiimp", "credit", "terror", "sammy", "offers", "filmoffers", "lots", "origscripts"} {
 		if v, ok := s[k]; ok {
 			rules[k] = v
 		}
@@ -697,6 +716,16 @@ func (l *lobby) chooseSave(game, file any) error {
 		} else {
 			rules[k] = offersCount(meta[k])
 		}
+	}
+	if v, ok := rules["lots"]; ok { // (from the savegame: none = the original's 10)
+		rules["lots"] = lotsCount(v)
+	} else {
+		rules["lots"] = lotsCount(meta["lots"])
+	}
+	if v, ok := rules["origscripts"]; ok { // (from the savegame: none = the original's screenplays)
+		rules["origscripts"] = truthy(v)
+	} else {
+		rules["origscripts"] = truthy(meta["origscripts"])
 	}
 	// its packs (their tables as its start had them): built and compared before anything is sent
 	var docs map[string]obj
@@ -748,7 +777,7 @@ func (l *lobby) chooseSave(game, file any) error {
 	if docs != nil {
 		mode = 1
 	}
-	if err := l.setGame(rules, docs, mode, packs); err != nil {
+	if err := l.setGame(rules, docs, mode, packs, nil); err != nil {
 		return err
 	}
 	h := saveHash(data)
@@ -842,7 +871,7 @@ func (l *lobby) modsBuild(m obj, docs map[string]obj) {
 	}
 	mid := m["id"]
 	l.mu.Lock()
-	l.mods = with(l.mods, "status", "building", "msg", "")
+	l.mods = with(l.mods, "status", "building", "msg", "", "studios", nil)
 	l.mu.Unlock()
 	err := func() error {
 		var err error
@@ -862,6 +891,11 @@ func (l *lobby) modsBuild(m obj, docs map[string]obj) {
 		}
 		h, _ := contentHash(out)
 		mods := obj{"id": mid, "hash": fmt.Sprintf("%016x", h), "dir": out, "status": "ok", "msg": "", "want": m["hash"]}
+		if l.studios != nil {
+			if v := l.studios(docs); len(v) > 0 {
+				mods["studios"] = v
+			}
+		}
 		if truthy(m["hash"]) && !equal(mods["hash"], m["hash"]) {
 			mods = with(mods, "status", "differ", "msg", "built, but other files than the host's: other original files?")
 		}
@@ -873,7 +907,7 @@ func (l *lobby) modsBuild(m obj, docs map[string]obj) {
 	}()
 	if err != nil {
 		l.mu.Lock()
-		l.mods = with(l.mods, "status", "failed", "msg", err.Error(), "want", m["hash"])
+		l.mods = with(l.mods, "status", "failed", "msg", err.Error(), "want", m["hash"], "studios", nil)
 		l.mu.Unlock()
 		l.note("the packs not built: " + err.Error())
 	}
@@ -990,7 +1024,7 @@ func (l *lobby) saveStore(m obj) {
 			settings := obj{}
 			if s, ok := meta["settings"].(obj); ok {
 				for k, v := range s {
-					if !contains([]string{"lang", "fixes", "difficulty", "speed4", "aiimp", "money", "credit", "terror", "sammy", "offers", "filmoffers", "sertop", "knock", "castfit"}, k) {
+					if !contains([]string{"lang", "fixes", "difficulty", "speed4", "aiimp", "money", "credit", "terror", "sammy", "offers", "filmoffers", "lots", "sertop", "origscripts", "knock", "castfit"}, k) {
 						continue
 					}
 					switch v.(type) {
@@ -1058,10 +1092,14 @@ func (l *lobby) command(m obj) ([]string, error) {
 	if truthy(s["castfit"]) {
 		fit = "yes"
 	}
+	scripts := "no" // the original's unfinished screenplays: off unless the host turned them on
+	if truthy(s["origscripts"]) {
+		scripts = "yes"
+	}
 	args := append([]string{lang}, fixesArgs(s["fixes"])...)
 	args = append(args, "--fourth-speed="+speed, "--ai-improve="+ai, creditArg(creditLine(s["credit"], creditDef)),
 		fmt.Sprintf("--terror-damage=%d", dollars(s["terror"], terrorDef)), "--sammy-prize="+strings.Join(prize, ","), fmt.Sprintf("--ad-offers=%d", offersCount(s["offers"])),
-		fmt.Sprintf("--film-offers=%d", offersCount(s["filmoffers"])), "--series-topicality="+sertop, fmt.Sprintf("--knock=%d", knockMinutes(s["knock"])),
+		fmt.Sprintf("--film-offers=%d", offersCount(s["filmoffers"])), fmt.Sprintf("--auction-lots=%d", lotsCount(s["lots"])), "--series-topicality="+sertop, "--original-screenplays="+scripts, fmt.Sprintf("--knock=%d", knockMinutes(s["knock"])),
 		"--cast-fit="+fit) // (the host's for everyone: over each player's own [display] cast_fit)
 	l.mu.Lock()
 	save, mods, settings := l.save, l.mods, l.settings
@@ -1183,7 +1221,7 @@ func (l *lobby) gameDir(m obj) string {
 			packs = []any{}
 		}
 		settings := obj{}
-		for _, k := range []string{"lang", "fixes", "difficulty", "speed4", "aiimp", "money", "credit", "terror", "sammy", "offers", "filmoffers", "sertop", "knock", "castfit"} {
+		for _, k := range []string{"lang", "fixes", "difficulty", "speed4", "aiimp", "money", "credit", "terror", "sammy", "offers", "filmoffers", "lots", "sertop", "origscripts", "knock", "castfit"} {
 			if v, ok := s[k]; ok {
 				settings[k] = v
 			}
@@ -1291,7 +1329,7 @@ func (l *lobby) snapshot() obj {
 		errv = l.err
 	}
 	return obj{"role": nullable(l.role), "address": nullable(l.address), "internet": nullable(l.internet), "room": nullable(l.room),
-		"server": internetServer(), "state": state, "error": errv, "you": you, "mods": strip(l.mods, "dir"),
+		"server": internetServer(), "state": state, "error": errv, "you": you, "mods": strip(l.mods, "dir"), "offer": l.offerView(),
 		"save": strip(l.save, "path"), "go": goInfo, "cmd": cmd, "argv": argv, "log": append([]string{}, l.log...),
 		"version": lobbyVersion(), "addresses": addrs, "connected": l.conn != nil}
 }

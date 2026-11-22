@@ -33,6 +33,7 @@ const hasMode = (k, sec) => !!MODES[k] && (!sec || !MODES[k].sections || MODES[k
 function closePopover() { $$('.popover').forEach((p) => p.remove()); }
 
 const ICONS = {
+  building: '<rect x="4" y="3" width="16" height="18" rx="1"/><path d="M9 7h2M13 7h2M9 11h2M13 11h2M9 15h2M13 15h2M10 21v-3h4v3"/>',
   film: '<rect x="3" y="4" width="18" height="16" rx="2"/><path d="M7 4v16M17 4v16M3 9h4M3 15h4M17 9h4M17 15h4"/>',
   series: '<rect x="3" y="7" width="14" height="13" rx="2"/><path d="M7 4h12a2 2 0 0 1 2 2v10"/>',
   ad: '<path d="M3 11v2a1 1 0 0 0 1 1h3l6 4V6L7 10H4a1 1 0 0 0-1 1z"/><path d="M17 9a4 4 0 0 1 0 6"/>',
@@ -50,6 +51,7 @@ const ICONS = {
   search: '<circle cx="11" cy="11" r="7"/><path d="M20 20l-4-4"/>',
   play: '<path d="M7 4l13 8-13 8z" fill="currentColor" stroke="none"/>',
   people: '<circle cx="9" cy="8" r="3"/><path d="M3 20a6 6 0 0 1 12 0"/><circle cx="17" cy="9" r="2.5"/><path d="M15.5 14.2A5 5 0 0 1 21 19"/>',
+  download: '<path d="M12 4v11M7 10l5 5 5-5M5 20h14"/>',
   ok: '<path d="M5 12l5 5L20 7"/>', warn: '<path d="M12 6v8M12 18h.01"/>', err: '<path d="M6 6l12 12M18 6L6 18"/>',
   lock: '<rect x="5" y="11" width="14" height="10" rx="1"/><path d="M8 11V7a4 4 0 0 1 8 0v4"/>',
   unlock: '<rect x="5" y="11" width="14" height="10" rx="1"/><path d="M8 11V7a4 4 0 0 1 7.5-2"/>',
@@ -67,6 +69,7 @@ const ICONS = {
   tape: '<rect x="3" y="6" width="18" height="12" rx="1.5"/><circle cx="8.5" cy="12" r="2"/><circle cx="15.5" cy="12" r="2"/>',
   grip: '<circle cx="9" cy="6" r="1.2" fill="currentColor"/><circle cx="15" cy="6" r="1.2" fill="currentColor"/><circle cx="9" cy="12" r="1.2" fill="currentColor"/><circle cx="15" cy="12" r="1.2" fill="currentColor"/><circle cx="9" cy="18" r="1.2" fill="currentColor"/><circle cx="15" cy="18" r="1.2" fill="currentColor"/>',
   tv: '<rect x="3" y="6" width="18" height="13" rx="2"/><path d="M8 3l4 3 4-3"/>',
+  arrow: '<path d="M5 12h14M13 6l6 6-6 6"/>',
   gear: '<path d="M19.22 9.33 L22.05 10.23 L22.05 13.77 L19.22 14.67 L18.99 15.22 L20.36 17.85 L17.85 20.36 L15.22 18.99 L14.67 19.22 L13.77 22.05 L10.23 22.05 L9.33 19.22 L8.78 18.99 L6.15 20.36 L3.64 17.85 L5.01 15.22 L4.78 14.67 L1.95 13.77 L1.95 10.23 L4.78 9.33 L5.01 8.78 L3.64 6.15 L6.15 3.64 L8.78 5.01 L9.33 4.78 L10.23 1.95 L13.77 1.95 L14.67 4.78 L15.22 5.01 L17.85 3.64 L20.36 6.15 L18.99 8.78Z"/><circle cx="12" cy="12" r="3.2"/>',
   globe: '<circle cx="12" cy="12" r="9"/><path d="M3 12h18M12 3a14 14 0 0 1 0 18M12 3a14 14 0 0 0 0 18"/>',
   lan: '<rect x="9" y="3" width="6" height="5" rx="1"/><rect x="3" y="16" width="6" height="5" rx="1"/><rect x="15" y="16" width="6" height="5" rx="1"/><path d="M12 8v4M6 16v-4h12v4"/>',
@@ -113,6 +116,8 @@ function usage(sec, r) {                          /* -> { free, uses: [why it is
     if (r.fee) uses.push(T('ad agency'));
   } else if (sec.key === 'screenplays') {
     if (r.flags & 2) uses.push(T('screenplay agency'));
+  } else if (sec.key === 'studios') {
+    return { free: false, uses: [T('the building')], keep: [T('the building has twelve studios: none can be added or removed')] };
   } else return { free: false, uses: [T('used')], keep: [T('stories and topics cannot be added or removed yet')] };
   return { free: !uses.length && !keep.length, uses, keep };
 }
@@ -120,6 +125,15 @@ function removeEntry(sec, r) {
   if (sec.key === 'films' || sec.key === 'series') { r.flags &= ~0x60; r.flags2 &= ~POOL; }
   else if (sec.key === 'ads') { r.fee = 0; r.penalty = 0; }
   else if (sec.key === 'screenplays') r.flags &= ~2;
+}
+/* an entry the original again -- and the entries that go with it (sec.linked: the three start studios) */
+function toOriginal(sec, r) {
+  const recs = st.data[sec.table].records;
+  for (const id of sec.linked ? sec.linked(r) : [r.id]) {
+    const x = recById(sec.table, id), o = origById(sec.table, id);
+    if (x && o) recs[recs.indexOf(x)] = clone(o);
+  }
+  markDirty([sec.table]);
 }
 function freeSlots(sec) { return records(sec.table).filter((r) => usage(sec, r).free); }
 /* every entry in the game that misses something: -> ['Film #201 "x": German title, price', ...] */
@@ -271,7 +285,7 @@ function markDirty(tables) {
   refreshListRow(); renderRailCounts(); scheduleStatusBar(); updateUndo();
 }
 /* the tables as the messages name them */
-const tableName = (t) => ({ films: T('films'), series: T('series|many'), ads: T('ads'), screenplays: T('screenplays'), news_nodes: T('news_nodes'), news_topics: T('news_topics'), news_templates: T('news_templates') })[t] || t;
+const tableName = (t) => ({ films: T('films'), series: T('series|many'), ads: T('ads'), screenplays: T('screenplays'), news_nodes: T('news_nodes'), news_topics: T('news_topics'), news_templates: T('news_templates'), studios: T('studios') })[t] || t;
 function undoStep(from, to, redoing) {
   const e = from.pop();
   if (!e) { status(redoing ? T('Nothing to redo.') : T('Nothing to undo.')); return; }
@@ -338,8 +352,8 @@ async function loadSelection(packs, o = {}) {
   }
   const tables = ALL_TABLES();
   let docs;
-  if (packs.length === 1) docs = await Promise.all(tables.map((t) => api('GET', `/api/mods/${packs[0]}/${t}`)));
-  else { const r = await api('GET', `/api/selection/${packSpec(packs)}`); docs = tables.map((t) => r.tables[t]); }
+  if (packs.length === 1) docs = await Promise.all(tables.map((t) => api('GET', `/api/mods/${packs[0]}/${t}${layerQ()}`)));
+  else { const r = await api('GET', `/api/selection/${packSpec(packs)}${layerQ()}`); docs = tables.map((t) => r.tables[t]); }
   st.packs = packs; keepPacks();
   tables.forEach((t, i) => { st.data[t] = docs[i]; });
   st.mod = editTarget();
@@ -387,13 +401,37 @@ async function initPlayer() {
   await loadSelection(q ? q.split('+') : keptPacks() || []);
   setInterval(() => { api('GET', '/api/hello').catch(() => {}); }, 20000);
 }
+/* the rule "Unfertige Drehbücher integrieren" on (the single player's settings): the editor shows the
+   original's tables with its screenplays (the game plays them so), and a pack saved there keeps
+   what differs from those -- the requests say so (?layer=1, "layer") */
+async function layerOn() {
+  let s = st.settings;
+  if (!s) try { s = await api('GET', SETTINGS_URL()); } catch (e) { return false; }
+  return ((s.values || {}).game || {}).original_screenplays === 'yes';
+}
+const layerQ = () => (st.layer ? '?layer=1' : '');
+/* the rule switched while the editor's tables are loaded (the board's Rules): they again as the
+   rule has them now -- with unsaved changes after their save (save) */
+async function syncLayer() {
+  if (!Object.keys(st.orig).length) return;
+  const want = await layerOn();
+  if (want === st.layer) { st.layerPending = false; return; }
+  if (st.dirty.size) { st.layerPending = true; return; }
+  st.layerPending = false;
+  st.layer = want;
+  const tables = ALL_TABLES();
+  const orig = await Promise.all(tables.map((t) => api('GET', `/api/original/${t}${layerQ()}`)));
+  tables.forEach((t, i) => { st.orig[t] = orig[i]; });
+  await loadSelection(st.packs, { quiet: true });
+}
 /* what only the editor needs: the game's font and glyphs, the original's tables, the board's
    look as last left */
 async function loadEditorData() {
   await document.fonts.load('16px MadTV');
   await loadGlyphs();
   const tables = ALL_TABLES();
-  const [orig, strings] = await Promise.all([Promise.all(tables.map((t) => api('GET', `/api/original/${t}`))), api('GET', '/api/strings')]);
+  st.layer = await layerOn();
+  const [orig, strings] = await Promise.all([Promise.all(tables.map((t) => api('GET', `/api/original/${t}${layerQ()}`))), api('GET', '/api/strings')]);
   tables.forEach((t, i) => { st.orig[t] = orig[i]; });
   st.strings = strings;                          /* the game's own texts (names of actor categories, the shop's items) */
   try { st.railFolded = localStorage.getItem('madtv-editor-rail') === 'folded'; } catch (e) { /* ignore */ }
@@ -511,7 +549,7 @@ async function save() {
   try {
     const unlock = !!modInfo(st.mod)?.protected || undefined;
     for (const t of [...st.dirty]) {
-      await api('PUT', `/api/mods/${st.mod}/${t}`, { records: st.data[t].records, unlock });
+      await api('PUT', `/api/mods/${st.mod}/${t}`, { records: st.data[t].records, unlock, layer: st.layer || undefined });
       st.dirty.delete(t);
     }
     st.mods = await api('GET', '/api/mods');
@@ -520,6 +558,7 @@ async function save() {
     const inc = incomplete();
     if (inc.length) status(T('Saved "{mod}" -- not playable yet: {why}.', { mod: st.mod, why: inc.join('; ') }), 'err');
     else status(T('Saved "{mod}".', { mod: st.mod }), 'ok');
+    if (st.layerPending) await syncLayer();
     return true;
   } catch (e) {
     status(T('Not saved: {why}', { why: e.message }), 'err');
@@ -719,7 +758,24 @@ function renderAll() {
   toHash();
 }
 /* the form and the inspector of the current entry (or the mode's own) */
+/* a pack's arrow or switch used from the keyboard keeps the focus when the page is drawn anew (the
+   work is drawn again whenever something arrives: the safe of a new selection, the lobby's state) */
+const FOCUS_KEEP = ['data-move', 'data-mpmove', 'data-play', 'data-mppack'];
+function keptFocus() {
+  const a = document.activeElement, k = a && FOCUS_KEEP.find((x) => a.hasAttribute?.(x));
+  return k && $('#work').contains(a) ? `[${k}="${CSS.escape(a.getAttribute(k))}"]` : null;
+}
 function renderEntry() {
+  const focus = keptFocus();
+  try { drawEntry(); } finally {
+    if (focus && document.activeElement === document.body) {
+      let el = $(`#work ${focus}`);
+      if (el && el.disabled) el = el.parentElement.querySelector('button:not(:disabled)');   /* (an arrow at the end of the order: its other one) */
+      if (el) el.focus();
+    }
+  }
+}
+function drawEntry() {
   closePopover();
   const lay = layoutOf();
   $('#body').dataset.layout = lay;
@@ -1141,7 +1197,7 @@ function renderForm(sec, r, w) {
   const wide = (g) => !!(g.texts || g.render || g.wide);
   /* "All": the texts first, then the narrow groups side by side, then the wide ones (tables) */
   const shown = groups.filter((g) => (tab === 'all' ? !g.tabOnly : g.key === tab));
-  const order = tab === 'all' ? [...shown.filter((g) => g.texts), ...shown.filter((g) => !wide(g)), ...shown.filter((g) => wide(g) && !g.texts)] : shown;
+  const order = tab === 'all' ? [...shown.filter((g) => g.texts || g.first), ...shown.filter((g) => !wide(g)), ...shown.filter((g) => wide(g) && !g.texts && !g.first)] : shown;
   for (const g of order) {
     const box = groupBox(sec, r, g, ctx);
     if (wide(g)) box.classList.add('wide');
@@ -1200,7 +1256,7 @@ function entryHead(sec, r, ctx) {
     h('div', { class: 'actions' }, modes, modes ? h('span', { class: 'vsep' }) : null,
       slotable ? btn('copy', T('Copy'), 'white', sec.key === 'films' ? T('A copy of this film as a new film (or in a free slot), offered in the game') : T('A copy of this entry in a free slot, offered in the game'), () => copyEntry(sec, r)) : null,
       orig ? btn('reset', T('Original'), 'white', T("Back to the original game's values for this entry"), () => {
-        const recs = st.data[sec.table].records; recs[recs.indexOf(r)] = clone(orig); markDirty([sec.table]); renderEntry(); status(T('#{id} is the original again.', { id: r.id })); })
+        toOriginal(sec, r); renderEntry(); status(T('#{id} is the original again.', { id: r.id })); })
         : u.free ? btn('remove', T('Delete'), 'red', T('An added {what}: delete it from the pack', { what: sec.what }), () => deleteAdded(sec, r)) : null,
       slotable && !u.free ? h('button', { class: 'plate small sq', 'aria-label': T('Remove'), 'data-tip': u.keep.length ? T('Cannot be removed: {why}', { why: u.keep.join('; ') }) : T('Take it out of the game: its slot becomes free'), onclick: () => removeAsk(sec, r) }, icon('remove', 14)) : null));
   const info = h('div', { class: 'einfo' });
@@ -1211,7 +1267,12 @@ function entryHead(sec, r, ctx) {
     if (slotable) {
       if (uu.free) info.append(h('span', { class: 'pill grey' }, T('Not in the game'), ' · ', T('free slot')));
       for (const x of uu.uses) info.append(h('span', { class: 'pill green' }, h('span', { class: 'dot' }), T('In the game:'), ' ', x));
-      for (const x of uu.keep) info.append(h('span', { class: 'pill dark' }, icon('lock', 12), x));
+      /* "produced by screenplay N": a way to it (one pill each) */
+      const by = sec.key === 'films' || sec.key === 'series' ? producedBy(sec.table, r.id) : [];
+      const byText = by.length && T('produced by screenplay {list}', { list: by.join(', ') });
+      for (const x of uu.keep) if (x !== byText) info.append(h('span', { class: 'pill dark' }, icon('lock', 12), x));
+      for (const id of by) info.append(h('button', { class: 'pill dark tolink', 'data-producedby': id, 'data-tip': T('To screenplay #{id}', { id }), onclick: () => go('screenplays', id) },
+        icon('lock', 12), h('span', { class: 'ptext' }, T('produced by screenplay {list}', { list: id }))));
     }
     if (sec.genres) {
       const g = (sec.genres().find((x) => x[0] === r.genre) || [0, '?'])[1];
@@ -1225,7 +1286,40 @@ function entryHead(sec, r, ctx) {
   };
   upd();
   st.liveWork.push(upd);
-  return h('div', { class: 'entryhead' }, bar, info, h('div', { class: 'warn reqbox', style: 'display:none' }));
+  return h('div', { class: 'entryhead' }, bar, info, linkBand(sec, r), h('div', { class: 'warn reqbox', style: 'display:none' }));
+}
+/* a screenplay and the film (or series) it becomes, both ways: a band under the head of either
+   with one click to the other side -- the screenplay's always (also before it has one), a
+   film's or series' when a screenplay produces it (one row each) */
+function linkBand(sec, r) {
+  const rows = [];
+  const genreOf = (s, x) => {
+    const g = (s.genres().find((y) => y[0] === x.genre) || [0, '?'])[1];
+    return h('span', { class: 'lbmeta' }, h('span', { class: 'sq', style: `background:${s.spine(x)}` }), x.blocks ? T('{genre}, {n} h', { genre: g, n: x.blocks }) : g);
+  };
+  if (sec.key === 'screenplays') {
+    const kind = spIsSeries(r) ? 'series' : 'films', tgt = spTarget(r), ts = secByKey(kind);
+    if (!tgt) rows.push({ label: T('Becomes'), icon: kind === 'series' ? 'series' : 'film', name: '-', hint: T('No film or series chosen yet: "Becomes" in the group Screenplay.') });
+    else {
+      rows.push({ label: T('Becomes'), icon: kind === 'series' ? 'series' : 'film', name: kind === 'series' ? T('Series #{id}', { id: tgt.id }) : T('Film #{id}', { id: tgt.id }), title: txt(tgt, 0),
+        meta: [genreOf(ts, tgt), kind === 'series' ? h('span', { class: 'lbmeta' }, TP(tgt.episodes, '{n} episode', '{n} episodes')) : null],
+        button: kind === 'series' ? T('To the series') : T('To the film'), go: () => go(kind, tgt.id), key: `${kind}-${tgt.id}` });
+    }
+  } else if (sec.key === 'films' || sec.key === 'series') {
+    for (const id of producedBy(sec.table, r.id)) {
+      const sp = recById('screenplays', id), sets = spList(sp, 1).filter((x) => spIsSet(x.item)).length;
+      rows.push({ label: T('Made from'), icon: 'script', name: T('Screenplay #{id}', { id }), title: txt(sp, 0),
+        meta: [TP(spRoleCount(sp), '{n} role', '{n} roles'), TP(sets, '{n} set', '{n} sets'), T('{n} h shooting', { n: sp.duration_hours || 10 })].map((x) => h('span', { class: 'lbmeta' }, x)),
+        button: T('To the screenplay'), go: () => go('screenplays', id), key: `screenplays-${id}` });
+    }
+  }
+  if (!rows.length) return null;
+  return h('div', { class: 'linkband', 'data-linkband': sec.key }, ...rows.map((x) => h('div', { class: 'lbrow' + (x.hint ? ' none' : '') },
+    icon(x.icon, 20),
+    h('div', { class: 'lbtext' }, h('div', { class: 'overline' }, x.label),
+      h('div', { class: 'lbname' }, h('b', {}, x.name), x.title ? h('span', { class: 'lbtitle', 'data-gametext': '' }, x.title) : null),
+      x.hint ? h('div', { class: 'hint' }, x.hint) : h('div', { class: 'lbmetas' }, ...x.meta)),
+    x.go ? h('button', { class: 'plate small blue', 'data-linkto': x.key, onclick: x.go }, x.button, icon('arrow', 14)) : null)));
 }
 
 /* ---------------------------------------------------------------- what differs from the original: [{ label, from, to, reset }] */
@@ -1237,8 +1331,9 @@ function diffs(sec, r) {
   for (const f of allFields(sec)) {
     if (f.type === 'info' || (f.show && !f.show(r))) continue;      /* a field the form does not show (another one covers its bytes) */
     const a = fieldGet(f, o), b = fieldGet(f, r);
+    if (same(a, b)) continue;                     /* (set alike it may still change bytes: the market clears 0x40 without 0x20) */
     fieldSet(f, scratch, clone(a));
-    if (!same(a, b)) out.push({ key: f.key, label: labelOf(f, r), from: fmtVal(f, a, o), to: fmtVal(f, b, r), reset: () => fieldSet(f, r, clone(a)) });
+    out.push({ key: f.key, label: labelOf(f, r), from: fmtVal(f, a, o), to: fmtVal(f, b, r), reset: () => fieldSet(f, r, clone(a)) });
   }
   /* what no field covers: by key (and text index) */
   for (const k of new Set([...Object.keys(o), ...Object.keys(scratch)])) {
@@ -1285,6 +1380,7 @@ function renderInspector(sec, r, ins) {
   }
 }
 const PANELS = {
+  studio: (sec, r) => studioPanel(sec, r),
   /* the audience from 18 to 24 o'clock alone on air (soloShare, game.js), live with the entry:
      seven bars on one scale (full height = 80 %), the best hour named, every hour in its tip;
      X rated: 18-20 hatched and named -- the moral guardian takes the film away before 21:00 */

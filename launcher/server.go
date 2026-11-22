@@ -70,6 +70,8 @@ type server struct {
 	quitOnce sync.Once
 	lobbyMu  sync.Mutex
 	lobbies  map[string]*lobby // this launcher's ("me"), the self-test's second player ("bot")
+	safeMu   sync.Mutex
+	safeUse  map[string]int // the game folders games started here play from (or start to): how many -- such a safe is not emptied
 }
 
 // launcherCommand: launcher [--port N] [--no-browser] [--browser] [--game DIR] [--idle SECONDS] [--page NAME]
@@ -274,12 +276,12 @@ type reply struct {
 
 func fail(code int, m string) reply { return reply{code, obj{"error": m}} }
 
-// needsHeader: a GET of the API, but not of its pictures (/api/sprite, /api/picture, /api/room)
+// needsHeader: a GET of the API, but not of its pictures (/api/sprite, /api/picture, /api/room, /api/plan.png)
 func needsHeader(path string) bool {
 	if !strings.HasPrefix(path, "/api/") {
 		return false
 	}
-	for _, p := range []string{"/api/sprite/", "/api/picture/", "/api/room/"} {
+	for _, p := range []string{"/api/sprite/", "/api/picture/", "/api/room/", "/api/plan.png"} {
 		if strings.HasPrefix(path, p) {
 			return false
 		}
@@ -471,7 +473,7 @@ func ensureMP(mp, sp string) error {
 }
 
 func (s *server) get(r *http.Request, parts []string, lang string) reply {
-	if rep, ok := s.editorGet(parts, lang); ok {
+	if rep, ok := s.editorGet(parts, lang, query(r, "layer")); ok {
 		return rep
 	}
 	if rep, ok := s.kiGet(parts, lang); ok { // AI pictures (ki.go)
@@ -503,6 +505,17 @@ func (s *server) get(r *http.Request, parts []string, lang string) reply {
 		return reply{200, d}
 	case len(parts) == 1 && parts[0] == "mp": // the lobby, as this launcher sees it
 		return reply{200, s.lobby("me").snapshot()}
+	case len(parts) == 2 && parts[0] == "mp" && parts[1] == "defaults": // a host's game as the network games' file has it (?test=1)
+		p, err := settingsFile(query(r, "test"), true)
+		if err != nil {
+			return failure(err, lang)
+		}
+		d, err := readSettings(p)
+		if err != nil {
+			return failure(err, lang)
+		}
+		v, _ := d["values"].(map[string]map[string]string)
+		return reply{200, mpDefaults(v)}
 	case len(parts) == 2 && parts[0] == "mp" && parts[1] == "saves": // the network games saved here (?test=1: the self-test's)
 		return reply{200, savesList(mpSavesDir(query(r, "test"), "me"))}
 	case len(parts) == 2 && parts[0] == "mp" && parts[1] == "find": // the open games of the LAN (?port=N: not 7640)
@@ -542,6 +555,8 @@ func (s *server) get(r *http.Request, parts []string, lang string) reply {
 			return fail(400, newMsg("no such thing").in(lang))
 		}
 		return s.picture(s.pics.spritePNG(n, 0, false))
+	case len(parts) == 1 && parts[0] == "plan.png": // the estate agent's plan of the building (studios.go)
+		return s.picture(s.planPNG())
 	case len(parts) == 2 && parts[0] == "room": // /api/room/N.png (N = 101..127)
 		n, err := strconv.Atoi(strings.TrimSuffix(parts[1], ".png"))
 		if err != nil {
@@ -633,16 +648,14 @@ func (s *server) post(r *http.Request, parts []string, lang string) reply {
 		return reply{200, obj{"quit": true}}
 	case len(parts) == 3 && parts[0] == "mp" && parts[1] == "saves": // a saved game: rename, delete, open (?test=1)
 		return s.mpSavesPost(parts[2], b, query(r, "test"), lang)
+	case len(parts) == 2 && parts[0] == "saves": // a selection's safe: a tape deleted, the whole safe deleted; the self-test's saved game
+		return s.savesPost(parts[1], b, lang)
 	case len(parts) == 2 && parts[0] == "mp": // the lobby: host, join, me, game, save, start, leave
 		return s.mpPost(parts[1], b, lang)
 	case len(parts) == 1 && parts[0] == "launch": // start the game
-		slot := 0 // (a saved game of the safe: 1..10; none: a new game)
-		if v, ok := b["slot"]; ok && v != nil {
-			n, whole := v.(int64)
-			if !whole || n < 1 || n > saveSlots {
-				return fail(400, newMsg("no such thing").in(lang))
-			}
-			slot = int(n)
+		slot, ok := slotOf(b) // (a saved game of the safe: 1..10; none: a new game)
+		if !ok {
+			return fail(400, newMsg("no such thing").in(lang))
 		}
 		return s.launch(str(b["mod"]), str(b["lang"]), truthy(b["classic"]), slot, truthy(b["dry"]), lang)
 	case len(parts) == 3 && parts[0] == "mods" && parts[2] == "build": // build only, no start
@@ -653,6 +666,7 @@ func (s *server) post(r *http.Request, parts []string, lang string) reply {
 		return reply{200, obj{"built": rel(out), "files": []string{"SOURCE1.RSC", "SOURCE2.RSC"},
 			"cmd": strings.Join(append([]string{play}, playArgs(parts[1], str(b["lang"]), false)...), " ")}}
 	case len(parts) == 3 && parts[0] == "mods" && parts[2] == "play":
+		defer s.useSafe(safeFolder(parts[1]))() // (from the build on: the game takes it over)
 		out, err := buildMod(s.g, parts[1])
 		if err != nil {
 			return failure(err, lang)
@@ -667,12 +681,116 @@ func (s *server) post(r *http.Request, parts []string, lang string) reply {
 	return fail(404, newMsg("no such thing").in(lang))
 }
 
+// slotOf: B's "slot" -- a tape of the safe, 1..10 (none: 0); false: not one
+func slotOf(b obj) (int, bool) {
+	v, ok := b["slot"]
+	if !ok || v == nil {
+		return 0, true
+	}
+	n, whole := v.(int64)
+	if !whole || n < 1 || n > saveSlots {
+		return 0, false
+	}
+	return int(n), true
+}
+
+// useSafe: the game folder DIR in use by a game started here, or starting (its packs being
+// built), until the function it returns is called -- its safe is not emptied meanwhile
+func (s *server) useSafe(dir string) func() {
+	k := strings.ToLower(filepath.Clean(dir))
+	s.safeMu.Lock()
+	if s.safeUse == nil {
+		s.safeUse = map[string]int{}
+	}
+	s.safeUse[k]++
+	s.safeMu.Unlock()
+	var once sync.Once
+	return func() {
+		once.Do(func() {
+			s.safeMu.Lock()
+			if s.safeUse[k]--; s.safeUse[k] <= 0 {
+				delete(s.safeUse, k)
+			}
+			s.safeMu.Unlock()
+		})
+	}
+}
+
+// savesPost: a selection's safe (b["mod"], "": the original game's) -- "delete": a tape (b["slot"])
+// as the game came, or (no slot) the whole safe (saves.go), not while a game started here plays
+// from it; "testsave": a saved game in the self-test's own safe (the pack "selftest", built
+// first) -> the safe now
+func (s *server) savesPost(what string, b obj, lang string) reply {
+	spec := str(b["mod"])
+	slot, ok := slotOf(b)
+	if !ok {
+		return fail(400, newMsg("no such thing").in(lang))
+	}
+	if err := checkSpec(spec); err != nil {
+		return failure(err, lang)
+	}
+	switch what {
+	case "delete":
+		dir := safeFolder(spec)
+		s.safeMu.Lock()
+		defer s.safeMu.Unlock()
+		if s.safeUse[strings.ToLower(filepath.Clean(dir))] > 0 {
+			return fail(400, newMsg("a game plays from this safe -- end it first").in(lang))
+		}
+		var err error
+		if slot > 0 {
+			if !exists(filepath.Join(dir, "SOURCE1.RSC")) {
+				return fail(400, newMsg("no safe of {spec}", "spec", spec).in(lang))
+			}
+			err = deleteTape(dir, slot)
+		} else {
+			err = deleteSafe(spec)
+		}
+		if err != nil {
+			return failure(err, lang)
+		}
+	case "testsave":
+		if spec != "selftest" || slot == 0 {
+			return fail(400, newMsg("no such thing").in(lang))
+		}
+		day, _ := b["day"].(int64)
+		dir, built := safeDir(spec)
+		var err error
+		if !built {
+			dir, err = buildMod(s.g, spec)
+		}
+		if err == nil {
+			err = safeTestSave(dir, slot, str(b["name"]), int(day), str(b["rules"]))
+		}
+		if err != nil {
+			return failure(err, lang)
+		}
+	default:
+		return fail(404, newMsg("no such thing").in(lang))
+	}
+	d, err := safeDoc(spec)
+	if err != nil {
+		return failure(err, lang)
+	}
+	return reply{200, d}
+}
+
 // launch: the game with the settings file, what play.sh starts: the original game files,
 // or packs (built first); a language or classic only for this start; dry: only the
 // command (the self-test)
+// inProcess: set where the game runs in this launcher's own process (the iPhone app, ios.go):
+// a start hands it the game's command line and the file for its messages instead of starting
+// build/mtv-dec.  The app ends with the game, so what follows a game's end here does not come:
+// no THEN (a network game's end reason, the shared settings copied back), no end.txt, no safe
+// held busy while it plays
+var inProcess func(cmd []string, log string)
+
 func (s *server) launch(mod, gameLang string, classic bool, slot int, dry bool, lang string) reply {
-	if !exists(program("mtv-dec")) {
+	if inProcess == nil && !exists(program("mtv-dec")) {
 		return fail(400, newMsg("the game is not built yet (make build/mtv-dec)").in(lang))
+	}
+	if !dry {
+		defer s.useSafe(safeFolder(mod))() // (from the build on: the game takes it over)
 	}
 	var built any
 	if mod != "" && !dry {
@@ -790,16 +908,30 @@ func (s *server) startGameThen(args []string, then func(why string)) (int, error
 			return 0, err
 		}
 	}
+	if inProcess != nil { // (the game in this process: its messages go to the file this made)
+		name := log.Name()
+		log.Close()
+		inProcess(cmd, name)
+		return 0, nil
+	}
 	c := exec.Command(cmd[0], cmd[1:]...)
 	c.Dir, c.Stdout, c.Stderr = root, log, log
 	detach(c)
+	done := func() {}
+	for i, a := range cmd {
+		if a == "--game" && i+1 < len(cmd) {
+			done = s.useSafe(resolve(root, cmd[i+1])) // (its safe: until its end)
+		}
+	}
 	if err := c.Start(); err != nil {
+		done()
 		log.Close()
 		return 0, err
 	}
 	s.games.Add(1)
 	go func() {
 		werr := c.Wait()
+		done()
 		log.Close()
 		if dir != "" {
 			if !linked {
@@ -839,9 +971,10 @@ func (s *server) packsInfo(spec, lang string) any {
 		return obj{"error": render(err, lang)}
 	}
 	report.Incomplete = []string{}
-	for _, m := range incomplete(docs, s.g.original) {
+	for _, m := range append(incomplete(docs, s.g.original), studioProblems(docs, s.g.original, s.g.doors)...) {
 		report.Incomplete = append(report.Incomplete, m.in(lang))
 	}
+	report.Studios = studioViews(s.g, docs)
 	return report
 }
 
@@ -1048,12 +1181,51 @@ func (s *server) put(r *http.Request, parts []string, lang string) reply {
 	return reply{200, d}
 }
 
+// mpDefaults: the game a host opens, as the network games' settings file (multiplayer.ini) has
+// it -- the lobby's settings (mpserver.go): what the web page's mpDefaults (multiplayer.js) makes
+// of the same file, for the iPhone's lobby (ios/Launcher/NetModel.swift).  The difficulty and
+// the knocking time the page keeps in the browser: here their defaults, 2 and 15
+func mpDefaults(v map[string]map[string]string) obj {
+	g := func(k, d string) string {
+		if s := v["game"][k]; s != "" {
+			return s
+		}
+		return d
+	}
+	n := func(k string, d int) int {
+		if i, err := strconv.Atoi(g(k, "")); err == nil {
+			return i
+		}
+		return d
+	}
+	fixes := g("fixes", "all")
+	if g("classic", "no") == "yes" {
+		fixes = "none"
+	}
+	lang := "e"
+	if g("language", "english") == "german" {
+		lang = "d"
+	}
+	credit := n("credit_line", 700000)
+	if g("credit_line", "") == "original" {
+		credit = 0 // (the original's credit system)
+	}
+	return obj{"lang": lang, "fixes": fixes, "difficulty": 2, "speed4": g("fourth_speed", "no") == "yes",
+		"aiimp": g("ai_improve", "off"), "money": n("start_money", 200000), "credit": credit,
+		"terror": n("terror_damage", 50000),
+		"sammy":  []int{n("sammy_news", 0), n("sammy_culture", 0), n("sammy_shows", 0), n("sammy_series", 0)},
+		"offers": n("ad_offers", 10), "filmoffers": n("film_offers", 10), "lots": n("auction_lots", 10), "sertop": g("series_topicality", "yes") != "no",
+		"origscripts": g("original_screenplays", "no") == "yes", "knock": 15, "castfit": v["display"]["cast_fit"] == "yes"}
+}
+
 // sharedSettings: the player's, not the game's -- the display (but the role fit: a rule of
-// the game, the host's in a network game) and the sound, one choice for the single player and
-// network games (the page "Settings"): written to both files at once.  The mouse stays the
-// single player's (System in network games)
+// the game, the host's in a network game), the sound and the TV monitor's tap (a touch
+// screen's way back), one choice for the single player and network games (the page
+// "Settings", the iPhone's): written to both files at once, and to the network games' file
+// again at a network game's start (syncShared).  The mouse stays the single player's (System
+// in network games)
 var sharedSettings = [][2]string{{"display", "fullscreen"}, {"display", "scale"}, {"display", "aspect"},
-	{"display", "filter"}, {"display", "integer"}, {"display", "ai_pictures"}, {"sound", "sound"}}
+	{"display", "filter"}, {"display", "integer"}, {"display", "ai_pictures"}, {"sound", "sound"}, {"input", "tv_back"}}
 
 func sharedSetting(sec, key string) bool {
 	for _, k := range sharedSettings {
@@ -1174,6 +1346,7 @@ func (s *server) lobby(which string) *lobby {
 	if s.lobbies[which] == nil {
 		l := newLobby(s.g.dir, which)
 		l.build = func(docs map[string]obj, mid string) (string, error) { return buildMP(s.g, docs, mid) }
+		l.studios = func(docs map[string]obj) []studioView { return studioViews(s.g, docs) }
 		l.startGame = func(args []string, ended func(string)) (int, error) {
 			l.mu.Lock()
 			mp, dry := l.settings, l.dry
@@ -1272,7 +1445,7 @@ func (s *server) mpGame(b obj, lang string) reply {
 	if spec != "" && spec != "original" {
 		var err error
 		if docs, _, err = packsDocs(s.g, spec); err == nil {
-			err = checkDocs(docs)
+			err = gameProblems(s.g, docs)
 		}
 		if err != nil {
 			return failure(err, lang)
@@ -1293,7 +1466,7 @@ func (s *server) mpGame(b obj, lang string) reply {
 	}
 	settings := obj{}
 	if bs, ok := b["settings"].(obj); ok {
-		for _, k := range []string{"lang", "fixes", "difficulty", "speed4", "aiimp", "money", "credit", "terror", "sammy", "offers", "filmoffers", "sertop", "knock", "castfit"} {
+		for _, k := range []string{"lang", "fixes", "difficulty", "speed4", "aiimp", "money", "credit", "terror", "sammy", "offers", "filmoffers", "lots", "sertop", "origscripts", "knock", "castfit"} {
 			if v, ok := bs[k]; ok {
 				settings[k] = v
 			}
@@ -1309,9 +1482,14 @@ func (s *server) mpGame(b obj, lang string) reply {
 		if v, ok := settings["lang"]; ok {
 			keep["lang"] = v
 		}
-		err = l.setGame(keep, nil, keepDocs, nil)
+		err = l.setGame(keep, nil, keepDocs, nil, nil)
 	} else {
-		err = l.setGame(settings, docs, mode, titles)
+		var offer []any
+		if mode == 1 { // the packs themselves, for the guests to keep (sharepacks.go): left out when too large
+			names, _ := packNames(spec)
+			offer, _ = packOffer(names)
+		}
+		err = l.setGame(settings, docs, mode, titles, offer)
 	}
 	if err != nil {
 		return failure(err, lang)
@@ -1399,6 +1577,12 @@ func (s *server) mpPost(what string, b obj, lang string) reply {
 		}
 	case "me":
 		err = l.me(b)
+	case "keep": // a guest keeps the host's packs ({name} or all): sharepacks.go
+		kept, err := l.keepOffer(b["name"], lang)
+		if err != nil {
+			return failure(err, lang)
+		}
+		return reply{200, obj{"kept": kept, "lobby": l.snapshot()}}
 	case "game":
 		return s.mpGame(b, lang)
 	case "save": // the host: on from a savegame ({game, file}), or a new game ({})

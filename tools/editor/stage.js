@@ -115,7 +115,7 @@ function renderStage(sec, r, w, ins) {
   fillTray();
   st.liveWork.push(layout);
   /* beside it: what is not on the card, the TV, the checks, the changes */
-  const off = (sec.offCard || []).map((k) => fieldByKey(sec, k)).filter(Boolean);
+  const off = ((typeof sec.offCard === 'function' ? sec.offCard(r) : sec.offCard) || []).map((k) => fieldByKey(sec, k)).filter(Boolean);
   if (off.length) ins.append(panel(T('Not on the card'), fieldsGrid(sec, r, off, ctx)));
   for (const p of sec.panels) {
     if (p === 'card') continue;

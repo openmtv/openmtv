@@ -837,6 +837,19 @@ u32 rtl_res_open_all(void) {
             u16 h = (u16)(LO16(hdr) + si * 6);
             R.dx = 0;                        /* mul: si * 6 < 65536 */
             T += 8;
+            /* A network game leaves the savegame slots 2..10 (D3h..DBh) out of the index:
+             * every entry costs time here, at every resource read (the files are opened
+             * anew), so a machine whose SOURCE1.RSC holds savegames ran its game a little
+             * later and the machines no longer computed the same game.  The lobby compares
+             * the files without them (launcher/mpsaves.go), a network game never uses them
+             * (its savegames: src/mpsave.c), and the names (D1h) and slot 1 (D2h) are in
+             * every shipped file.  The list of present ids (DS:8C7C, res_list_present 385D:0200, in
+             * the hashed data segment) is made from this index: the same on every machine. */
+            if (seat_humans && si >= 0xD3 && si <= 0xDB) {
+                si++;
+                T += 1;
+                continue;
+            }
             if ((rw(HI16(hdr), h) | rw(HI16(hdr), (u16)(h + 2))) != 0) {
                 u16 seg = FPSEG(g_res_index), o = (u16)(FPOFF(g_res_index) + si * 8);
                 ww(seg, o, di);

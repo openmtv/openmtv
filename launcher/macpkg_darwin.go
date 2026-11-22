@@ -1,4 +1,4 @@
-//go:build darwin && cgo
+//go:build darwin && cgo && !ios
 
 package main
 
@@ -40,10 +40,10 @@ import (
 	"unsafe"
 )
 
-// The players' Mac package (tools/package.py mac) is not notarized: a zip from the
-// internet comes with the quarantine attribute on every file.  Once the player
-// allowed OpenMTV.app (System Settings, "Open Anyway"), macOS still starts it
-// from a copy of the application alone, in a read-only place ("App
+// The players' Mac package (tools/package.py mac --notarize) is notarized, but a zip
+// from the internet still comes with the quarantine attribute on every file (and
+// a developer's package without --notarize is not notarized at all).  Once the
+// player allowed OpenMTV.app, macOS still starts it from a copy of the application alone, in a read-only place ("App
 // Translocation") -- without the decomp directory beside it -- and the game
 // program in decomp/build, being quarantined too, would be refused.  So the
 // application takes the attribute off itself and the package's decomp directory

@@ -6,6 +6,11 @@
 #include <getopt.h>
 #include "runtime.h"
 #include "seat.h"
+#if HOST_IOS
+#include <sys/stat.h>
+#include <SDL_main.h>                 /* main -> SDL_main: SDL starts UIKit, then calls it (ios/ios_main.c) */
+#include <SDL_messagebox.h>
+#endif
 
 extern char *script_path;
 extern int host_view_seat;
@@ -94,11 +99,15 @@ long credit_line_opt = -1;                  /* --credit-line=N: the boss's credi
 long terror_damage_opt = -1;                /* --terror-damage=N: what a terrorist's bomb costs the room's owner; -1 = the original's $50 000 */
 long sammy_prize_opt[4] = {-1, -1, -1, -1}; /* --sammy-prize=N[,N,N,N]: the Sammy's prize money (news, culture, shows, series); -1 = none */
 int fourth_speed_opt;                       /* --fourth-speed[=yes|no]: a fourth, fastest speed button */
+int skip_intro_opt;                         /* --skip-intro[=yes|no]: the game's first screen without the title sequence */
+int tv_back_opt;                            /* --tv-back[=yes|no]: a finger's tap on the TV family's monitor is the right button (host.c) */
 int fast_rooms_opt;                         /* --fast-rooms[=yes|no]: room changes without the original's waits (runtime.h) */
 int ai_improve_opt;                         /* --ai-improve=off|normal|strong: 0, 1, 2 -- computer players follow the human's transmitters (src/ai_improve.c) */
 int ad_offers_opt;                          /* --ad-offers=N: the ad agency's offers, 10..17; 0 = the original's 10 (src/fixes.c) */
 int film_offers_opt;                        /* --film-offers=N: the film dealer's offers, 10..17; 0 = the original's 10 (src/film_offers.c) */
+int auction_lots_opt;                       /* --auction-lots=N: the film auction's lots, 10..20; 0 = the original's 10 (src/auction_lots.c) */
 int series_top_opt;                         /* --series-topicality[=yes|no]: the series card shows the series' topicality (runtime.h) */
+int orig_scripts_opt;                       /* --original-screenplays[=yes|no]: the original's unfinished screenplays playable (src/origscripts.c) */
 int new_game_opt;                           /* --new-game: straight into a new game (no intro, no setup) */
 int load_slot_opt;                          /* --load-slot N: straight into the saved game of slot N (1..10; src/main_loop.c) */
 int difficulty_opt;                         /* --difficulty N: 1 easy, 2 normal, 3 difficult (with --new-game) */
@@ -161,10 +170,11 @@ static void names_param(char *out, size_t cap) {
 __attribute__((weak)) int fix_init(void) { return 0; }
 
 /* --aspect / --filter values, from the command line or the settings file */
-static int parse_aspect(const char *v) {           /* 1 square, 0 4:3, -1 bad */
+static int parse_aspect(const char *v) {           /* 1 square, 0 4:3, 2 stretch, -1 bad */
     if (!strcmp(v, "square") || !strcmp(v, "1:1") || !strcmp(v, "16:10")) return 1;
     if (!strcmp(v, "4:3")) return 0;
-    fprintf(stderr, "aspect: 4:3 or square, not '%s'\n", v);
+    if (!strcmp(v, "stretch")) return 2;
+    fprintf(stderr, "aspect: 4:3, square or stretch, not '%s'\n", v);
     return -1;
 }
 static int parse_mouse(const char *v) {            /* 2 system, 1 free, 0 captured, -1 bad */
@@ -189,6 +199,7 @@ static int parse_offers(const char *what, const char *v, int lo, int hi) {   /* 
 }
 #define parse_ad_offers(what, v) parse_offers((what), (v), AD_OFFERS_OPT_MIN, AD_OFFERS_OPT_MAX)
 #define parse_film_offers(what, v) parse_offers((what), (v), FILM_OFFERS_OPT_MIN, FILM_OFFERS_OPT_MAX)
+#define parse_auction_lots(what, v) parse_offers((what), (v), AUCTION_LOTS_OPT_MIN, AUCTION_LOTS_OPT_MAX)
 static long parse_money(const char *v) {           /* dollars 0..START_MONEY_MAX, -1 bad */
     char *e;
     long n = strtol(v, &e, 10);
@@ -242,7 +253,69 @@ static int parse_filter(const char *v) {
     return -1;
 }
 
+#if HOST_IOS
+/* iPhone, iPad (docs/ios.md): no launcher, no command line.  The game files, the settings
+ * and the game's messages live in the app's Documents folder, which the Files app shows as
+ * "OpenMTV": the player puts SOURCE1.RSC and SOURCE2.RSC there (their saved games stay in
+ * them, as on DOS).  game.log is this run's messages, game-vorher.log the run before's. */
+static void ios_args(int *argc, char ***argv) {
+    static char docs[1024], settings[1100], path[1100], prev[1100];
+    static char *av[12];
+    const char *home = getenv("HOME");
+    struct stat st;
+    snprintf(docs, sizeof docs, "%s/Documents", home ? home : ".");
+    mkdir(docs, 0755);
+    snprintf(path, sizeof path, "%s/game.log", docs);
+    snprintf(prev, sizeof prev, "%s/game-vorher.log", docs);
+    rename(path, prev);
+    if (freopen(path, "w", stderr)) setvbuf(stderr, NULL, _IONBF, 0);
+    int missing = 0;
+    for (int i = 1; i <= 2; i++) {
+        snprintf(path, sizeof path, "%s/SOURCE%d.RSC", docs, i);
+        if (stat(path, &st) != 0) missing = 1;
+    }
+    if (missing) {
+        static const char text[] =
+            "Es fehlen die Dateien des Originalspiels.\n\n"
+            "Lege SOURCE1.RSC und SOURCE2.RSC aus deinem Mad TV in die Dateien-App, "
+            "unter \"Auf meinem iPhone\" > \"OpenMTV\", und starte OpenMTV dann neu.";
+        snprintf(path, sizeof path, "%s/LIESMICH.txt", docs);
+        FILE *f = fopen(path, "w");               /* (the folder shows in the Files app once it holds a file) */
+        if (f) { fputs(text, f); fputc('\n', f); fclose(f); }
+        fprintf(stderr, "[ios] SOURCE1.RSC or SOURCE2.RSC missing in %s\n", docs);
+        SDL_ShowSimpleMessageBox(SDL_MESSAGEBOX_INFORMATION, "OpenMTV", text, NULL);
+        exit(0);
+    }
+    snprintf(path, sizeof path, "%s/settings.ini", docs);
+    if (stat(path, &st) != 0) {                   /* the first start: German (settings.c adds the rest) */
+        FILE *f = fopen(path, "w");
+        if (f) { fputs("[game]\nlanguage = german\n", f); fclose(f); }
+    }
+    snprintf(settings, sizeof settings, "--settings=%s", path);
+    int n = 0;
+    av[n++] = (*argv)[0];
+    av[n++] = "--game"; av[n++] = docs;
+    av[n++] = "--logical-time";
+    av[n++] = settings;
+    /* a finger points where it touches (host.c); the game's arrow only where it says more
+     * than the finger (busy, something carried, the transmitter map) -- the "system arrow"
+     * stands in for it elsewhere, and iOS shows none (src/fixes.c sys_arrow_state) */
+    av[n++] = "--mouse"; av[n++] = "system";
+    av[n] = NULL;
+    *argc = n; *argv = av;
+}
+#endif
+
+#if HOST_IOS
+/* the launcher's pages (ios/Launcher, Swift, over launcher/ios.go): until "Spielen", then the
+ * game's command line it prepared -> 1; an app without them: the start below (weak) */
+__attribute__((weak)) int omtv_ios_launcher(int *argc, char ***argv);
+#endif
+
 int main(int argc, char **argv) {
+#if HOST_IOS
+    if (argc <= 1 && !(omtv_ios_launcher && omtv_ios_launcher(&argc, &argv))) ios_args(&argc, &argv);
+#endif
     for (int i = 1; i < argc; i++)       /* --make-ki: AI pictures, no game (src/ki_make.c, docs/ki-bilder.md) */
         if (!strcmp(argv[i], "--make-ki")) return ki_make_main(argc - 1, argv + 1);
     const char *gamedir = ".", *exe = NULL;
@@ -266,11 +339,12 @@ int main(int argc, char **argv) {
         {"fullscreen", no_argument, 0, 'f'}, {"aspect", required_argument, 0, 'a'},
         {"filter", required_argument, 0, 'r'}, {"ai-pictures", required_argument, 0, 'y'}, {"integer", no_argument, 0, 'I'}, {"cast-fit", optional_argument, 0, 'x'},
         {"settings", optional_argument, 0, 'G'}, {"mouse", required_argument, 0, 'u'},
-        {"start-money", required_argument, 0, 'M'}, {"fourth-speed", optional_argument, 0, 'V'},
+        {"start-money", required_argument, 0, 'M'}, {"fourth-speed", optional_argument, 0, 'V'}, {"skip-intro", optional_argument, 0, 'l'}, {"tv-back", optional_argument, 0, 'h'},
         {"fast-rooms", optional_argument, 0, 'o'}, {"ai-improve", required_argument, 0, 'b'},
         {"credit-line", required_argument, 0, 'c'}, {"terror-damage", required_argument, 0, 't'},
         {"sammy-prize", required_argument, 0, 'p'}, {"ad-offers", required_argument, 0, 'B'},
         {"film-offers", required_argument, 0, 'E'}, {"series-topicality", optional_argument, 0, 'j'},
+        {"auction-lots", required_argument, 0, 'v'}, {"original-screenplays", optional_argument, 0, '1'},
         {"new-game", no_argument, 0, 'n'}, {"difficulty", required_argument, 0, 'd'},
         {"names", required_argument, 0, 'k'}, {"seed", required_argument, 0, 'z'},
         {"mp-save", required_argument, 0, 0x100}, {"mp-load", required_argument, 0, 0x101},
@@ -283,7 +357,7 @@ int main(int argc, char **argv) {
     const char *wav_path = NULL, *prog_args = NULL, *record_path = NULL, *dump_on = NULL;
     char given[128] = {0};                /* options on the command line: the settings file does not override them */
     const char *settings_file = NULL;
-    int fixes_from_settings = 0, money_from_settings = 0, credit_from_settings = 0, terror_from_settings = 0, sammy_from_settings = 0, mouse_from_settings = 0, speed_from_settings = 0, rooms_from_settings = 0, aiimp_from_settings = 0, offers_from_settings = 0, films_from_settings = 0, fit_from_settings = 0, sertop_from_settings = 0, m;
+    int fixes_from_settings = 0, money_from_settings = 0, credit_from_settings = 0, terror_from_settings = 0, sammy_from_settings = 0, mouse_from_settings = 0, speed_from_settings = 0, rooms_from_settings = 0, aiimp_from_settings = 0, offers_from_settings = 0, films_from_settings = 0, lots_from_settings = 0, fit_from_settings = 0, sertop_from_settings = 0, scripts_from_settings = 0, m;
     while ((c = getopt_long(argc, argv, "", opts, NULL)) != -1) {
         if (c > 0 && c < 128) given[c] = 1;
         switch (c) {
@@ -371,6 +445,12 @@ int main(int argc, char **argv) {
         case 'c': if ((credit_line_opt = parse_credit_line(optarg)) < 0) return 2; break;   /* the boss's credit line */
         case 't': if ((terror_damage_opt = parse_dollars("terror damage", optarg)) < 0) return 2; break;   /* a terrorist's bomb */
         case 'p': if (parse_sammy_prize(optarg, sammy_prize_opt) < 0) return 2; break;   /* the Sammy's prize money */
+        case 'h':                       /* a finger's tap on the TV family's monitor: back */
+            if ((tv_back_opt = optarg ? settings_bool(optarg) : 1) < 0) { fprintf(stderr, "--tv-back: yes or no, not '%s'\n", optarg); return 2; }
+            break;
+        case 'l':                       /* no title sequence before the game's first screen */
+            if ((skip_intro_opt = optarg ? settings_bool(optarg) : 1) < 0) { fprintf(stderr, "--skip-intro: yes or no, not '%s'\n", optarg); return 2; }
+            break;
         case 'V':                       /* a fourth speed button in the planner's Control-Center */
             if ((fourth_speed_opt = optarg ? settings_bool(optarg) : 1) < 0) { fprintf(stderr, "--fourth-speed: yes or no, not '%s'\n", optarg); return 2; }
             break;
@@ -382,8 +462,12 @@ int main(int argc, char **argv) {
             break;
         case 'B': if ((ad_offers_opt = parse_ad_offers("--ad-offers", optarg)) < 0) return 2; break;   /* the ad agency's offers */
         case 'E': if ((film_offers_opt = parse_film_offers("--film-offers", optarg)) < 0) return 2; break;   /* the film dealer's offers */
+        case 'v': if ((auction_lots_opt = parse_auction_lots("--auction-lots", optarg)) < 0) return 2; break;   /* the film auction's lots */
         case 'j':                       /* the series card's topicality bar */
             if ((series_top_opt = optarg ? settings_bool(optarg) : 1) < 0) { fprintf(stderr, "--series-topicality: yes or no, not '%s'\n", optarg); return 2; }
+            break;
+        case '1':                       /* the original's unfinished screenplays */
+            if ((orig_scripts_opt = optarg ? settings_bool(optarg) : 1) < 0) { fprintf(stderr, "--original-screenplays: yes or no, not '%s'\n", optarg); return 2; }
             break;
         case 'b':                       /* computer players follow the human's transmitter network */
             if ((ai_improve_opt = parse_ai_improve(optarg)) < 0) { fprintf(stderr, "--ai-improve: off, normal or strong, not '%s'\n", optarg); return 2; }
@@ -405,7 +489,7 @@ int main(int argc, char **argv) {
             if (sscanf(optarg, "%x:%x:%d", &s_, &o_, &mn) != 3) { fprintf(stderr, "--clamp SEG:OFF:MIN\n"); return 2; }
             host_clamp(((u32)(LOADSEG + s_) << 4) + o_, mn);
         } break;
-        default: fprintf(stderr, "usage: %s [--interp] [--stackchk] [--fixes[=LIST]|--classic] [--logical-time] [--headless] [--script f] [--record f] [--dump-on SEG:OFF:DIR] [--game dir] [--exe unpacked.exe] [--scale N] [--fullscreen] [--aspect 4:3|square] [--filter sharp|nearest|linear|mmpx|hr-pixel] [--ai-pictures SET.ki] [--integer] [--cast-fit[=yes|no]] [--mouse captured|free|system] [--start-money N] [--credit-line N|original] [--terror-damage N] [--sammy-prize N[,N,N,N]] [--ad-offers N] [--film-offers N] [--fourth-speed[=yes|no]] [--fast-rooms[=yes|no]] [--series-topicality[=yes|no]] [--ai-improve=off|normal|strong] [--settings[=FILE]] [--write-data FILE]\n", argv[0]); return 2;
+        default: fprintf(stderr, "usage: %s [--interp] [--stackchk] [--fixes[=LIST]|--classic] [--logical-time] [--headless] [--script f] [--record f] [--dump-on SEG:OFF:DIR] [--game dir] [--exe unpacked.exe] [--scale N] [--fullscreen] [--aspect 4:3|square|stretch] [--filter sharp|nearest|linear|mmpx|hr-pixel] [--ai-pictures SET.ki] [--integer] [--cast-fit[=yes|no]] [--mouse captured|free|system] [--tv-back[=yes|no]] [--start-money N] [--credit-line N|original] [--terror-damage N] [--sammy-prize N[,N,N,N]] [--ad-offers N] [--film-offers N] [--auction-lots N] [--fourth-speed[=yes|no]] [--skip-intro[=yes|no]] [--fast-rooms[=yes|no]] [--series-topicality[=yes|no]] [--original-screenplays[=yes|no]] [--ai-improve=off|normal|strong] [--settings[=FILE]] [--write-data FILE]\n", argv[0]); return 2;
         }
     }
     if (settings_file && settings_load(settings_file)) {      /* for what the command line left open */
@@ -434,6 +518,7 @@ int main(int argc, char **argv) {
             else fprintf(stderr, "[settings] language: english, german or ask, not '%s'\n", v);
         }
         if (!given['N'] && (b = settings_bool(settings_get("sound", "sound"))) == 0) adlib_enabled = 0;
+        if (!given['h'] && (b = settings_bool(settings_get("input", "tv_back"))) >= 0) tv_back_opt = b;
         if (!given['u'] && (v = settings_get("input", "mouse")) && (b = parse_mouse(v)) >= 0) {
             mouse_free = b > 0; mouse_system = b == 2;
             mouse_from_settings = 1;
@@ -466,6 +551,11 @@ int main(int argc, char **argv) {
             film_offers_opt = b;
             films_from_settings = 1;
         }
+        if (!given['v'] && (v = settings_get("game", "auction_lots")) && (b = parse_auction_lots("[settings] auction_lots", v)) >= 0) {
+            auction_lots_opt = b;
+            lots_from_settings = 1;
+        }
+        if (!given['l'] && (b = settings_bool(settings_get("game", "skip_intro"))) >= 0) skip_intro_opt = b;
         if (!given['V'] && (b = settings_bool(settings_get("game", "fourth_speed"))) >= 0) {
             fourth_speed_opt = b;
             speed_from_settings = 1;
@@ -477,6 +567,10 @@ int main(int argc, char **argv) {
         if (!given['j'] && (b = settings_bool(settings_get("game", "series_topicality"))) >= 0) {
             series_top_opt = b;
             sertop_from_settings = 1;
+        }
+        if (!given['1'] && (b = settings_bool(settings_get("game", "original_screenplays"))) >= 0) {
+            orig_scripts_opt = b;
+            scripts_from_settings = 1;
         }
         if (!given['b'] && (v = settings_get("game", "ai_improve"))) {
             if ((b = parse_ai_improve(v)) >= 0) { ai_improve_opt = b; aiimp_from_settings = 1; }
@@ -527,6 +621,14 @@ int main(int argc, char **argv) {
         if (!films_from_settings) fprintf(stderr, "--film-offers: only the decompiled build (build/mtv-dec) has it\n");
         film_offers_opt = 0;
     }
+    if (!fix_init() && auction_lots_opt > AUCTION_LOTS_OPT_MIN) {   /* the machine-level build: the original's 10 lots */
+        if (!lots_from_settings) fprintf(stderr, "--auction-lots: only the decompiled build (build/mtv-dec) has it\n");
+        auction_lots_opt = 0;
+    }
+    if (!fix_init() && skip_intro_opt) {           /* the machine-level build: the original's start, title sequence first */
+        if (given['l']) fprintf(stderr, "--skip-intro: only the decompiled build (build/mtv-dec) has it\n");
+        skip_intro_opt = 0;
+    }
     if (!fix_init() && fourth_speed_opt) {         /* the machine-level build: the original's three speeds */
         if (!speed_from_settings) fprintf(stderr, "--fourth-speed: only the decompiled build (build/mtv-dec) has it\n");
         fourth_speed_opt = 0;
@@ -538,6 +640,10 @@ int main(int argc, char **argv) {
     if (!fix_init() && series_top_opt) {           /* the machine-level build: the original's series card */
         if (!sertop_from_settings) fprintf(stderr, "--series-topicality: only the decompiled build (build/mtv-dec) has it\n");
         series_top_opt = 0;
+    }
+    if (!fix_init() && orig_scripts_opt) {         /* the machine-level build: the original's screenplays */
+        if (!scripts_from_settings) fprintf(stderr, "--original-screenplays: only the decompiled build (build/mtv-dec) has it\n");
+        orig_scripts_opt = 0;
     }
     if (!fix_init() && ai_improve_opt) {           /* the machine-level build: the original's computer players */
         if (!aiimp_from_settings) fprintf(stderr, "--ai-improve: only the decompiled build (build/mtv-dec) has it\n");
@@ -575,6 +681,7 @@ int main(int argc, char **argv) {
             char *u = strstr(prog, "_U."); if (u) memmove(u, u + 2, strlen(u + 2) + 1);
         }
         dos_init(gamedir, prog);
+        dos_rsc_saves_tidy();            /* savegames the host's file order put into SOURCE2.RSC (dos.c) */
     }
     { extern void dos_set_args(const char *); if (prog_args) dos_set_args(prog_args); }
     notice_german = prog_args && (prog_args[0] == 'd' || prog_args[0] == 'D');   /* (the window's notices, host.c) */
@@ -594,10 +701,10 @@ int main(int argc, char **argv) {
         names_param(names, sizeof names);
         if (mp_load_opt) snprintf(start, sizeof start, "load:%016llx", (unsigned long long)mp_load_hash);
         else snprintf(start, sizeof start, "%s", new_game_opt ? "new" : "setup");
-        int plen = snprintf(params, sizeof params, "humans=%s args=%s fixes=%s time=%s speed4=%d aiimp=%d money=%ld credit=%ld terror=%ld sammy=%ld,%ld,%ld,%ld offers=%d filmoffers=%d sertop=%d knock=%d start=%s difficulty=%d names=%s seed=%ld files=%016llx", hum,
+        int plen = snprintf(params, sizeof params, "humans=%s args=%s fixes=%s time=%s speed4=%d aiimp=%d money=%ld credit=%ld terror=%ld sammy=%ld,%ld,%ld,%ld offers=%d filmoffers=%d lots=%d sertop=%d scripts=%d knock=%d start=%s difficulty=%d names=%s seed=%ld files=%016llx", hum,
                  prog_args ? prog_args : "-", fix_spec ? fix_spec : "classic", logical_time ? "logical" : "classic",
                  fourth_speed_opt, ai_improve_opt, start_money_opt, credit_line_opt, terror_damage_opt,
-                 SAMMY_PRIZE_OPT(0), SAMMY_PRIZE_OPT(1), SAMMY_PRIZE_OPT(2), SAMMY_PRIZE_OPT(3), AD_OFFERS_OPT(), FILM_OFFERS_OPT(), series_top_opt, knock_opt, start, difficulty_opt, names, seed_opt, (unsigned long long)files);
+                 SAMMY_PRIZE_OPT(0), SAMMY_PRIZE_OPT(1), SAMMY_PRIZE_OPT(2), SAMMY_PRIZE_OPT(3), AD_OFFERS_OPT(), FILM_OFFERS_OPT(), AUCTION_LOTS_OPT(), series_top_opt, orig_scripts_opt, knock_opt, start, difficulty_opt, names, seed_opt, (unsigned long long)files);
         if (plen < 0 || plen >= (int)sizeof params) { fprintf(stderr, "--mp: the game's parameters are too long\n"); return 2; }   /* cut, the server would compare a part */
         for (char *p = params; *p; p++) if (*p == '\n') *p = ' ';
         host_net_start(mp_server, mp_seat, params);

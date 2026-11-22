@@ -1,0 +1,47 @@
+# fix: trendy-studios (1DA8:034E: the lock of "Trendy"'s studio, and locks left by it in saved games)
+# A show keeps its studio "running" (+0xE) after the shooting until the show airs (24B8:0C4A
+# matches the aired film with the studio's screenplay).  "Trendy" (screenplay 24, one production)
+# is taken out of its studio as its shooting ends (studio_check_finished: state 99,
+# studio_cancel_production -> screenplay 0, episode 1) and keeps the lock; only the original's
+# "film 138 matches every running studio" ended it.  Without that branch the lock stayed for good
+# (a Mac game 2026-10-26: a computer player put its next screenplay in, could never shoot it and
+# asked for a shopping list each round -- "too many shopping lists" on the human's screen).
+# New game; at 3000: computer player 2's studio 8 shoots Trendy until 18:00 today (script DS:61E5
+# = 24, episode 2 / last 1, end day 1, end hour 18, running DS:61F3 = 1); computer player 3's
+# studio 10 is such a left lock (script DS:6205 = 20 put in, episode 1, end day 0, running
+# DS:6213 = 1); the human's studio 6 waits for its show (script DS:61C5 = 19 "Music-Mix", a show,
+# episode 2, end day 0, running DS:61D3 = 1).  At 18:00 (g_time_slot DS:71EA = 18, frame ~10800)
+# Trendy is finished: classic its screenplay is gone (0) and all three studios stay locked.
+# expect classic 10000 byte 39D4:61F3 == 1
+# expect classic 10000 word 39D4:61E5 == 24
+# expect classic 12000 word 39D4:71EA == 18
+# expect classic 12000 word 39D4:61E5 == 0
+# expect classic 12000 byte 39D4:61F3 == 1
+# expect classic 12000 byte 39D4:6213 == 1
+# expect classic 12000 byte 39D4:61D3 == 1
+# Fixed: in the same hour Trendy's studio 8 is let go (running 0, still player 2's), the left
+#   lock of studio 10 too; studio 6, which waits for its own show, stays locked.
+# expect fixed   10000 byte 39D4:61F3 == 1
+# expect fixed   12000 word 39D4:61E5 == 0
+# expect fixed   12000 byte 39D4:61F3 == 0
+# expect fixed   12000 byte 39D4:61E8 == 2
+# expect fixed   12000 byte 39D4:6213 == 0
+# expect fixed   12000 byte 39D4:61D3 == 1
+400 key esc
+1000 click 64 100
+1300 click 172 185
+2000 key esc
+2300 key esc
+2600 key esc
+3000 poke16 39D4:61E5 24
+3000 poke16 39D4:61E9 258
+3000 poke16 39D4:61EF 1
+3000 poke16 39D4:61F1 18
+3000 poke16 39D4:61F3 1
+3000 poke16 39D4:6205 20
+3000 poke16 39D4:6209 257
+3000 poke16 39D4:6213 1
+3000 poke16 39D4:61C5 19
+3000 poke16 39D4:61C9 514
+3000 poke16 39D4:61D3 1
+12100 quit

@@ -985,6 +985,12 @@ void finance_report_draw(void) {
             }
             si = si + 1;
         }
+        for (u16 k = 11; k <= g_nlots; k++)  /* --auction-lots: the bids on lots 11.. too */
+            if (auction(k).program != 0 && (u16)(i8)auction(k).bidder == g_player) {
+                u32 v = MK32(l_2, l_4) + auction(k).bid;
+                l_4 = LO16(v);
+                l_2 = HI16(v);
+            }
     } else {
         l_10 = DSP(0x7492);
     }

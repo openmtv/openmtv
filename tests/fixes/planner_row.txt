@@ -1,0 +1,50 @@
+# fix: planner-row (1C18:12F2 program_withdraw, 05FF:0D0E room_planner_click)
+# program_withdraw takes a programme off its shelf (sold, seized, carried to the case) by
+# shifting the slots after it down -- one slot too far: the freed slot gets what lies past the
+# shelf's last programme, from a full shelf the next genre's first one (series: the counts of
+# genres 0 and 1, e.g. 512).  The planner's list (mode 2, hotspot 0x18) tells an empty row by
+# its slot being 0, not by the count: a click on an empty row picks that stale slot up -- a film
+# of another genre, or a series id far past the table (a Mac game 2026-10-26, replayed: the
+# drag overran the heap, the game halted or hung).
+# New game as in tests/scenarios/room_planner_schedule.txt.  2000: the human's genre 5 shelf
+# (Whodunit, DS:6FAD..6FB3) full with films 9, 24, 31, 32 (count DS:6FEA = 4; genre 6 holds his
+# culture films, its first at DS:6FB5 = 68).  2050 film 24 is taken off: classic the freed slot
+# DS:6FB3 holds film 68, fixed 0.
+# expect classic 2050 call 1C18:12F2,24 >= 0
+# expect classic 2050 word 39D4:6FAF == 31
+# expect classic 2050 word 39D4:6FB3 == 68
+# expect classic 2050 byte 39D4:6FEA == 3
+# expect fixed   2050 call 1C18:12F2,24 >= 0
+# expect fixed   2050 word 39D4:6FAF == 31
+# expect fixed   2050 word 39D4:6FB3 == 0
+# expect fixed   2050 byte 39D4:6FEA == 3
+# 2060 the stale slot put back (as in a game saved before the fix), then the planner: library
+# button, Whodunit (3 titles), 4300 a click on the empty fourth row.  Classic: film 68 -- a
+# culture film -- is picked up (mode DS:8BA4 = 3, g_selected_program DS:79D6 = 68); fixed: the
+# row is empty (mode 2), and 4500 a click on the first row still picks film 9.
+# expect classic 4250 word 39D4:8BA4 == 2
+# expect classic 4400 word 39D4:8BA4 == 3
+# expect classic 4400 word 39D4:79D6 == 68
+# expect fixed   4250 word 39D4:8BA4 == 2
+# expect fixed   4400 word 39D4:8BA4 == 2
+# expect fixed   4600 word 39D4:8BA4 == 3
+# expect fixed   4600 word 39D4:79D6 == 9
+400 key esc
+1000 click 64 100
+1300 click 172 185
+2000 poke16 39D4:6FAD 9
+2000 poke16 39D4:6FAF 24
+2000 poke16 39D4:6FB1 31
+2000 poke16 39D4:6FB3 32
+2000 poke16 39D4:6FE9 1024
+2060 poke16 39D4:6FB3 68
+2100 click 230 60
+2500 click 230 60
+2700 click 88 70
+3200 click 160 30
+3600 click 264 67
+3900 click 303 49
+4100 click 244 48
+4300 click 235 107
+4500 click 235 77
+4700 quit

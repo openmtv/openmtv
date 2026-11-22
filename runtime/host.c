@@ -40,6 +40,7 @@
 #include <stdlib.h>
 #include <string.h>
 #include <time.h>
+#include <math.h>
 #include <SDL.h>
 #include "runtime.h"
 #include "platform.h"
@@ -52,6 +53,7 @@ static SDL_Window *win;
 static SDL_Renderer *ren;
 static SDL_Texture *tex;
 static SDL_AudioDeviceID audio_dev;
+static double audio_piece_ms = 1024 / 44.1;   /* the device's piece (have.samples; the sound's health, aw_look) */
 static int scale = 3;
 
 /* Display (presentation only: game state, scripts and recordings do not
@@ -67,7 +69,7 @@ static int scale = 3;
  * figures not smoothed, and plain 4x pixels where one has no cell.  --integer keeps the scale a whole
  * number. */
 int display_fullscreen;               /* --fullscreen */
-int display_square;                   /* --aspect square */
+int display_square;                   /* --aspect: 0 4:3, 1 square, 2 stretch (the whole window) */
 int display_filter = DISPLAY_SHARP;   /* --filter */
 int display_integer;                  /* --integer */
 int cast_fit_opt;                     /* --cast-fit: the actors' fit for the role in the shop (src/cast_fit.c) */
@@ -101,6 +103,42 @@ static FILE *recf;
 static u16 live_keys[64]; static int live_nkeys;
 static int live_dx, live_dy, applied_buttons;
 static int btn_queue[32], btn_n;     /* button states in arrival order: one change per frame, so short clicks survive */
+static int btn_touch[32];            /* 1: that change is a finger's press -- it waits for the game's cursor (touch_press_ready);
+                                        2: a finger's release -- it waits until the game has read the press (btn_ready) */
+static int btn_pop(void) {
+    int want = btn_queue[0];
+    memmove(btn_queue, btn_queue + 1, sizeof btn_queue[0] * --btn_n);
+    memmove(btn_touch, btn_touch + 1, sizeof btn_touch[0] * btn_n);
+    return want;
+}
+/* A finger's click (touch_up) goes in only once the game's cursor has come to it: a finger
+ * puts the pointer down at once, where a mouse arrives first, and the game eases its cursor
+ * over a few frames (frame.c) -- a press applied at once would click where the cursor still
+ * is.  The press waits until the cursor has no motion left (or 20 frames: the game not
+ * reading the mouse just now). */
+/* A finger's tap is down for a frame -- the game, reading its buttons at every frame, sees it;
+ * where it waits on its own and looks now and then (the title sequence: once per picture,
+ * src/intro.c 365F:03A3) it slipped past.  So the release waits until the game has read the
+ * buttons once since the press (bios.c mouse_reads), a second at most.  Recorded as it went
+ * (--record: the frames of down and up), a replay does the same. */
+static unsigned tap_reads;
+static int touch_press_ready(void);
+static int btn_ready(void) {
+    static int waited;
+    if (btn_touch[0] == 1) return touch_press_ready();
+    if (btn_touch[0] == 2) {
+        if (mouse_reads == tap_reads && ++waited < 70) return 0;
+        waited = 0;
+    }
+    return 1;
+}
+static int touch_press_ready(void) {
+    static int waited;
+    int dx, dy;
+    mouse_pending(&dx, &dy);
+    if ((!dx && !dy && game_cursor_still()) || ++waited > 20) { waited = 0; return 1; }
+    return 0;
+}
 
 void host_record_open(const char *path, const char *prog_args, int argc, char **argv) {
     recf = fopen(path, "w");
@@ -112,20 +150,24 @@ void host_record_open(const char *path, const char *prog_args, int argc, char **
     char credit[40] = "";
     char terror[40] = "";
     char sammy[128] = "";
-    char offers[48] = "";
+    char offers[72] = "";
     if (AD_OFFERS_OPT() > AD_OFFERS_OPT_MIN) snprintf(offers, sizeof offers, " --ad-offers=%d", AD_OFFERS_OPT());
     if (FILM_OFFERS_OPT() > FILM_OFFERS_OPT_MIN)
         snprintf(offers + strlen(offers), sizeof offers - strlen(offers), " --film-offers=%d", FILM_OFFERS_OPT());
+    if (AUCTION_LOTS_OPT() > AUCTION_LOTS_OPT_MIN)
+        snprintf(offers + strlen(offers), sizeof offers - strlen(offers), " --auction-lots=%d", AUCTION_LOTS_OPT());
     if (start_money_opt >= 0) snprintf(money, sizeof money, " --start-money=%ld", start_money_opt);
     if (credit_line_opt == CREDIT_LINE_ORIGINAL) snprintf(credit, sizeof credit, " --credit-line=original");
     else if (credit_line_opt >= 0) snprintf(credit, sizeof credit, " --credit-line=%ld", credit_line_opt);
     if (terror_damage_opt >= 0) snprintf(terror, sizeof terror, " --terror-damage=%ld", terror_damage_opt);
     if (SAMMY_PRIZE_OPT(0) || SAMMY_PRIZE_OPT(1) || SAMMY_PRIZE_OPT(2) || SAMMY_PRIZE_OPT(3))
         snprintf(sammy, sizeof sammy, " --sammy-prize=%ld,%ld,%ld,%ld", SAMMY_PRIZE_OPT(0), SAMMY_PRIZE_OPT(1), SAMMY_PRIZE_OPT(2), SAMMY_PRIZE_OPT(3));
-    fprintf(recf, "# recorded session; replay with: --script %s --args \"%s\"%s%s%s%s%s%s%s%s%s%s%s on fresh game files\n", path, prog_args ? prog_args : "",
+    fprintf(recf, "# recorded session; replay with: --script %s --args \"%s\"%s%s%s%s%s%s%s%s%s%s%s%s%s on fresh game files\n", path, prog_args ? prog_args : "",
             fix_spec ? " --fixes=" : "", fix_spec ? fix_spec : "", money, credit, terror, sammy, offers, fourth_speed_opt ? " --fourth-speed" : "",
+            skip_intro_opt ? " --skip-intro" : "",
             fast_rooms_opt ? " --fast-rooms" : "", ai_improve_opt == 2 ? " --ai-improve=strong" : ai_improve_opt ? " --ai-improve=normal" : "",
-            series_top_opt ? " --series-topicality=yes" : " --series-topicality=no");   /* (explicit: the settings file says yes by default) */
+            series_top_opt ? " --series-topicality=yes" : " --series-topicality=no",   /* (explicit: the settings file says yes by default) */
+            orig_scripts_opt ? " --original-screenplays" : "");
     fflush(recf);
 }
 
@@ -193,11 +235,32 @@ static void pointer_motion(int gx, int gy, int *dx, int *dy) {
     motion_to(gx, gy, dx, dy);
 }
 
+#if HOST_IOS
+static int SDLCALL ios_event_watch(void *unused, SDL_Event *e);   /* (below, at present_now) */
+#endif
+static int ptr_touch;                  /* the pointer is a finger (SDL_TOUCH_MOUSEID) */
+/* a network game: the shown seat's grip, read at its present (present_seen) -- this machine's
+ * input goes out between frames, with whichever seat's memory loaded */
+static int seen_grip_ok, seen_grip_x, seen_grip_y;
+/* a finger where the game clicks off its cursor: the cursor's way from that point (carrying
+ * something: the grip, the finger at the item's corner -- the slot it taps is the one the
+ * item goes to; the waste bin: 5 pixels; game_drag_hot) */
+static int touch_grip(int *hx, int *hy) {
+    *hx = *hy = 0;
+    if (!ptr_touch) return 0;
+    if (net_active) {                    /* (the shown seat's, from its present) */
+        if (seen_grip_ok) *hx = seen_grip_x, *hy = seen_grip_y;
+        return seen_grip_ok;
+    }
+    return game_drag_hot(hx, hy);
+}
 static int free_mouse_pixel(int *gx, int *gy) {
+    int hx, hy;
     if (!mouse_free || ptr_x < 0 || !ptr_moved || view_wpt < 1) return 0;
     ptr_moved = 0;
-    *gx = (int)((ptr_x - view_xpt) * 320.0f / view_wpt);
-    *gy = (int)((ptr_y - view_ypt) * 200.0f / view_hpt);
+    touch_grip(&hx, &hy);
+    *gx = (int)((ptr_x - view_xpt) * 320.0f / view_wpt) + hx;
+    *gy = (int)((ptr_y - view_ypt) * 200.0f / view_hpt) + hy;
     if (*gx < 0) *gx = 0;
     if (*gx > 319) *gx = 319;
     if (*gy < 0) *gy = 0;
@@ -224,32 +287,51 @@ static int free_mouse_target(int *gx, int *gy) {
  * only then it leaves its own out (headless, the tests: as if). */
 int host_drag_ok;
 static SDL_Texture *drag_tex;
-static int drag_on, drag_tw, drag_th, drag_hx, drag_hy, drag_lim[4];
+static int drag_on, drag_tw, drag_th, drag_ts, drag_hx, drag_hy, drag_lim[4];
+static void drag_palette(u32 pal[256]) {
+    static u8 idx[320 * 200], pal6[256][3];
+    plat_screen(idx, pal6);
+    for (int i = 0; i < 256; i++)
+        pal[i] = 0xFF000000u | (u32)(pal6[i][0] * 255 / 63) << 16 | (u32)(pal6[i][1] * 255 / 63) << 8 | (u32)(pal6[i][2] * 255 / 63);
+}
 static int drag_overlay_set(void) {
     static u8 pix[320 * 120];
-    static u32 key_seen;
+    static u32 *argb, key_seen;
+    static size_t argb_cap;
     int w, h, hx, hy;
     if (!sys_drag_image(pix, sizeof pix, &w, &h, &hx, &hy, drag_lim)) return 0;
-    u32 key = 2166136261u;                       /* the item and its size */
+    size_t need = (size_t)16 * w * h;
+    if (need > argb_cap) {
+        u32 *n = realloc(argb, need * sizeof *argb);
+        if (!n) return 0;
+        argb = n; argb_cap = need;
+    }
+    /* --filter hr-pixel: the item at 4x from its cells, as the game draws it with its cursor
+     * (the text in the font of the picture) -- not its pixels blown up.  Made anew when the
+     * item, its size, the palette or the AI pictures' switch (Ctrl+K: other cells, the same
+     * pixels) change */
+    u32 pal[256];
+    drag_palette(pal);
+    int hr = DISPLAY_IS_HR(display_filter);
+    u32 key = 2166136261u;
     for (int i = 0; i < w * h; i++) key = (key ^ pix[i]) * 16777619u;
-    key = (key ^ (u32)(w << 16 | h)) * 16777619u;
+    for (int i = 0; i < 256; i++) key = (key ^ pal[i]) * 16777619u;
+    key = (key ^ (u32)w) * 16777619u;
+    key = (key ^ (u32)h) * 16777619u;
+    key = (key ^ (u32)(hr ? 2 + hr_ki_state() : 0)) * 16777619u;
     if (!drag_tex || key != key_seen) {
-        static u8 idx[320 * 200], pal6[256][3];
-        static u32 argb[320 * 120];
-        plat_screen(idx, pal6);
-        for (int i = 0; i < w * h; i++) {
-            u8 v = pix[i];
-            argb[i] = !v ? 0 : 0xFF000000u | (u32)(pal6[v][0] * 255 / 63) << 16 | (u32)(pal6[v][1] * 255 / 63) << 8 | (u32)(pal6[v][2] * 255 / 63);
-        }
-        if (!drag_tex || w != drag_tw || h != drag_th) {
+        int s = hr && sys_drag_image_4x(argb, (int)argb_cap, pal) ? 4 : 1;
+        if (s == 1)
+            for (int i = 0; i < w * h; i++) argb[i] = pix[i] ? pal[pix[i]] : 0;
+        if (!drag_tex || w != drag_tw || h != drag_th || s != drag_ts) {
             if (drag_tex) SDL_DestroyTexture(drag_tex);
-            drag_tex = SDL_CreateTexture(ren, SDL_PIXELFORMAT_ARGB8888, SDL_TEXTUREACCESS_STREAMING, w, h);
+            drag_tex = SDL_CreateTexture(ren, SDL_PIXELFORMAT_ARGB8888, SDL_TEXTUREACCESS_STREAMING, w * s, h * s);
             if (!drag_tex) { fprintf(stderr, "[display] no texture for the carried item (%s)\n", SDL_GetError()); return 0; }
             SDL_SetTextureBlendMode(drag_tex, SDL_BLENDMODE_BLEND);
             SDL_SetTextureScaleMode(drag_tex, SDL_ScaleModeNearest);
-            drag_tw = w; drag_th = h;
+            drag_tw = w; drag_th = h; drag_ts = s;
         }
-        SDL_UpdateTexture(drag_tex, NULL, argb, w * 4);
+        SDL_UpdateTexture(drag_tex, NULL, argb, w * s * 4);
         key_seen = key;
     }
     drag_hx = hx; drag_hy = hy;
@@ -290,21 +372,28 @@ static void system_pointer(void) {           /* (in the shown seat's context: pr
 }
 
 static u64 state_hash(void);
+static int limits_changed;              /* present_seen: the shown seat's cursor limits changed */
 static void apply_live_input(void) {
     u64 f = frame_no();
+    if (mouse_free && limits_changed) { limits_changed = 0; ptr_moved = 1; }   /* (a carried item dropped: the cursor to the pointer now, src/fixes.c) */
     if (net_active) {                    /* a network game: this seat's input goes to the server (net.h) */
         char m[64];
-        int gx, gy;
+        int gx, gy, sent_ptr = 0;
+        static int press_held;
         if (free_mouse_pixel(&gx, &gy)) {  /* the free mouse: where the pointer is; each machine makes it */
             snprintf(m, sizeof m, "IN 0 pointer %d %d", gx, gy);   /* motion when the server's bundle brings it */
             net_send(m);
+            sent_ptr = 1;
         }
         for (int i = 0; i < live_nkeys; i++) { snprintf(m, sizeof m, "IN 0 kcode %04X 0", live_keys[i]); net_send(m); }
         live_nkeys = 0;
         if (live_dx || live_dy) { snprintf(m, sizeof m, "IN 0 move %d %d", live_dx, live_dy); net_send(m); live_dx = live_dy = 0; }
-        if (btn_n) {
-            int want = btn_queue[0];
-            memmove(btn_queue, btn_queue + 1, sizeof btn_queue[0] * --btn_n);
+        /* a finger's press goes out a frame after a pointer it came with -- the cursor there first,
+         * as alone touch_press_ready waits (once: the next frame it goes in any case) */
+        if (btn_n && btn_touch[0] == 1 && sent_ptr && !press_held) press_held = 1;
+        else if (btn_n) {
+            int want = btn_pop();
+            press_held = 0;
             for (int b = 1; b <= 2; b++)
                 if ((want ^ applied_buttons) & b) { snprintf(m, sizeof m, "IN 0 %s %d 0", want & b ? "down" : "up", b); net_send(m); }
             applied_buttons = want;
@@ -331,9 +420,9 @@ static void apply_live_input(void) {
         if (recf && !freem) fprintf(recf, "%llu move %d %d\n", (unsigned long long)f, live_dx, live_dy);
         live_dx = live_dy = 0;
     }
-    if (btn_n) {
-        int want = btn_queue[0];
-        memmove(btn_queue, btn_queue + 1, sizeof btn_queue[0] * --btn_n);
+    if (btn_n && btn_ready()) {
+        int want = btn_pop();
+        tap_reads = mouse_reads;         /* (a finger's release after this waits for a read of it) */
         for (int b = 1; b <= 2; b++) {
             if (!((want ^ applied_buttons) & b)) continue;
             if (want & b) mouse_set_buttons(mouse_buttons | b);
@@ -734,9 +823,10 @@ static void net_inputs(int seat, int spectator) {
 
 /* the game state's hash (the STATE line of the script's hash, a network game's
  * desync check): the data segment below the stack (DGROUP 0..A730), the
- * film/series/screenplay tables, and with --ad-offers / --film-offers the
- * ad agency's offers and the film dealer's slots past 10 (src/state.c exports
- * them to AD_OFFERS_SEG / FILM_OFFERS_SEG) */
+ * film/series/screenplay tables, and with --ad-offers / --film-offers /
+ * --auction-lots the ad agency's offers, the film dealer's slots and the
+ * auction's lots past 10 (src/state.c exports them to AD_OFFERS_SEG /
+ * FILM_OFFERS_SEG / AUCTION_LOTS_SEG) */
 static u64 state_hash(void) {
     if (use_native) state_export();
     u64 hs = 1469598103934665603ull;
@@ -749,6 +839,9 @@ static u64 state_hash(void) {
             hs = (hs ^ M[a]) * 1099511628211ull;
     if (FILM_OFFERS_OPT() > FILM_OFFERS_OPT_MIN)   /* and with --film-offers the dealer's slots past 10 */
         for (u32 a = (u32)FILM_OFFERS_SEG << 4; a < ((u32)FILM_OFFERS_SEG << 4) + (u32)(FILM_OFFERS_OPT() - 10) * 8; a++)
+            hs = (hs ^ M[a]) * 1099511628211ull;
+    if (AUCTION_LOTS_OPT() > AUCTION_LOTS_OPT_MIN)   /* and with --auction-lots the auction's lots past 10 */
+        for (u32 a = (u32)AUCTION_LOTS_SEG << 4; a < ((u32)AUCTION_LOTS_SEG << 4) + (u32)(AUCTION_LOTS_OPT() - 10) * 9; a++)
             hs = (hs ^ M[a]) * 1099511628211ull;
     return hs;
 }
@@ -956,7 +1049,7 @@ static void run_script(void) {
     }
 }
 
-#ifdef __APPLE__
+#if HOST_MACOS
 static void mac_no_nap(void);
 #endif
 void host_init(int headless, int sc) {
@@ -965,10 +1058,20 @@ void host_init(int headless, int sc) {
     wall_start_ns = now_ns();
     if (script_path) load_script(script_path);
     if (headless) { realtime = 0; host_drag_ok = 1; return; }   /* (no window: the tests, as if it drew the carried item) */
+#if HOST_IOS
+    /* iPhone, iPad: the whole screen, lying (the picture is wider than tall); the home
+     * bar needs a second swipe (no system gesture by accident while dragging) */
+    SDL_SetHint(SDL_HINT_ORIENTATIONS, "LandscapeLeft LandscapeRight");
+    SDL_SetHint(SDL_HINT_IOS_HIDE_HOME_INDICATOR, "2");
+    display_fullscreen = 1;
+#endif
     if (SDL_Init(SDL_INIT_VIDEO) < 0) { fprintf(stderr, "SDL: %s\n", SDL_GetError()); exit(1); }
+#if HOST_IOS
+    SDL_AddEventWatch(ios_event_watch, NULL);
+#endif
     if (scale < 1) scale = 1;
     win = SDL_CreateWindow("OpenMTV", SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED,
-                           320 * scale, (display_square ? 200 : 240) * scale,
+                           320 * scale, (display_square == 1 ? 200 : 240) * scale,
                            SDL_WINDOW_RESIZABLE | SDL_WINDOW_ALLOW_HIGHDPI |
                            (display_fullscreen ? SDL_WINDOW_FULLSCREEN_DESKTOP : 0));
     /* in front: started by the launcher (a background process), Windows would
@@ -977,7 +1080,7 @@ void host_init(int headless, int sc) {
     SDL_SetHint(SDL_HINT_FORCE_RAISEWINDOW, "1");
 #endif
     if (win) SDL_RaiseWindow(win);
-#ifdef __APPLE__
+#if HOST_MACOS
     if (win) mac_no_nap();
 #endif
     /* no vsync: waiting for the display on each of the game's 70 Hz frames
@@ -1007,7 +1110,14 @@ void host_init(int headless, int sc) {
         SDL_AudioSpec want = {0}, have;
         want.freq = 44100; want.format = AUDIO_S16SYS; want.channels = 2; want.samples = 1024;
         audio_dev = SDL_OpenAudioDevice(NULL, 0, &want, &have, 0);
-        if (audio_dev) SDL_PauseAudioDevice(audio_dev, 0);
+        if (audio_dev) {
+            SDL_RendererInfo ri;
+            if (have.freq > 0 && have.samples) audio_piece_ms = have.samples * 1000.0 / have.freq;
+            fprintf(stderr, "[audio] device: %s, %d Hz, %d channels, pieces of %d samples (%.1f ms); picture: %s\n",
+                    SDL_GetCurrentAudioDriver(), have.freq, have.channels, have.samples, audio_piece_ms,
+                    ren && SDL_GetRendererInfo(ren, &ri) == 0 ? ri.name : "?");
+            SDL_PauseAudioDevice(audio_dev, 0);
+        }
         else fprintf(stderr, "SDL audio: %s (continuing without sound)\n", SDL_GetError());
     }
 }
@@ -1023,6 +1133,37 @@ static int net_gentle;                 /* a network game catching up gently (hos
 #define AUDIO_LEAD_MAX 250.0
 static double audio_lead_ms = AUDIO_LEAD_MIN;
 static int audio_cleared;              /* the queue emptied on purpose (catching up): no gap */
+/* The sound's clock, smoothed (host_sleep_until_T).  The device takes the queue in pieces
+ * (have.samples: 1024 samples, 23 ms), so the queue's level falls in steps, and pacing by
+ * the bare level ran the game in bursts at the pieces' pace -- one or two frames at once,
+ * then a wait: 54 pictures a second of the game's 70 on a 120 Hz iPhone, two frames a
+ * millisecond apart being one picture.  A piece taken plays over its own length: until then
+ * it counts as still queued (audio_ahead_ms, running out by the system clock), so the level
+ * falls smoothly and the frames come evenly.  At most 1.5 pieces count: two clocks never run
+ * quite alike, and the level kept may not creep away from the device's. */
+static double audio_pushed_ms;         /* all the sound queued so far */
+static double audio_taken_ms;          /* how much of it the device had taken at the last look */
+static double audio_ahead_ms;          /* taken, not played yet (an estimate) */
+static u64 audio_ahead_ns;             /* when that was */
+static void audio_clock_reset(void) { audio_pushed_ms = audio_taken_ms = audio_ahead_ms = 0; }
+static double audio_queued_smooth(void) {
+    double q = SDL_GetQueuedAudioSize(audio_dev) / 4.0 / 44.1;
+    double taken = audio_pushed_ms - q;
+    u64 now = now_ns();
+    if (audio_ahead_ns) audio_ahead_ms -= (now - audio_ahead_ns) / 1e6;
+    if (audio_ahead_ms < 0) audio_ahead_ms = 0;
+    audio_ahead_ns = now;
+    if (taken > audio_taken_ms + 0.5) {          /* a piece taken */
+        double piece = taken - audio_taken_ms;
+        audio_ahead_ms += piece;
+        if (audio_ahead_ms > 1.5 * piece) audio_ahead_ms = 1.5 * piece;
+        audio_taken_ms = taken;
+    } else if (taken < audio_taken_ms - 0.5) {   /* (the books off: start from here) */
+        audio_taken_ms = taken;
+        audio_ahead_ms = 0;
+    }
+    return q + audio_ahead_ms;
+}
 static void audio_lead_adapt(double queued_ms) {
     static u64 pushes, calm_since;
     static int armed;                    /* the queue was full again since the last gap (not still refilling) */
@@ -1040,8 +1181,65 @@ static void audio_lead_adapt(double queued_ms) {
     }
     audio_cleared = 0;
 }
+/* The sound's health in the game's log (the launcher keeps build/game.log): an [audio] line
+ * for every second the sound ran short -- the queue under one of the device's pieces (it
+ * finds too little: a crackle), empty, or pieces left out (too far ahead) -- or the game
+ * made fewer than 66 of its 70 frames, with where the time went: drawing (presents
+ * included), the presents alone, sleeping (the game ahead of the sound), the longest stand
+ * between two looks at the queue (host_sleep_until_T, every 5 ms of the game's time).  The
+ * level counts just before each push (aw_queue): its lowest.  Once a minute the same over the minute.  The wall
+ * clock's time in front, so "it crackled at 22:31" finds its lines. */
+typedef struct {
+    u64 t0, frame0;
+    u32 looks, low, empty, dropped, presents, unseen, skipped;
+    double qmin;
+    u64 draw, present, present_max, sleep, stall_max;
+} AudioWatch;
+static AudioWatch aw_sec, aw_min;
+static u64 aw_last_look;                /* the end of the last look (host_sleep_until_T) */
+static int aw_lines;
+static void aw_reset(AudioWatch *w, u64 now) { memset(w, 0, sizeof *w); w->t0 = now; w->frame0 = frame_no(); w->qmin = 1e9; }
+#define AW_ADD(f, v) (aw_sec.f += (v), aw_min.f += (v))
+#define AW_MAX(f, v) do { if ((v) > aw_sec.f) aw_sec.f = (v); if ((v) > aw_min.f) aw_min.f = (v); } while (0)
+static void aw_line(const char *span, const AudioWatch *w, u64 now) {
+    double s = (now - w->t0) / 1e9;
+    if (s <= 0 || aw_lines >= 5000) return;
+    aw_lines++;
+    char hms[16] = "?";
+    time_t tt = time(NULL);
+    struct tm *tm = localtime(&tt);
+    if (tm) strftime(hms, sizeof hms, "%H:%M:%S", tm);
+    fprintf(stderr, "[audio] %s %s, frame %llu: queue at least %.0f ms, %u of %u looks under a piece (%u empty), %u pieces left out;"
+            " %.1f frames/s; %u presents (%.1f ms each, longest %.0f ms, %u unseen, %u left out after a wait), drawing %.0f ms/s, sleeping %.0f ms/s,"
+            " longest stand %.0f ms; lead %.0f ms\n",
+            hms, span, (unsigned long long)frame_no(), w->qmin > 1e8 ? -1.0 : w->qmin, w->low, w->looks, w->empty, w->dropped,
+            (frame_no() - w->frame0) / s, w->presents, w->presents ? w->present / 1e6 / w->presents : 0.0, w->present_max / 1e6,
+            w->unseen, w->skipped, w->draw / 1e6 / s, w->sleep / 1e6 / s, w->stall_max / 1e6, audio_lead_ms);
+}
+/* the queue's level just before a push: its lowest, where the device may find too little */
+static void aw_queue(double q) {
+    AW_ADD(looks, 1);
+    if (q < audio_piece_ms) AW_ADD(low, 1);
+    if (q < 0.01) AW_ADD(empty, 1);
+    if (q < aw_sec.qmin) aw_sec.qmin = q;
+    if (q < aw_min.qmin) aw_min.qmin = q;
+}
+static void aw_look(u64 now) {
+    if (!aw_sec.t0) { aw_reset(&aw_sec, now); aw_reset(&aw_min, now); }
+    if (aw_last_look) AW_MAX(stall_max, now - aw_last_look);
+    if (now - aw_sec.t0 >= 1000000000ull) {
+        double fps = (frame_no() - aw_sec.frame0) / ((now - aw_sec.t0) / 1e9);
+        if (aw_sec.low || aw_sec.dropped || fps < 66) aw_line("second", &aw_sec, now);
+        aw_reset(&aw_sec, now);
+    }
+    if (now - aw_min.t0 >= 60000000000ull) {
+        aw_line("minute", &aw_min, now);
+        aw_reset(&aw_min, now);
+    }
+}
 void host_audio_push(const int16_t *s, size_t frames) {
     if (!audio_dev) return;
+    aw_queue(SDL_GetQueuedAudioSize(audio_dev) / 4.0 / 44.1);
     audio_lead_adapt(SDL_GetQueuedAudioSize(audio_dev) / 4.0 / 44.1);
     static int log = -1;                 /* AUDIO_LOG=1: the queue level, every 20th push and when nearly empty */
     if (log < 0) log = getenv("AUDIO_LOG") != NULL;
@@ -1051,21 +1249,29 @@ void host_audio_push(const int16_t *s, size_t frames) {
         if (n++ % 20 == 0 || (n > 50 && q < 10)) fprintf(stderr, "AQ wall=%.3f frame=%llu frames_pushed=%zu queued_ms=%.1f%s\n", (t - t0) / 1e9, (unsigned long long)frame_no(), frames, q, q < 10 ? " LOW" : "");
     }
     /* keep latency bounded: drop audio queued well beyond the lead (catching up) */
-    if (SDL_GetQueuedAudioSize(audio_dev) / 4.0 / 44.1 > audio_lead_ms + 130) return;
+    if (SDL_GetQueuedAudioSize(audio_dev) / 4.0 / 44.1 > audio_lead_ms + 130) { AW_ADD(dropped, 1); return; }
     static unsigned gentle_k;            /* a network game catching up gently: one piece in eight left out */
     if (net_gentle && ++gentle_k % 8 == 0) return;
-    SDL_QueueAudio(audio_dev, s, (Uint32)(frames * 4));
+    if (SDL_QueueAudio(audio_dev, s, (Uint32)(frames * 4)) == 0) audio_pushed_ms += frames / 44.1;
 }
 
 /* the picture's place for the current window size (and fullscreen) */
+/* the time between two presents: the display's refresh period, at least the game's 70 Hz frame
+ * (host_present; 60 Hz displays: 60 a second, 120 Hz and faster: all 70); unknown 15 ms */
+static u64 present_period_ns = 15000000;
 static void display_layout(void) {
     int ow, oh, ww, wh;
+    SDL_DisplayMode dm;
+    int di = SDL_GetWindowDisplayIndex(win);
+    if (di >= 0 && SDL_GetCurrentDisplayMode(di, &dm) == 0 && dm.refresh_rate > 0)
+        present_period_ns = dm.refresh_rate >= 70 ? 1000000000ull / 70 : 1000000000ull / (u64)dm.refresh_rate;
     SDL_GetRendererOutputSize(ren, &ow, &oh);
     SDL_GetWindowSize(win, &ww, &wh);
-    double ph = display_square ? 200.0 : 240.0;          /* height per 320 of width */
+    double ph = display_square == 1 ? 200.0 : 240.0;     /* height per 320 of width */
     double s = ow / 320.0 < oh / ph ? ow / 320.0 : oh / ph;
     if (display_integer && s >= 1) s = (int)s;
     int w = (int)(320 * s + 0.5), h = (int)(ph * s + 0.5);
+    if (display_square == 2) w = ow, h = oh;             /* stretch: the whole window (the iPhone Duo inside: 1.42:1, a few per cent wider than 4:3) */
     if (w < 1) w = 1;
     if (h < 1) h = 1;
     view = (SDL_Rect){ (ow - w) / 2, (oh - h) / 2, w, h };
@@ -1186,7 +1392,7 @@ void host_notice_hold(double seconds) {
  * network go on all the while.  macOS tells SDL 2 nothing of another desktop: there the
  * window's occlusion state is asked directly (mac_window_unseen), before a present blocks
  * -- once only the first long present told, and the sound broke off at every switch. */
-#ifdef __APPLE__
+#if HOST_MACOS
 #include <SDL_syswm.h>
 #include <objc/runtime.h>
 #include <objc/message.h>
@@ -1227,7 +1433,7 @@ static void mac_no_nap(void) {
  * own cursor (the game's start, a film carried in the planner, a satellite on the map;
  * not on Windows).  There the cursor is hidden for the application as well, by NSCursor's
  * hide and unhide -- counted by AppKit, so each only when the state changes. */
-#ifdef __APPLE__
+#if HOST_MACOS
 static void mac_cursor(int show) {
     static int hidden;
     if (show == !hidden) return;
@@ -1239,15 +1445,54 @@ static void mac_cursor(int show) {
 #endif
 static void pointer_show(int show) {
     SDL_ShowCursor(show ? SDL_ENABLE : SDL_DISABLE);
-#ifdef __APPLE__
+#if HOST_MACOS
     mac_cursor(show);
 #endif
 }
 
+#if HOST_IOS
+/* iOS forbids drawing in the background: SDL_APP_WILLENTERBACKGROUND stops the presents at
+ * once -- an event watch sees it when it comes, host_poll only at the frame's end (and then
+ * waits in ios_background) */
+static volatile int ios_hidden;
+static int SDLCALL ios_event_watch(void *unused, SDL_Event *e) {
+    (void)unused;
+    if (e->type == SDL_APP_WILLENTERBACKGROUND) ios_hidden = 1;
+    else if (e->type == SDL_APP_DIDENTERFOREGROUND) ios_hidden = 0;
+    return 1;
+}
+#endif
+/* SWAPCHAIN_TEST=HZ:N (tests): a display at HZ that hands out N drawables, as Metal does on
+ * macOS -- a present waits while all N are taken: presented and not yet shown, or shown;
+ * each refresh shows the next presented one and frees the one shown before */
+static void swapchain_test(void) {
+    static double hz = -1;
+    static int n, queued, shown;
+    static u64 t0, k;
+    if (hz < 0) { const char *e = getenv("SWAPCHAIN_TEST"); hz = 0; if (e) sscanf(e, "%lf:%d", &hz, &n); if (n < 2) n = 3; }
+    if (hz <= 0) return;
+    u64 now = now_ns(), per = (u64)(1e9 / hz);
+    if (!t0) t0 = now;
+    for (;;) {
+        u64 next = t0 + (k + 1) * per;
+        while (next <= now) { k++; if (queued) { queued--; shown = 1; } next = t0 + (k + 1) * per; }
+        if (queued + shown < n) break;
+        sleep_ns(next - now);
+        now = now_ns();
+    }
+    queued++;
+}
+static u64 present_took_ns;              /* how long the last present waited (host_present) */
 static void present_now(void) {
+#if HOST_IOS
+    if (ios_hidden) return;
+#endif
     u64 t0 = now_ns();
+    swapchain_test();
     SDL_RenderPresent(ren);
     u64 took = now_ns() - t0;
+    present_took_ns = took;
+    AW_ADD(presents, 1); AW_ADD(present, took); AW_MAX(present_max, took);
     if (took > 100000000) {
         present_blocked_until = now_ns() + 3000000000ull;
         fprintf(stderr, "[display] a present took %llu ms: none for a while (the window unseen?)\n", (unsigned long long)(took / 1000000));
@@ -1255,7 +1500,7 @@ static void present_now(void) {
 }
 static int display_unseen(u64 now) {
     if (SDL_GetWindowFlags(win) & (SDL_WINDOW_HIDDEN | SDL_WINDOW_MINIMIZED)) return 1;
-#ifdef __APPLE__
+#if HOST_MACOS
     if (mac_window_unseen()) return 1;
 #endif
     return now < present_blocked_until;
@@ -1294,14 +1539,16 @@ static void present_screen(const char *unused) {
 /* A network game: once a minute a line on how far this machine ran behind the server's front
  * (its own clicks come that much later; the game's log: build/game.log from the launcher)
  * and its longest frame */
+static int net_far;                     /* host_sleep_until_T: catching up at full speed */
 static void net_minute(void) {
-    static u32 hist[64];
+    static u32 hist[64], gentle;          /* (gentle: frames catching up, gently or at full speed) */
     static u64 start, last, longest;
     u64 now = now_ns(), c = net_complete(), f = frame_no(), lag = c > f ? c - f : 0;
     if (!start) start = now;
     if (last && now - last > longest) longest = now - last;
     last = now;
     hist[lag < 63 ? lag : 63]++;
+    if (net_gentle || net_far) gentle++;
     if (now - start < 60000000000ull) return;
     u32 n = 0, k = 0, med = 0, p90 = 0, max = 0;
     for (int i = 0; i < 64; i++) n += hist[i];
@@ -1311,9 +1558,12 @@ static void net_minute(void) {
         if (k < n * 9 / 10 && k + hist[i] >= n * 9 / 10) p90 = i;
         k += hist[i];
     }
-    fprintf(stderr, "[net] the last minute: behind the server median %u, p90 %u, at most %u%s frames (lead %d); longest frame %llu ms\n",
-            med, p90, max, max == 63 ? "+" : "", net_lead, (unsigned long long)(longest / 1000000));
+    char rtt[32] = "";
+    if (net_rtt >= 0) snprintf(rtt, sizeof rtt, ", own round trip %d", net_rtt);
+    fprintf(stderr, "[net] the last minute: behind the server median %u, p90 %u, at most %u%s frames (lead %d%s), catching up %u %%; longest frame %llu ms\n",
+            med, p90, max, max == 63 ? "+" : "", net_lead, rtt, n ? gentle * 100 / n : 0, (unsigned long long)(longest / 1000000));
     memset(hist, 0, sizeof hist);
+    gentle = 0;
     start = now; longest = 0;
 }
 
@@ -1350,22 +1600,45 @@ void host_present(void) {
     if (dumpon_dir) dump_on_change();
     if (nclamp && use_native) state_reload();
     if (host_headless) return;
-    /* at most ~66 presents per second: the game draws at the VGA's 70 Hz,
-     * displays mostly show 60 (and a driver that waits for the display
-     * anyway then waits briefly instead of once per game frame) */
-    static u64 last_present_ns;
+    /* presents at the display's pace (present_period_ns), at most the game's: it draws at the
+     * VGA's 70 Hz, displays mostly show 60 -- a driver that waits for the display anyway then
+     * waits briefly instead of once per game frame.  A present is due a period after the last
+     * one was due, not a period after it was made: the game's frames come every 14.3 ms, and
+     * "15 ms since the last present" let only every second one through (35-45 a second).
+     * (2 ms early counts: the frames come a little unevenly.) */
+    static u64 due_ns;
     u64 now = now_ns();
-    if (now - last_present_ns < 15000000) return;
-    last_present_ns = now;
-    if (display_unseen(now)) return;
+    if (now + 2000000 < due_ns) return;
+    due_ns = now >= due_ns + present_period_ns ? now + present_period_ns : due_ns + present_period_ns;
+    if (display_unseen(now)) { AW_ADD(unseen, 1); return; }
+    present_took_ns = 0;
     present_shown();
+    AW_ADD(draw, now_ns() - now);
+    /* A present that waited more than half a period: all the drawables were taken (Metal on
+     * macOS hands out three; a new one only at the display's next refresh) -- the next
+     * present is left out.  Without that the game was caught: each present waited a whole
+     * refresh, the next one was due at once, and the game ran at the display's 60 frames
+     * instead of its 70 -- the sound short by a seventh, crackling, until a room change or
+     * the window in the background let the drawables come free (the Mac, 2026-11-18:
+     * 60 presents a second of 15.6 ms each).  One left out, a refresh passes with a drawable
+     * freed and none taken, and the presents come between the refreshes again.
+     * (SWAPCHAIN_TEST=59.9:3 shows the trap without a Mac.) */
+    if (present_took_ns > present_period_ns / 2) { due_ns += present_period_ns; AW_ADD(skipped, 1); }
 }
 
-/* the screen of this machine's seat */
+/* the screen of this machine's seat -- and, with that seat in memory (a network game's guest is
+   not between its turns), whether the game changed its cursor's limits (src/fixes.c) */
+static int tv_panel_up;                 /* the shown seat's bottom panel stands (game_panel_up, at its present) */
+static void present_seen(const char *unused) {
+    if (mouse_free && mouse_limits_changed()) limits_changed = 1;
+    tv_panel_up = game_panel_up();
+    seen_grip_ok = game_drag_hot(&seen_grip_x, &seen_grip_y);
+    present_screen(unused);
+}
 static void present_shown(void) {
     int vs = host_shown_seat();
-    if (vs > 0 && seat_view(vs, present_screen, NULL)) return;
-    present_screen(NULL);
+    if (vs > 0 && seat_view(vs, present_seen, NULL)) return;
+    present_seen(NULL);
 }
 
 static u16 sdl_to_bios(SDL_Keysym ks) {
@@ -1391,6 +1664,137 @@ static u16 sdl_to_bios(SDL_Keysym ks) {
     return 0;
 }
 
+/* the game's text field (ui_input_text, src/frame.c): on iOS the screen's keyboard, which
+ * SDL turns into key presses; Return ends the field and the keyboard goes again.  (A network
+ * game runs the other players' fields on this machine too: not there.) */
+void host_text_entry(int on) {
+#if HOST_IOS
+    extern int seat_cur;
+    if (host_headless || (net_active && seat_cur != net_seat)) return;   /* (a network game: this machine's own seat's field only -- every seat runs here) */
+    if (on) SDL_StartTextInput();
+    else SDL_StopTextInput();
+#else
+    (void)on;
+#endif
+}
+
+/* Fingers (iPhone, iPad, any touch screen; --mouse free / system).  SDL makes the first
+ * finger the mouse (SDL_TOUCH_MOUSEID); here it becomes:
+ *   a tap (up within TOUCH_HOLD_MS, moved less than TOUCH_SLOP points): the left button at
+ *     the finger, pressed when it lifts (touch_press_ready: once the cursor has come);
+ *   held TOUCH_HOLD_MS, or moved further: aiming -- no click yet, the pointer under the
+ *     finger, the game showing its own arrow (host_game_arrow: not the system's, which iOS
+ *     hides); lifting clicks there.  The transmitter map's reach and price follow meanwhile
+ *     (the game updates them as its cursor moves).  (The pointer going a third of the
+ *     finger's way, with a loupe above it, was tried: too slow on the map, the loupe in
+ *     the way.);
+ *     In the programme planner a finger that slid clicks nothing (the user: a swipe there is
+ *     looking, not choosing; TOUCH_NO_SWIPE_ROOM) -- held still and lifted it does;
+ *   a second finger before lifting: while undecided the right button (Esc in the game: out
+ *     of a room, back from a screen), while aiming nothing (aiming given up);
+ *   with --tv-back, a tap on the TV family's monitor (bottom right, 208,127 104x58 -- the
+ *     original does nothing there) the right button too, once the bottom panel stands
+ *     (game_panel_up): one hand will do.
+ * The game never needs a button held while moving: every action fires on the press, a
+ * carried item (the planner's programmes, a transmitter) is taken with one click and put
+ * with the next (src/main_loop.c) -- where its corner is, not the grip (cursor_x/y, ui.c):
+ * the mouse moves the item over the slot, a finger taps the slot.  So with a finger the
+ * item hangs from its corner (touch_grip): the slot under the finger is the one it goes to
+ * (the same for the waste bin's cursor, which clicks 5 pixels off). */
+enum { TOUCH_NONE, TOUCH_DOWN, TOUCH_AIM, TOUCH_IGNORE };
+#define TOUCH_HOLD_MS 300
+#define TOUCH_SLOP 10.0f
+#define TOUCH_NO_SWIPE_ROOM 0x1F    /* the programme planner (g_room) */
+static int touch_st, touch_slid;
+int host_game_arrow;
+static Uint32 touch_t0;
+static float touch_x0, touch_y0;     /* where the finger came down (window points) */
+static int fingers_down;             /* fingers on the screen now (SDL_FINGERDOWN / UP) */
+
+static void btn_push(int st, int touch) {
+    if (btn_n < 32) { btn_touch[btn_n] = touch; btn_queue[btn_n++] = st; }
+    else fprintf(stderr, "[input] frame %llu: a mouse button left out (32 changes waiting)\n", (unsigned long long)frame_no());
+}
+static void touch_click(int bit, int wait) {
+    int last = btn_n ? btn_queue[btn_n - 1] : applied_buttons;
+    btn_push(last | bit, wait);
+    btn_push(last & ~bit, 2);            /* (released once the game has read it: btn_ready) */
+}
+static void touch_aim(void) {
+    touch_st = TOUCH_AIM;
+    host_game_arrow = 1;
+}
+/* -> 1: the finger's motion taken here */
+static int touch_motion(const SDL_MouseMotionEvent *m) {
+    switch (touch_st) {
+    case TOUCH_DOWN:               /* (the pointer stays under the finger) */
+        if (fabsf(m->x - touch_x0) >= TOUCH_SLOP || fabsf(m->y - touch_y0) >= TOUCH_SLOP) { touch_slid = 1; touch_aim(); }
+        return 0;
+    case TOUCH_AIM:
+        if (fabsf(m->x - touch_x0) >= TOUCH_SLOP || fabsf(m->y - touch_y0) >= TOUCH_SLOP) touch_slid = 1;
+        return 0;
+    case TOUCH_IGNORE:
+        return 1;
+    }
+    return 0;
+}
+/* the finger came down on the TV family's monitor (208,127, 104x58 game pixels) */
+static int touch_on_tv(void) {
+    if (view_wpt < 1 || view_hpt < 1) return 0;
+    float gx = (touch_x0 - view_xpt) * 320.0f / view_wpt, gy = (touch_y0 - view_ypt) * 200.0f / view_hpt;
+    return gx >= 208 && gx < 312 && gy >= 127 && gy < 185;
+}
+static void touch_button(const SDL_MouseButtonEvent *b) {
+    if (b->type == SDL_MOUSEBUTTONDOWN) {
+        touch_st = TOUCH_DOWN;
+        touch_slid = 0;
+        fingers_down = 0;                /* (the first finger: its FINGERDOWN comes next -- a lost FINGERUP can't stick) */
+        touch_t0 = b->timestamp;
+        touch_x0 = b->x; touch_y0 = b->y;
+        return;
+    }
+    if (touch_slid && !net_active && game_room() == TOUCH_NO_SWIPE_ROOM) touch_st = TOUCH_IGNORE;
+    if (touch_st == TOUCH_DOWN && tv_back_opt && tv_panel_up && touch_on_tv()) {
+        touch_click(2, 0);
+        fprintf(stderr, "[input] frame %llu: a tap on the TV family's monitor = right button\n", (unsigned long long)frame_no());
+        touch_st = TOUCH_IGNORE;
+    }
+    if (touch_st == TOUCH_DOWN || touch_st == TOUCH_AIM) touch_click(1, 1);
+    touch_st = TOUCH_NONE;
+    host_game_arrow = 0;
+}
+static void touch_finger(const SDL_TouchFingerEvent *f) {
+    if (f->type == SDL_FINGERUP) { if (fingers_down > 0) fingers_down--; return; }
+    if (++fingers_down != 2) return;       /* (SDL sends the first finger's mouse press before its FINGERDOWN) */
+    if (touch_st == TOUCH_DOWN) {
+        touch_click(2, 0);
+        fprintf(stderr, "[input] frame %llu: two fingers = right button\n", (unsigned long long)frame_no());
+    }
+    if (touch_st == TOUCH_DOWN || touch_st == TOUCH_AIM) touch_st = TOUCH_IGNORE;
+    host_game_arrow = 0;
+}
+
+#if HOST_IOS
+/* The app goes to the background (home screen, another app, the phone locked): iOS
+ * suspends it soon and forbids drawing there.  The game stands until it is in front
+ * again -- the sound paused, the clock going on from there. */
+static void ios_background(void) {
+    SDL_Event e;
+    if (audio_dev) SDL_PauseAudioDevice(audio_dev, 1);
+    fprintf(stderr, "[ios] frame %llu: in the background\n", (unsigned long long)frame_no());
+    while (SDL_WaitEvent(&e)) {
+        if (e.type == SDL_QUIT || e.type == SDL_APP_TERMINATING) exit(0);
+        if (e.type == SDL_APP_DIDENTERFOREGROUND) break;
+    }
+    fprintf(stderr, "[ios] in front again\n");
+    fingers_down = 0;                    /* (their FINGERUPs went by in the loop above) */
+    touch_st = TOUCH_NONE;
+    host_game_arrow = 0;
+    wall_start_ns = now_ns() - (u64)(T / insns_per_us * 1000.0);
+    if (audio_dev) SDL_PauseAudioDevice(audio_dev, 0);
+}
+#endif
+
 void host_poll(void) {
     if (host_headless) return;
     SDL_Event e;
@@ -1400,6 +1804,10 @@ void host_poll(void) {
             present_blocked_until = 0;           /* (the window seen again: present_now) */
         switch (e.type) {
         case SDL_QUIT: exit(0);
+#if HOST_IOS
+        case SDL_APP_WILLENTERBACKGROUND: ios_background(); break;
+        case SDL_APP_TERMINATING: exit(0);
+#endif
         case SDL_KEYDOWN: {
             /* fullscreen on and off: F11, Alt+Enter, and on the Mac Cmd+Ctrl+F or Cmd+F */
             SDL_Keycode sym = e.key.keysym.sym;
@@ -1421,6 +1829,8 @@ void host_poll(void) {
         } break;
         case SDL_MOUSEMOTION: {
             if (view_wpt < 1) display_layout();
+            if (mouse_free) ptr_touch = e.motion.which == SDL_TOUCH_MOUSEID;
+            if (mouse_free && e.motion.which == SDL_TOUCH_MOUSEID && touch_motion(&e.motion)) break;
             if (mouse_free) {            /* the pointer's position counts; hidden over the picture */
                 ptr_x = e.motion.x; ptr_y = e.motion.y; ptr_moved = 1;
                 if (mouse_system) break;  /* (system_pointer, once the motion has gone to the game) */
@@ -1435,13 +1845,15 @@ void host_poll(void) {
             live_dx += dx; live_dy += dy;
         } break;
         case SDL_MOUSEBUTTONDOWN: case SDL_MOUSEBUTTONUP: {
+            if (mouse_free && e.button.which == SDL_TOUCH_MOUSEID && e.button.button == SDL_BUTTON_LEFT) { touch_button(&e.button); break; }
             int bit = e.button.button == SDL_BUTTON_LEFT ? 1 : e.button.button == SDL_BUTTON_RIGHT ? 2 : 0;
             int last = btn_n ? btn_queue[btn_n - 1] : applied_buttons;
             int st = e.type == SDL_MOUSEBUTTONDOWN ? (last | bit) : (last & ~bit);
-            if (bit && st != last && btn_n < 32) btn_queue[btn_n++] = st;
-            else if (bit && st != last)
-                fprintf(stderr, "[input] frame %llu: a mouse button left out (32 changes waiting)\n", (unsigned long long)frame_no());
+            if (bit && st != last) btn_push(st, 0);
         } break;
+        case SDL_FINGERDOWN: case SDL_FINGERUP:
+            touch_finger(&e.tfinger);
+            break;
         case SDL_WINDOWEVENT:   /* (the game's log: where clicks went astray -- a click that only focused the window) */
             if (e.window.event == SDL_WINDOWEVENT_FOCUS_GAINED || e.window.event == SDL_WINDOWEVENT_FOCUS_LOST)
                 fprintf(stderr, "[window] frame %llu: focus %s; buttons held: SDL %u, the game %d\n", (unsigned long long)frame_no(),
@@ -1449,6 +1861,7 @@ void host_poll(void) {
             break;
         }
     }
+    if (touch_st == TOUCH_DOWN && SDL_GetTicks() - touch_t0 >= TOUCH_HOLD_MS) touch_aim();   /* (a finger held: aiming) */
 }
 
 /* With sound on, the audio device's clock paces the game: virtual time may
@@ -1467,26 +1880,43 @@ void host_poll(void) {
  * sound's pieces is left out (or the system clock runs an eighth faster), the game a
  * little faster, nothing jumps.  More than NET_FAR frames further (it was held up), at
  * full speed.  A machine that lagged until a fixed 20 frames before catching up played
- * its own inputs up to 0.3 s late: dragging an ad or a film felt spongy. */
+ * its own inputs up to 0.3 s late: dragging an ad or a film felt spongy.
+ * A newer server says this machine's own round trip too (LEAD n r): the lead covers the
+ * longest, so a machine the front's own pace keeps lead - r behind -- the 2 frames over
+ * that are its leeway, not the whole lead (the slower clock kept 7-8 behind with lead 6,
+ * the faster 1: its taps 0.1 s later, the iPhone's planner felt laggy; never below
+ * NET_NEAR_MIN: the server's default --margin and 2 -- the client is not told the margin).
+ * Not lower than lead - r: there the fastest machine would catch up for ever and pull the
+ * server's clock along -- so r is the shortest recent round trip (mpserver.go rttFrames).
+ * Where the round trip falls more than 2 frames below that at once (another network),
+ * the fastest machine catches up until the next LEAD (half a second): the server's clock
+ * at most 5 % fast meanwhile. */
 #define NET_FAR 25
+#define NET_NEAR_MIN 4
 void host_sleep_until_T(u64 t) {
     if (!realtime) return;
-    net_gentle = 0;
+    net_gentle = net_far = 0;
     if (net_active) {
         u64 c = net_complete(), f = frame_no(), lag = c > f ? c - f : 0, near = (u64)net_lead + 2;
+        if (net_rtt >= 0) near = net_lead - net_rtt > NET_NEAR_MIN - 2 ? (u64)(net_lead - net_rtt + 2) : NET_NEAR_MIN;
         if (lag > near + NET_FAR) {
-            if (audio_dev && SDL_GetQueuedAudioSize(audio_dev) / 4.0 / 44.1 > 4 * audio_lead_ms) { SDL_ClearQueuedAudio(audio_dev); audio_cleared = 1; }
+            if (audio_dev && SDL_GetQueuedAudioSize(audio_dev) / 4.0 / 44.1 > 4 * audio_lead_ms) { SDL_ClearQueuedAudio(audio_dev); audio_cleared = 1; audio_clock_reset(); }
+            net_far = 1;
             return;
         }
         net_gentle = lag > near;
     }
     if (audio_dev) {
-        double queued_ms = SDL_GetQueuedAudioSize(audio_dev) / 4.0 / 44.1;
+        double queued_ms = audio_queued_smooth();
+        aw_look(now_ns());
         if (queued_ms > audio_lead_ms + 2) {
             double ms = queued_ms - audio_lead_ms;
             if (ms > 50) ms = 50;
+            u64 s0 = now_ns();
             sleep_ns((u64)(ms * 1e6));
+            AW_ADD(sleep, now_ns() - s0);
         }
+        aw_last_look = now_ns();
         /* keep the system-clock mapping current, for when there is no audio */
         wall_start_ns = now_ns() - (u64)(t / insns_per_us * 1000.0);
         return;

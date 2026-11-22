@@ -161,7 +161,13 @@ function bulkBar(sec, TS, cols) {
     const c = numCols.find((x) => x.key === B.col);
     if (!c || B.val === '' || isNaN(+B.val)) { status(T('A number, please.'), 'err'); return; }
     let n = 0;
-    for (const r of sel) { if (setGuarded(sec, r, c.f, roundMoney(c, calc(c, r)))) n++; }
+    const done = new Set();                  /* (linked entries -- the start studios -- change together: once) */
+    for (const r of sel) {
+      const grp = sec.linked ? sec.linked(r) : [r.id];
+      if (grp.some((id) => done.has(id))) continue;
+      grp.forEach((id) => done.add(id));
+      if (setGuarded(sec, r, c.f, roundMoney(c, calc(c, r)))) n++;
+    }
     markDirty([sec.table]); renderEntry();
     const op = B.op === 'x' ? T('times') : B.op === '+' ? T('plus') : T('set to');
     status(TP(n, '{label} of {n} entry: {op} {val}.', '{label} of {n} entries: {op} {val}.', { label: c.label, op, val: B.val }), 'ok');

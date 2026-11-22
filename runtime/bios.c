@@ -234,7 +234,9 @@ int mouse_reset(u16 *buttons) {
     return 1;
 }
 /* function 3: buttons, *x, *y (driver units) */
+unsigned mouse_reads;                /* how often the game read them (a finger's tap waits for one, host.c) */
 u16 mouse_read(u16 *x, u16 *y) {
+    mouse_reads++;
     mouse_apply_pending();
     *x = (u16)mouse_x; *y = (u16)mouse_y;
     time_advance(50);
@@ -263,9 +265,9 @@ void int33(void) {
         if (bios_trace) fprintf(stderr, "  int33/3 -> buttons=%d x=%d y=%d\n", R.bx, R.cx, R.dx);
         break;
     case 0x04: mouse_set_pos(R.cx, R.dx); break;
-    case 0x05: { int b = R.bx & 3; R.ax = (u16)mouse_buttons; R.bx = (u16)mouse_press_cnt[b];
+    case 0x05: { int b = R.bx & 3; mouse_reads++; R.ax = (u16)mouse_buttons; R.bx = (u16)mouse_press_cnt[b];
         R.cx = (u16)mouse_press_x[b]; R.dx = (u16)mouse_press_y[b]; mouse_press_cnt[b] = 0; } break;
-    case 0x06: { int b = R.bx & 3; R.ax = (u16)mouse_buttons; R.bx = (u16)mouse_rel_cnt[b];
+    case 0x06: { int b = R.bx & 3; mouse_reads++; R.ax = (u16)mouse_buttons; R.bx = (u16)mouse_rel_cnt[b];
         R.cx = (u16)mouse_x; R.dx = (u16)mouse_y; mouse_rel_cnt[b] = 0; } break;
     case 0x07: mouse_range_x(R.cx, R.dx); break;
     case 0x08: mouse_range_y(R.cx, R.dx); break;

@@ -1708,6 +1708,7 @@ void ui_draw_auction_board(u16 a0) {
     u16 l_6;
     u16 l_8;
     u16 l_A;
+    u16 l_lot;                           /* the lot at the place (--auction-lots) */
     u16 t2;
     u32 t3;
     u32 t4;
@@ -1720,10 +1721,12 @@ void ui_draw_auction_board(u16 a0) {
     clip_reset();
     if (a0 == 0 || a0 == 2 || ((i16)a0) > 100) {
         if (a0 == 0) {
-            G16(0x8FDE) = popup_open(2, 1, 0x25, 0xD, 0, 0, 3);
+            auction_page_reset();            /* --auction-lots: every board opens on page 1 */
+            G16(0x8FDE) = popup_open(auction_tab_shown() ? 0 : 2, 1, 0x25, 0xD, 0, 0, 3);   /* (with the tab: the board from x 0) */
         }
         if (((i16)a0) < 100) {
-            ui_tile_box(0x10, 8, 0x130, 0x70, 0);
+            ui_tile_box(0x10 + auction_board_dx(), 8, 0x130 + auction_board_dx(), 0x70, 0);   /* (--auction-lots: 16 pixels to the left) */
+            auction_tab_draw();              /* --auction-lots: the tab at the right edge */
         }
         di = 0;
         while (((i16)di) <= 1) {
@@ -1731,40 +1734,45 @@ void ui_draw_auction_board(u16 a0) {
             si = 1;
             while (((i16)si) <= 5) {
                 LOOP_TICK(211);
+                l_lot = auction_lot_at_place((di * 5) + si);   /* (di * 5) + si in the original (--auction-lots: the page's) */
+                if (l_lot == 0) {                    /* past the game's lots: an empty place on the board */
+                    si = si + 1;
+                    continue;
+                }
                 if (((i16)a0) < 100) {
 L_2FB9:
-                    t2 = auction((di * 5) + si).program;
-                    l_8 = auction((di * 5) + si).program;
+                    t2 = auction(l_lot).program;
+                    l_8 = auction(l_lot).program;
                     if (t2 == 0) {
                         l_A = 1;
                     } else {
                         l_A = 0;
                     }
-                    ui_tile_box((di * 0x8E) + 0x14, (si * 0x13) + 0xFFF9, (di * 0x8E) + 0x9C, (si * 0x13) + 0xB, l_A);
+                    ui_tile_box((di * 0x8E) + 0x14 + auction_board_dx(), (si * 0x13) + 0xFFF9, (di * 0x8E) + 0x9C + auction_board_dx(), (si * 0x13) + 0xB, l_A);
                     if (l_A == 0) {
-                        draw_sprite(MK32(g_bld_sprites_hi, g_bld_sprites_lo + 0x62), (di * 0x8E) + 0x15, (si * 0x13) + 0xFFFA);
+                        draw_sprite(MK32(g_bld_sprites_hi, g_bld_sprites_lo + 0x62), (di * 0x8E) + 0x15 + auction_board_dx(), (si * 0x13) + 0xFFFA);
                         if (((i16)l_8) >= 1000) {
                             t5 = series_title(l_8 + 0xFC18);
                             t6 = str_format(DSP(0x1442) /* "#*14s" */, W2(t5));
-                            text_draw_free((di * 0x8E) + 0x26, (si * 0x13) + 0xFFF2, LO16(t6), HI16(t6));
+                            text_draw_free((di * 0x8E) + 0x26 + auction_board_dx(), (si * 0x13) + 0xFFF2, LO16(t6), HI16(t6));
                         } else {
                             t3 = movie_title(l_8);
                             t4 = str_format(DSP(0x143C) /* "#*14s" */, W2(t3));
-                            text_draw_free((di * 0x8E) + 0x26, (si * 0x13) + 0xFFF2, LO16(t4), HI16(t4));
+                            text_draw_free((di * 0x8E) + 0x26 + auction_board_dx(), (si * 0x13) + 0xFFF2, LO16(t4), HI16(t4));
                         }
-                        t7 = auction_increment((di * 5) + si);
-                        l_4 = (t7 + (auction((di * 5) + si).bid));
-                        t9 = (u16)(i8)(auction((di * 5) + si).bidder);
-                        l_6 = (u16)(i8)(auction((di * 5) + si).bidder);
+                        t7 = auction_increment(l_lot);
+                        l_4 = (t7 + (auction(l_lot).bid));
+                        t9 = (u16)(i8)(auction(l_lot).bidder);
+                        l_6 = (u16)(i8)(auction(l_lot).bidder);
                         if (((i16)t9) < 0) {
                             l_6 = g_player;
-                            l_4 = l_4 + auction_increment((di * 5) + si);
+                            l_4 = l_4 + auction_increment(l_lot);
                         }
                         t11 = str_format(DSP(0x1448) /* "#_7l #*8s" */, W2(l_4), W2(players(l_6).station));
-                        text_draw_free((di * 0x8E) + 0x26, (si * 0x13) + 0xFFFA, LO16(t11), HI16(t11));
+                        text_draw_free((di * 0x8E) + 0x26 + auction_board_dx(), (si * 0x13) + 0xFFFA, LO16(t11), HI16(t11));
                     }
                 } else {
-                    if (((u16)((di * 5) + si)) == ((u16)(a0 + 0xFF9C))) goto L_2FB9;
+                    if (l_lot == ((u16)(a0 + 0xFF9C))) goto L_2FB9;
                 }
                 si = si + 1;
             }

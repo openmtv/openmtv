@@ -33,6 +33,7 @@
 #include "game.h"
 #include "seat.h"
 #include "mpsave.h"
+#include "fixes.h"
 
 int mp_loaded;
 
@@ -96,13 +97,14 @@ static int parts_of(const u8 *d, u32 n, Parts *p, char *why, unsigned whylen) {
     if (p->game_n < SAVE_BASE || p->game_n > 0xFFFF) { snprintf(why, whylen, "the savegame part has %u bytes", (unsigned)p->game_n); return 0; }
     if (p->game_n > SAVE_BASE) {         /* a mod's films 201.., series 51.., ads 51.., the computer players' state ("MTVX", src/actions.c) */
         const u8 *x = p->game + SAVE_BASE;
-        u32 left = p->game_n - SAVE_BASE, c[6] = { 0, 0, 0, 0, 10, 10 }, cnt = left >= 6 ? (u32)(x[4] | x[5] << 8) : 0;
-        if (left < 12 || memcmp(x, "MTVX", 4) || cnt < 3 || cnt > 6 || left < 6 + 2 * cnt) { snprintf(why, whylen, "the savegame's extension is not MTVX with 3 to 6 counts"); return 0; }
+        u32 left = p->game_n - SAVE_BASE, c[7] = { 0, 0, 0, 0, 10, 10, 10 }, cnt = left >= 6 ? (u32)(x[4] | x[5] << 8) : 0;
+        if (left < 12 || memcmp(x, "MTVX", 4) || cnt < 3 || cnt > 7 || left < 6 + 2 * cnt) { snprintf(why, whylen, "the savegame's extension is not MTVX with 3 to 7 counts"); return 0; }
         for (u32 k = 0; k < cnt; k++) c[k] = x[6 + 2 * k] | (u32)x[7 + 2 * k] << 8;
-        if (c[0] > EXTRA_MAX || c[1] > EXTRA_MAX || c[2] > EXTRA_MAX || c[3] > 1024 || c[4] > AD_OFFERS_MAX || c[5] > FILM_OFFERS_MAX) { snprintf(why, whylen, "the savegame's extension counts too many"); return 0; }
+        if (c[0] > EXTRA_MAX || c[1] > EXTRA_MAX || c[2] > EXTRA_MAX || c[3] > 1024 || c[4] > AD_OFFERS_MAX || c[5] > FILM_OFFERS_MAX || c[6] > AUCTION_LOTS_MAX) { snprintf(why, whylen, "the savegame's extension counts too many"); return 0; }
         u32 need = 6 + 2 * cnt + (c[0] > 200 ? (c[0] - 200) * 0x12 : 0) + (c[1] > 50 ? (c[1] - 50) * 0x29 : 0) + (c[2] > 50 ? c[2] - 50 : 0) + c[3]
                  + (c[4] > 10 ? (c[4] - 10) * 0x7 : 0)    /* the ad agency's offers past 10 (--ad-offers) */
-                 + (c[5] > 10 ? (c[5] - 10) * 0x8 : 0);   /* the film dealer's past 10 (--film-offers) */
+                 + (c[5] > 10 ? (c[5] - 10) * 0x8 : 0)    /* the film dealer's past 10 (--film-offers) */
+                 + (c[6] > 10 ? (c[6] - 10) * 0x9 : 0);   /* the auction's lots past 10 (--auction-lots) */
         if (left != need) { snprintf(why, whylen, "the savegame's extension has %u bytes, its counts %u", (unsigned)left, (unsigned)need); return 0; }
     }
     if (p->humans_n < 3 || (p->humans[0] | p->humans[1] << 8) != HUMANS_VERSION) {
@@ -196,6 +198,10 @@ void mpsave_night(void) {
         jput(meta, sizeof meta, &mn, "\"offers\": %d, ", AD_OFFERS_OPT());
     if (FILM_OFFERS_OPT() > FILM_OFFERS_OPT_MIN)   /* (as the ad offers) */
         jput(meta, sizeof meta, &mn, "\"filmoffers\": %d, ", FILM_OFFERS_OPT());
+    if (AUCTION_LOTS_OPT() > AUCTION_LOTS_OPT_MIN)   /* (as the ad offers) */
+        jput(meta, sizeof meta, &mn, "\"lots\": %d, ", AUCTION_LOTS_OPT());
+    if (origscripts_active())                    /* the rule "Unfertige Drehbuecher integrieren" (none: the original's screenplays) */
+        jput(meta, sizeof meta, &mn, "\"origscripts\": true, ");
     jput(meta, sizeof meta, &mn, "\"humans\": [");
     int first = 1;
     for (int i = 0; i < seats_n; i++) {

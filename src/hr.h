@@ -45,6 +45,7 @@ void hr_save(HrCell **buf, u16 cap, u16 seg, u16 off, u16 n);     /* n cells int
 void hr_restore(const HrCell *buf, u16 seg, u16 off, u16 n);
 void hr_get(HrCell *buf, u16 seg, u16 off, u16 n);                /* n cells into buf */
 void hr_glyph_px(u16 ss, u16 so, u16 ds, u16 dof, u8 v, u8 col);  /* a font pixel drawn by our own code */
+int hr_picture_4x(u16 seg, u16 off, int stride, int w, int h, u32 *out, const u32 *pal);   /* a picture at 4x from its cells */
 /* finer than the game's pixels (stage 5): hooks after the original's drawing */
 void hr_betty_meter(u32 bmp, u16 love, u32 atlas);
 int hr_chart_frac(u32 v, u16 scale, u16 h);

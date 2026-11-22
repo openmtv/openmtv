@@ -93,10 +93,13 @@ u16 sched_place_ad(u16 a0, u16 a1, u16 a2) {
     return ax;
 }
 
-/* sched_place_program's refusals: a message box for the human.  Fix "ai-warning": not
- * for a computer player (ai_place_live_programs tries a live film whose hour is over
- * at every office visit -- in the original each try opens another box on the human's
- * screen, never closed, until the popup's background save gets a null bitmap) */
+/* sched_place_program's and studio_new_shopping_list's refusals: a message box for the
+ * human.  Fix "ai-warning": not for a computer player (ai_place_live_programs tries a
+ * live film whose hour is over at every office visit -- in the original each try opens
+ * another box on the human's screen, never closed, until the popup's background save
+ * gets a null bitmap; ai_next_shopping_list asks for a list at every round its studio
+ * cannot shoot, and from the sixth on "too many shopping lists" pops up wherever the
+ * human is) */
 static void sched_warning(u16 player, u16 text) {
     if (fix_on(FIX_AI_WARNING) && !mp_is_human((i16)player)) return;
     ui_warning(text);
@@ -421,13 +424,13 @@ u16 studio_new_shopping_list(u16 a0) {
                     AT(studio, l_C).episode_last = (u8)l_14;
                     l_E = 1;
                 } else {
-                    ui_warning(0x14F);
+                    sched_warning(l_10, 0x14F);
                 }
             } else {
-                ui_warning(0x41);
+                sched_warning(l_10, 0x41);
             }
         } else {
-            ui_warning(0x40);
+            sched_warning(l_10, 0x40);
         }
     }
     ax = l_E;
@@ -723,6 +726,8 @@ void game_load(u16 a0, u16 ax) {
     g_save_mode = 1;
     game_save_load(a0, ax);
     speed4_after_load();             /* saved at the fourth speed, loaded without it (fixes.c) */
+    origscripts_after_load();        /* the rule "Unfertige Drehbuecher integrieren" in or out (origscripts.c) */
+    saverules_after_load();          /* a savegame's rules: its data fixes in or out (saverules.c) */
     return;
 }
 
@@ -812,14 +817,20 @@ static void load_byte(u8 *r, const u8 *b) { r[0] = b[0]; }
 /* the extension's head as this game writes it: "MTVX", the number of counts,
  * the counts -- films, series, ads, the computer players' state's length
  * (--ai-improve), the ad agency's offers (--ad-offers), the film dealer's
- * offers (--film-offers): as many as up to the last one this game needs
+ * offers (--film-offers), the auction's lots (--auction-lots), the length of
+ * the line of the game's rules (a single player's savegame, src/saverules.c;
+ * sp 0: a network game's, mp_savegame_write -- its description has them): as
+ * many as up to the last one this game needs
  * (3 .. MTVX_COUNTS; one between written as it is: 0, 10).  Another count
  * later: one more entry here, its data after the others.  Its length, 0 if
  * the game needs no extension */
-#define MTVX_COUNTS 6
-static u16 savegame_extra_head(u8 head[6 + 2 * MTVX_COUNTS]) {
-    u16 cnt[MTVX_COUNTS] = { g_nfilms, g_nseries, g_nads, ai_improve_save_size(), g_nadoffers, g_nfilmoffers };
-    int need[MTVX_COUNTS] = { g_nfilms > 200, g_nseries > 50, g_nads > 50, cnt[3] != 0, g_nadoffers > 10, g_nfilmoffers > 10 };
+#define MTVX_COUNTS 8
+static u8 rules_line[SAVERULES_MAX];     /* the rules of the savegame being written (savegame_extra_head with sp) */
+static u16 rules_len;
+static u16 savegame_extra_head(u8 head[6 + 2 * MTVX_COUNTS], int sp) {
+    rules_len = sp && saverules_needed() ? saverules_text(rules_line, SAVERULES_MAX) : 0;
+    u16 cnt[MTVX_COUNTS] = { g_nfilms, g_nseries, g_nads, ai_improve_save_size(), g_nadoffers, g_nfilmoffers, g_nlots, rules_len };
+    int need[MTVX_COUNTS] = { g_nfilms > 200, g_nseries > 50, g_nads > 50, cnt[3] != 0, g_nadoffers > 10, g_nfilmoffers > 10, g_nlots > 10, rules_len != 0 };
     u16 n = 0;
     for (int k = 0; k < MTVX_COUNTS; k++) if (need[k]) n = (u16)(k + 1);
     if (!n) return 0;
@@ -832,11 +843,11 @@ static u16 savegame_extra_head(u8 head[6 + 2 * MTVX_COUNTS]) {
 /* (32 bits: 999 films and 999 series take 51 K; game_save refuses what passes SAVEGAME_MAX) */
 static u32 savegame_extra_size(void) {
     u8 head[6 + 2 * MTVX_COUNTS];
-    u16 h = savegame_extra_head(head);
+    u16 h = savegame_extra_head(head, 1);
     if (!h) return 0;
     u32 recs = (g_nfilms > 200 ? (g_nfilms - 200) * 0x12u : 0) + (g_nseries > 50 ? (g_nseries - 50) * 0x29u : 0) + (g_nads > 50 ? g_nads - 50u : 0);
     return h + recs + ai_improve_save_size() + (g_nadoffers > 10 ? (g_nadoffers - 10) * 0x7u : 0)
-           + (g_nfilmoffers > 10 ? (g_nfilmoffers - 10) * 0x8u : 0);
+           + (g_nfilmoffers > 10 ? (g_nfilmoffers - 10) * 0x8u : 0) + (g_nlots > 10 ? (g_nlots - 10) * 0x9u : 0) + rules_len;
 }
 /* the film dealer's slots past 10 of a savegame being loaded (8 bytes each, as the
  * original's at DS:19ED, after the ad offers, at `at`; `saved` the savegame's count):
@@ -859,6 +870,29 @@ static void film_offers_return_surplus(u32 at, u16 saved, u16 size) {
     if (!film_offers_saved(at, saved, size, &fsaved)) return;
     for (u16 i = fgame; i < fsaved; i++) filmoffers_return_to_market(HPTR(MK32(g_save_buf_hi, (u16)(g_save_buf_lo + at + i * 8u))));
 }
+/* the auction's lots past 10 of a savegame being loaded (9 bytes each, as the
+ * original's at DS:1B0D, after the dealer's slots, at `at`; `saved` the
+ * savegame's count): auction_lots_restore takes as many as this game has --
+ * lots it has and the savegame not stay empty until the night's refill --,
+ * auction_lots_return_surplus gives the programmes of the lots past this
+ * game's back to the market, once the films' and series' records are loaded,
+ * and the computer players' bids on them back to their budgets */
+static int auction_lots_saved(u32 at, u16 saved, u16 size, u16 *lsaved) {
+    *lsaved = saved > 10 ? (u16)(saved - 10) : 0;
+    return *lsaved && at + *lsaved * 9u <= size;
+}
+static void auction_lots_restore(u32 at, u16 saved, u16 size) {
+    u16 lsaved, lgame = g_nlots > 10 ? (u16)(g_nlots - 10) : 0;
+    auction_lots_clear();
+    if (auction_lots_saved(at, saved, size, &lsaved) && lgame)
+        memcpy(g_lots_extra, HPTR(MK32(g_save_buf_hi, (u16)(g_save_buf_lo + at))), (lsaved < lgame ? lsaved : lgame) * 9u);
+}
+static void auction_lots_return_surplus(u32 at, u16 saved, u16 size) {
+    u16 lsaved, lgame = g_nlots > 10 ? (u16)(g_nlots - 10) : 0;
+    if (!auction_lots_saved(at, saved, size, &lsaved) || lsaved <= lgame) return;
+    for (u16 i = lgame; i < lsaved; i++) auction_lot_return_to_market(HPTR(MK32(g_save_buf_hi, (u16)(g_save_buf_lo + at + i * 9u))));
+    auction_lots_drop_ai_bids();
+}
 /* the original's savegame up to the managers' names, where the extension
  * begins (game_save_load: 37 605 bytes) */
 static u16 savegame_base_size(void);
@@ -875,7 +909,7 @@ static int load_refused;
  * addresses it through one far pointer (the buffer's offset plus the position,
  * 16 bits: the offset of a normalized pointer is below 16): a mod whose
  * extension takes it past SAVEGAME_MAX -- with every option on, 999 films, 50
- * ads and more than 374 series -- is not saved (game_save; tools/content.py and
+ * ads and more than 372 series -- is not saved (game_save; tools/content.py and
  * the editor refuse such a mod). */
 #define SAVEGAME_MAX 0xFFF0u
 static int save_refused;
@@ -917,14 +951,18 @@ static void savegame_extras(u16 slot) {
     u16 ai = 0;                          /* the computer players' state (--ai-improve) */
     u16 offers = 10;                     /* the ad agency's offers (--ad-offers) */
     u16 filmoffers = 10;                 /* the film dealer's offers (--film-offers) */
+    u16 lots = 10;                       /* the auction's lots (--auction-lots) */
+    u16 rules = 0;                       /* the line of the game's rules (src/saverules.c) */
     u32 film_at = 0;                     /* (loading: where the dealer's slots past 10 are) */
+    u32 lots_at = 0;                     /* (and the auction's lots past 10) */
     u16 size = 0;
     if (g_save_mode != 1) {
-        u16 n[3] = { g_nfilms, g_nseries, g_nads }, h = savegame_extra_head(head);
+        u16 n[3] = { g_nfilms, g_nseries, g_nads }, h = savegame_extra_head(head, 1);
         if (!h) return;
         ai = ai_improve_save_size();
         offers = g_nadoffers;
         filmoffers = g_nfilmoffers;
+        lots = g_nlots;
         for (int k = 0; k < 3; k++) x[k] = n[k] > orig[k] ? n[k] - orig[k] : 0;
         savegame_io(head, h, 0);
     } else {
@@ -942,12 +980,22 @@ static void savegame_extras(u16 slot) {
                 if (k == 3) { ai = v; has_ai = 1; }
                 if (k == 4) offers = v;
                 if (k == 5) filmoffers = v;
+                if (k == 6) lots = v;
+                if (k == 7) rules = v;
             }
         } else {
             x[0] = left / 0x12;          /* the first version: films only */
         }
-        /* the computer players' state, after the records (ai_improve_load: none starts it anew) */
         u32 at = (u32)g_save_pos + x[0] * 0x12u + x[1] * 0x29u + x[2];
+        /* the game's rules, after everything else: taken before the rest is read -- they set
+         * the counts of the offers and lots (a saved game of the safe; not the start's) */
+        u32 rat = at + (has_ai ? ai : 0) + (offers > 10 ? (offers - 10) * 0x7u : 0) + (filmoffers > 10 ? (filmoffers - 10) * 0x8u : 0)
+                + (lots > 10 ? (lots - 10) * 0x9u : 0);
+        if (slot > SAVE_SLOT_RES && slot <= SAVE_SLOT_RES + 10 && !mp_load_buf)   /* (none: the start's) */
+            saverules_apply(slot, rules && rat + rules <= size ? HPTR(MK32(g_save_buf_hi, (u16)(g_save_buf_lo + rat))) : NULL, rules);
+        else if (slot == START_SAVE_RES && !mp_load_buf)   /* a new game -- after game over too (building.c): the start's rules */
+            saverules_apply(slot, NULL, 0);
+        /* the computer players' state, after the records (ai_improve_load: none starts it anew) */
         ai_improve_load(has_ai && at + ai <= size ? HPTR(MK32(g_save_buf_hi, (u16)(g_save_buf_lo + at))) : NULL, ai);
         /* the offers past 10, after that state: as many as the game has, none it lacks */
         memset(g_ad_offers_extra, 0, (AD_OFFERS_MAX - 10) * 0x7);
@@ -958,7 +1006,13 @@ static void savegame_extras(u16 slot) {
         }
         film_at = at + (has_ai ? ai : 0) + (offers > 10 ? (offers - 10) * 0x7u : 0);
         film_offers_restore(film_at, filmoffers, size);
-        if (g_nfilms <= 200 && g_nseries <= 50 && g_nads <= 50) { film_offers_return_surplus(film_at, filmoffers, size); return; }
+        lots_at = film_at + (filmoffers > 10 ? (filmoffers - 10) * 0x8u : 0);
+        auction_lots_restore(lots_at, lots, size);
+        if (g_nfilms <= 200 && g_nseries <= 50 && g_nads <= 50) {
+            film_offers_return_surplus(film_at, filmoffers, size);
+            auction_lots_return_surplus(lots_at, lots, size);
+            return;
+        }
     }
     savegame_extra_table(201, g_nfilms, x[0], 0xC9, 0x17, 0, 0x17, 0x12, film_rec, save_film_rec, load_film_rec);
     savegame_extra_table(51, g_nseries, x[1], 0xCA, 0x39, 0, 0x39, 0x29, series_rec, save_series_rec, load_series_rec);
@@ -970,7 +1024,12 @@ static void savegame_extras(u16 slot) {
     }
     if (g_save_mode != 1 && offers > 10) savegame_io(g_ad_offers_extra, (u16)((offers - 10) * 0x7), 0);
     if (g_save_mode != 1 && filmoffers > 10) savegame_io(g_dealer_extra, (u16)((filmoffers - 10) * 0x8), 0);
-    if (g_save_mode == 1) film_offers_return_surplus(film_at, filmoffers, size);
+    if (g_save_mode != 1 && lots > 10) savegame_io(g_lots_extra, (u16)((lots - 10) * 0x9), 0);
+    if (g_save_mode != 1 && rules_len) savegame_io(rules_line, rules_len, 0);
+    if (g_save_mode == 1) {
+        film_offers_return_surplus(film_at, filmoffers, size);
+        auction_lots_return_surplus(lots_at, lots, size);
+    }
 }
 
 /* the data segment's blocks of a savegame, in their order: before the
@@ -1296,8 +1355,8 @@ u32 mp_savegame_write(u8 *buf, u32 cap) {
     for (int k = 0; k < SAVE_BLOCKS(save_blocks_b); k++) PUT(HPTR(MK32(DSEG, save_blocks_b[k].off)), save_blocks_b[k].len);
     for (u16 p = 1; p <= 3; p++) PUT(HPTR(MK32(pl_name_hi(p), pl_name_lo(p))), 0x28);
     u8 head[6 + 2 * MTVX_COUNTS];
-    u16 h = savegame_extra_head(head);
-    if (h) {                             /* as savegame_extras writes them */
+    u16 h = savegame_extra_head(head, 0);
+    if (h) {                             /* as savegame_extras writes them (not the rules' line: the description has them) */
         u16 ai = ai_improve_save_size();
         PUT(head, h);
         for (u16 i = 201; i <= g_nfilms; i++) { memset(b, 0, 0x12); save_film_rec(film_rec(i), b); PUT(b, 0x12); }
@@ -1306,6 +1365,7 @@ u32 mp_savegame_write(u8 *buf, u32 cap) {
         if (ai) { ai_improve_save(b); PUT(b, ai); }
         if (g_nadoffers > 10) PUT(g_ad_offers_extra, (g_nadoffers - 10) * 0x7);
         if (g_nfilmoffers > 10) PUT(g_dealer_extra, (g_nfilmoffers - 10) * 0x8);
+        if (g_nlots > 10) PUT(g_lots_extra, (g_nlots - 10) * 0x9);
     }
 #undef PUT
     return n;

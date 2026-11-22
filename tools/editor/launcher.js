@@ -20,7 +20,7 @@
 /* the settings file: the single player's, or (mp) the network games' own (multiplayer.ini) */
 const SETTINGS_URL = (mp) => '/api/settings' + (new URLSearchParams(location.search).has('selftest') ? (mp ? '?test=1&mp=1' : '?test=1') : (mp ? '?mp=1' : ''));
 const settingsKey = (mp) => (mp ? 'mpSettings' : 'settings');
-st.launch = st.launch || { fixGroup: 0, slot: 0, onlyChanged: false };
+st.launch = st.launch || { fixGroup: 0, slot: 0 };
 /* the fixes' descriptions come from the game (build/mtv-dec --fixes=list), in English */
 const FIX_DE = {
   'intruder': 'Gerichtsvollzieher/Terrorist bleibt hängen, wenn das Archiv nur Serien hat; Liebesfilme werden nie gepfändet',
@@ -51,9 +51,11 @@ const FIX_DE = {
   'ai-lib-quality': 'die Durchschnittsqualität im Archiv eines Computerspielers zählt 12 Phantom-Einträge mit: sein Filmbudget folgt der Archivgröße statt der Qualität',
   'ai-rating': 'die Quote eines Computerspielers vom Vortag läuft über 21,5 Millionen Zuschauern pro Stunde über (Reichweite eines Satelliten): er hält sich für ungesehen und nimmt kaum noch Werbeverträge an',
   'ai-bids': 'die Auktionsgebote eines Computerspielers füllen eine Liste mit 11 Plätzen, die fast nie geleert wird: ein eifriger Bieter schreibt darüber hinaus (Vertragszähler, dann Absturz)',
-  'ai-warning': 'will ein Computerspieler einen Live-Film einplanen, dessen Sendezeit vorbei ist, erscheint bei jedem Versuch ein Warnfenster auf dem Bildschirm des Menschen; die Fenster stapeln sich bis zum Absturz',
+  'planner-row': 'nimmt man eine Kassette aus einem vollen Archivfach (verkauft, gepfändet, in den Koffer), landet im frei gewordenen Platz, was hinter dem Fach liegt: der erste Film des nächsten Genres, bei Serien zwei Genre-Zähler (etwa Serie 512). Ein Klick im Programmplaner auf eine leere Zeile der Liste nimmt diesen Platz: ein Film eines anderen Genres zum Einplanen, oder das Spiel stürzt ab',
+  'load-music': 'ein gespeichertes Spiel, geladen vom Startbildschirm (der Tresor im Launcher, das Menü der iPhone-App), läuft bis zum nächsten Raumwechsel ohne Musik: das Spiel hält die Musik des Büros für schon laufend',
+  'ai-warning': 'will ein Computerspieler einen Live-Film einplanen, dessen Sendezeit vorbei ist, erscheint bei jedem Versuch ein Warnfenster auf dem Bildschirm des Menschen; die Fenster stapeln sich bis zum Absturz. Ebenso „Du hast schon zuviele Einkaufslisten!“, wenn ein Computerspieler eine Einkaufsliste zu viel will',
   'studio-takeover': 'ein vorgemerkter Studiomieter bekommt Studio 1, 2 oder 3 (hinter der Tür eines anderen Raums) statt seines Studios',
-  'trendy-studios': 'die Show „Im Trend“ (Film 138) beendet beim Senden die Produktionssperre jedes laufenden Studios, egal wer sie sendet: ein mitten im Dreh zurückgegebenes Studio wird sofort frei, die Produktion ist verloren, und später „beendet“ das Spiel Drehbuch 0 über das Nachrichtenbudget eines Computerspielers',
+  'trendy-studios': 'die Show „Im Trend“ (Film 138) beendet beim Senden die Produktionssperre jedes laufenden Studios, egal wer sie sendet: ein mitten im Dreh zurückgegebenes Studio wird sofort frei, die Produktion ist verloren, und später „beendet“ das Spiel Drehbuch 0 über das Nachrichtenbudget eines Computerspielers. Mit der Korrektur wird das Studio von „Im Trend“ nach dem Dreh frei (sein Drehbuch ist dann weg), ebenso ein Studio, das in einem älteren Spielstand für immer gesperrt blieb',
   'studio-reserved': 'die Vormerkung eines Studios (wartender Mieter oder spätere Rückgabe) wird nie gelöscht: es wird nach jeder Produktion wieder abgegeben oder erneut übernommen (und bezahlt)',
 };
 const fixDesc = (f) => (UI.lang === 'de' && FIX_DE[f.name]) || f.desc;
@@ -69,6 +71,7 @@ async function setSetting(sec, key, val, mp) {
     status(T('Saved in {path}.', { path: st[k].path }), 'ok');
   } catch (e) { status(e.message, 'err'); }
   renderEntry();
+  if (!mp) await syncLayer();                    /* (the rule "Unfertige Drehbücher integrieren": the editor's tables) */
 }
 const sv = (sec, key, mp) => ((st[settingsKey(mp)].values || {})[sec] || {})[key];
 /* a settings file's controls: a choice of values, yes/no, a row with its help */
@@ -95,7 +98,7 @@ function displayCard() {
   return setCard(T('Display'),
     row(T('Fullscreen'), T('Start in fullscreen. F11, Alt+Enter or Cmd+F switch while playing; the game remembers it here.'), yesno('display', 'fullscreen')),
     row(T('Window size'), T('The window: the game\'s 320 x 240 picture times N.'), scale),
-    row(T('Aspect'), T('4:3 like a VGA monitor, or square pixels (16:10).'), seg('display', 'aspect', [['4:3', T('4:3 like a VGA monitor')], ['square', T('Square pixels')]])),
+    row(T('Aspect'), T('4:3 like a VGA monitor, square pixels (16:10), or stretched over the whole window.'), seg('display', 'aspect', [['4:3', T('4:3 like a VGA monitor')], ['square', T('Square pixels')], ['stretch', T('Stretched')]])),
     row(T('Filter'), T('Sharp: even pixels at any size; nearest: hard edges; linear: soft; MMPX: smoothed edges and diagonals, made only of the picture\'s own colours; HR pixel: drawn at four times the resolution -- a finer font, frames and bars sharp, the pictures\' pixels as they are.'),
       seg('display', 'filter', [['sharp', T('Sharp')], ['nearest', T('Nearest')], ['linear', T('Linear')], ['mmpx', T('MMPX')], ['hr-pixel', T('HR pixel')]])),
     row(T('Whole-number scaling'), T('Only whole-number scale factors: black borders, every pixel the same size.'), yesno('display', 'integer')));
@@ -288,11 +291,10 @@ function gameTabs(o) {
    its control's border) with its way back to the default beside it -- the place stays empty for
    an unchanged one, so nothing moves.  o: cols [[[title, rows], ...], ...] (a row: { key, label,
    help, ctl, changed, def (the default, as text), reset() (none: shown only), tag, note }),
-   only/setOnly (only the changed ones shown), resetAll() (none: nothing to reset here), lock (a
-   line: why they cannot change) */
+   resetAll() (none: nothing to reset here), lock (a line: why they cannot change) */
 function rulesPanel(o) {
-  const rows = o.cols.flat().flatMap((g) => g[1]), n = rows.filter((r) => r.changed).length, only = !!o.only && n > 0;
-  const row = (r) => h('div', { class: 'rrow' + (r.changed ? ' chg' : '') + (only && !r.changed ? ' hide' : ''), 'data-rule': r.key },
+  const rows = o.cols.flat().flatMap((g) => g[1]), n = rows.filter((r) => r.changed).length;
+  const row = (r) => h('div', { class: 'rrow' + (r.changed ? ' chg' : ''), 'data-rule': r.key },
     h('div', { class: 'rlab' }, h('span', { class: 'rdot' }), h('span', { class: 'rname' }, r.label), r.tag ? h('span', { class: 'rtag' }, r.tag) : null, help(r.help, r.label)),
     h('div', { class: 'rctl' }, r.ctl),
     h('button', { class: 'rreset', 'data-reset': r.key, disabled: !r.changed || !r.reset, tabindex: r.changed && r.reset ? null : '-1',
@@ -304,22 +306,19 @@ function rulesPanel(o) {
       h('span', { class: 'rcount' + (n ? ' chg' : ''), 'data-rules': 'count' }, n ? T('{n} of {total} changed', { n, total: rows.length }) : T('all {total} as by default', { total: rows.length })),
       o.lock ? h('span', { class: 'rlock' }, icon('lock', 12), o.lock) : null,
       h('span', { style: 'flex:1' }),
-      h('div', { class: 'seg small', role: 'group', 'aria-label': T('Which rules') },
-        h('button', { class: only ? '' : 'on', 'data-rules': 'all', 'aria-pressed': only ? 'false' : 'true', onclick: () => o.setOnly(false) }, T('All|rules')),
-        h('button', { class: only ? 'on' : '', 'data-rules': 'changed', 'aria-pressed': only ? 'true' : 'false', disabled: !n, onclick: () => o.setOnly(true) }, T('Only the changed'))),
       h('button', { class: 'plate small', 'data-rules': 'reset', style: n && o.resetAll ? null : 'visibility:hidden', disabled: !n || !o.resetAll, onclick: () => o.resetAll() }, T('All to default'))),
     h('div', { class: 'rcols' }, ...o.cols.map((col) => h('div', { class: 'rcol' }, ...col.map(([title, rs]) =>
-      h('div', { class: 'rgroup' + (only && !rs.some((r) => r.changed) ? ' hide' : '') }, h('div', { class: 'rgh' }, title), ...rs.map(row)))))));
+      h('div', { class: 'rgroup' }, h('div', { class: 'rgh' }, title), ...rs.map(row)))))));
 }
 
 /* a button's text in the width of the wider of two (the other one there, unseen) */
 const twoLabels = (shown, other) => h('span', { class: 'twolabels' }, h('span', {}, shown), h('span', { class: 'other', 'aria-hidden': 'true' }, other));
 /* the fixes in groups (the game's list, build/mtv-dec --fixes=list; one it adds later: "More") */
 const fixGroups = () => [
-  [T('Crashes and hangs'), ['intruder', 'random0']],
+  [T('Crashes and hangs'), ['intruder', 'random0', 'planner-row']],
   [T('Computer players'), ['ai-studio', 'ai-fill-hour', 'ai-series-rule', 'ai-odd-range', 'ai-visit', 'ai-trendy', 'ai-rival', 'ai-arrived', 'ai-fill-genre', 'ai-lib-quality', 'ai-rating', 'ai-bids', 'ai-warning']],
   [T('Rules'), ['tx-price', 'catch-bounty', 'library-owner', 'case-owner', 'case-corner', 'credit-repay', 'studio-takeover', 'studio-reserved', 'trendy-studios', 'series-avg']],
-  [T('Texts, data and display'), ['estate-text', 'news-cache', 'boss-music', 'film-200', 'live-aid', 'video-connection', 'title-cache']],
+  [T('Texts, data and display'), ['estate-text', 'news-cache', 'boss-music', 'load-music', 'film-200', 'live-aid', 'video-connection', 'title-cache']],
 ];
 /* how the fixes are chosen: all of them (the default), an own choice, or Classic 1991 (none: the
    original with all its bugs).  The settings file has "fixes" (all, none or names) and Classic;
@@ -431,13 +430,13 @@ function heldBy(packs = st.packs) {
   for (const p of packs) for (const x of packHolds(p)) if (x !== p) out[x] = p;
   return out;
 }
-/* the packs played: the original first (the base, left out only for a complete pack), then the
-   chosen ones in their order -- numbered, moved by their grip (drag it, or the arrow keys) --,
-   then the others, to switch on (each to the end of the row).  o: packs and select(packs) (the
-   editor's selection by default); manage: delete buttons and the unsaved mark (the launcher);
-   attr, moveAttr: the switches' and grips' data attributes (the lobby's own); disabled.
-   Returns the rows: [the active ones' head, list, the others' head, list] */
-let packFocus = null;          /* the grip moved by the keyboard: focused again once the page is drawn anew */
+/* the packs: one list in a fixed order -- the original first (the base, left out only for a
+   complete pack), then every pack.  A switch takes one in or out where it stands; the ones
+   switched on carry their place in the play order (the number), and their arrows move that
+   number, not the row: nothing in the list moves when it changes (the user, 2026-10-23).
+   o: packs and select(packs) (the editor's selection by default); manage: delete buttons and the
+   unsaved mark (the launcher); attr, moveAttr: the switches' and arrows' data attributes (the
+   lobby's own); disabled.  Returns [head, list] */
 function packRows(o = {}) {
   const packs = o.packs || st.packs, select = o.select || selectPacks, manage = o.manage !== false && !player();
   const attr = o.attr || 'data-play', moveAttr = o.moveAttr || 'data-move';
@@ -452,89 +451,30 @@ function packRows(o = {}) {
   const sub = (...parts) => h('span', { class: 'psub' }, ...parts.filter(Boolean).map((x) => h('span', {}, x)));
   const del = (m) => (manage && !m.protected ? h('button', { class: 'pdel', 'data-delete': m.name, 'aria-label': T('Delete "{title}" ...', { title: m.title || m.name }),
     'data-tip': T('Delete "{title}" ...', { title: m.title || m.name }), onclick: () => deleteDialog(m.name) }, icon('remove', 14)) : h('span', {}));
-  const move = (from, to) => {
-    if (to === from || to < 0 || to >= packs.length) return;
-    const p = packs.slice(), [x] = p.splice(from, 1);
-    p.splice(to, 0, x);
-    select(p);
+  const move = (k, d) => { const p = packs.slice(); [p[k], p[k + d]] = [p[k + d], p[k]]; select(p); };
+  /* the arrows: always there (hidden where they do nothing), so the row keeps its widths */
+  const order = (name, k) => {
+    const shown = k >= 0 && packs.length > 1;
+    return h('span', { class: 'porder' + (shown ? '' : ' hide') },
+      h('button', { [moveAttr]: `${name}-up`, disabled: !shown || k === 0 || !!o.disabled, tabindex: shown ? null : '-1', 'aria-label': T('Earlier: "{title}"', { title: packTitle(name) }), 'data-tip': shown ? T('Earlier in the play order') : null, onclick: () => move(k, -1) }, icon('up', 14)),
+      h('button', { [moveAttr]: `${name}-down`, disabled: !shown || k === packs.length - 1 || !!o.disabled, tabindex: shown ? null : '-1', 'aria-label': T('Later: "{title}"', { title: packTitle(name) }), 'data-tip': shown ? T('Later in the play order') : null, onclick: () => move(k, 1) }, icon('down', 14)));
   };
-  const active = h('div', { class: 'plist', 'data-packs': 'active' });
-  active.append(h('div', { class: 'prow on base' + (complete ? ' off' : ''), [attr]: 'original', 'aria-pressed': complete ? 'false' : 'true' },
-    h('span', { class: 'pnum' }, complete ? '' : '1'), h('span', { class: 'pmark' }, icon('lock', 14)),
-    h('span', { class: 'pt' }, h('b', {}, T('The original game')), sub(complete ? T('held in "{pack}" already', { pack: packTitle(holder) }) : T('the base of every pack; left out only for a complete pack'))),
-    h('span', { class: 'pill dark' }, T('base')), h('span', {}), h('span', {})));
-  packs.forEach((name, k) => {
-    const m = modInfo(name) || { name, title: name };
-    const grip = h('button', { class: 'grip', [moveAttr]: name, disabled: !!o.disabled || packs.length < 2,
-      'aria-label': T('Move "{title}": drag it, or the arrow keys', { title: m.title || name }), 'data-tip': packs.length > 1 ? T('Drag to move it; or the arrow keys') : null,
-      onkeydown: (e) => {
-        const d = e.key === 'ArrowUp' ? -1 : e.key === 'ArrowDown' ? 1 : 0;
-        if (!d || k + d < 0 || k + d >= packs.length) return;
-        e.preventDefault();
-        packFocus = moveAttr + '=' + name;
-        move(k, k + d);
-      },
-      onpointerdown: (e) => packDrag(e, k, active, (to) => move(k, to)) }, icon('grip', 16));
-    active.append(h('div', { class: 'prow on', 'data-packrow': name },
-      h('span', { class: 'pnum no' }, String(k + (complete ? 1 : 2))), grip,
-      h('span', { class: 'pt' }, h('b', {}, m.title || name), m.error ? h('span', { class: 'err', 'data-packerror': name }, m.error) : sub(`mods/${name}`, packSummary(m))),
-      tags(m), del(m),
-      sw(true, name, o.disabled, () => select(packs.filter((n) => n !== name)), T('"{title}" is played: off', { title: m.title || name }))));
-  });
-  const more = h('div', { class: 'plist', 'data-packs': 'more' });
+  const list = h('div', { class: 'plist', 'data-packs': 'all' });
+  list.append(h('div', { class: 'prow on base' + (complete ? ' off' : ''), [attr]: 'original', 'aria-pressed': complete ? 'false' : 'true' },
+    h('span', { class: 'pnum' }, complete ? '' : '1'),
+    h('span', { class: 'pt' }, h('b', {}, icon('lock', 13), T('The original game')), sub(complete ? T('held in "{pack}" already', { pack: packTitle(holder) }) : T('the base of every pack; left out only for a complete pack'))),
+    h('span', { class: 'tags' }, h('span', { class: 'pill dark' }, T('base'))), h('span', { class: 'porder hide' }), h('span', {}), h('span', {})));
   for (const m of st.mods) {
-    if (packs.includes(m.name)) continue;
-    const inside = held[m.name];
-    more.append(h('div', { class: 'prow' + (inside ? ' off' : ''), 'data-packrow': m.name },
-      h('span', { class: 'pnum' }), h('span', {}),
+    const k = packs.indexOf(m.name), on = k >= 0, inside = !on && held[m.name];
+    list.append(h('div', { class: 'prow' + (on ? ' on' : '') + (inside ? ' off' : ''), 'data-packrow': m.name },
+      h('span', { class: 'pnum no' }, on ? String(k + (complete ? 1 : 2)) : ''),
       h('span', { class: 'pt' }, h('b', {}, m.title || m.name), m.error ? h('span', { class: 'err', 'data-packerror': m.name }, m.error)
         : inside ? sub(T('held in "{pack}" already', { pack: packTitle(inside) })) : sub(`mods/${m.name}`, packSummary(m))),
-      tags(m), del(m),
-      sw(false, m.name, !!inside || !!o.disabled || !!m.error, () => select(packs.concat([m.name])), T('"{title}": play it too', { title: m.title || m.name }))));
+      tags(m), order(m.name, k), del(m),
+      on ? sw(true, m.name, o.disabled, () => select(packs.filter((n) => n !== m.name)), T('"{title}" is played: off', { title: m.title || m.name }))
+        : sw(false, m.name, !!inside || !!o.disabled || !!m.error, () => select(packs.concat([m.name])), T('"{title}": play it too', { title: m.title || m.name }))));
   }
-  if (packFocus) {
-    const want = packFocus;
-    packFocus = null;
-    setTimeout(() => { const [a, v] = want.split('='); const el = $(`#work [${a}="${v}"]`); if (el) el.focus(); });
-  }
-  return [h('div', { class: 'h3' }, T('Active packs'), h('span', { class: 'hint' }, T('played together in this order; where two change the same entry, the later one counts'))), active,
-    h('div', { class: 'h3' }, T('More packs'), h('span', { class: 'hint' }, more.children.length ? T('switched on: to the end of the row') : T('none here: "New pack" makes one'))), more];
-}
-/* a pack dragged by its grip: the others make room as it passes them; let go, the order is taken */
-function packDrag(e, from, list, done) {
-  if (e.button !== 0 || e.currentTarget.disabled) return;
-  e.preventDefault();
-  const grip = e.currentTarget, rows = [...list.querySelectorAll('[data-packrow]')], row = rows[from];
-  if (!row || rows.length < 2) return;
-  const mid = rows.map((r) => { const b = r.getBoundingClientRect(); return b.top + b.height / 2; });
-  const step = rows.length > 1 ? Math.abs(mid[1] - mid[0]) : row.offsetHeight;
-  const y0 = e.clientY;
-  let to = from;
-  grip.setPointerCapture(e.pointerId);
-  row.classList.add('dragging');
-  list.classList.add('sorting');
-  const onmove = (ev) => {
-    const dy = ev.clientY - y0, y = mid[from] + dy;
-    row.style.transform = `translateY(${dy}px)`;
-    to = rows.reduce((n, r, i) => n + (i !== from && mid[i] < y ? 1 : 0), 0);
-    rows.forEach((r, i) => {
-      if (i === from) return;
-      const shift = i > from && i <= to ? -step : i < from && i >= to ? step : 0;
-      r.style.transform = shift ? `translateY(${shift}px)` : '';
-    });
-  };
-  const onup = () => {
-    grip.removeEventListener('pointermove', onmove);
-    grip.removeEventListener('pointerup', onup);
-    grip.removeEventListener('pointercancel', onup);
-    rows.forEach((r) => { r.style.transform = ''; });
-    row.classList.remove('dragging');
-    list.classList.remove('sorting');
-    if (to !== from) done(to);
-  };
-  grip.addEventListener('pointermove', onmove);
-  grip.addEventListener('pointerup', onup);
-  grip.addEventListener('pointercancel', onup);
+  return [h('div', { class: 'h3' }, T('Packs'), h('span', { class: 'hint' }, st.mods.length ? T('the ones switched on are played in the order of their numbers; where two change the same entry, the later one counts') : T('none here: "New pack" makes one'))), list];
 }
 /* what the packs add and where they collide (tools/modpacks.py), from /api/packs/A+B */
 function fillPackInfo(box, spec) {
@@ -551,6 +491,7 @@ function fillPackInfo(box, spec) {
       box.append(h('div', { class: 'hint warn', 'data-conflict': `${c.table}-${c.id}` }, T('{what} #{id}: changed in {packs} -- "{wins}" counts.', { what: label(c.table), id: c.id, packs: c.packs.join(', '), wins: c.wins })));
     if (r.conflicts.length > 5) box.append(h('div', { class: 'hint warn' }, TP(r.conflicts.length - 5, 'One more conflict.', '{n} more conflicts.')));
     if ((r.incomplete || []).length) box.append(h('div', { class: 'hint err' }, T('Not playable yet: {why}', { why: r.incomplete.slice(0, 3).join('; ') })));
+    if ((r.studios || []).length) box.append(studioOverview(r.studios));
   };
   if (st.packInfo[spec]) { show(st.packInfo[spec]); return; }
   box.append(h('div', { class: 'hint' }, T('Reading the packs ...')));
@@ -674,6 +615,10 @@ const adOffers = (cur, set, attr = 'data-setting', key = 'game.ad_offers') => of
 const filmOffersLabel = (n) => n === 10 ? T('{n}: the original\'s counter', { n }) : TP(n - 10, '{n}: one more tape', '{n}: {k} more tapes', { n, k: n - 10 });
 const filmOffers = (cur, set, attr = 'data-setting', key = 'game.film_offers') => offersSelect({ cur, set, attr, key, skey: 'film_offers', label: T('Film offers'), text: filmOffersLabel });
 const filmOffersHelp = () => T('How many films and series the film dealer offers at a time (also with Classic). From 11 the row of tapes on his counter grows to the left. The original: 10.');
+/* the film auction's lots at a time: 10 (the original's board) to 20 (a second page of 10) */
+const auctionLotsLabel = (n) => n === 10 ? T('{n}: the original\'s board', { n }) : TP(n - 10, '{n}: one more lot on page 2', '{n}: {k} more lots on page 2', { n, k: n - 10 });
+const auctionLots = (cur, set, attr = 'data-setting', key = 'game.auction_lots') => offersSelect({ cur, set, attr, key, skey: 'auction_lots', label: T('Auction lots'), text: auctionLotsLabel });
+const auctionLotsHelp = () => T('How many films and series the film auction has on its board at a time (also with Classic). From 11 the board gets a second page, turned by the tab at its right edge; the auction\'s films are the expensive, good ones. The original: 10.');
 const adOffersHelp = () => T('How many contracts the ad agency offers at a time (also with Classic). From 11 the folders stand in a front row of up to 13 and a row of up to 4 behind it. The original: 10, in three stacks. More offers need more ads: with the original\'s 50, some places stay empty early in the game.');
 /* the Sammy's categories, short (the rule's four amounts in one row) */
 const sammyShort = (i) => [T('News|sammy'), T('Culture|sammy'), T('Shows|sammy'), T('Series|sammy')][i];
@@ -693,7 +638,9 @@ function selTitle(spec) {
    messages, then the three tabs (gameTabs): the packs (and the safes of other selections), the
    rules, the fixes.  The saves are read again when the page comes back into view (a game played
    meanwhile may have saved). */
-const SAFE_X = (col) => 2 * (0x40 + 0x76 * col), SAFE_Y = (row) => 2 * (0x11 * row + 8);
+/* a tape's label where save_slots_draw (2B74:09F1) draws it -- in the screen's pixels, while the
+   picture (room_draw_background 0054:1393) stands 4 rows lower on the screen than here: so 4 up */
+const SAFE_X = (col) => 2 * (0x40 + 0x76 * col), SAFE_Y = (row) => 2 * (0x11 * row + 8 - 4);
 function loadSafe(spec, force) {
   if (!force && st.safeLoading === spec) return;
   st.safeLoading = spec;
@@ -726,22 +673,63 @@ function pickTape(n) {
   const col = $('#work .tapecol');
   if (col) col.replaceWith(tapeCol());
 }
+/* a tape's rules (launcher/saves.go tapeRules: as the settings file names them) against the ones
+   set: "Continue" plays with the tape's (src/saverules.c), the tabs below are a new game's.  The
+   facts' line and its tip: none on the tape (saved before), as set, or which differ and how */
+function tapeRulesText(r) {
+  if (!r) return [T('none on the tape (saved before): the ones set'), T('A tape saved before plays with the rules set below.')];
+  const schema = (key) => ((st.settings.schema || []).find((x) => x.section === 'game' && x.key === key) || {}).opts || [];
+  const now = (key) => String(sv('game', key) ?? schema(key)[0] ?? '');
+  const yes = (v) => (['yes', 'on', 'true', '1'].includes(String(v).toLowerCase()) ? 'yes' : 'no');   /* (the settings file may say on/true/1) */
+  const yn = (v) => (yes(v) === 'yes' ? T('Yes') : T('No'));
+  const fixWord = (cl, fx) => (cl === 'yes' ? T('Classic 1991') : fx === 'all' ? T('All fixes') : T('Own choice'));
+  const setOf = (fx) => String(fx || '').split(',').filter(Boolean).sort().join(',');
+  const out = [];
+  const nowFx = sv('game', 'fixes') || 'all', nowCl = yes(now('classic')) === 'yes' || nowFx === 'none' ? 'yes' : 'no';   /* (fixes "none": the game plays Classic) */
+  if (r.classic !== nowCl || (r.classic !== 'yes' && setOf(r.fixes) !== setOf(nowFx))) out.push(T('Fixes|tab') + ': ' + fixWord(r.classic, r.fixes));
+  const YN = ['fourth_speed', 'series_topicality', 'original_screenplays'];
+  const one = (key, label, text) => {
+    const a = String(r[key]), b = now(key);
+    if (YN.includes(key) ? yes(a) !== yes(b) : a !== b) out.push(label + ': ' + text(a));
+  };
+  one('fourth_speed', T('Fourth speed'), yn);
+  one('ai_improve', T('AI improvement'), (v) => ({ off: T('Off'), normal: T('Normal'), strong: T('Strong') })[v] || v);
+  one('credit_line', T('Credit line'), (v) => (v === CREDIT_ORIGINAL ? T('Classic 1991') : money(Number(v))));
+  one('ad_offers', T('Ad offers'), (v) => v);
+  one('film_offers', T('Film offers'), (v) => v);
+  one('auction_lots', T('Auction lots'), (v) => v);
+  one('series_topicality', T('Series topicality'), yn);
+  one('original_screenplays', T('Include unfinished screenplays'), yn);
+  one('terror_damage', T('Terror damage'), (v) => money(Number(v)));
+  if (SAMMY_KEYS.some((k) => String(r[k]) !== now(k))) out.push(T('Sammy prizes') + ': ' + SAMMY_KEYS.map((k) => money(Number(r[k]))).join(' / '));
+  const tip = T('"Continue" plays with the rules this tape was saved with; the tabs below are for a new game.');
+  if (!out.length) return [T('as set'), tip];
+  const line = TP(out.length, 'one not as set: {list}', '{n} not as set: {list}', { list: out.join(' · ') });
+  return [line, line + '. ' + tip];
+}
 function tapeCol() {
   const sf = st.safe && st.safe.spec === st.packs.join('+') ? st.safe : null, n = st.packs.length;
   const pick = st.launch.slot || 0, s = sf && sf.slots[pick - 1] && sf.slots[pick - 1].saved ? sf.slots[pick - 1] : null;
   const classic = sv('game', 'classic') === 'yes';
   const what = n ? TP(n, 'with the pack {list}', 'with the packs {list}', { list: st.packs.map(packTitle).join(' + ') }) : T('the original game');
+  const named = !!(s && s.name.trim());   /* (the original's own blank-named save in slot 1 is how the game came: nothing to delete) */
   return h('div', { class: 'tapecol' },
     h('div', { class: 'tapehead' }, h('span', { class: 'overline' }, s ? T('Tape {n}', { n: s.slot }) : T('No tape picked')),
-      h('span', { class: 'pill dark', style: s && sf.newest === s.slot ? null : 'visibility:hidden' }, T('saved last'))),
+      h('span', { class: 'pill dark', style: s && sf.newest === s.slot ? null : 'visibility:hidden' }, T('saved last')),
+      h('button', { class: 'ib tapedel', 'data-tapedel': named ? String(s.slot) : '', disabled: !named, style: named ? null : 'visibility:hidden',
+        'aria-label': named ? T('Delete tape {n} ...', { n: s.slot }) : '', 'data-tip': named ? T('Delete tape {n} ...', { n: s.slot }) : null, onclick: () => named && deleteTapeDialog(s) }, icon('remove', 14))),
     h('div', { class: 'biglabel' + (s ? '' : ' blank') }, h('span', { 'data-gametext': '' }, s ? s.name : '')),
     h('dl', { class: 'facts' },
       h('dt', {}, T('Station')), h('dd', {}, s ? [h('span', { class: 'sdot s' + s.station }), STATIONS[s.station] || '?', s.manager ? h('span', { class: 'mgr', 'data-gametext': '' }, ' · ' + s.manager) : null] : '–'),
       h('dt', {}, T('Game day')), h('dd', {}, s ? T('Day {day}, {time}', { day: s.day, time: s.clock }) : '–'),
-      h('dt', {}, T('Money')), h('dd', { class: 'mono' }, s ? money(s.money) : '–')),
+      h('dt', {}, T('Money')), h('dd', { class: 'mono' }, s ? money(s.money) : '–'),
+      h('dt', {}, T('Rules')), (() => {
+        const [line, tip] = s ? tapeRulesText(s.rules) : ['–', null];
+        return h('dd', { class: s && s.rules && line !== T('as set') ? 'trules chg' : 'trules', 'data-taperules': s ? (s.rules ? 'tape' : 'none') : '', 'data-tip': tip }, line);
+      })()),
     h('div', { class: 'tapego' },
       goButton({ cls: 'cont', icon: 'tape', label: T('Continue'), sub: s ? T('tape {n} · day {day}', { n: s.slot, day: s.day }) : T('pick a tape in the safe'), disabled: !s,
-        attrs: { id: 'continue', 'data-launch': 'continue', 'data-tip': s ? T('Starts the game straight into this saved game.') : null }, onclick: () => s && launchGame(false, s.slot) }),
+        attrs: { id: 'continue', 'data-launch': 'continue', 'data-tip': s ? (s.rules ? T('Starts the game straight into this saved game, with the rules it was saved with.') : T('Starts the game straight into this saved game.')) : null }, onclick: () => s && launchGame(false, s.slot) }),
       goButton({ cls: 'red', label: classic ? T('New game, classic') : T('New game'), sub: what, attrs: { id: 'launch', 'data-tip': n ? T('The packs are built first; games saved while playing them stay in their own safe.') : T('The original game files in run/ (your saves stay there).') },
         onclick: () => launchGame() })));
 }
@@ -768,15 +756,46 @@ function startBlock() {
       sf && sf.error ? h('div', { class: 'hint err' }, sf.error) : null),
     tapeCol());
 }
+/* a safe emptied (launcher/saves.go): a tape of the safe shown (SLOT) as the game came, or (no
+   slot) a selection's whole safe, its folder build/mods/SPEC -- the server refuses while a game
+   started here plays from it; the safe shown read again */
+async function deleteSaves(spec, slot) {
+  try {
+    await api('POST', '/api/saves/delete', { mod: spec || null, slot: slot || null });
+  } catch (e) { status(e.message, 'err'); return false; }
+  status(slot ? T('Tape {n} deleted.', { n: slot }) : T('The safe of "{title}" deleted.', { title: selTitle(spec) }), 'ok');
+  if (spec === st.packs.join('+') && (!slot || slot === st.launch.slot)) st.launch.slot = 0;   /* (the newest picked then: tape 1 would keep the original's blank save) */
+  loadSafe(st.packs.join('+'), true);
+}
+function deleteTapeDialog(s) {
+  const spec = st.packs.join('+');
+  dialog(T('Delete tape {n}?', { n: s.slot }), h('div', {},
+    h('p', {}, T('"{name}": {station}, day {day}, {time}, {money}.', { name: s.name.trim(), station: STATIONS[s.station] || '?', day: s.day, time: s.clock, money: money(s.money) })),
+    h('p', { class: 'hint' }, s.slot === 1 ? T('The saved game goes: the tape holds the original\'s own unnamed save again, as the game came.')
+      : T('The saved game goes: the tape is empty again, in the game too.'), ' ', T('The other tapes stay.'))),
+  [[T('Cancel'), 'grey'], [T('Delete'), 'red', () => deleteSaves(spec, s.slot)]]);
+}
+/* a selection's whole safe (s: an entry of the panel's list -- its spec, its tapes' names, the newest) */
+function deleteSafeDialog(s) {
+  const names = (s.names || []).map((x) => T('"{name}"|quoted', { name: x })).join(', ');
+  dialog(T('Delete the safe of "{title}"?', { title: selTitle(s.spec) }), h('div', {},
+    h('p', {}, TP(s.count, 'Its one saved game goes with it: {names}.', 'Its {n} saved games go with it: {names}.', { names }),
+      s.count > 1 && s.newest ? ' ' + T('The last saved: "{name}".', { name: s.newest }) : ''),
+    h('p', { class: 'hint' }, T('The packs stay. The next start of this selection builds its game files anew, as the first time (build/mods/{spec}).', { spec: s.spec }))),
+  [[T('Cancel'), 'grey'], [T('Delete the safe'), 'red', () => deleteSaves(s.spec)]]);
+}
 /* the panel "Packs": the packs played, and beside them the safes -- every selection with saved
-   games of its own; "Switch" sets its packs, the safe above shows their saves */
+   games of its own; "Switch" sets its packs, the safe above shows their saves; a selection's
+   whole safe can go (the original's not: its tapes go one by one, in the safe above) */
 function packsPanelPlay() {
   const n = st.packs.length, saves = !player(), spec = st.packs.join('+');
   const info = n ? h('div', { class: 'packinfo', 'data-launch': 'info' }) : null;
   if (info) fillPackInfo(info, packSpec());
   const sf = st.safe && st.safe.spec === spec ? st.safe : null;
   const here = sf ? sf.slots.filter((s) => s.saved && s.name.trim()) : [];
-  const list = [{ spec, count: here.length, newest: sf && sf.newest ? sf.slots[sf.newest - 1].name : '' }].concat(((sf && sf.safes) || []).filter((s) => s.spec !== spec));
+  const list = [{ spec, count: here.length, names: here.map((s) => s.name), newest: sf && sf.newest ? sf.slots[sf.newest - 1].name : '' }].concat(((sf && sf.safes) || []).filter((s) => s.spec !== spec));
+  const delSafe = (s) => (s.spec && s.count ? h('button', { class: 'ib', 'data-safedel': s.spec, 'aria-label': T('Delete this safe ...'), 'data-tip': T('Delete this safe ...'), onclick: () => deleteSafeDialog(s) }, icon('remove', 14))
+    : h('span', {}));
   const have = (s) => !s || s.split('+').every((x) => modInfo(x));
   return h('div', { class: 'gpanel packspanel' },
     h('div', { class: 'pcol' }, ...packRows(),
@@ -792,7 +811,8 @@ function packsPanelPlay() {
         s.spec === spec ? h('span', { class: 'pill yellow' }, T('shown above'))
           : h('button', { class: 'plate small', 'data-safeswitch': s.spec || 'original', disabled: !have(s.spec),
             'data-tip': have(s.spec) ? T('Sets these packs: the safe above shows their saved games.') : T('A pack of it is not here any more.'),
-            onclick: () => selectPacks(s.spec ? s.spec.split('+') : []) }, T('Switch')))),
+            onclick: () => selectPacks(s.spec ? s.spec.split('+') : []) }, T('Switch')),
+        delSafe(s))),
       h('div', { class: 'hint' }, T('A game saved with packs loads only with the same packs in the same order: each selection keeps its games in its own files (build/mods/).'))));
 }
 /* the rules of the single player's game: [[title, rows], ...] in two columns (rulesPanel) */
@@ -822,14 +842,17 @@ function playRules() {
         { key: 'game.credit_line', label: T('Credit line'), help: creditHelp(), ctl: cp.ctl, note: cp.note, changed: corig || credit !== def('game', 'credit_line'),
           def: T('Staircase') + ' ' + numFmt(def('game', 'credit_line')), rv: { game: { credit_line: String(def('game', 'credit_line')) } } }]],
       [T('Pace'), [
+        optRow('game', 'skip_intro', T('Skip the title sequence'), T('The game\'s first screen at once, without the title sequence (also with Classic). No: the original\'s, which a key, a click or a tap ends as well.')),
         optRow('game', 'fourth_speed', T('Fourth speed'), T('A fourth button in the planner\'s Control-Center, twice as fast as the original\'s fastest. Chosen before the start (also with Classic); No: the original\'s three.')),
         optRow('game', 'fast_rooms', T('Fast room changes'), T('Into a room and out again at once: no wipe, no wait while the room loads -- as in a network game (also with Classic). The game\'s clock stands still in a room change either way; No: the original\'s pace.'))]],
       [T('Opponents'), [optRow('game', 'ai_improve', T('AI improvement'), T('Computer players build up their transmitter network when you build up yours -- a while later (also with Classic). Off: the original.'), [['off', T('Off')], ['normal', T('Normal')], ['strong', T('Strong')]])]]],
     [[T('Shops'), [
       offersRow('ad_offers', T('Ad offers'), adOffersHelp(), adOffers(num('ad_offers'), (v) => setSetting('game', 'ad_offers', String(v)))),
       offersRow('film_offers', T('Film offers'), filmOffersHelp(), filmOffers(num('film_offers'), (v) => setSetting('game', 'film_offers', String(v)))),
+      offersRow('auction_lots', T('Auction lots'), auctionLotsHelp(), auctionLots(num('auction_lots'), (v) => setSetting('game', 'auction_lots', String(v)))),
       optRow('display', 'cast_fit', T('Role fit in the shop'), castFitHelp()),
-      optRow('game', 'series_topicality', T('Series topicality'), T('The series card shows how topical the series still is: a bar as on the film card, over all its episodes (also with Classic). No: the original\'s card.'))]],
+      optRow('game', 'series_topicality', T('Series topicality'), T('The series card shows how topical the series still is: a bar as on the film card, over all its episodes (also with Classic). No: the original\'s card.')),
+      optRow('game', 'original_screenplays', T('Include unfinished screenplays'), T('Yes: the 23 screenplays the original left unfinished -- the shows 25-33 and the series 37-50 -- are completed (roles, shopping lists, prices) and the screenplay agency offers them (also with Classic); the editor shows them so. No: as in 1991, the agency never offers them.'))]],
     [T('Events and prizes'), [
       amountRow('terror_damage', T('Terror damage'), terrorHelp(), terrorDamage(num('terror_damage'), (v) => setSetting('game', 'terror_damage', String(v)))),
       { key: 'game.sammy', label: T('Sammy prizes'), help: T('Prize money for the winner of the Sammy, by its category, you or a computer player (also with Classic). The original pays none: the Sammy brings image only.'),
@@ -847,6 +870,7 @@ async function putSettings(values, mp) {
     status(T('Saved in {path}.', { path: st[k].path }), 'ok');
   } catch (e) { status(e.message, 'err'); }
   renderEntry();
+  if (!mp) await syncLayer();
 }
 const setSettings = (game, mp) => putSettings({ game }, mp);
 /* all the rows' defaults in one (rulesPanel's "All to default") */
@@ -889,8 +913,7 @@ function renderLauncher(w) {
     { id: 'rules', label: T('Rules'), sub: changed.length ? T('{n} changed: {list}', { n: changed.length, list: changed.map((r) => r.label).join(', ') }) : T('as by default'), chg: changed.length > 0 },
     { id: 'fixes', label: T('Fixes|tab'), sub: fixSum[0], chg: fixSum[1] }],
   panel: (id) => (id === 'packs' ? packsPanelPlay()
-    : id === 'rules' ? rulesPanel({ cols: rules, only: L.onlyChanged, setOnly: (v) => { L.onlyChanged = v; renderEntry(); },
-      resetAll: () => putSettings(rulesDefaults(rules)) })
+    : id === 'rules' ? rulesPanel({ cols: rules, resetAll: () => putSettings(rulesDefaults(rules)) })
       : fixesPanel({ page: 'launcher', mode, pick: pickFixModePlay, fx, forced, group: L.fixGroup, setGroup: (i) => { L.fixGroup = i; renderEntry(); },
         set: (v) => { keepFixOwn('sp', true, v); setSettings({ classic: 'no', fixes: v }); } })) });
   w.append(h('div', { class: 'page launchpage' },
@@ -964,6 +987,8 @@ function renderSettings(w) {
             row(T('Sound'), T('The AdLib music and the sound effects.'), seg('sound', 'sound', [['on', T('On')], ['off', T('Off')]])),
             row(T('Mouse'), T('Captured: the game takes the mouse (Pause releases it). Free: the system pointer moves the game\'s cursor, with the system\'s speed, and can leave the window. System: as Free, and the system\'s own arrow is the game\'s (no lag) -- in a network game carried items too; the game\'s other cursors stay.'),
               seg('input', 'mouse', [['captured', T('Captured')], ['free', T('Free')], ['system', T('System')]])),
+            row(T('TV monitor = back'), T('On a touch screen: a tap on the TV family\'s monitor, bottom right, is the right button -- back, out of a room -- so one hand will do. Two fingers tapped together are the right button anyway.'),
+              seg('input', 'tv_back', [['no', T('No')], ['yes', T('Yes')]])),
             h('div', { class: 'hint', 'data-setting-note': 'mouse', style: 'grid-column:1/-1' }, icon('lock', 12), ' ',
               T('In a network game the mouse is always System: every input goes to the server and back first, only the system\'s own arrow is at the mouse at once.'))))))));
 }
@@ -976,7 +1001,7 @@ SELFTESTS.push(Object.assign(async function selftestLauncher(t) {
    * the player's kept selection is put back at the end */
   let keptBefore = null;
   try { keptBefore = localStorage.getItem(PACKS_KEY); } catch (e) { /* ignore */ }
-  st.launch = { fixGroup: 0, slot: 0, onlyChanged: false };
+  st.launch = { fixGroup: 0, slot: 0 };
   st.log = [];
   st.settings = null;
   /* the page "Settings": the display, the AI upscaling, the sound, the mouse -- the display and the
@@ -984,8 +1009,8 @@ SELFTESTS.push(Object.assign(async function selftestLauncher(t) {
   await go2('#settings');
   await wait(400);
   const spBefore = await api('GET', SETTINGS_URL());
-  ok($('#rail [data-key="settings"]').classList.contains('active') && $$('#work [data-setting]').length === 7 && !$('#work [data-setting="display.cast_fit"]') && !$('#inspector').children.length,
-    'settings: a page of its own on the board -- display, sound, mouse (seven settings; the role fit not here: a rule of the game)');
+  ok($('#rail [data-key="settings"]').classList.contains('active') && $$('#work [data-setting]').length === 8 && $('#work [data-setting="input.tv_back"]') && !$('#work [data-setting="display.cast_fit"]') && !$('#inspector').children.length,
+    'settings: a page of its own on the board -- display, sound, mouse, the TV monitor (eight settings; the role fit not here: a rule of the game)');
   const kiModels = (st.ki && st.ki.models) || [];
   if (st.ki && st.ki.error) ok($('#work #aicard') && !$$('#work #aicard .pill').length, 'settings: the AI upscaling card, the server without them (the former Python editor (editor.py)): no models');
   else ok(kiModels.length === 2 && $$('#work #aicard .pill').length === 2 && $$('#work #aicard a[href^="https://openmodeldb.info/"]').length === 2,
@@ -1023,11 +1048,12 @@ SELFTESTS.push(Object.assign(async function selftestLauncher(t) {
   ok(!$('#inspector').children.length && $('#work .startblock #launch') && $('#work .startblock #continue') && $('#work .logstrip').classList.contains('empty')
     && $$('#work [data-tab]').length === 4 && $$('#work .gtab.on').length === 0 && $('#work [data-drawer="launcher"]').inert && !$('#work [data-fix]'),
     'launcher: no side column -- the start on top, no messages yet, the three tabs shut');
-  /* the safe: the selection's own (launcher/saves.go), its 10 tapes drawn where the game draws them */
+  /* the safe: the selection's own (launcher/saves.go), its 10 tapes drawn where the game draws them -- on the picture,
+     which the game puts 4 rows lower on the screen (the labels in the white slots: 42 px, not 50) */
   await until(() => st.safe && st.safe.spec === st.packs.join('+'));
   const sf = st.safe, tapes = $$('#work .safepic .safetape');
   ok(sf && sf.slots.length === 10 && tapes.length === 10 && tapes.every((b, i) => b.disabled === !sf.slots[i].saved)
-    && tapes[0].style.left === '128px' && tapes[0].style.top === '50px' && tapes[9].style.left === '364px' && tapes[9].style.top === '186px'
+    && tapes[0].style.left === '128px' && tapes[0].style.top === '42px' && tapes[9].style.left === '364px' && tapes[9].style.top === '178px'
     && tapes.every((b) => Math.round(b.getBoundingClientRect().height) === 16 && Math.round(b.getBoundingClientRect().width) === 158),
     `launcher: the safe of "${sf && (sf.dir || '?')}": 10 tapes where the game draws them, the plate's size (158 x 16), ${sf ? sf.slots.filter((x) => x.saved).length : 0} saved`);
   const saved = sf ? sf.slots.find((x) => x.saved) : null;
@@ -1044,7 +1070,7 @@ SELFTESTS.push(Object.assign(async function selftestLauncher(t) {
   /* the tabs: a head opens its panel, again shuts it; the chevron opens the last one; kept */
   await tab('rules');
   ok($('#work [data-tab="rules"]').getAttribute('aria-expanded') === 'true' && $('#work .gtab.on[data-tab="rules"]') && !$('#work [data-drawer="launcher"]').inert
-    && $$('#work [data-setting]').length === 15, 'launcher: the tab "Rules" open -- fifteen game settings in their groups');
+    && $$('#work [data-setting]').length === 18, 'launcher: the tab "Rules" open -- eighteen game settings in their groups');
   $('#work [data-tab="rules"]').click();
   await wait(150);
   ok($('#work [data-tab="rules"]').getAttribute('aria-expanded') === 'false' && $('#work [data-drawer="launcher"]').inert && tabsOf('launcher').last === 'rules', 'launcher: a click on the open head shuts it');
@@ -1098,11 +1124,6 @@ SELFTESTS.push(Object.assign(async function selftestLauncher(t) {
   mi().dispatchEvent(new Event('change'));
   await wait(400);
   ok((await api('GET', SETTINGS_URL())).values.game.start_money === '1500000' && mi().value === numFmt(1500000), 'launcher: start money above $100 million refused');
-  $('#work [data-rules="changed"]').click();
-  await wait(150);
-  ok(!mrow().classList.contains('hide') && $('#work [data-rule="game.fourth_speed"]').classList.contains('hide'), 'launcher: "Only the changed" -- the start money, not the fourth speed');
-  $('#work [data-rules="all"]').click();
-  await wait(150);
   mreset().click();
   await wait(400);
   ok((await api('GET', SETTINGS_URL())).values.game.start_money === '200000' && mi().value === numFmt(200000) && mreset().disabled, 'launcher: start money back to the default');
@@ -1197,6 +1218,11 @@ SELFTESTS.push(Object.assign(async function selftestLauncher(t) {
   $('#work [data-setting="game.series_topicality"] [data-value="no"]').click();
   await wait(400);
   ok((await api('GET', SETTINGS_URL())).values.game.series_topicality === 'no' && $('#work [data-setting="game.series_topicality"] [data-value="no"]').classList.contains('on'), 'launcher: the series topicality switched off');
+  /* the original's screenplays: off by default, switched on here */
+  ok(s0.values.game.original_screenplays === 'no' && $('#work [data-setting="game.original_screenplays"] [data-value="no"]').classList.contains('on'), 'launcher: the original screenplays off by default');
+  $('#work [data-setting="game.original_screenplays"] [data-value="yes"]').click();
+  await wait(400);
+  ok((await api('GET', SETTINGS_URL())).values.game.original_screenplays === 'yes' && $('#work [data-setting="game.original_screenplays"] [data-value="yes"]').classList.contains('on'), 'launcher: the original screenplays switched on');
   /* the AI improvement: off by default, chosen here */
   ok(s0.values.game.ai_improve === 'off' && $('#work [data-setting="game.ai_improve"] [data-value="off"]').classList.contains('on'), 'launcher: the AI improvement off by default');
   $('#work [data-setting="game.ai_improve"] [data-value="strong"]').click();
@@ -1216,6 +1242,13 @@ SELFTESTS.push(Object.assign(async function selftestLauncher(t) {
   fo().dispatchEvent(new Event('change'));
   await wait(400);
   ok((await api('GET', SETTINGS_URL())).values.game.film_offers === '13' && fo().value === '13', 'launcher: 13 film offers chosen');
+  /* the auction's lots: 10 by default, 10 to 20 to choose, 18 chosen */
+  const al = () => $('#work [data-setting="game.auction_lots"]');
+  ok(s0.values.game.auction_lots === '10' && al().value === '10' && al().options.length === 11, 'launcher: the auction lots at the original\'s 10 by default, 10 to 20 to choose');
+  al().value = '18';
+  al().dispatchEvent(new Event('change'));
+  await wait(400);
+  ok((await api('GET', SETTINGS_URL())).values.game.auction_lots === '18' && al().value === '18', 'launcher: 18 auction lots chosen');
   /* the role fit in the shop: a rule of the game's start, off by default */
   ok(s0.values.display.cast_fit === 'no' && $('#work [data-setting="display.cast_fit"] [data-value="no"]').classList.contains('on'), 'launcher: the role fit in the shop off by default');
   $('#work [data-setting="display.cast_fit"] [data-value="yes"]').click();
@@ -1225,10 +1258,10 @@ SELFTESTS.push(Object.assign(async function selftestLauncher(t) {
   $('#work [data-rules="reset"]').click();
   await wait(500);
   const sr = await api('GET', SETTINGS_URL());
-  ok(nchg === 8 && !$$('#work .rrow.chg').length && sr.values.game.film_offers === '10' && sr.values.display.cast_fit === 'no' && sr.values.game.sammy_culture === '0' && sr.values.game.fixes === s2.values.game.fixes,
+  ok(nchg === 10 && sr.values.game.original_screenplays === 'no' && sr.values.game.auction_lots === '10' && !$$('#work .rrow.chg').length && sr.values.game.film_offers === '10' && sr.values.display.cast_fit === 'no' && sr.values.game.sammy_culture === '0' && sr.values.game.fixes === s2.values.game.fixes,
     `launcher: "All to default" -- the ${nchg} changed rules back, the fixes untouched`);
   await api('PUT', SETTINGS_URL(), { values: { display: { scale: '3', cast_fit: 'no' }, game: { classic: 'no', fixes: 'all', start_money: '200000', credit_line: '700000', terror_damage: '50000',
-    sammy_news: '0', sammy_culture: '0', sammy_shows: '0', sammy_series: '0', fourth_speed: 'no', fast_rooms: 'no', series_topicality: 'yes', ai_improve: 'off', ad_offers: '10', film_offers: '10' } } });
+    sammy_news: '0', sammy_culture: '0', sammy_shows: '0', sammy_series: '0', fourth_speed: 'no', skip_intro: 'no', fast_rooms: 'no', series_topicality: 'yes', original_screenplays: 'no', ai_improve: 'off', ad_offers: '10', film_offers: '10', auction_lots: '10' } } });
   await loadSettings(true);
   /* the selection: the self-test's pack alone; the original stays its base */
   await tab('packs');
@@ -1247,19 +1280,64 @@ SELFTESTS.push(Object.assign(async function selftestLauncher(t) {
   renderEntry();
   ok(st.meta.window ? !$('#rail #quitlauncher') : $('#rail #quitlauncher') && $('#rail #quitlauncher').textContent === T('Quit the launcher'),
     st.meta.window ? 'launcher: no button to end it in its own window (closing the window does)' : 'launcher: a button at the foot of the board ends it (not pressed here)');
+  /* the safe emptied (launcher/saves.go): two saved games in the self-test's own safe (as the game
+     writes them) -- a tape deleted in the safe above, then the whole safe in the panel "Packs" */
+  const press = async (label) => { const b = [...document.querySelectorAll('#overlay button')].find((x) => x.textContent === label); if (b) b.click(); await wait(300); return !!b; };
+  await api('POST', '/api/saves/testsave', { mod: 'selftest', slot: 3, name: 'Drei', day: 4 });
+  await api('POST', '/api/saves/testsave', { mod: 'selftest', slot: 8, name: 'Acht', day: 9 });
+  loadSafe('selftest', true);
+  ok(await until(() => st.safe && st.safe.spec === 'selftest' && st.safe.built && st.safe.newest === 8 && $('#work .safetape[data-slot="3"]') && !$('#work .safetape[data-slot="3"]').disabled),
+    'launcher: two saved games in the self-test\'s safe (tapes 3 and 8, 8 the newest)');
+  $('#work .safetape[data-slot="8"]').click();
+  await wait(100);
+  ok($('#work [data-tapedel="8"]') && $('#work [data-tapedel="8"]').style.visibility !== 'hidden', 'launcher: tape 8 picked -- its delete at the head of its column');
+  $('#work [data-tapedel="8"]').click();
+  await wait(150);
+  ok($('#overlay').classList.contains('open') && $('#overlay').textContent.includes(T('Delete tape {n}?', { n: 8 })) && $('#overlay').textContent.includes('Acht')
+    && $('#overlay').textContent.includes(T('The other tapes stay.')), 'launcher: asked first -- the tape, its name');
+  ok(await press(T('Delete')) && await until(() => st.safe && !st.safe.slots[7].saved && st.safe.slots[7].name === '' && st.safe.slots[2].saved && st.safe.newest === 3 && st.launch.slot === 3
+    && $('#work .safetape[data-slot="8"]').disabled && $('#work [data-tapedel="3"]')), 'launcher: tape 8 deleted -- empty, tape 3 the newest now, picked');
+  /* a tape's rules (src/saverules.c, launcher/saves.go tapeRules): none on tape 3 (saved before); tape 5 saved
+     with 20 auction lots -- beside it, among those not as set */
+  ok($('#work [data-taperules]').dataset.taperules === 'none' && $('#work [data-taperules]').textContent === T('none on the tape (saved before): the ones set'),
+    'launcher: tape 3, saved without rules: none on the tape -- it plays with the ones set');
+  await api('POST', '/api/saves/testsave', { mod: 'selftest', slot: 5, name: 'Fuenf', day: 6, rules: 'fixes=all speed4=0 lots=20' });
+  loadSafe('selftest', true);
+  ok(await until(() => st.safe && st.safe.slots[4].saved && st.safe.slots[4].rules && st.safe.slots[4].rules.auction_lots === '20' && $('#work .safetape[data-slot="5"]')),
+    'launcher: tape 5 saved with rules (20 auction lots): the safe reads them');
+  $('#work .safetape[data-slot="5"]').click();
+  await wait(100);
+  const tr = $('#work [data-taperules]');
+  ok(tr.dataset.taperules === 'tape' && tr.classList.contains('chg') && tr.textContent.includes(T('Auction lots') + ': 20')
+    && tr.dataset.tip.includes(T('"Continue" plays with the rules this tape was saved with; the tabs below are for a new game.'))
+    && $('#work #continue').dataset.tip === T('Starts the game straight into this saved game, with the rules it was saved with.'),
+    'launcher: tape 5: its rules beside it, the 20 auction lots among those not as set (' + tr.textContent + ')');
+  await tab('packs');
+  ok($('#work [data-safe="selftest"].now [data-safedel="selftest"]') && !$('#work [data-safe="original"] [data-safedel]'), 'launcher: the safe shown can go as a whole; the original\'s not (only its tapes)');
+  $('#work [data-safedel="selftest"]').click();
+  await wait(150);
+  ok($('#overlay').textContent.includes(T('Delete the safe of "{title}"?', { title: selTitle('selftest') })) && $('#overlay').textContent.includes('Drei') && $('#overlay').textContent.includes('build/mods/selftest'),
+    'launcher: asked first -- its saved game named, its folder');
+  ok(await press(T('Delete the safe')) && await until(() => st.safe && st.safe.spec === 'selftest' && !st.safe.built && !st.safe.slots.some((x) => x.saved && x.name.trim()) && !st.launch.slot
+    && !$('#work [data-safedel="selftest"]') && $('#work [data-tapedel=""]') && $('#work [data-tapedel=""]').style.visibility === 'hidden'),
+    'launcher: the safe deleted -- empty (its next start builds it), nothing picked, no delete');
   /* several packs: in the order switched on, moved by the grip (the keyboard), the report, the start (dry) */
   const other = st.mods.find((m) => m.name !== 'selftest' && !m.complete && !m.error);
   if (other) {
+    const rowsBefore = $$('#work [data-packrow]').map((x) => x.dataset.packrow).join(' ');
     $(`#work [data-play="${other.name}"]`).click();
     await wait(900);
+    ok($$('#work [data-packrow]').map((x) => x.dataset.packrow).join(' ') === rowsBefore, 'launcher: a pack switched on stays where it is in the list (only its number shows the order)');
     const both = `selftest+${other.name}`;
     ok(same(st.packs, ['selftest', other.name]) && !st.mod && $('#work [data-launch="cmd"]').textContent === `${playCmd()} --mod ${both}`
       && $$('#work .packline').length === 2, `launcher: two packs together (${$('#work [data-launch="cmd"]').textContent}), nothing to save into until a change`);
-    $(`#work [data-move="${other.name}"]`).dispatchEvent(new KeyboardEvent('keydown', { key: 'ArrowUp', bubbles: true }));
-    await wait(900);
+    $(`#work [data-move="${other.name}-up"]`).focus();
+    $(`#work [data-move="${other.name}-up"]`).click();
+    ok(await until(() => same(st.packs, [other.name, 'selftest']) && $('#work [data-packrow="selftest"] .no')?.textContent === '3' && $(`#work [data-packrow="${other.name}"] .no`)?.textContent === '2'
+      && $$('#work [data-packrow]').map((x) => x.dataset.packrow).join(' ') === rowsBefore && (document.activeElement?.getAttribute('data-move') || '').startsWith(other.name + '-'), 15000),
+      'launcher: moved earlier by its arrow: number 2 now, the rows where they were, the focus on its arrows');
     const r2 = await launchGame(true);
-    ok(r2 && r2.cmd === `${playCmd()} --mod ${other.name}+selftest` && $('#work [data-packrow="selftest"] .no').textContent === '3' && document.activeElement === $(`#work [data-move="${other.name}"]`),
-      'launcher: moved up by the arrow key (its grip keeps the focus), the start of both, dry (' + (r2 && r2.cmd) + ')');
+    ok(r2 && r2.cmd === `${playCmd()} --mod ${other.name}+selftest`, 'launcher: the start of both in the new order, dry (' + (r2 && r2.cmd) + ')');
     ok(keptPacks().join('+') === `${other.name}+selftest`, 'launcher: the packs and their order kept for the next visit');
     $('#work [data-play="only-original"]').click();
     await wait(600);
@@ -1273,5 +1351,5 @@ SELFTESTS.push(Object.assign(async function selftestLauncher(t) {
   } catch (e) { /* ignore */ }
   st.tabs = {};
   st.fixOwn = {};
-  st.launch = { fixGroup: 0, slot: 0, onlyChanged: false };
+  st.launch = { fixGroup: 0, slot: 0 };
 }, { player: true }));      /* (the player's launcher runs it too: selftest.js playerSelftest) */

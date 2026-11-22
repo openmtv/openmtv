@@ -15,9 +15,17 @@ The original game files in a temporary directory, the decompiled build:
 5. --load-slot 4, an empty slot: nothing loaded -- the safe in load mode
    (room 58, g_room_mode 4), the game on the setup (g_game_mode 1), the
    message on stderr;
-6. --load-slot 11, --load-slot with --new-game: refused (exit 2).
+6. --load-slot 11, --load-slot with --new-game: refused (exit 2);
+7. slot 1 saved over the shipped one, in a directory that lists SOURCE2.RSC
+   first where there is one (tmpfs /dev/shm, like the iPhone): the save goes
+   into SOURCE1.RSC, as DOS lists the files (runtime/dos.c find_list), and
+   --load-slot 1 brings it back -- before, it went into SOURCE2.RSC and the
+   shipped slot 1 of SOURCE1.RSC, read last, covered it (2026-11-03);
+8. a directory that has one already (slot 1 in SOURCE2.RSC, its money
+   changed): the start moves it into SOURCE1.RSC (dos_rsc_saves_tidy) and
+   loads it.
 """
-import os, shutil, subprocess, sys, tempfile
+import os, shutil, struct, subprocess, sys, tempfile
 
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 GAME = os.environ.get('GAME', os.path.join(ROOT, '..'))
@@ -95,6 +103,46 @@ def main():
         check(rc == 2 and '1 to 10' in err, '--load-slot 11 refused (%s)' % err.strip())
         rc, _, err = run(d, ['100 quit'], ['--load-slot', '2', '--new-game'])
         check(rc == 2 and 'not with --new-game' in err, '--load-slot with --new-game refused (%s)' % err.strip())
+    finally:
+        shutil.rmtree(d, ignore_errors=True)
+    # 7. slot 1 saved, in SOURCE2.RSC-first order where the machine has it
+    base = '/dev/shm' if os.path.isdir('/dev/shm') and os.access('/dev/shm', os.W_OK) else None
+    d = tempfile.mkdtemp(prefix='mtv_loadslot_', dir=base)
+    try:
+        for f in ('SOURCE1.RSC', 'SOURCE2.RSC'):
+            shutil.copy(os.path.join(GAME, f), d)
+        order = [n for n in os.listdir(d) if n.upper().endswith('.RSC')]
+        size2 = os.path.getsize(os.path.join(d, 'SOURCE2.RSC'))
+        rc, _, err = run(d, ['400 key esc', '1000 click 160 100', '1200 click 100 28',
+                             '1400 poke16 39D4:8BFB 4321', '1400 poke16 39D4:8BFD 0',
+                             '1600 click 76 35', '1800 click 134 75', '2000 click 96 26',
+                             '2100 key O', '2110 key n', '2120 key e',
+                             '2250 key enter', '2300 peek16 39D4:838C', '2400 quit'])
+        rc, g, _ = run(d, peeks(800) + ['900 quit'], ['--load-slot', '1'])
+        shows = order and order[0].upper() == 'SOURCE2.RSC'
+        check(g.get('money') == 4321 and os.path.getsize(os.path.join(d, 'SOURCE2.RSC')) == size2,
+              'slot 1 saved over the shipped one comes back, SOURCE2.RSC untouched (directory order %s%s: %s)' %
+              (order, '' if shows else ' -- SOURCE1.RSC first here: the old fault would not show', g))
+    finally:
+        shutil.rmtree(d, ignore_errors=True)
+    # 8. a save left in SOURCE2.RSC: moved into SOURCE1.RSC at the start, and loaded
+    d = tempfile.mkdtemp(prefix='mtv_loadslot_')
+    try:
+        for f in ('SOURCE1.RSC', 'SOURCE2.RSC'):
+            shutil.copy(os.path.join(GAME, f), d)
+        p1, p2 = os.path.join(d, 'SOURCE1.RSC'), os.path.join(d, 'SOURCE2.RSC')
+        b1 = open(p1, 'rb').read()
+        off, size = struct.unpack_from('<IH', b1, 6 * 0xD2)
+        save = bytearray(b1[off:off + size])
+        struct.pack_into('<i', save, 25252, 98765)          # station 1's money
+        with open(p2, 'r+b') as f:
+            f.seek(0, 2); end = f.tell(); f.write(save)
+            f.seek(6 * 0xD2); f.write(struct.pack('<IH', end, size))
+        rc, h, err = run(d, peeks(800) + ['900 quit'], ['--load-slot', '1'])
+        e1 = struct.unpack_from('<IH', open(p1, 'rb').read(), 6 * 0xD2)
+        e2 = struct.unpack_from('<IH', open(p2, 'rb').read(), 6 * 0xD2)
+        check(h.get('money') == 98765 and e2 == (0, 0) and e1 == (len(b1), size) and 'moved from SOURCE2.RSC' in err,
+              'a save in SOURCE2.RSC moved into SOURCE1.RSC and loaded (%s; SOURCE1 entry %s, SOURCE2 entry %s)' % (h, e1, e2))
     finally:
         shutil.rmtree(d, ignore_errors=True)
     print('loadslottest: %s' % ('all ok' if not failed else '%d failed' % failed))

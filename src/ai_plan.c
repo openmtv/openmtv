@@ -137,7 +137,7 @@ u16 ai_contracts_all_booked(void) {
 
 /* 348B:02A3  for unfinished contracts compute the average minimum audience and an OR of target-genre bitmasks into g_ai_ad_req[player] */
 void ai_ad_requirements(void) {
-    u16 ax;
+    u16 ax = 0;                        /* only AL is set before its first use: AH is never read */
     u8 *el;
     u16 t6;
     u16 t13;
@@ -291,7 +291,7 @@ void ai_init_players(void) {
 
 /* 348B:070C  (hour, contract, add(1)/remove(0), player): adjust booked counters today/tomorrow/total of g_ai_ad_plan and update flags (bit0 today>=plan, bit1 tomorrow>=plan, bit2 total>=required spots) */
 void ad_plan_book(u16 a0, u16 a1, u16 a2, u16 a3) {
-    u16 ax;
+    u16 ax = 0;                        /* only AL is set before its first use: AH is never read */
     u32 l_4;
     u8 l_5;
     FUNC_TICK(86);
@@ -454,7 +454,7 @@ void ai_rent_studio(void) {
 
 /* 348B:0AAF  buy the best-rated screenplay offer (rating >= threshold, price <= 30% of production budget, genre not over-full) into the AI's script list; pays, marks offer sold, refills the agency */
 void ai_buy_script(void) {
-    u16 ax;
+    u16 ax = 0;                        /* only AL is set before its first use: AH is never read */
     u32 l_4;
     u32 l_8;
     u16 l_A;

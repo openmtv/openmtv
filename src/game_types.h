@@ -157,7 +157,7 @@ struct offer {   /* film dealer shelf 1..10, 0x8 bytes */
     u8 shelf;   /* >= 0 on the shelf (-100 when taken) */
 };
 _Static_assert(sizeof(struct offer) == 0x8, "struct offer");
-struct lot {   /* auction lots 1..10, 0x9 bytes */
+struct lot {   /* auction lots 1..10 (--auction-lots: ..20), 0x9 bytes */
     u16 program;   /* film id or series id+1000 */
     u32 bid;   /* current bid */
     u8 bidder;   /* high bidder (< 0 none / human's provisional bid) */
@@ -385,7 +385,18 @@ static inline u32 dealer_at_id(u16 i) {
     return FILM_OFFER_EXTRA(i) ? MK32(FILM_OFFERS_SEG, (u16)((i - 11) * 0x8)) : MK32(DSEG, (u16)(i * 0x8 + 0x19ED));
 }
 #define dealer_at(i) dealer_at_id((u16)(i))
-#define auction_at(i) MK32(DSEG, (u16)((i) * 0x9 + 0x1B0D))
+/* the auction's lots 1..10 are a DGROUP array (DS:1B0D, the contracts follow
+ * at 1B70); with --auction-lots (src/auction_lots.c) lots 11..g_nlots live in
+ * a host array (src/state.c) behind the far-pointer segment AUCTION_LOTS_SEG
+ * (runtime.h).  Any other index keeps the original's address. */
+#define AUCTION_LOTS_MAX AUCTION_LOTS_OPT_MAX
+extern u16 g_nlots;                      /* 10, or the option's 11..20 (state.c) */
+extern u8 g_lots_extra[];
+#define AUCTION_LOT_EXTRA(i) ((u16)(i) > 10 && (u16)(i) <= g_nlots)
+static inline u32 auction_at_id(u16 i) {
+    return AUCTION_LOT_EXTRA(i) ? MK32(AUCTION_LOTS_SEG, (u16)((i - 11) * 0x9)) : MK32(DSEG, (u16)(i * 0x9 + 0x1B0D));
+}
+#define auction_at(i) auction_at_id((u16)(i))
 /* the ad agency's offers 1..10 are a DGROUP array (DS:19A0, the film dealer's
  * slots follow at 19ED); with --ad-offers (an option, src/fixes.c) offers
  * 11..g_nadoffers live in a host array (src/state.c) behind the far-pointer
@@ -437,7 +448,7 @@ static inline u32 ad_offers_at_id(u16 i) {
 #define contracts(i, j) (*(struct contract *)dg_addr((u16)((i) * 0x46 + (j) * 0x7 + 0x1B70)))
 #define tx(i, j) (*(struct transmitter *)dg_addr((u16)((i) * 0x1CE + (j) * 0xE + 0x1D09)))
 #define dealer(i) (*(struct offer *)(FILM_OFFER_EXTRA(i) ? g_dealer_extra + ((u16)(i) - 11) * 0x8 : dg_addr((u16)((i) * 0x8 + 0x19ED))))
-#define auction(i) (*(struct lot *)dg_addr((u16)((i) * 0x9 + 0x1B0D)))
+#define auction(i) (*(struct lot *)(AUCTION_LOT_EXTRA(i) ? g_lots_extra + ((u16)(i) - 11) * 0x9 : dg_addr((u16)((i) * 0x9 + 0x1B0D))))
 #define ad_offers(i) (*(struct ad_offer *)(AD_OFFER_EXTRA(i) ? g_ad_offers_extra + ((u16)(i) - 11) * 0x7 : dg_addr((u16)((i) * 0x7 + 0x19A0))))
 #define script_offers(i) (*(struct script_offer *)dg_addr((u16)((i) * 0x9 + 0x196A)))
 #define owned_scripts(i, j) (*(struct owned_script *)dg_addr((u16)((i) * 0x32 + (j) * 0x5 + 0x1A45)))

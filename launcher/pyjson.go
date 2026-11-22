@@ -191,6 +191,9 @@ func unpackDocs(data string) (map[string]obj, error) {
 	docs := map[string]obj{}
 	for _, t := range tables {
 		d, ok := m[t.name].(obj)
+		if !ok && t.name == "studios" { // (a host or a saved network game from before the studios: the original's)
+			continue
+		}
 		if !ok {
 			return nil, fmt.Errorf("'%s'", t.name)
 		}

@@ -18,6 +18,7 @@ import (
 	"net"
 	"os"
 	"runtime"
+	"slices"
 	"sort"
 	"strconv"
 	"strings"
@@ -534,6 +535,23 @@ type mpClient struct {
 	dropNow    bool    // a player does not want to wait for it any longer
 	token      string  // its secret: a new connection takes the seat over with it (RESUME)
 	rtts       []float64
+	leadSaid   string // the last LEAD it was told
+}
+
+// rttFrames: its longest (lead) or shortest (its own, LEAD n r) recent round trip in frames,
+// rounded up (-1: no PONG yet).  The shortest for its own: a client keeps up to lead - r + 2
+// behind the front, the client the front follows lead - (its round trip now) -- with the
+// longest of a jumpy network (WLAN) that leeway were gone, the fastest client would catch
+// up for ever and pull the clock along (runtime/host.c NET_NEAR_MIN).
+func (c *mpClient) rttFrames(longest bool) int {
+	if len(c.rtts) == 0 {
+		return -1
+	}
+	r := slices.Min(c.rtts)
+	if longest {
+		r = slices.Max(c.rtts)
+	}
+	return int(r/frameS + 0.999)
 }
 
 func (c *mpClient) send(text string) {
@@ -914,8 +932,14 @@ func replayCommand(params string) string {
 	if v := get("filmoffers", "10"); v != "10" {
 		cmd = append(cmd, "--film-offers", v)
 	}
+	if v := get("lots", "10"); v != "10" {
+		cmd = append(cmd, "--auction-lots", v)
+	}
 	if get("sertop", "0") == "1" {
 		cmd = append(cmd, "--series-topicality")
+	}
+	if get("scripts", "0") == "1" {
+		cmd = append(cmd, "--original-screenplays")
 	}
 	if v := get("knock", "0"); v != "0" {
 		cmd = append(cmd, "--knock", v)
@@ -1209,16 +1233,14 @@ func (s *gameServer) resume(c *mpClient, rest string) {
 // lead: the lead over the fastest client -- its longest recent round trip and --margin
 // frames (--lead at most; --lead itself while no client answers PINGs)
 func (s *gameServer) lead() int {
-	worst, any := 0.0, false
+	worst := -1
 	for _, c := range s.computing() {
-		for _, r := range c.rtts {
-			worst, any = max(worst, r), true
-		}
+		worst = max(worst, c.rttFrames(true))
 	}
-	if !any {
+	if worst < 0 {
 		return s.a.lead
 	}
-	return max(s.a.margin, min(s.a.lead, int(worst/frameS+0.999)+s.a.margin))
+	return max(s.a.margin, min(s.a.lead, worst+s.a.margin))
 }
 
 // ticker: the game's clock (the server's loop); its end -> the connections to wait for
@@ -1248,9 +1270,16 @@ func (s *gameServer) ticker() []*outConn {
 		if s.started && s.a.pace == "realtime" && now-lastPing > 0.5 {
 			lastPing = now // (the clients answer PONG at once)
 			s.broadcast(fmt.Sprintf("PING %.6f", now))
-			if l := s.lead(); l != leadSent { // (the clients keep that far behind the front: runtime/host.c)
-				leadSent = l
-				s.broadcast(fmt.Sprintf("LEAD %d", l))
+			leadSent = s.lead()
+			for _, cl := range s.clients { // (the clients keep near the front: runtime/host.c -- the lead and,
+				m := fmt.Sprintf("LEAD %d", leadSent) //  newer ones, their own round trip; an older client reads the first)
+				if r := cl.rttFrames(false); r >= 0 {
+					m += fmt.Sprintf(" %d", r)
+				}
+				if m != cl.leadSaid {
+					cl.leadSaid = m
+					cl.send(m)
+				}
 			}
 		}
 		if s.room != "" && s.lobby.phase == "lobby" && now-s.born > s.h.timeOf(3).Seconds() { // (the rooms are few:
@@ -1369,7 +1398,7 @@ type mpLobby struct {
 
 func defaultSettings() obj {
 	return obj{"lang": "e", "fixes": "all", "difficulty": int64(2), "speed4": false, "aiimp": "off", "money": int64(200000),
-		"credit": int64(700000), "terror": int64(50000), "sammy": []any{int64(0), int64(0), int64(0), int64(0)}, "offers": int64(10), "filmoffers": int64(10), "sertop": true, "knock": knockDef, "castfit": false, "packs": []any{}, "mods": nil}
+		"credit": int64(700000), "terror": int64(50000), "sammy": []any{int64(0), int64(0), int64(0), int64(0)}, "offers": int64(10), "filmoffers": int64(10), "lots": int64(10), "sertop": true, "origscripts": false, "knock": knockDef, "castfit": false, "packs": []any{}, "mods": nil}
 }
 
 func newMpLobby(srv *gameServer, key string, public bool) *mpLobby {
@@ -1781,7 +1810,15 @@ func (l *mpLobby) message(c *lobbyConn, m obj) error {
 				l.error(c, "mod", "not a selection the lobby takes")
 				return nil
 			}
+			offer, ok := offerOK(m["packs"])
+			if !ok {
+				l.error(c, "mod", "not a selection the lobby takes")
+				return nil
+			}
 			l.mod = obj{"hash": m["hash"], "data": data}
+			if offer != nil {
+				l.mod["packs"] = offer // (the packs themselves, for the guests to keep: sharepacks.go)
+			}
 			l.settings = with(l.settings, "mods", m["hash"])
 		} else {
 			l.mod = nil
@@ -1792,7 +1829,11 @@ func (l *mpLobby) message(c *lobbyConn, m obj) error {
 		l.publish()
 	case "getmod":
 		if l.mod != nil {
-			c.send(obj{"t": "mod", "hash": l.mod["hash"], "data": l.mod["data"]})
+			msg := obj{"t": "mod", "hash": l.mod["hash"], "data": l.mod["data"]}
+			if p, ok := l.mod["packs"]; ok {
+				msg["packs"] = p
+			}
+			c.send(msg)
 		} else {
 			c.send(obj{"t": "mod", "hash": nil, "data": nil})
 		}

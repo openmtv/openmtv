@@ -300,8 +300,9 @@ u16 txt_film_cache_load(u16 a0, u16 a1, u16 ax) {
                 l_A = l_A + 1;
             }
             l_A = 1;
-            while (((i16)l_A) <= 10) {
+            while (((i16)l_A) <= (i16)g_nlots) {   /* 10 in the original (--auction-lots) */
                 LOOP_TICK(35);
+                if (g_nlots > 10 && !fix_on(FIX_TITLE_CACHE) && ((i16)l_6) >= 49) break;   /* --auction-lots in Classic: the cache's 49 places (3 + a case of 10 + 17 film offers + 20 lots reach 49: the series cache's place 0) */
                 if (!((auction(l_A).program) == 0 || ((i16)(auction(l_A).program)) >= 1000)) {
                     t48 = l_6;
                     l_6 = l_6 + 1;
@@ -656,9 +657,9 @@ u16 txt_series_cache_load(u16 a0, u16 a1, u16 ax) {
                 l_C = l_C + 1;
             }
             l_C = 1;
-            while (((i16)l_C) <= 10) {
+            while (((i16)l_C) <= (i16)g_nlots) {   /* 10 in the original (--auction-lots) */
                 LOOP_TICK(25);
-                if (g_nfilmoffers > 10 && ((i16)l_8) >= 15) break;   /* --film-offers: as above */
+                if ((g_nfilmoffers > 10 || g_nlots > 10) && ((i16)l_8) >= 15) break;   /* --film-offers, --auction-lots: as above */
                 t37 = auction(l_C).program;
                 l_2 = auction(l_C).program;
                 if (!(((i16)t37) <= 1000 || ((i16)l_2) >= 2000)) {
@@ -943,6 +944,15 @@ void txt_script_cache_load_one(u16 a0, u16 a1) {
     l_8 = t3;
     l_C = t3;
     res_read_part(g_txt_res, HPTR(l_C), FP16(g_txt_index, (a0 - 1) << 1), l_10, (a0 - 1) << 1);
+    {                                    /* the rule "Unfertige Drehbuecher integrieren" (origscripts.c): its texts where the game's are empty */
+        static u8 filled[4096];
+        int n = origscripts_texts(a0, HPTR(l_C), l_10, filled, sizeof filled);
+        if (n) {
+            mem_free(LO16(l_C), HI16(l_C));
+            l_C = l_8 = mem_calloc((u16)(n + 1), 1);
+            far_memcpy(HPTR(l_C), filled, (u16)n);
+        }
+    }
     l_E = 0;
     while (((i16)l_E) < 16) {
         LOOP_TICK(44);

@@ -24,6 +24,7 @@ var entryWords = map[string][2]word{
 	"news_nodes":     {{"news node", "Nachricht"}, {"news nodes", "Nachrichten"}},
 	"news_topics":    {{"news topic", "Nachrichten-Thema"}, {"news topics", "Nachrichten-Themen"}},
 	"news_templates": {{"news template", "Geschichte"}, {"news templates", "Geschichten"}},
+	"studios":        {{"studio", "Studio"}, {"studios", "Studios"}},
 }
 
 func entryWord(t string) word { return entryWords[t][0] }
@@ -253,6 +254,10 @@ func buildTables(docs map[string]obj) (map[int][]byte, error) {
 				return nil, err
 			}
 			data = append(data, b...)
+		}
+		if t.at > 0 { // the studios: buildDocs puts them into the start savegame and tables
+			out[studiosBlock] = data
+			continue
 		}
 		out[t.res] = data
 		if t.texts != nil {

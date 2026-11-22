@@ -1,0 +1,12 @@
+# fix: load-music (05FF:44F4 room_saveload_click, 35F8:037C snd_room_music_start)
+# The setup screen (no music), "Load game", the shipped slot 1: the game goes on in the office.
+# The safe was the last room snd_room_music_start saw (g_snd_room_on, 39D4:1608 = 0x3A); back in
+# the office (own room 1) it takes the music as playing and loads none: classic no sample
+# (g_snd_sample_res 39D4:1606 = 0) -- silence until the next room change.  Fixed: no last room,
+# the office's sample 0x61 is loaded and plays.
+# expect classic 1500 word 39D4:1606 == 0
+# expect fixed   1500 word 39D4:1606 == 0x61
+# expect fixed   1500 word 39D4:1608 == 1
+400 key esc
+1000 click 160 100
+1200 click 100 28

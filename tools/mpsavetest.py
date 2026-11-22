@@ -30,7 +30,7 @@ A test that loads:
 
 Every machine computes every seat, so all of them write the same savegame and
 start the same game from it: a desync would show as different lines."""
-import os, shutil, subprocess, sys, tempfile, time
+import os, shutil, struct, subprocess, sys, tempfile, time
 from concurrent.futures import ThreadPoolExecutor
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 import scenario, seattest, mptest, netserver
@@ -73,6 +73,21 @@ def loads_from(name):
 def game_dir(d):
     for f in ('SOURCE1.RSC', 'SOURCE2.RSC'):
         shutil.copy(os.path.join(scenario.GAME, f), d)
+    return d
+
+
+def add_sp_saves(d):
+    """D/SOURCE1.RSC as a player's who saved single-player games: slot 1's savegame (D2h) also
+    as slots 2 and 3 (D3h, D4h), appended like the game saves (runtime/dos.c's .rsc header: 600
+    x {u32 offset, u16 size}) -- a network game must play the same game with them"""
+    p = os.path.join(d, 'SOURCE1.RSC')
+    b = bytearray(open(p, 'rb').read())
+    off, size = struct.unpack_from('<IH', b, 6 * 0xD2)
+    data = bytes(b[off:off + size])
+    for slot in (0xD3, 0xD4):
+        struct.pack_into('<IH', b, 6 * slot, len(b), size)
+        b += data
+    open(p, 'wb').write(b)
     return d
 
 
@@ -154,8 +169,9 @@ def check_load(name, record):
     return bad + compare(n, got, record)
 
 
-def check_net_save(name):
-    """a saving test over the network: the same lines everywhere, the same savegame bytes"""
+def check_net_save(name, sp_saves=None):
+    """a saving test over the network: the same lines everywhere, the same savegame bytes
+    (SP_SAVES: that seat's SOURCE1.RSC holds single-player savegames, add_sp_saves)"""
     n = 'mp:' + name
     humans = seattest.humans_of(n)
     k = len(humans.split(','))
@@ -171,7 +187,10 @@ def check_net_save(name):
             g, o = os.path.join(d, 'game%d' % seat), os.path.join(d, 'save%d' % seat)
             os.mkdir(g); os.mkdir(o)
             outs.append(o)
-            procs.append(subprocess.Popen(mptest.client_args(game_dir(g), script, humans, port, seat, n) + ['--mp-save', o],
+            game_dir(g)
+            if seat == sp_saves:
+                add_sp_saves(g)
+            procs.append(subprocess.Popen(mptest.client_args(g, script, humans, port, seat, n) + ['--mp-save', o],
                                           stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True))
         def finish(p):                   # (a client that hangs fails the test, it does not hang it)
             try:
@@ -386,6 +405,13 @@ def main():
                     continue
                 bad = check_net_save(t)
                 print('%s over the network: %s' % (t, 'FAIL' if bad else 'ok (the same lines and savegames on every client)'))
+                for b in bad:
+                    print('    ' + b)
+                fails += bool(bad)
+            if 'night' in todo:                # (a desync at frame 70 until 2026-10-26: src/rtl_io.c)
+                bad = check_net_save('night', sp_saves=1)
+                print('night over the network, one client with single-player savegames in its files: %s' % (
+                      'FAIL' if bad else 'ok (the same lines and savegames on every client)'))
                 for b in bad:
                     print('    ' + b)
                 fails += bool(bad)

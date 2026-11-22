@@ -6,7 +6,8 @@
 fullscreen = no
 # window size: N times 320x240
 scale = 3
-# 4:3 like a VGA monitor, or square (square pixels, 16:10)
+# 4:3 like a VGA monitor, square (square pixels, 16:10), or stretch (the
+# whole window or screen, whatever its shape)
 aspect = 4:3
 # sharp (even pixels at any size), nearest, linear, mmpx (smoothed edges
 # and diagonals, only the picture's own colours), or hr-pixel (drawn at 4x:
@@ -55,6 +56,9 @@ sammy_series = 0
 # a fourth game speed in the planner's Control-Center, twice the fastest of
 # the original's three (no: the original's three).  Only the decompiled build.
 fourth_speed = no
+# the game's first screen at once, without the title sequence (no: the
+# original's, which a key, a click or a tap ends as well).
+skip_intro = no
 # room changes without the original's wipe and loading wait, as in a network
 # game (the game's clock stands in a room change either way; no: the original's
 # pace).  Only the decompiled build.
@@ -63,6 +67,10 @@ fast_rooms = no
 # card: all its episodes' topicality against their quality (no: the original's
 # card without it).  Only the decompiled build.
 series_topicality = yes
+# the original's unfinished screenplays -- the shows 25-33 and the series 37-50,
+# never offered in 1991 -- filled (roles, shopping lists, prices) and offered by
+# the screenplay agency (no: the original's agency).  Only the decompiled build.
+original_screenplays = no
 # computer players build up their transmitter network when you build up yours,
 # a while later: off (the original), normal, or strong.  Only the decompiled build.
 ai_improve = off
@@ -74,6 +82,10 @@ ad_offers = 10
 # original: 10, the row of tapes on his counter; from 11 the row grows to the
 # left).  Only the decompiled build has it.
 film_offers = 10
+# the lots of the film auction at a time, 10 to 20 (the original: 10, its board
+# of 2 x 5; from 11 the board gets a second page, turned by the tab at its
+# right edge).  Only the decompiled build has it.
+auction_lots = 10
 
 [sound]
 sound = on
@@ -84,3 +96,7 @@ sound = on
 # system: like free, and the system's own arrow is the game's (no lag; the game's
 # other cursors stay; only the decompiled build)
 mouse = captured
+# a finger's tap on the TV family's monitor (bottom right) is the right button:
+# back, out of a room -- one hand on a touch screen (no: two fingers only).
+# Only the decompiled build.
+tv_back = no

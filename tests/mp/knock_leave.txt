@@ -1,0 +1,26 @@
+# Knocking, the one inside leaves by itself (multiplayer, --knock, tools/seattest.py): tests/mp/knock
+# until seat 0 has knocked at the ad agency (floor 10, door 0), where seat 1 is, and stands at its
+# door.  At 6000 -- before its 5 game minutes are up (6500) -- seat 1 leaves the agency by itself
+# (Esc): the room is now held for seat 0 as at the time-up ("[notice] Player 2 is out, it is your
+# turn."), and seat 0, still at the door, walks in by itself (in the agency at 6200 and 6400);
+# seat 1 stays out.  (Before: the knock ended without a word, seat 0 stayed in the building with
+# its status line "someone is in this room" until it clicked the door again.)
+# humans 1,2
+# options --new-game --seed 29 --knock 5
+# play tests/mp/knock.txt until 5901
+6000 seat 1 key esc
+6000 peek16 39D4:838C
+6000 seat 1 peek16 39D4:838C
+6000 peek16 39D4:7B54
+6000 peek16 39D4:0D0C
+6200 peek16 39D4:838C
+6200 seat 1 peek16 39D4:838C
+6200 peek16 39D4:7B54
+6200 peek16 39D4:0D0C
+6400 peek16 39D4:838C
+6400 seat 1 peek16 39D4:838C
+6400 peek16 39D4:7B54
+6400 peek16 39D4:0D0C
+6400 hash
+6401 seat 1 hash
+6500 quit

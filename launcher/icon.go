@@ -19,7 +19,8 @@ import (
 // with a margin around it), the others fill their square.  The window takes it at
 // run time (Linux, the Mac's "About"); the builds of Windows and the Mac take it as
 // files: openmtv icons DIR writes icon.png (256), icon.ico (Windows, PNG entries
-// 16..256) and icon.icns (the Mac, 16..1024).
+// 16..256), icon.icns (the Mac, 16..1024) and icon-ios.png (1024, the whole square
+// and opaque: iOS rounds it itself -- ios/Assets.xcassets holds a copy, docs/ios.md).
 
 func init() { commands["icons"] = iconsCommand }
 
@@ -51,6 +52,11 @@ func writeIcons(p *pictures, out string) error {
 		return b.Bytes()
 	}
 	if err := os.WriteFile(filepath.Join(out, "icon.png"), pngOf(256, false), 0o666); err != nil {
+		return err
+	}
+	var ios bytes.Buffer
+	png.Encode(&ios, iconTileWith(set, 1024, 0, 0.8, 0)) // (opaque: written without alpha)
+	if err := os.WriteFile(filepath.Join(out, "icon-ios.png"), ios.Bytes(), 0o666); err != nil {
 		return err
 	}
 	// .ico: the directory, then the pictures as PNG (Windows Vista on)
@@ -271,6 +277,12 @@ func iconTile(set *image.NRGBA, n int, mac bool) *image.NRGBA {
 	case n >= 32:
 		fill = 0.98
 	}
+	return iconTileWith(set, n, margin, fill, round)
+}
+
+// iconTileWith: the tile MARGIN (of N) from the edges, its corners rounded by ROUND
+// of its size, the set FILL of it
+func iconTileWith(set *image.NRGBA, n int, margin, fill, round float64) *image.NRGBA {
 	out := image.NewNRGBA(image.Rect(0, 0, n, n))
 	m := margin * float64(n)
 	body := float64(n) - 2*m

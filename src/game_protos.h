@@ -675,6 +675,7 @@ u16 rtl_farfree(u32 a0);
 extern u16 g_nfilms, g_nseries, g_nads;
 extern u8 g_ads_extra[];
 void tables_count_init(void);
+void tables_offers_init(void);
 void state_activate(void);
 void state_export(void);
 void state_block_freed(u32 fp);

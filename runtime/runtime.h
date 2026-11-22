@@ -4,6 +4,22 @@
 #include <stdio.h>
 #include "cpu.h"
 
+/* Apple's two systems: HOST_MACOS (AppKit: the window's occlusion, App Nap, NSCursor --
+ * runtime/host.c) and HOST_IOS (iPhone and iPad: docs/ios.md) */
+#ifdef __APPLE__
+#include <TargetConditionals.h>
+#endif
+#if defined(__APPLE__) && TARGET_OS_IPHONE
+#define HOST_IOS 1
+#else
+#define HOST_IOS 0
+#endif
+#if defined(__APPLE__) && !TARGET_OS_IPHONE
+#define HOST_MACOS 1
+#else
+#define HOST_MACOS 0
+#endif
+
 typedef uint64_t u64;
 
 /* ---- memory map ---- */
@@ -116,7 +132,9 @@ extern long sammy_prize_opt[4];                 /* --sammy-prize / [game] sammy_
 #define MONEY_OPT_MAX 100000000L                 /* the amounts' highest (as START_MONEY_MAX) */
 extern int fourth_speed_opt;                    /* --fourth-speed / [game] fourth_speed: a fourth, fastest speed in the Control-Center (src/fixes.c) */
 extern int fast_rooms_opt;                      /* --fast-rooms / [game] fast_rooms: room changes without the original's waits */
+extern int skip_intro_opt;                      /* --skip-intro / [game] skip_intro: no title sequence (src/main_loop.c) */
 extern int series_top_opt;                      /* --series-topicality / [game] series_topicality: the series card shows the topicality of all episodes (src/fixes.c) */
+extern int orig_scripts_opt;                    /* --original-screenplays / [game] original_screenplays: the original's unfinished screenplays 25-33 and 37-50 filled and offered (src/origscripts.c) */
 extern int ai_improve_opt;                      /* --ai-improve / [game] ai_improve: 0 off, 1 normal, 2 strong -- computer players follow the human's transmitters (src/ai_improve.c) */
 extern int ad_offers_opt;                       /* --ad-offers / [game] ad_offers: the ad agency's offers, 10..17; 0 = the original's 10 (src/fixes.c) */
 #define AD_OFFERS_OPT_MIN 10                     /* the original's (its desk: three stacks of 3/4/3) */
@@ -129,6 +147,11 @@ extern int film_offers_opt;                     /* --film-offers / [game] film_o
 #define FILM_OFFERS_OPT() (film_offers_opt > FILM_OFFERS_OPT_MIN ? film_offers_opt : FILM_OFFERS_OPT_MIN)   /* the number chosen, 10 = the original's */
 #define FILM_OFFERS_SEG 0xEE10                   /* the dealer's slots 11.. in host memory (src/state.c); the state's hash covers them */
 #define FILM_RECTS_SEG 0xEE20                    /* their shelf rectangles (src/film_offers.c) */
+extern int auction_lots_opt;                     /* --auction-lots / [game] auction_lots: the film auction's lots, 10..20; 0 = the original's 10 (src/auction_lots.c) */
+#define AUCTION_LOTS_OPT_MIN 10                  /* the original's (its board: 2 columns of 5) */
+#define AUCTION_LOTS_OPT_MAX 20                  /* a second page of the board */
+#define AUCTION_LOTS_OPT() (auction_lots_opt > AUCTION_LOTS_OPT_MIN ? auction_lots_opt : AUCTION_LOTS_OPT_MIN)   /* the number chosen, 10 = the original's */
+#define AUCTION_LOTS_SEG 0xEE30                  /* the lots 11.. in host memory (src/state.c); the state's hash covers them */
 extern int seat_humans;                         /* runtime/seat.h: with --humans the number of human seats, else 0 */
 /* a room change without the original's waits -- the wipe's delay per step, the sprite
  * decoder's time, the sound driver's AdLib accesses at a tenth (src/main_loop.c,
@@ -142,6 +165,7 @@ extern char new_game_names[3][9];               /* --names A,B,C: the managers o
 extern int notice_german;                       /* the game in German (--args d): the window's notices too */
 void host_notice(const char *utf8, double seconds);   /* a notice over the picture (a network game's news), "[notice]" on stderr */
 void host_notice_hold(double seconds);          /* keep the window (and the notice) a moment: before a network game's exit */
+void host_text_entry(int on);                   /* the game's text field opens (1) or closes (0) (ui_input_text): iOS shows its keyboard */
 void mp_notice_speed(int speed);                /* a human set the game speed: the others see who and which (host.c) */
 extern int knock_opt;                           /* --knock=N: a human knocking at an occupied film dealer, ad agency or supermarket
                                                    gives the human inside N game minutes, then it is out (src/seatctx.c); 0 off */
@@ -198,6 +222,7 @@ void bios_init(void);
 void int10(void); void int16(void); void int1a(void); void int33(void);
 void int21(void);
 void dos_init(const char *gamedir, const char *progname);
+void dos_rsc_saves_tidy(void);           /* savegames in SOURCE2.RSC into SOURCE1.RSC, where DOS has them (dos.c) */
 int  bios_key_available(void);
 void bios_key_push(u16 scan_ascii);
 
@@ -228,13 +253,24 @@ extern int display_fullscreen, display_square, display_filter, display_integer;
 extern int cast_fit_opt;                          /* --cast-fit / [display] cast_fit: the actors' fit for the role in the shop (src/cast_fit.c; decompiled build) */
 extern int mouse_free;                            /* --mouse free or system (host.c) */
 extern int mouse_system;                          /* --mouse system: the system's arrow stands for the game's (decompiled build) */
+extern int host_game_arrow;                       /* a finger aiming: the game draws its own arrow meanwhile (src/fixes.c) */
 extern int sys_ptr_x, sys_ptr_y;                  /* the game pixel under the system pointer (-1: not seen yet;
                                                      a network game: where the game has taken it to, net_inputs) */
 int host_shown_seat(void);                        /* the seat whose screen this machine shows (a network game: its own) */
 void game_cursor(int *x, int *y);   /* where the game's cursor is heading: its position + its pending motion */
+int game_cursor_still(void);        /* the game's cursor has no motion left to make (a finger's press waits for it, host.c) */
+extern unsigned mouse_reads;         /* the game's reads of the mouse buttons (bios.c; a finger's tap is released only after one, host.c) */
+int game_drag_hot(int *hx, int *hy); /* the game clicks off its cursor (something carried: at its corner): 1 and the cursor's way from there */
+int game_room(void);                 /* the room or screen shown (g_room: 0x1F the planner; -1 unknown) */
+extern int game_panel_shown;         /* the bottom panel has come up (src/main_loop.c) */
+int game_panel_up(void);             /* it stands and no screen of its own covers the game (src/state.c; -> 0 without src/) */
+extern int tv_back_opt;              /* --tv-back / [input] tv_back: a finger's tap on the TV family's monitor = the right button */
+int fix_list_entry(int i, const char **name, const char **what);   /* the fixes' table, entry I (src/fixes.c; the iPhone's launcher) -> 0 past the end */
 enum { SYS_ARROW_OFF, SYS_ARROW_ON, SYS_ARROW_HIDDEN, SYS_ARROW_DRAG };
 int sys_drag_image(unsigned char *pix, int cap, int *w, int *h, int *hx, int *hy, int lim[4]);   /* the carried item (SYS_ARROW_DRAG), the mouse's limits */
+int sys_drag_image_4x(u32 *out, int cap, const u32 *pal);   /* ... at 4x from its cells (--filter hr-pixel; 0: none) */
 int sys_arrow_state(void);          /* --mouse system: does the system pointer show the game's arrow now (src/fixes.c) */
+int mouse_limits_changed(void);     /* the free mouse: the game changed its cursor's limits since the last ask (src/fixes.c) */
 /* the player's settings file (settings.c; --settings) */
 extern int settings_active;
 int settings_load(const char *file);              /* NULL or "": the default path */
@@ -253,6 +289,7 @@ int hr_init(void);
 extern const char *ai_pictures_path;    /* --ai-pictures / [display] ai_pictures: a picture set (docs/ki-bilder.md) */
 int ki_make_main(int argc, char **argv);   /* --make-ki (src/ki_make.c, docs/ki-bilder.md) */
 int hr_ki_toggle(void);                 /* Ctrl+K: the AI pictures off / on (1); -1 without a set */
+int hr_ki_state(void);                  /* the AI pictures shown now (1) */
 int hr_render(u32 *out, const u32 *pal, u8 *bad);
 void hr_seat_save(int seat);                     /* a seat's cells, saved and loaded with it (seat.c) */
 void hr_seat_load(int seat);

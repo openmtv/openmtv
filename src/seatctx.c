@@ -15,8 +15,8 @@
  *     right after g_frame_timer, the elevator cabin (DS:8BDA) after the
  *     save-slot names.
  *   - the contents of buffers allocated once and drawn per view: the back
- *     buffer, the TV family's sofa, the window buffer, the cursor sprite
- *     the status panel's texts are drawn in.  Their size comes
+ *     buffer, the TV family's sofa and sprites, the window buffer, the
+ *     cursor sprite the status panel's texts are drawn in.  Their size comes
  *     from the far heap's block header (u32 size | 1 used, 8 bytes before
  *     the data; src/rtl_heap.c).
  *   (and with the fix "title-cache" the film text cache's slots past 48,
@@ -97,7 +97,7 @@ static const Range ranges[] = {
     {0x7B12, 0x12},     /* player figure, click, drag begin/end, the cursor buffers kept while dragging */
     {0x7B26, 0x1C},     /* cursor drawn at, popup columns and rows */
     {0x7BF6, 0x04},     /* mouse position */
-    {0x8336, 0x4C},     /* TV family viewers */
+    {0x832E, 0x50},     /* TV family viewers (each seat sets up its own family: tv_family_update) */
     {0x838C, 0x02},     /* the room */
     {0x8A48, 0x14},     /* room stack */
     {0x8A5C, 0x02},     /* top floor of the building view (the door index follows at 8A60: the world's) */
@@ -106,6 +106,7 @@ static const Range ranges[] = {
     {0x8BA4, 0x06},     /* room mode, font, the human's player number */
     {0x8BB2, 0x28},     /* save-slot names (the elevator cabin follows at 8BDA: the world's) */
     {0x8C3A, 0x16},     /* popup sizes, building scroll */
+    {0x8C5A, 0x02},     /* fill position in the TV family's sprite buffer */
     {0x8C60, 0x0C},     /* popups in use, building redraw */
     {0x8E7E, 0x04},     /* g_bg_half_bmp: half a room background while it is drawn (freed after) */
     {0x8E86, 0x03},     /* status text */
@@ -119,7 +120,9 @@ static const Range ranges[] = {
     {0x8F3A, 0x21},     /* frame and tile drawing: target, atlas, frame tileset (the drawing's scratch) */
     {0x8F5E, 0x52},     /* tooltip contents and size; g_tmp_b, g_tmp_a (scratch the drawing shares with the world) */
     {0x8FCA, 0x15},     /* savegame buffer, position, direction; drawing scratch */
-    {0x8FE0, 0x1A},     /* genre count popup */
+    {0x8FE0, 0x28},     /* genre count popup; Madris' popup handle (8FFA), the "insert disk" box's bitmaps
+                         * (8FFC, 9000: in the seat's heap) and the language box's (9004) -- shared
+                         * until 2026-11-03: two humans' Madris closed each other's popup */
     {0x9008, 0x0C},     /* ui box stack, transmitter dialog background */
     {0x9018, 0x04},     /* room sample */
     {0x9020, 0x04},     /* room sample allocation */
@@ -133,7 +136,11 @@ static const Range ranges[] = {
 
 /* buffers drawn per view: far pointers in the data segment */
 static const u16 bufs[] = { 0x8E82, 0x7BFC, 0x0124,
-                            0x8EA8 };       /* cursor sprite 5: ui_status_text draws the panel's texts in it */
+                            0x8EA8,         /* cursor sprite 5: ui_status_text draws the panel's texts in it */
+                            0x8C50 };       /* the TV family's sprites: each seat loads its own viewers'
+                                             * banks (tv_family_load_sprite), the viewer records point
+                                             * into them -- shared, the last seat's banks were drawn in
+                                             * every seat's view */
 #define NBUFS (int)(sizeof bufs / sizeof bufs[0])
 
 static u32 buf_len(u16 ptr_off, u8 **data) {
@@ -385,7 +392,8 @@ int mp_catch_human(int player, int by) {
  * minutes, then it is out -- at the top of its main loop, as when caught.
  * The room then waits as long for the knocker: nobody else gets in (the one
  * thrown out neither, nor a computer player), and the knocker walks in by
- * itself if it still waits at the door.  Without a knock nobody is hurried.
+ * itself if it still waits at the door -- also when the one inside leaves by
+ * itself before its time is up.  Without a knock nobody is hurried.
  * A knocker who goes anywhere else (a click on the floor, another door, the
  * lift -- anything but that door again) takes the knock back, and the room it
  * waited for is free again; a second knocker meanwhile finds the room
@@ -516,6 +524,12 @@ static void mp_knock_tick(void) {
         if (knock[k].day != g_day || figures(f).task != 0 || figures(f).target_floor != knock[k].floor ||
             figures(f).target_door != knock[k].door) {   /* gone out by itself (or the day is over) */
             knock[k].inside = 0;
+            if (knock[k].day == g_day && knock_waits(k)) {   /* the knocker still at the door: its turn now, as at the time-up */
+                knock[k].held_for = knock[k].knocker;
+                knock[k].walked = 0;
+                knock[k].until = (u16)(g_clock_seconds + knock_opt * 60);
+                knock_notice(knock[k].knocker, me, "%s ist raus, du bist dran.", "%s is out, it is your turn.");
+            }
             continue;
         }
         if (!knock_waits(k)) {           /* the knocker went elsewhere (or out of the game) */
@@ -693,8 +707,11 @@ void seat_game_ptrcheck(void) {
         if (own[o] || own[o + 2]) continue;
         /* no pointers, values that may look like one: the clock the pause keeps (DS:72AE,
          * a 32-bit count) and the tick block's counters (DS:9034.., the sound driver's) */
-        if (o == 0x72AC || o == 0x72AE || o == 0x9034 || o == 0x9036) continue;
+        if (o == 0x72AA || o == 0x72AC || o == 0x72AE || o == 0x9032 || o == 0x9034 || o == 0x9036) continue;   /* (72AA, 9032: their
+                                                                 * "segment" is that count's low word -- mpchaos seed 6, late in day 2) */
         if (o >= 0x3D6A && o < 0x3D6B + 4 * 0x78) continue;   /* the news slots: values only (struct news_item) */
+        if (o >= 0x19EB && o < 0x1A45) continue;              /* the film dealer's slots: values only (g_dealer, 11 x 8 to 1A44; a slot's
+                                                                 * shelf byte and the next one's film read as BCA4:0000) */
         if (!memcmp(ptr_before + o + 2, dg_addr((u16)(o + 2)), 2)) continue;   /* its segment not set in this turn */
         u16 seg = G16((u16)(o + 2));
         if (seg >= SEAT_HEAP_SEG && seg < SEAT_HEAP_END && G16(o) < 0x10) {

@@ -4,6 +4,8 @@
     python3 tools/package.py win     -> build/package/OpenMTV-win64-VERSION.zip
     python3 tools/package.py linux   -> build/package/OpenMTV-linux-x64-VERSION.tar.gz
     python3 tools/package.py mac     -> build/package/OpenMTV-macos-arm64-VERSION.zip  (on the Mac)
+    python3 tools/package.py mac --notarize   the same, signed with the Developer ID and
+                                              notarized by Apple (the release's: tools/release.py)
     python3 tools/package.py packs   -> build/package/inhaltspakete-VERSION.zip  (the developer's own machines)
 
 Every package holds the game (build/mtv-dec, stripped of its debug
@@ -41,6 +43,20 @@ What each one needs first:
   mac    the same on the Mac with MACOSX_DEPLOYMENT_TARGET=11.0 in the environment
          (the game, SDL2 and the window build for macOS 11 and later), then
          make launcher-native-app
+         --notarize: $OPENMTV_SIGN_ENV (default ~/.config/openmtv/signing.env), lines
+         KEY=VALUE as sh reads them ($HOME and quotes), # comments:
+           SIGN_IDENTITY            "Developer ID Application: NAME (TEAM)"
+           SIGN_KEYCHAIN            the keychain that holds it (over ssh the login one stays
+                                    locked: codesign fails with errSecInternalComponent)
+           SIGN_KEYCHAIN_PASS_FILE  its password, to unlock it (given on stdin)
+           ASC_KEY_ID, ASC_ISSUER, ASC_KEY   an App Store Connect API key (.p8) for notarytool
+           ASC_ENV                  or a file with those three
+         Every program in decomp/ (mtv-dec, libopl3.dylib) and OpenMTV.app is signed with
+         the hardened runtime and a secure timestamp, the whole package notarized, the
+         ticket stapled to OpenMTV.app; then Gatekeeper must call it "Notarized Developer
+         ID".  mtv-dec may load libraries that are not the Developer ID's
+         (com.apple.security.cs.disable-library-validation): a player's own libopl3.dylib
+         (the LGPL's right below) and Microsoft's ONNX Runtime for the AI pictures.
 
 Nuked-OPL3, the sound chip's emulator (LGPL-2.1), goes in as a library of its own
 (opl3.dll, libopl3.so, libopl3.dylib -- OPL3_SHARED=1) with its source and licence in
@@ -50,6 +66,7 @@ Standard library only (and strip: MinGW's for Windows, $WIN_STRIP; Go for
 the licences, `go env GOROOT`, `go version -m`; ditto and codesign on the Mac)."""
 import hashlib
 import io
+import json
 import os
 import shutil
 import subprocess
@@ -63,6 +80,17 @@ NEVER = ('SOURCE1.RSC', 'SOURCE2.RSC', 'MTV.EXE', 'MTV_U.EXE', 'INTRO.EXE')
 WIN_STRIP = os.environ.get('WIN_STRIP', 'x86_64-w64-mingw32-strip')
 TOP = 'OpenMTV/'
 OUT = os.path.join(ROOT, 'build', 'package')
+SIGN_ENV = os.environ.get('OPENMTV_SIGN_ENV', os.path.expanduser('~/.config/openmtv/signing.env'))
+GAME_ENTITLEMENTS = b'''<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>com.apple.security.cs.disable-library-validation</key>
+	<true/>
+</dict>
+</plist>
+'''
+MACHO = (b'\xcf\xfa\xed\xfe', b'\xce\xfa\xed\xfe', b'\xca\xfe\xba\xbe', b'\xfe\xed\xfa\xcf', b'\xfe\xed\xfa\xce')
 
 START = {   # how the launcher is started, per system: (de, en)
     'win': ('OpenMTV.cmd doppelklicken', 'Double-click OpenMTV.cmd'),
@@ -84,7 +112,15 @@ The first time a multiplayer game is opened, Windows may ask whether the
 game may be reached in the network: allow it for private networks.
 To play without the launcher: OpenMTV.cmd --direct (or with options,
 e.g. OpenMTV.cmd e); all the options: OpenMTV.cmd -h"""),
-    'mac': ("""OpenMTV ist nicht von Apple beglaubigt.  Beim ersten Öffnen meldet macOS,
+    'mac': ("""OpenMTV ist mit einer Developer ID signiert und von Apple beglaubigt.  Beim
+ersten Öffnen fragt macOS nur, ob es die aus dem Internet geladene App öffnen
+soll: "Öffnen" wählen.
+Für macOS 11 und neuer, Apple-Prozessor (M1 und später).""",
+            """OpenMTV is signed with a Developer ID and notarized by Apple.  The first
+time it opens, macOS only asks whether to open an application downloaded from
+the internet: choose "Open".
+For macOS 11 and later, Apple silicon (M1 and later)."""),
+    'mac-unsigned': ("""OpenMTV ist nicht von Apple beglaubigt.  Beim ersten Öffnen meldet macOS,
 dass es den Entwickler nicht prüfen kann: dann in den Systemeinstellungen
 unter Datenschutz & Sicherheit "Dennoch öffnen" wählen (älteres macOS:
 Rechtsklick auf OpenMTV.app, "Öffnen").  Danach startet es normal.
@@ -315,10 +351,11 @@ def common(launcher_exe):
     return items
 
 
-def readmes(system, crlf=False):
+def readmes(system, crlf=False, notes=None):
     v = version()
-    de = README_DE.format(start=START[system][0], notes=NOTES[system][0], version=v)
-    en = README_EN.format(start=START[system][1], notes=NOTES[system][1], version=v)
+    notes = NOTES[notes or system]
+    de = README_DE.format(start=START[system][0], notes=notes[0], version=v)
+    en = README_EN.format(start=START[system][1], notes=notes[1], version=v)
     if crlf:
         de, en = de.replace('\n', '\r\n'), en.replace('\n', '\r\n')
     return [('LIESMICH.txt', de.encode('utf-8')), ('README.txt', en.encode('utf-8'))]
@@ -386,9 +423,102 @@ def linux():
     return finish(out + '.part', out, len(entries))
 
 
-def mac():
+def env_file(path):
+    """{KEY: VALUE} of PATH's KEY=VALUE lines, as sh reads them: # comments, quotes, $HOME and ~"""
+    out = {}
+    with open(path, encoding='utf-8') as f:
+        for line in f:
+            line = line.strip()
+            if not line or line.startswith('#') or '=' not in line:
+                continue
+            k, v = (x.strip() for x in line.split('=', 1))
+            if k.startswith('export '):
+                k = k[len('export '):].strip()
+            if len(v) >= 2 and v[0] == v[-1] and v[0] in '"\'':
+                v = v[1:-1]
+            out[k] = os.path.expanduser(os.path.expandvars(v))
+    return out
+
+
+def signing():
+    """the Developer ID and the notary's key: $OPENMTV_SIGN_ENV (see -h)"""
+    if not os.path.exists(SIGN_ENV):
+        sys.exit('package: --notarize needs %s (see -h)' % SIGN_ENV)
+    cfg = env_file(SIGN_ENV)
+    if cfg.get('ASC_ENV'):
+        cfg = dict(env_file(cfg['ASC_ENV']), **cfg)
+    missing = [k for k in ('SIGN_IDENTITY', 'SIGN_KEYCHAIN', 'ASC_KEY_ID', 'ASC_ISSUER', 'ASC_KEY') if not cfg.get(k)]
+    if missing:
+        sys.exit('package: %s lacks %s' % (SIGN_ENV, ', '.join(missing)))
+    return cfg
+
+
+def must(cmd, what):
+    """CMD's output (stdout and stderr); its failure ends the package"""
+    r = subprocess.run(cmd, capture_output=True, text=True)
+    if r.returncode:
+        sys.exit('package: %s failed:\n%s%s' % (what, r.stdout, r.stderr))
+    return r.stdout + r.stderr
+
+
+def notarize(top, stage):
+    """sign every program in TOP (the staged OpenMTV/) with the Developer ID, have Apple
+    notarize the package and staple the ticket to OpenMTV.app (see -h)"""
+    cfg = signing()
+    kc = cfg['SIGN_KEYCHAIN']
+    if cfg.get('SIGN_KEYCHAIN_PASS_FILE'):
+        with open(cfg['SIGN_KEYCHAIN_PASS_FILE'], 'rb') as f:     # (on stdin: not in the process list)
+            r = subprocess.run(['security', 'unlock-keychain', kc], stdin=f, capture_output=True, text=True)
+        if r.returncode:
+            sys.exit('package: could not unlock %s: %s' % (kc, r.stderr.strip()))
+    ent = os.path.join(stage, 'mtv-dec.entitlements')
+    with open(ent, 'wb') as f:
+        f.write(GAME_ENTITLEMENTS)
+    app = os.path.join(top, 'OpenMTV.app')
+    game = os.path.join(top, 'decomp', 'build', 'mtv-dec')
+    progs = []
+    for d, _, fns in os.walk(os.path.join(top, 'decomp')):
+        for n in sorted(fns):
+            with open(os.path.join(d, n), 'rb') as f:
+                if f.read(4) in MACHO:
+                    progs.append(os.path.join(d, n))
+    if game not in progs:
+        sys.exit('package: no program decomp/build/mtv-dec to sign')
+    sign = ['codesign', '--force', '--timestamp', '--options', 'runtime', '--keychain', kc, '-s', cfg['SIGN_IDENTITY']]
+    for p in progs + [app]:
+        rel = os.path.relpath(p, top)
+        must(sign + (['--entitlements', ent] if p == game else []) + [p], 'codesign ' + rel)
+        must(['codesign', '--verify', '--strict', '--deep', p], 'codesign --verify ' + rel)
+        print('package: signed %s' % rel)
+    sub = os.path.join(stage, 'notarize.zip')
+    must(['ditto', '-c', '-k', '--keepParent', top, sub], 'ditto (for the notary)')
+    key = ['--key', cfg['ASC_KEY'], '--key-id', cfg['ASC_KEY_ID'], '--issuer', cfg['ASC_ISSUER']]
+    print('package: notarizing (Apple takes a few minutes)', flush=True)
+    r = subprocess.run(['xcrun', 'notarytool', 'submit', sub, '--wait', '--timeout', '1h', '--output-format', 'json'] + key,
+                       capture_output=True, text=True)
+    try:
+        res = json.loads(r.stdout)
+    except ValueError:
+        res = {}
+    if res.get('status') != 'Accepted':
+        log = ''
+        if res.get('id'):                                          # (what Apple found, file by file)
+            log = subprocess.run(['xcrun', 'notarytool', 'log', res['id']] + key, capture_output=True, text=True).stdout
+        sys.exit('package: notarization %s\n%s%s%s' % (res.get('status') or 'failed', r.stdout, r.stderr, log))
+    os.remove(sub)
+    os.remove(ent)
+    must(['xcrun', 'stapler', 'staple', app], 'stapler staple OpenMTV.app')
+    out = must(['spctl', '--assess', '--type', 'execute', '-vv', app], 'spctl (Gatekeeper) on OpenMTV.app')
+    if 'Notarized Developer ID' not in out:
+        sys.exit('package: Gatekeeper does not call OpenMTV.app notarized:\n' + out)
+    print('package: notarized (%s), the ticket stapled to OpenMTV.app' % res['id'])
+
+
+def mac(notarized=False):
     if sys.platform != 'darwin':
         sys.exit('package: the macOS package is made on the Mac (codesign, ditto)')
+    if notarized:
+        signing()                       # (the settings first: before minutes of building)
     need(('build/mtv-dec', 'see -h'), ('build/OpenMTV.app', 'make launcher-native-app'))
     game = os.path.join(ROOT, 'build', 'mtv-dec')
     no_sdl_library(game)
@@ -402,7 +532,7 @@ def mac():
     stage = os.path.join(OUT, 'mac-stage')
     shutil.rmtree(stage, ignore_errors=True)
     top = os.path.join(stage, TOP.rstrip('/'))
-    for name, data in readmes('mac'):
+    for name, data in readmes('mac', notes=None if notarized else 'mac-unsigned'):
         os.makedirs(top, exist_ok=True)
         open(os.path.join(top, name), 'wb').write(data)
     for rel, data, x in items:
@@ -412,6 +542,8 @@ def mac():
         os.chmod(p, 0o755 if x else 0o644)
     # the application at the top, beside decomp/ (launcher/main.go findRoot): the player's double-click
     subprocess.run(['ditto', app, os.path.join(top, 'OpenMTV.app')], check=True)
+    if notarized:
+        notarize(top, stage)
     out = os.path.join(OUT, 'OpenMTV-macos-arm64-%s.zip' % version())
     if os.path.exists(out + '.part'):
         os.remove(out + '.part')
@@ -446,7 +578,9 @@ def sha256(path):
 
 def main():
     what = sys.argv[1:]
-    if what in (['win'], ['linux'], ['mac'], ['packs']):
+    if what == ['mac', '--notarize']:
+        print('sha256 %s' % sha256(mac(notarized=True)))
+    elif what in (['win'], ['linux'], ['mac'], ['packs']):
         out = {'win': win, 'linux': linux, 'mac': mac, 'packs': packs}[what[0]]()
         print('sha256 %s' % sha256(out))
     else:

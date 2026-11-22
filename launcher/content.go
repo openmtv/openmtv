@@ -34,31 +34,37 @@ type table struct {
 	res, size, count, max int // max 0: the count is fixed
 	texts                 *textSpec
 	fields                []field
+	at                    int // a block inside resource res at this offset (the studios), not the whole resource
 }
 
 var tables = []table{
 	{"films", 0xC9, 0x17, 201, 1000, &textSpec{kind: "pstr", de: 0xCF, en: 0xFC}, []field{
 		{"genre", 0x0, "u8", 0}, {"quality", 0x1, "u8", 0}, {"wear_rate", 0x2, "u8", 0}, {"topicality", 0x3, "u8", 0},
 		{"blocks", 0x4, "u8", 0}, {"owner", 0x5, "u8", 0}, {"flags", 0x6, "u8", 0}, {"flags2", 0x7, "u8", 0},
-		{"price", 0x8, "i32", 0}, {"jingle", 0xC, "u16", 0}, {"live_day", 0xF, "u16", 0}, {"live_slot", 0x11, "u16", 0}}},
+		{"price", 0x8, "i32", 0}, {"jingle", 0xC, "u16", 0}, {"live_day", 0xF, "u16", 0}, {"live_slot", 0x11, "u16", 0}}, 0},
 	{"series", 0xCA, 0x39, 51, 1000, &textSpec{kind: "pstr", de: 0x2F, en: 0xFB}, []field{
 		{"episodes_qtf", 0x0, "u8", 33}, // episode e at 3e: quality, topicality, flags (bit0 exists)
 		{"genre", 0x21, "u8", 0}, {"episodes", 0x22, "u8", 0}, {"blocks", 0x23, "u8", 0}, {"owner", 0x24, "u8", 0},
 		{"flags", 0x25, "u8", 0}, {"flags2", 0x26, "u8", 0}, {"price", 0x27, "i32", 0}, {"episode_price", 0x2B, "i32", 0},
 		{"jingle", 0x2F, "u16", 0}, {"next_episode", 0x31, "u16", 0}, {"wear_rate", 0x33, "u8", 0},
-		{"critics", 0x35, "u8", 0}, {"press", 0x36, "u8", 0}}},
+		{"critics", 0x35, "u8", 0}, {"press", 0x36, "u8", 0}}, 0},
 	{"screenplays", 0xCB, 0x1B3, 51, 0, &textSpec{kind: "pstr", de: 0x2D, en: 0xFA}, []field{
 		{"price", 0x0, "i32", 0}, {"state", 0x4, "u8", 0}, {"flags", 0x5, "u8", 0}, {"target", 0x6, "u16", 0},
-		{"duration_hours", 0x166, "u16", 0}}},
+		{"duration_hours", 0x166, "u16", 0}}, 0},
 	{"ads", 0xCC, 0x18, 51, 1000, &textSpec{kind: "lens", de: 0x2E, en: 0xF9, sections: 2}, []field{
 		{"days", 0x8, "u8", 0}, {"spots", 0x9, "u8", 0}, {"min_audience_class", 0xA, "u8", 0}, {"target_group", 0xB, "u8", 0},
-		{"genre_rule", 0xC, "i8", 3}, {"holder", 0xF, "u8", 0}, {"fee", 0x10, "i32", 0}, {"penalty", 0x14, "i32", 0}}},
+		{"genre_rule", 0xC, "i8", 3}, {"holder", 0xF, "u8", 0}, {"fee", 0x10, "i32", 0}, {"penalty", 0x14, "i32", 0}}, 0},
 	{"news_nodes", 0xCD, 0xA, 401, 0, &textSpec{kind: "raw", de: 0x31, en: 0xF8}, []field{
-		{"successors", 0x0, "u16", 4}, {"value", 0x8, "u8", 0}, {"delay_hours", 0x9, "u8", 0}}},
+		{"successors", 0x0, "u16", 4}, {"value", 0x8, "u8", 0}, {"delay_hours", 0x9, "u8", 0}}, 0},
 	{"news_topics", 0xCE, 0x38, 51, 0, &textSpec{kind: "lens", de: 0x2C, en: 0xF7, per: 10}, []field{
-		{"phrase_value", 0x2D, "u8", 10}}},
+		{"phrase_value", 0x2D, "u8", 10}}, 0},
 	{"news_templates", 0x30, 0xE, 51, 0, nil, []field{
-		{"parts", 0x0, "u16", 5}, {"start_node", 0xA, "u16", 0}, {"category", 0xD, "u8", 0}}},
+		{"parts", 0x0, "u16", 5}, {"start_node", 0xA, "u16", 0}, {"category", 0xD, "u8", 0}}, 0},
+	// the 12 studios (DS:6165, src/state.c studios()): no resource of their own -- the start
+	// savegame holds them (and the start tables 0xD0, studios.go); renter 0 is a public
+	// room's door, 1-3 a station's start studio, 0xFF a free one the estate agent offers
+	{"studios", startSave, 0x10, 13, 0, nil, []field{
+		{"size", 0x2, "u8", 0}, {"renter", 0x3, "u8", 0}, {"rent", 0x6, "i32", 0}}, saveStudios},
 }
 
 var langs = []string{"de", "en"}
@@ -70,15 +76,18 @@ const (
 
 // A savegame (game_save_load 229E:139A, src/actions.c) is the original's 37 605 bytes and,
 // with more than 200 films, 50 series or 50 ads or a game option that needs it, an
-// extension (savegame_extra_size): "MTVX" and up to 6 u16 counts, films 201.. (0x12 bytes
+// extension (savegame_extra_size): "MTVX" and up to 8 u16 counts, films 201.. (0x12 bytes
 // each), series 51.. (0x29), ads 51.. (1), the computer players' state (--ai-improve: 86),
-// the ad agency's offers 11..17 (7 each) and the film dealer's 11..17 (8 each).  Its length
+// the ad agency's offers 11..17 (7 each), the film dealer's 11..17 (8 each), the
+// auction's lots 11..20 (9 each) and the line of the game's rules (src/saverules.c: at most
+// saveRulesMax, src/fixes.h SAVERULES_MAX).  Its length
 // is 16 bits, and the game addresses it through one far pointer: at most savegameMax bytes
 // (tools/content.py SAVE_MAX alike)
 const (
 	savegameBase    = 37605
 	savegameMax     = 0xFFF0
-	savegameOptions = 6 + 2*6 + (2 + 3*28) + 7*7 + 7*8 // the head, every option at its largest
+	saveRulesMax    = 768
+	savegameOptions = 6 + 2*8 + (2 + 3*28) + 7*7 + 7*8 + 10*9 + saveRulesMax // the head, every option at its largest
 )
 
 // savegameSize: the largest savegame of a game with these counts (every option on)
@@ -370,6 +379,9 @@ func export(res resources) (map[string]obj, error) {
 		d, err := res.get(t.res)
 		if err != nil {
 			return nil, err
+		}
+		if t.at > 0 { // a block inside the resource
+			d = pySlice(d, t.at, t.at+t.size*t.count)
 		}
 		n := t.count
 		if t.max > 0 { // films: as many as the table holds

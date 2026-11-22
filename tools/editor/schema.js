@@ -31,12 +31,18 @@ const linesInfo = (v) => ({ level: 'ok', msg: TP(v ? wrap(v, TEXT_W).length : 0,
 
 /* The texts below are in the interface language: the sections are defined again after a switch
    (onUiLang); what holds them by key (st.sel, st.filter, st.tables) stays. */
-/* the market: one choice for the two flag bits (5 on the market, 6 through the auction) */
+/* the market: one choice for the two flag bits (5 on the market, 6 through the auction); bit 6
+   alone means nothing -- 11 of the original's records have it off the market (series 1: 0x46):
+   "nowhere" keeps it as the original has it, so a choice set back is the original again */
 const MARKET = [];
 const NEWS_CATEGORY = [];
 const SECTIONS = [];
 const marketField = (kind) => ({ key: 'offered', label: T('Offered'), help: kind + ':flags', type: 'choice', opts: MARKET,
-  get: (r) => (r.flags & 0x20 ? r.flags & 0x60 : 0), set: (r, v) => { r.flags = (r.flags & ~0x60) | v; }, guard: 'market' });
+  get: (r) => (r.flags & 0x20 ? r.flags & 0x60 : 0), guard: 'market',
+  set: (r, v) => {
+    const o = origById(kind === 'film' ? 'films' : 'series', r.id);
+    r.flags = (r.flags & ~0x60) | (v || (o && !(o.flags & 0x20) ? o.flags & 0x40 : 0));
+  } });
 const startField = () => ({ key: 'start', label: T('At the start'), type: 'info', help: T("Who holds it when a game starts. A start library is stored in the start savegame together with the stations' schedules, so it is shown here, not changed."),
   text: (r) => (r.owner >= 1 && r.owner <= 3 ? T("in {station}'s library", { station: STATIONS[r.owner] }) : T('on the market (no station holds it)')) });
 const poolField = (table) => ({ key: 'pool', label: T('Starting pool'), type: 'custom', help: T('Mark films and series a new game may give to the stations, instead of the original pools. Needs the decompiled build (play.sh); the original machine code (--lifted) keeps the original pools.'),
@@ -104,7 +110,9 @@ function defineSections() {
       monitorGroup(FILM_PIC)],
     cardEdit: { genre: ['genre', 'rating'], origin: ['c13', 'year'], c15: ['c15'], c16: ['c16'], c13: ['betty'], c14: ['critics8'], live: ['live_day', 'live_slot'],
       price: ['blocks', 'price'], topicality: ['quality', 'topicality', 'wear_rate'], rating: ['rating'] },
-    offCard: ['family', 'offered', 'start', 'pool'],
+    /* live broadcasts and shows: the game's card leaves out the topicality line (live: also
+       country, year and the bars) -- their values stand beside the card */
+    offCard: (r) => ['family', ...(r.genre === 7 ? ['quality', 'topicality', 'wear_rate', 'c13', 'year', 'c15', 'c16'] : r.genre === 8 ? ['quality', 'topicality', 'wear_rate'] : []), 'offered', 'start', 'pool'],
     columns: [
       { key: 'title', label: T('Title'), text: true },
       { key: 'genre', label: T('Genre'), field: 'genre' },
@@ -205,7 +213,8 @@ function defineSections() {
       { key: 'screenplay', title: T('Screenplay'), fields: [
         Object.assign({ key: 'offered', label: T('Offered'), help: T('The screenplay agency offers it (flag bit 1). The original never offers 25-33 and 37-50: nothing in the code sets the flag.'), type: 'toggles', bits: [[1, T('at the screenplay agency')]] },
           { get: (r) => r.flags & 2, set: (r, v) => { r.flags = (r.flags & ~2) | v; } },
-          { note: (r) => (!(origById('screenplays', r.id).flags & 2) ? h('span', { class: 'warn' }, T('Never offered in the original game: its production was never played, so it may not work as intended.')) : '') }),
+          { note: (r) => (!(origById('screenplays', r.id).flags & 2) ? h('span', { class: 'warn' }, T('Never offered in the original game: its production was never played, so it may not work as intended.'))
+            : st.layer && (st.meta.origscripts || []).includes(r.id) ? h('span', { class: 'hint' }, T('Unfinished in the original: completed by the rule "Include unfinished screenplays" (Play, Rules), as the game plays it.')) : '') }),
         { key: 'kind', label: T('Kind'), type: 'info', help: T('A film production or a series production (flags bit 0); a series production has a shopping list for each episode of its series.'), text: (r) => (spIsSeries(r) ? T('series production') : T('film production')) },
         { key: 'target', label: T('Becomes'), type: 'custom', help: T('The film (or series) record the production turns into; it stays off the market until produced.'), rerender: true, req: 'target', render: (r, ctx, done) => targetControl(r, done),
           fmt: (v) => '#' + v },
@@ -256,6 +265,20 @@ function defineSections() {
       { key: 'n', label: T('Count'), get: (r) => (r.text?.en || []).filter(Boolean).length },
       { key: 'sum', label: T('Values'), get: (r) => r.phrase_value.reduce((a, b) => a + b, 0) }],
   },
+  { key: 'studios', table: 'studios', plate: T('Estate agent'), label: T('Studios'), what: T('studio'), many: T('studios'), kind: 'studio', icon: 'building',
+    spine: (r) => (r.renter === 255 ? '#f5d90a' : STUDIO_COLORS[(origById('studios', r.id) || r).renter] || '#4a4d55'), panels: ['studio', 'checks', 'changes'],
+    linked: (r) => (studioKindOf(r) === 'station' ? STUDIO_STARTS : [r.id]),
+    groups: [
+      { key: 'plan', title: T("The estate agent's plan"), first: true, render: (r) => studioPlanGroup(r) },
+      { key: 'studio', title: T('Studio'), fields: studioFields() }],
+    columns: [
+      { key: 'title', label: T('Room'), text: true },
+      { key: 'floor', label: T('Floor'), get: (r) => studioDoor(r.id)?.floor || 0 },
+      { key: 'size', label: T('Size'), field: 'size' },
+      { key: 'start', label: T('At the start'), get: (r) => r.renter, fmt: (v, r) => (v === 255 ? T('free|studio') : v >= 1 && v <= 3 ? STATIONS[v] : studioKindOf(r) === 'locked' ? T('locked') : T('public')) },
+      { key: 'rent', label: T('Base rent'), field: 'rent' },
+      { key: 'asks', label: T('Estate agent asks'), get: (r) => studioDaily(r.rent), fmt: numFmt, num: true }],
+  },
   ];
 }
 onUiLang(() => {
@@ -272,6 +295,7 @@ function titleOf(sec, rec, lang = st.lang) {
     case 'screenplays': return targetTitle(rec, lang) || (txt(rec, 0, lang).slice(0, 40) || T('(empty)'));
     case 'news': return typeof rec.text?.[lang] === 'string' ? rec.text[lang] || T('(empty)') : T('(empty)');
     case 'topics': return (rec.text?.[lang] || []).filter(Boolean).slice(0, 3).join(', ') || T('(empty)');
+    case 'studios': return studioTitle(rec, lang);
   }
   return '';
 }
@@ -289,6 +313,12 @@ function badgeOf(sec, r) {
   }
   if (sec.key === 'ads' && r.fee) return { text: T('agency'), cls: 'dealer' };
   if (sec.key === 'screenplays' && r.flags & 2) return { text: T('agency'), cls: 'dealer' };
+  if (sec.key === 'studios') {
+    const o = origById('studios', r.id) || r;
+    if (o.renter >= 1 && o.renter <= 3) return { text: ['', 'Mad', 'Fun', 'Sun'][o.renter], cls: 'lib', tip: T("{station}'s start studio", { station: STATIONS[o.renter] }) };
+    if (r.renter === 255) return { text: T('free|studio'), cls: 'sfree', tip: T('free from the start') };
+    if (studioKindOf(r) === 'locked') return { text: T('locked'), cls: '', tip: T('a consulate: the terrorists come from it') };
+  }
   return null;
 }
 /* filter chips of the list (and the table) */
@@ -301,6 +331,8 @@ function chipsOf(sec) {
   }
   if (['films', 'series', 'ads', 'screenplays'].includes(sec.key)) out.push({ key: 'free', label: T('Free'), test: (r) => usage(sec, r).free });
   if (REQUIRED[sec.key]) out.push({ key: 'incomplete', label: T('Incomplete'), test: (r) => missing(sec, r).length > 0 });
+  if (sec.key === 'studios') out.push({ key: 'freestart', label: T('Free from the start'), test: (r) => r.renter === 255 },
+    { key: 'starts', label: T('Start studios'), test: (r) => studioKindOf(r) === 'station' }, { key: 'locked', label: T('Locked'), test: (r) => studioKindOf(r) === 'locked' });
   return out;
 }
 
@@ -349,6 +381,7 @@ function entryChecks(sec, r) {
     }
     if (!t && !SPECIAL.news_nodes[r.id]) out.push({ level: 'warn', msg: T('No story reaches this step') });
   }
+  if (sec.key === 'studios') out.push(...studioChecks(r));
   if (['films', 'series'].includes(sec.key)) {
     const g = gameChecks();
     out.push(g.length ? { level: 'err', msg: g.join(' ') } : (() => { const c = startCounts(); return { level: 'ok', msg: T('A new game starts: {films} films free (9 needed), {series} series (3 needed)', c) }; })());

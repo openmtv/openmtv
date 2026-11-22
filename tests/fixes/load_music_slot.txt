@@ -1,0 +1,7 @@
+# fix: load-music (05FF:44F4 room_saveload_click, 35F8:037C snd_room_music_start)
+# args: --load-slot 1
+# The same load as the launcher's safe and the iPhone's menu start it (--load-slot 1: the
+# setup's "Load game" and a click on slot 1, src/main_loop.c): classic no room sample after it
+# (39D4:1606 = 0, silence until a room change), fixed the office's 0x61.
+# expect classic 700 word 39D4:1606 == 0
+# expect fixed   700 word 39D4:1606 == 0x61
